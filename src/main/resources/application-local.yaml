@@ -1,0 +1,12 @@
+spring:
+  profiles.active: local
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/propeler
+    username: postgres
+    password: mysecretpassword
+
+  jpa:
+    hibernate.ddl-auto: update
+    properties.hibernate.temp.use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
