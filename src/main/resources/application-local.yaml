@@ -10,3 +10,18 @@ spring:
     hibernate.ddl-auto: update
     properties.hibernate.temp.use_jdbc_metadata_defaults: false
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: service@realmarket.io
+    password: 12kl3jedkjsajjKAHAS1213
+    port: 587
+    protocol: smtp
+    test-connection: false
+    properties:
+      mail.smtp:
+        auth: true
+        starttls.enable: true
+
+frontend.service.url: localhost:3000
