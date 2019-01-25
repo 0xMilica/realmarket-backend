@@ -1,5 +1,6 @@
 package io.realmarket.propeler.model;
 
+import io.realmarket.propeler.model.enums.EUserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,10 @@ public class Auth {
 
   private String username;
   private String password;
-  private String role;
+
+  @Enumerated(EnumType.STRING)
+  private EUserRole userRole;
+
   private Boolean active;
   private String registrationToken;
   private Date registrationTokenExpirationTime;
