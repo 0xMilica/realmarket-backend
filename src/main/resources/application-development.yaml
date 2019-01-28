@@ -1,5 +1,19 @@
 spring:
   profiles.active: development
+
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    port: 587
+    protocol: smtp
+    test-connection: false
+    properties:
+      mail.smtp:
+        auth: true
+        starttls.enable: true
+
   jpa: #hibernate
     hibernate.ddl-auto: update
     # Disable feature detection by this undocumented parameter. Check the org.hibernate.engine.jdbc.internal.JdbcServiceImpl.configure method for more details.
@@ -7,14 +21,17 @@ spring:
     # Because detection is disabled you have to set correct dialect by hand.
     database-platform=: org.hibernate.dialect.PostgreSQL9Dialect
   datasource:
-    url: ${POSTGRESQL_URI}
+    url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DB}
     username: ${POSTGRESQL_USERNAME}
     password: ${POSTGRESQL_PASSWORD}
+
 cos:
-  api.key.id: ${COS_API_KEY_ID}
+  api.key.id: ${COS_API_KEY}
   service.crn: ${COS_SERVICE_CRN}
   endpoint: ${COS_ENDPOINT}
   auth.endpoint: https://iam.ng.bluemix.net/oidc/token
   bucket:
     location: ${COS_BUCKET_LOCATION}
     name: ${COS_BUCKET_NAME}
+
+frontend.service.url: ${FRONTEND_URL_PATH}
