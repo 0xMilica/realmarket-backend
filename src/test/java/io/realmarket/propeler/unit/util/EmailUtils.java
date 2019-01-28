@@ -17,7 +17,6 @@ public class EmailUtils {
   public static final String TEST_EMAIL_TEXT = "TEST_EMAIL_TEXT";
   public static final String TEST_ACTIVATION_SUBJECT = "RealMarket - Welcome";
   public static final String TEST_RESET_SUBJECT = "RealMarket - Reset Password";
-  public static final String TEST_PRIVATE_KEY_SUBJECT = "RealMarket - Digital Signature Key";
   public static final String TEST_TEMPLATE_NAME = "TEST_TEMPLATE_NAME";
 
   public static final Map<String, Object> TEST_EMAIL_DATA =
@@ -27,7 +26,7 @@ public class EmailUtils {
       new EmailDto(TEST_USER_EMAIL, EEmailType.REGISTER, TEST_EMAIL_DATA);
 
   public static final EmailDto TEST_INVALID_REGISTRATION_EMAIL_DTO =
-      new EmailDto(TEST_USER_EMAIL, EEmailType.REGISTER, new HashMap<String, Object>());
+      new EmailDto(TEST_USER_EMAIL, EEmailType.REGISTER, new HashMap<>());
 
   public static final EmailDto TEST_VALID_RESET_EMAIL_DTO =
       new EmailDto(
@@ -36,5 +35,5 @@ public class EmailUtils {
           Collections.singletonMap("resetToken", TEST_RESET_TOKEN));
 
   public static final EmailDto TEST_INVALID_RESET_EMAIL_DTO =
-      new EmailDto(TEST_USER_EMAIL, EEmailType.RESET_PASSWORD, new HashMap<String, Object>());
+      new EmailDto(TEST_USER_EMAIL, EEmailType.RESET_PASSWORD, new HashMap<>());
 }
