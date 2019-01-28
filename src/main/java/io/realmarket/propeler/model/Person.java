@@ -1,14 +1,13 @@
 package io.realmarket.propeler.model;
 
+import io.realmarket.propeler.api.dto.RegistrationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity(name = "Person")
@@ -35,4 +34,18 @@ public class Person {
       fetch = FetchType.LAZY,
       optional = false)
   private Auth auth;
+
+  public Person() {}
+
+  public Person(RegistrationDto registrationDto) {
+    this.email = registrationDto.getEmail();
+    this.firstName = registrationDto.getFirstName();
+    this.lastName = registrationDto.getLastName();
+    this.countryOfResidence = registrationDto.getCountryOfResidence();
+    this.countryForTaxation = registrationDto.getCountryForTaxation();
+    this.city = registrationDto.getCity();
+    this.address = registrationDto.getAddress();
+    this.phoneNumber = registrationDto.getPhoneNumber();
+  }
+
 }

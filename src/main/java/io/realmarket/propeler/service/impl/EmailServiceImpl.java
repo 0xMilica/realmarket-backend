@@ -23,11 +23,10 @@ import java.util.Map;
 @Slf4j
 public class EmailServiceImpl implements EmailService {
 
-  private static final String FIRST_NAME = "firstName";
-  private static final String LAST_NAME = "lastName";
+  public static final String FIRST_NAME = "firstName";
+  public static final String LAST_NAME = "lastName";
+  public static final String ACTIVATION_TOKEN = "activationToken";
   private static final String LOGO = "logo";
-
-  private static final String ACTIVATION_TOKEN = "activationToken";
   private static final String RESET_TOKEN = "resetToken";
 
   private static final String ACTIVATION_LINK = "activationLink";
@@ -47,6 +46,7 @@ public class EmailServiceImpl implements EmailService {
     this.mailContentBuilder = mailContentBuilder;
   }
 
+  @Async
   public void sendMailToUser(EmailDto emailDto) {
     sendMessage(generateMailMessage(emailDto));
   }
@@ -122,8 +122,7 @@ public class EmailServiceImpl implements EmailService {
     return data;
   }
 
-  @Async
-  void sendMessage(EmailMessageDto emailMessageDto) {
+  private void sendMessage(EmailMessageDto emailMessageDto) {
     MimeMessage email = javaMailSender.createMimeMessage();
 
     try {
@@ -139,7 +138,7 @@ public class EmailServiceImpl implements EmailService {
 
       javaMailSender.send(email);
 
-      log.info("Message sent");
+      log.info("E-mail sent to user {}", emailMessageDto.getReceiver());
 
     } catch (MessagingException e) {
       log.error("Problem with sending email: {}", e.getCause());
