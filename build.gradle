@@ -2,6 +2,7 @@ buildscript {
     ext {
         springBootVersion = "2.0.8.RELEASE"
         powerMockVersion = '2.0.0'
+        hibernateTypesVesion = '2.4.0'
     }
     repositories {
         mavenCentral()
@@ -31,6 +32,8 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.springframework.boot:spring-boot-starter-web"
 
+	implementation  "com.vladmihalcea:hibernate-types-52:$hibernateTypesVesion"
+
     runtimeOnly "org.postgresql:postgresql"
     compileOnly "org.projectlombok:lombok"
 
@@ -39,4 +42,6 @@ dependencies {
 
     testImplementation "org.powermock:powermock-module-junit4:$powerMockVersion"
     testImplementation "org.powermock:powermock-api-mockito2:$powerMockVersion"
+
+
 }

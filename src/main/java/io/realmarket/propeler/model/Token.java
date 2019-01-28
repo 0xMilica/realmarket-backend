@@ -19,7 +19,9 @@ public class Token {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TOKEN_SEQ")
   @SequenceGenerator(name = "TOKEN_SEQ", sequenceName = "TOKEN_SEQ", allocationSize = 1)
   private Long id;
+
   private String jwt;
   private Date expirationTime;
+
   @ManyToOne private Auth auth;
 }
