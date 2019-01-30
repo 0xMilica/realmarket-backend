@@ -70,6 +70,12 @@ public class AuthServiceImplTest {
   }
 
   @Test
+  public void cleanFailedRegistrations_Should_Call_() {
+    authServiceImpl.cleanseFailedRegistrations();
+    verify(authRepository, Mockito.times(1)).deleteByRegistrationTokenExpirationTimeLessThanAndActiveIsFalse(any());
+  }
+
+  @Test
   public void FindByUsernameOrThrowException_Should_ReturnAuth_IfUserExists() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
 

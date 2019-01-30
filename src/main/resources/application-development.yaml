@@ -40,3 +40,7 @@ access-token.expiration-time: 3600000
 logging:
   level:
     liquibase: INFO
+app:
+  scheduler-pool-size: 5
+  cleanse.registration:
+    timeloop: 3600000 #1h

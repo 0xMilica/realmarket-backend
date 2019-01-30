@@ -15,10 +15,13 @@ import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.helper.DateTimeHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -75,6 +78,15 @@ public class AuthServiceImpl implements AuthService {
     emailService.sendMailToUser(populateEmailDto(registrationDto, auth));
 
     log.info("User with username '{}' saved successfully.", registrationDto.getUsername());
+  }
+
+  @Transactional
+  @Scheduled(
+          fixedRateString = "${app.cleanse.registration.timeloop}",
+          initialDelayString = "${app.cleanse.registration.timeloop}")
+  public void cleanseFailedRegistrations() {
+    log.trace("Clean failed registrations");
+    authRepository.deleteByRegistrationTokenExpirationTimeLessThanAndActiveIsFalse(new Date());
   }
 
   public Auth findByUsernameOrThrowException(String username) {
