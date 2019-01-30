@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Person")
-@Table(indexes = @Index(columnList = "email"))
+@Table(indexes = @Index(columnList = "email", name = "person_uk_on_email"))
 public class Person {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PERSON_SEQ")
@@ -47,5 +47,4 @@ public class Person {
     this.address = registrationDto.getAddress();
     this.phoneNumber = registrationDto.getPhoneNumber();
   }
-
 }

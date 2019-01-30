@@ -15,7 +15,7 @@ spring:
         starttls.enable: true
 
   jpa: #hibernate
-    hibernate.ddl-auto: update
+    hibernate.ddl-auto: none
     # Disable feature detection by this undocumented parameter. Check the org.hibernate.engine.jdbc.internal.JdbcServiceImpl.configure method for more details.
     properties.hibernate.temp.use_jdbc_metadata_defaults: false
     # Because detection is disabled you have to set correct dialect by hand.
@@ -35,3 +35,6 @@ cos:
     name: ${COS_BUCKET_NAME}
 
 frontend.service.url: ${FRONTEND_URL_PATH}
+logging:
+  level:
+    liquibase: INFO

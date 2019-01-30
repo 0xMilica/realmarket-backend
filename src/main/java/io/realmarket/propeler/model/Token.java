@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Token")
-@Table(indexes = @Index(columnList = "jwt", unique = true))
+@Table(indexes = @Index(columnList = "jwt", unique = true, name = "token_uk_on_jwt"))
 public class Token {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TOKEN_SEQ")
@@ -23,5 +23,7 @@ public class Token {
   private String jwt;
   private Date expirationTime;
 
-  @ManyToOne private Auth auth;
+  @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "token_fk1_on_auth"))
+  @ManyToOne
+  private Auth auth;
 }

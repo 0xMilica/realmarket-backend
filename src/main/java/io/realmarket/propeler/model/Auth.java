@@ -17,7 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Auth")
-@Table(indexes = @Index(columnList = "username", unique = true))
+@Table(indexes = @Index(columnList = "username", unique = true, name = "auth_uk_on_username"))
 @TypeDef(name = "euserrole", typeClass = PostgreSQLEnumType.class)
 public class Auth {
   @Id
@@ -43,6 +43,6 @@ public class Auth {
   private Date temporaryLoginTokenExpirationTime;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "personId")
+  @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "auth_fk1_on_person"))
   private Person person;
 }

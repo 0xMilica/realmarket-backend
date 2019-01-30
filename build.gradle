@@ -4,6 +4,7 @@ buildscript {
         swaggerVersion = '2.9.2'
         powerMockVersion = '2.0.0'
         hibernateTypesVesion = '2.4.0'
+        liquibaseVersion = '3.6.2'
         lombokVersion = '1.18.4'
     }
     repositories {
@@ -35,8 +36,8 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "io.springfox:springfox-swagger2:$swaggerVersion"
     implementation "io.springfox:springfox-swagger-ui:$swaggerVersion"
-
-    implementation "com.vladmihalcea:hibernate-types-52:$hibernateTypesVesion"
+	implementation  "com.vladmihalcea:hibernate-types-52:$hibernateTypesVesion"
+    implementation "org.liquibase:liquibase-core:$liquibaseVersion"
 
     runtimeOnly "org.postgresql:postgresql"
     compileOnly "org.projectlombok:lombok:$lombokVersion"
@@ -46,6 +47,4 @@ dependencies {
 
     testImplementation "org.powermock:powermock-module-junit4:$powerMockVersion"
     testImplementation "org.powermock:powermock-api-mockito2:$powerMockVersion"
-
-
 }

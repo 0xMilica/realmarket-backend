@@ -1,0 +1,33 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet author="amirkovic" id="1">
+        <sql
+            endDelimiter=";"
+            splitStatements="true"
+            stripComments="true">
+            create sequence person_seq;
+            create table if not exists person
+            (
+                id bigint not null
+                constraint person_pkey
+                primary key,
+                address varchar(255),
+                city varchar(255),
+                country_for_taxation varchar(255),
+                country_of_residence varchar(255),
+                email varchar(255),
+                first_name varchar(255),
+                last_name varchar(255),
+                phone_number varchar(255),
+                profile_picture_url varchar(255)
+            );
+            create index if not exists person_uk_on_email
+            on person (email);
+
+        </sql>
+    </changeSet>
+</databaseChangeLog>

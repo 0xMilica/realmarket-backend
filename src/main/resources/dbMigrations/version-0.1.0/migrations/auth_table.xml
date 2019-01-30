@@ -1,0 +1,38 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet author="amirkovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence auth_seq;
+            create type euserrole as enum ('ROLE_ADMIN', 'ROLE_INVESTOR', 'ROLE_ENTREPRENEUR');
+            create table if not exists auth
+            (
+                id bigint not null
+                constraint auth_pkey
+                primary key,
+                accepted_terms_of_use boolean,
+                active boolean,
+                password varchar(255),
+                registration_token varchar(255),
+                registration_token_expiration_time timestamp,
+                reset_token varchar(255),
+                reset_token_expiration_time timestamp,
+                user_role euserrole,
+                temporary_login_token varchar(255),
+                temporary_login_token_expiration_time timestamp,
+                username varchar(255)
+                constraint auth_uk_on_username
+                unique,
+                person_id bigint
+                constraint auth_fk1_on_person
+                references person
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
