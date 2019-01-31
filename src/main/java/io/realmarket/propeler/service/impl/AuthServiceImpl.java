@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
 import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.api.dto.RegistrationDto;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
@@ -11,8 +12,10 @@ import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
+import io.realmarket.propeler.service.exception.InvalidTokenException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.helper.DateTimeHelper;
+import io.realmarket.propeler.service.util.TokenValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -80,10 +82,26 @@ public class AuthServiceImpl implements AuthService {
     log.info("User with username '{}' saved successfully.", registrationDto.getUsername());
   }
 
+  public void confirmRegistration(ConfirmRegistrationDto confirmRegistrationDto) {
+    Auth auth = findByRegistrationTokenOrThrowException(confirmRegistrationDto.getToken());
+
+    if (TokenValidator.isTokenValid(
+        auth.getRegistrationToken(), auth.getRegistrationTokenExpirationTime())) {
+      activateUser(auth);
+    } else {
+      log.error(
+          "Invalid token '{}' provided for auth id '{}', expiration time is '{}' '",
+          confirmRegistrationDto.getToken(),
+          auth.getId(),
+          auth.getRegistrationTokenExpirationTime());
+      throw new InvalidTokenException("Invalid token provided");
+    }
+  }
+
   @Transactional
   @Scheduled(
-          fixedRateString = "${app.cleanse.registration.timeloop}",
-          initialDelayString = "${app.cleanse.registration.timeloop}")
+      fixedRateString = "${app.cleanse.registration.timeloop}",
+      initialDelayString = "${app.cleanse.registration.timeloop}")
   public void cleanseFailedRegistrations() {
     log.trace("Clean failed registrations");
     authRepository.deleteByRegistrationTokenExpirationTimeLessThanAndActiveIsFalse(new Date());
@@ -92,7 +110,14 @@ public class AuthServiceImpl implements AuthService {
   public Auth findByUsernameOrThrowException(String username) {
     return authRepository
         .findByUsername(username)
-        .orElseThrow(() -> new EntityNotFoundException("User with provided does not exists."));
+        .orElseThrow(
+            () -> new EntityNotFoundException("User with provided username does not exists."));
+  }
+
+  public Auth findByRegistrationTokenOrThrowException(String registrationToken) {
+    return authRepository
+        .findByRegistrationToken(registrationToken)
+        .orElseThrow(() -> new InvalidTokenException("Invalid token provided"));
   }
 
   private EmailDto populateEmailDto(RegistrationDto registrationDto, Auth auth) {
@@ -110,5 +135,11 @@ public class AuthServiceImpl implements AuthService {
 
   private Boolean isRoleAllowed(EUserRole role) {
     return ALLOWED_ROLES.contains(role);
+  }
+
+  private void activateUser(Auth auth) {
+    auth.setActive(true);
+    auth.setRegistrationToken(null);
+    authRepository.save(auth);
   }
 }

@@ -2,6 +2,7 @@ package io.realmarket.propeler.unit.util;
 
 import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.api.dto.RegistrationDto;
+import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.enums.EUserRole;
@@ -49,20 +50,20 @@ public class AuthUtils {
           .build();
 
   public static final RegistrationDto TEST_REGISTRATION_DTO_ROLE_NOT_ALLOWED =
-          RegistrationDto.builder()
-                  .email(TEST_EMAIL)
-                  .username(TEST_USERNAME)
-                  .password(TEST_PASSWORD)
-                  .userRole(TEST_ROLE_FORBIDDEN)
-                  .firstName(TEST_FIRST_NAME)
-                  .lastName(TEST_LAST_NAME)
-                  .countryOfResidence("TEST_COUNTRY_OF_RESIDENCE")
-                  .city("TEST_CITY")
-                  .address("TEST_ADDRESS")
-                  .build();
+      RegistrationDto.builder()
+          .email(TEST_EMAIL)
+          .username(TEST_USERNAME)
+          .password(TEST_PASSWORD)
+          .userRole(TEST_ROLE_FORBIDDEN)
+          .firstName(TEST_FIRST_NAME)
+          .lastName(TEST_LAST_NAME)
+          .countryOfResidence("TEST_COUNTRY_OF_RESIDENCE")
+          .city("TEST_CITY")
+          .address("TEST_ADDRESS")
+          .build();
 
   public static final Auth TEST_AUTH =
-          Auth.builder()
+      Auth.builder()
           .username(TEST_USERNAME)
           .active(false)
           .userRole(TEST_ROLE)
@@ -71,4 +72,7 @@ public class AuthUtils {
           .registrationTokenExpirationTime(TEST_DATE)
           .person(getMockedPerson(TEST_REGISTRATION_DTO))
           .build();
+
+  public static final ConfirmRegistrationDto TEST_CONFIRM_REGISTRATION_DTO =
+      ConfirmRegistrationDto.builder().token(TEST_AUTH_TOKEN).build();
 }

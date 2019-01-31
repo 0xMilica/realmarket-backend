@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface AuthRepository extends JpaRepository<Auth, Long> {
   Optional<Auth> findByUsername(String username);
 
+  Optional<Auth> findByRegistrationToken(String registrationToken);
+
   void deleteByRegistrationTokenExpirationTimeLessThanAndActiveIsFalse(Date date);
 }
