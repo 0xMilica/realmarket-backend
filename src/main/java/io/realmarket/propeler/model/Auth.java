@@ -37,4 +37,6 @@ public class Auth {
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "auth_fk1_on_person"))
   private Person person;
+
+  public Auth(Long id) { this.id = id;}
 }

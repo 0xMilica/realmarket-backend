@@ -11,6 +11,7 @@ import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.AuthRepository;
+import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.PersonService;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,6 +109,15 @@ public class AuthServiceImpl implements AuthService {
     temporaryTokenService.deleteToken(temporaryToken);
   }
 
+  public static String getCurrentToken() {
+    UserAuthentication authentication =
+            (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
+    if(authentication == null){
+      return "";
+    }
+    return authentication.getToken();
+  }
+
   @Transactional
   @Override
   public void changePassword(Long userId, ChangePasswordDto changePasswordDto) {
@@ -116,6 +127,7 @@ public class AuthServiceImpl implements AuthService {
     }
     auth.setPassword(passwordEncoder.encode((changePasswordDto.getNewPassword())));
     authRepository.save(auth);
+    //tokenService.deleteJWTsForUserExceptActiveOne(userId, getCurrentToken());
   }
 
   @Override

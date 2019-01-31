@@ -93,9 +93,11 @@ public class AuthServiceImplTest {
     when(passwordEncoder.encode(TEST_PASSWORD_NEW)).thenReturn(TEST_PASSWORD);
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
 
+
     authServiceImpl.changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
 
     verify(authRepository,times(1)).save(TEST_AUTH);
+    //verify(tokenService,times(1)).deleteJWTsForUserExceptActiveOne(eq(TEST_AUTH_ID),anyString());
   }
 
   @Test
