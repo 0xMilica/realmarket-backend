@@ -6,6 +6,7 @@ buildscript {
         hibernateTypesVesion = '2.4.0'
         liquibaseVersion = '3.6.2'
         lombokVersion = '1.18.4'
+        auth0Version = '3.4.0'
     }
     repositories {
         mavenCentral()
@@ -36,7 +37,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "io.springfox:springfox-swagger2:$swaggerVersion"
     implementation "io.springfox:springfox-swagger-ui:$swaggerVersion"
-	implementation  "com.vladmihalcea:hibernate-types-52:$hibernateTypesVesion"
+
+    implementation "com.vladmihalcea:hibernate-types-52:$hibernateTypesVesion"
+    implementation "com.auth0:java-jwt:$auth0Version"
     implementation "org.liquibase:liquibase-core:$liquibaseVersion"
 
     runtimeOnly "org.postgresql:postgresql"

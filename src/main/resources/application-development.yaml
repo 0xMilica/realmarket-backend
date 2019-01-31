@@ -35,6 +35,8 @@ cos:
     name: ${COS_BUCKET_NAME}
 
 frontend.service.url: ${FRONTEND_URL_PATH}
+hmac.secret: ${HMAC_SECRET}
+access-token.expiration-time: 3600000
 logging:
   level:
     liquibase: INFO
