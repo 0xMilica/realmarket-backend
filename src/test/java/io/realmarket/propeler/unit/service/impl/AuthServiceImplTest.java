@@ -9,6 +9,7 @@ import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.TemporaryTokenService;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
+import io.realmarket.propeler.service.exception.WrongPasswordException;
 import io.realmarket.propeler.service.impl.AuthServiceImpl;
 import io.realmarket.propeler.unit.util.AuthUtils;
 import org.junit.Test;
@@ -76,6 +77,41 @@ public class AuthServiceImplTest {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
 
     authServiceImpl.register(AuthUtils.TEST_REGISTRATION_DTO_ROLE_NOT_ALLOWED);
+  }
+
+  @Test(expected = WrongPasswordException.class)
+  public void ChangePassword_Should_Throw_WrongPassword_OnWrongOldPassword(){
+    when(passwordEncoder.matches(TEST_PASSWORD,TEST_PASSWORD)).thenReturn(false);
+    when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
+
+    authServiceImpl.changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
+  }
+
+  @Test
+  public void ChangePassword_Should_SaveNewPassword(){
+    when(passwordEncoder.matches(TEST_PASSWORD,TEST_PASSWORD)).thenReturn(true);
+    when(passwordEncoder.encode(TEST_PASSWORD_NEW)).thenReturn(TEST_PASSWORD);
+    when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
+
+    authServiceImpl.changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
+
+    verify(authRepository,times(1)).save(TEST_AUTH);
+  }
+
+  @Test
+  public void FindByIdOrThrowException_Should_ReturnAuth_IfUserExists(){
+    when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.of(TEST_AUTH));
+
+    Auth retVal = authServiceImpl.findByIdOrThrowException(TEST_AUTH_ID);
+
+    assertEquals(TEST_AUTH, retVal);
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void FindByIdOrThrowException_Should_ThrowException_IfUserExists() {
+    when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.empty());
+
+    authServiceImpl.findByIdOrThrowException(TEST_AUTH_ID);
   }
 
   @Test

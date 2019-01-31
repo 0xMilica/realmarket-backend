@@ -1,5 +1,6 @@
 package io.realmarket.propeler.unit.util;
 
+import io.realmarket.propeler.api.dto.ChangePasswordDto;
 import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.api.dto.RegistrationDto;
 import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
@@ -17,9 +18,11 @@ public class AuthUtils {
   public static final String TEST_USERNAME = "TEST_USERNAME";
   public static final String TEST_EMAIL = "TEST_EMAIL";
   public static final String TEST_PASSWORD = "TEST_PASSWORD";
+  public static final String TEST_PASSWORD_NEW = "TEST_PASSWORD_NEW";
   public static final EUserRole TEST_ROLE = EUserRole.ROLE_INVESTOR;
   public static final EUserRole TEST_ROLE_FORBIDDEN = EUserRole.ROLE_ADMIN;
   public static final String TEST_REGISTRATION_TOKEN_VALUE = "TEST_REGISTRATION_TOKEN_VALUE";
+  public static final Long TEST_AUTH_ID = 10L;
 
   private static final String TEST_FIRST_NAME = "TEST_FIRST_NAME";
   public static final EmailDto TEST_EMAIL_DTO =
@@ -46,6 +49,7 @@ public class AuthUtils {
           .address("TEST_ADDRESS")
           .build();
 
+
   public static final RegistrationDto TEST_REGISTRATION_DTO_ROLE_NOT_ALLOWED =
       RegistrationDto.builder()
           .email(TEST_EMAIL)
@@ -58,6 +62,12 @@ public class AuthUtils {
           .city("TEST_CITY")
           .address("TEST_ADDRESS")
           .build();
+
+  public static final ChangePasswordDto TEST_CHANGE_PASSWORD_DTO =
+          ChangePasswordDto.builder()
+                  .oldPassword(TEST_PASSWORD)
+                  .newPassword(TEST_PASSWORD_NEW)
+                  .build();
 
   public static final Auth TEST_AUTH =
       Auth.builder()

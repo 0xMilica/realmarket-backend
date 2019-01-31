@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.ChangePasswordDto;
 import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
 import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.api.dto.RegistrationDto;
@@ -16,6 +17,7 @@ import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.TemporaryTokenService;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
+import io.realmarket.propeler.service.exception.WrongPasswordException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -105,13 +107,20 @@ public class AuthServiceImpl implements AuthService {
     temporaryTokenService.deleteToken(temporaryToken);
   }
 
+  @Transactional
+  @Override
+  public void changePassword(Long userId, ChangePasswordDto changePasswordDto) {
+    Auth auth = findByIdOrThrowException(userId);
+    if (!passwordEncoder.matches(changePasswordDto.getOldPassword(), auth.getPassword())) {
+      throw new WrongPasswordException();
+    }
+    auth.setPassword(passwordEncoder.encode((changePasswordDto.getNewPassword())));
+    authRepository.save(auth);
+  }
+
   @Override
   public Optional<Auth> findById(Long id) {
     return authRepository.findById(id);
-  }
-
-  public Auth findByIdOrThrowException(Long id) {
-    return authRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Auth for id not found."));
   }
 
   public Auth findByUsernameOrThrowException(String username) {
@@ -119,6 +128,12 @@ public class AuthServiceImpl implements AuthService {
         .findByUsername(username)
         .orElseThrow(
             () -> new EntityNotFoundException("User with provided username does not exists."));
+  }
+
+  public Auth findByIdOrThrowException(Long userId) {
+    return authRepository
+        .findById(userId)
+        .orElseThrow(() -> new EntityNotFoundException("User with provided id does not exists."));
   }
 
   private EmailDto populateEmailDto(
