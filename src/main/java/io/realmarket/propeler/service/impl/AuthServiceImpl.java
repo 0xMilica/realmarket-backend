@@ -19,6 +19,8 @@ import io.realmarket.propeler.service.util.TokenValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,6 +107,17 @@ public class AuthServiceImpl implements AuthService {
   public void cleanseFailedRegistrations() {
     log.trace("Clean failed registrations");
     authRepository.deleteByRegistrationTokenExpirationTimeLessThanAndActiveIsFalse(new Date());
+  }
+
+  @Override
+  public Optional<Auth> findById(Long id) {
+    return authRepository.findById(id);
+  }
+
+  static public Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
+    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+    authorities.add(new SimpleGrantedAuthority(userRole.toString()));
+    return authorities;
   }
 
   public Auth findByUsernameOrThrowException(String username) {
