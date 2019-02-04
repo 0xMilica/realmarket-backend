@@ -30,8 +30,7 @@ public class AuthUtils {
           EEmailType.REGISTER,
           new HashMap<String, Object>() {
             {
-              put(EmailServiceImpl.FIRST_NAME, TEST_FIRST_NAME);
-              put(EmailServiceImpl.LAST_NAME, TEST_FIRST_NAME);
+              put(EmailServiceImpl.USERNAME, TEST_USERNAME);
               put(EmailServiceImpl.ACTIVATION_TOKEN, TEST_AUTH_TOKEN);
             }
           });

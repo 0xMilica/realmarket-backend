@@ -23,8 +23,7 @@ import java.util.Map;
 @Slf4j
 public class EmailServiceImpl implements EmailService {
 
-  public static final String FIRST_NAME = "firstName";
-  public static final String LAST_NAME = "lastName";
+  public static final String USERNAME = "username";
   public static final String ACTIVATION_TOKEN = "activationToken";
   private static final String LOGO = "logo";
   private static final String RESET_TOKEN = "resetToken";
@@ -68,13 +67,13 @@ public class EmailServiceImpl implements EmailService {
 
     switch (emailDto.getType()) {
       case REGISTER:
-        subject = "RealMarket - Welcome";
+        subject = "Propeler - Welcome";
         data = getRegistrationEmailData(emailDto);
         templateName = "activateAccountMailTemplate";
         break;
 
       case RESET_PASSWORD:
-        subject = "RealMarket - Reset Password";
+        subject = "Propeler - Reset Password";
         data = getResetTokenEmailData(emailDto);
         templateName = "resetPasswordMailTemplate";
         break;
@@ -95,12 +94,11 @@ public class EmailServiceImpl implements EmailService {
     }
 
     String activationLink =
-        String.format("%s/auth/activate-account?auth=%s", frontendServiceUrlPath, activationToken);
+        String.format("%s/auth/confirm_registration?registrationToken=%s", frontendServiceUrlPath, activationToken);
 
     Map<String, Object> data = new HashMap<>();
     data.put(LOGO, LOGO);
-    data.put(FIRST_NAME, emailDto.getContent().get(FIRST_NAME));
-    data.put(LAST_NAME, emailDto.getContent().get(LAST_NAME));
+    data.put(USERNAME, emailDto.getContent().get(USERNAME));
     data.put(ACTIVATION_LINK, activationLink);
 
     return data;

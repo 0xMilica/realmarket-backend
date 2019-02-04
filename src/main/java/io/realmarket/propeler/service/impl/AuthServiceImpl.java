@@ -138,8 +138,7 @@ public class AuthServiceImpl implements AuthService {
     emailDto.setEmail(registrationDto.getEmail());
     emailDto.setType(EEmailType.REGISTER);
     Map<String, Object> parameterMap = new HashMap<>();
-    parameterMap.put(EmailServiceImpl.FIRST_NAME, registrationDto.getFirstName());
-    parameterMap.put(EmailServiceImpl.LAST_NAME, registrationDto.getLastName());
+    parameterMap.put(EmailServiceImpl.USERNAME, registrationDto.getUsername());
     parameterMap.put(EmailServiceImpl.ACTIVATION_TOKEN, auth.getRegistrationToken());
 
     emailDto.setContent(parameterMap);
