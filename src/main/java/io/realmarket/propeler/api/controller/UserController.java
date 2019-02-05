@@ -20,7 +20,7 @@ public interface UserController {
     @ApiImplicitParam(
         name = "userId",
         value =
-            "UserId that we want to change password",
+            "id of person that password is about to change",
         dataType = "long"),
     @ApiImplicitParam(
         name = "changePasswordDto",

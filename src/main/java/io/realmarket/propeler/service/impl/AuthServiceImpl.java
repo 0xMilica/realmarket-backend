@@ -109,12 +109,9 @@ public class AuthServiceImpl implements AuthService {
     temporaryTokenService.deleteToken(temporaryToken);
   }
 
-  public static String getCurrentToken() {
+  private static String getCurrentToken() {
     UserAuthentication authentication =
             (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
-    if(authentication == null){
-      return "";
-    }
     return authentication.getToken();
   }
 
@@ -139,13 +136,13 @@ public class AuthServiceImpl implements AuthService {
     return authRepository
         .findByUsername(username)
         .orElseThrow(
-            () -> new EntityNotFoundException("User with provided username does not exists."));
+            () -> new EntityNotFoundException("Person with provided username does not exists."));
   }
 
-  public Auth findByIdOrThrowException(Long userId) {
+  public Auth findByIdOrThrowException(Long id) {
     return authRepository
-        .findById(userId)
-        .orElseThrow(() -> new EntityNotFoundException("User with provided id does not exists."));
+        .findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Person with provided id does not exists."));
   }
 
   private EmailDto populateEmailDto(

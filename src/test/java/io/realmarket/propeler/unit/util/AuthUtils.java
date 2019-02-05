@@ -7,6 +7,7 @@ import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.enums.EUserRole;
+import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.EmailServiceImpl;
 
 import java.util.Date;
@@ -49,7 +50,6 @@ public class AuthUtils {
           .address("TEST_ADDRESS")
           .build();
 
-
   public static final RegistrationDto TEST_REGISTRATION_DTO_ROLE_NOT_ALLOWED =
       RegistrationDto.builder()
           .email(TEST_EMAIL)
@@ -80,4 +80,8 @@ public class AuthUtils {
 
   public static final ConfirmRegistrationDto TEST_CONFIRM_REGISTRATION_DTO =
       ConfirmRegistrationDto.builder().token(TEST_REGISTRATION_TOKEN_VALUE).build();
+
+  public static final UserAuthentication TEST_USER_AUTH =
+          new UserAuthentication(TEST_AUTH,TEST_REGISTRATION_TOKEN_VALUE);
+
 }
