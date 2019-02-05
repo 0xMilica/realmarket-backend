@@ -6,6 +6,7 @@ import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.repository.TemporaryTokenRepository;
 import io.realmarket.propeler.service.TemporaryTokenService;
 import io.realmarket.propeler.service.exception.InvalidTokenException;
+import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.RandomStringBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
       case RESET_PASSWORD_TOKEN:
         return 86400000L;
       default:
-        throw new EntityNotFoundException("Invalid Token Type");
+        throw new EntityNotFoundException(ExceptionMessages.INVALID_TOKEN_TYPE);
     }
   }
 
@@ -59,7 +60,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   public TemporaryToken findByValueAndNotExpiredOrThrowException(String value) {
     return temporaryTokenRepository
         .findByValueAndExpirationTimeGreaterThanEqual(value, new Date())
-        .orElseThrow(() -> new InvalidTokenException("Invalid token provided"));
+        .orElseThrow(() -> new InvalidTokenException(ExceptionMessages.INVALID_TOKEN_PROVIDED));
   }
 
   @Transactional

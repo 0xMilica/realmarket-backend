@@ -1,16 +1,12 @@
 package io.realmarket.propeler.unit.util;
 
-import io.realmarket.propeler.api.dto.ChangePasswordDto;
-import io.realmarket.propeler.api.dto.EmailDto;
-import io.realmarket.propeler.api.dto.RegistrationDto;
-import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.EmailServiceImpl;
 
-import java.util.Date;
 import java.util.HashMap;
 
 import static io.realmarket.propeler.unit.util.PersonUtils.getMockedPerson;
@@ -84,4 +80,6 @@ public class AuthUtils {
   public static final UserAuthentication TEST_USER_AUTH =
           new UserAuthentication(TEST_AUTH,TEST_REGISTRATION_TOKEN_VALUE);
 
+  public static final LoginDto TEST_LOGIN_DTO =
+      LoginDto.builder().password(TEST_PASSWORD).username(TEST_USERNAME).build();
 }

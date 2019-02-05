@@ -9,8 +9,9 @@ import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.TemporaryTokenService;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
-import io.realmarket.propeler.service.exception.WrongPasswordException;
 import io.realmarket.propeler.service.impl.AuthServiceImpl;
+import io.realmarket.propeler.service.impl.JWTServiceImpl;
+import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import io.realmarket.propeler.unit.util.AuthUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,7 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,10 +32,12 @@ import java.util.Optional;
 import static io.realmarket.propeler.unit.util.AuthUtils.*;
 import static io.realmarket.propeler.unit.util.PersonUtils.TEST_PERSON;
 import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN;
+import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
+
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.verifyPrivate;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AuthServiceImpl.class)
@@ -47,6 +51,7 @@ public class AuthServiceImplTest {
   @Mock private PersonService personService;
 
   @Mock private TemporaryTokenService temporaryTokenService;
+  @Mock JWTServiceImpl jwtService;
 
   @InjectMocks private AuthServiceImpl authServiceImpl;
 
@@ -81,7 +86,7 @@ public class AuthServiceImplTest {
     authServiceImpl.register(AuthUtils.TEST_REGISTRATION_DTO_ROLE_NOT_ALLOWED);
   }
 
-  @Test(expected = WrongPasswordException.class)
+  @Test(expected = BadCredentialsException.class)
   public void ChangePassword_Should_Throw_WrongPassword_OnWrongOldPassword(){
     when(passwordEncoder.matches(TEST_PASSWORD,TEST_PASSWORD)).thenReturn(false);
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
@@ -153,4 +158,48 @@ public class AuthServiceImplTest {
     assertEquals(TEST_AUTH.getActive(), true);
   }
 
+  @Test
+  public void Login_Should_Return_Valid_JWT_Token() {
+
+    AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
+    Auth auth = TEST_AUTH;
+    auth.setActive(true);
+    when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
+    when(passwordEncoder.matches(TEST_LOGIN_DTO.getPassword(), auth.getPassword()))
+        .thenReturn(true);
+
+    when(jwtService.createToken(auth)).thenReturn(TEST_JWT);
+
+    LoginResponseDto login = authSpy.login(TEST_LOGIN_DTO);
+
+    assertEquals(TEST_JWT.getValue(), login.getJwt());
+  }
+
+  @Test(expected = BadCredentialsException.class)
+  public void Login_Should_Throw_Exception_When_Not_Existing_Username() {
+
+    AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
+    authSpy.login(TEST_LOGIN_DTO);
+  }
+
+  @Test(expected = BadCredentialsException.class)
+  public void Login_Should_Throw_Exception_When_User_Not_Active() {
+
+    AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
+    when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
+
+    authSpy.login(TEST_LOGIN_DTO);
+  }
+
+  @Test(expected = BadCredentialsException.class)
+  public void Login_Should_Throw_Exception_When_Bad_Password() {
+
+    AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
+
+    Auth auth = TEST_AUTH;
+    auth.setActive(true);
+    when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
+
+    authSpy.login(TEST_LOGIN_DTO);
+  }
 }

@@ -6,6 +6,8 @@ import io.realmarket.propeler.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class PersonServiceImpl implements PersonService {
 
@@ -19,4 +21,5 @@ public class PersonServiceImpl implements PersonService {
   public Person save(Person person) {
     return personRepository.save(person);
   }
+
 }

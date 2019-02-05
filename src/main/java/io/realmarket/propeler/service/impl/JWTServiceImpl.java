@@ -6,6 +6,7 @@ import io.realmarket.propeler.model.JWT;
 import io.realmarket.propeler.repository.JWTRepository;
 import io.realmarket.propeler.service.JWTService;
 import io.realmarket.propeler.service.exception.InvalidTokenException;
+import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +47,7 @@ public class JWTServiceImpl implements JWTService {
   public JWT findByValueAndNotExpiredOrThrowException(String value) {
     return jwtRepository
         .findByValueAndExpirationTimeGreaterThanEqual(value, new Date())
-        .orElseThrow(() -> new InvalidTokenException("Invalid token provided"));
+        .orElseThrow(() -> new InvalidTokenException(ExceptionMessages.INVALID_TOKEN_PROVIDED));
   }
 
   public JWT createToken(Auth auth) {

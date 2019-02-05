@@ -1,12 +1,16 @@
 package io.realmarket.propeler.api.controller;
 
-import io.realmarket.propeler.api.dto.RegistrationDto;
 import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
+import io.realmarket.propeler.api.dto.LoginDto;
+import io.realmarket.propeler.api.dto.RegistrationDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -36,4 +40,15 @@ public interface AuthController {
     @ApiResponse(code = 400, message = "Invalid token provided.")
   })
   ResponseEntity confirmRegistration(ConfirmRegistrationDto confirmRegistrationDto);
+
+  @ApiOperation(
+      value = "",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 201, message = "Created (if success)"),
+    @ApiResponse(code = 400, message = "Invalid Request (on failure to login)\n")
+  })
+  ResponseEntity login(@RequestBody @Valid LoginDto loginDto);
 }

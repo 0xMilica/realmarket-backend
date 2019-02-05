@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.exception.EmailSendingException;
+import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.MailContentBuilder;
 import io.realmarket.propeler.service.util.dto.EmailMessageDto;
 import lombok.extern.slf4j.Slf4j;
@@ -90,7 +91,7 @@ public class EmailServiceImpl implements EmailService {
   private Map<String, Object> getRegistrationEmailData(EmailDto emailDto) {
     String activationToken = (String) emailDto.getContent().get(ACTIVATION_TOKEN);
     if (activationToken == null) {
-      throw new IllegalArgumentException("activationToken is not provided");
+      throw new IllegalArgumentException(ExceptionMessages.TOKEN_IS_NOT_PROVIDED);
     }
 
     String activationLink =
@@ -107,7 +108,7 @@ public class EmailServiceImpl implements EmailService {
   private Map<String, Object> getResetTokenEmailData(EmailDto emailDto) {
     String resetToken = (String) emailDto.getContent().get(RESET_TOKEN);
     if (resetToken == null) {
-      throw new IllegalArgumentException("resetToken is not provided");
+      throw new IllegalArgumentException(ExceptionMessages.TOKEN_IS_NOT_PROVIDED);
     }
 
     String resetPasswordLink =
@@ -140,7 +141,7 @@ public class EmailServiceImpl implements EmailService {
 
     } catch (MessagingException e) {
       log.error("Problem with sending email: {}", e.getCause());
-      throw new EmailSendingException("Messaging exception: " + e.getCause());
+      throw new EmailSendingException(ExceptionMessages.EMAIL_SENDING_EXCEPTION + e.getCause());
     }
   }
 }

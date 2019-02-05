@@ -1,8 +1,9 @@
 package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.AuthController;
-import io.realmarket.propeler.api.dto.RegistrationDto;
 import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
+import io.realmarket.propeler.api.dto.LoginDto;
+import io.realmarket.propeler.api.dto.RegistrationDto;
 import io.realmarket.propeler.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,15 @@ public class AuthControllerImpl implements AuthController {
   }
 
   @PostMapping(value = "/confirm_registration")
-  public ResponseEntity confirmRegistration(@RequestBody @Valid ConfirmRegistrationDto confirmRegistrationDto) {
+  public ResponseEntity confirmRegistration(
+      @RequestBody @Valid ConfirmRegistrationDto confirmRegistrationDto) {
     authService.confirmRegistration(confirmRegistrationDto);
     return new ResponseEntity(OK);
+  }
+
+  @PostMapping()
+  public ResponseEntity login(@RequestBody @Valid LoginDto loginDto) {
+    authService.login(loginDto);
+    return new ResponseEntity(CREATED);
   }
 }

@@ -4,6 +4,7 @@ import io.realmarket.propeler.service.exception.InternalServerErrorException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,6 +25,9 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     if (ex instanceof EntityNotFoundException) {
       status = HttpStatus.NOT_FOUND;
+    }
+    if (ex instanceof BadCredentialsException){
+      status= HttpStatus.BAD_REQUEST;
     }
 
     if (ex instanceof InternalServerErrorException) {

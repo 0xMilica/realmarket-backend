@@ -1,9 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.ChangePasswordDto;
-import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
-import io.realmarket.propeler.api.dto.EmailDto;
-import io.realmarket.propeler.api.dto.RegistrationDto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Person;
@@ -11,19 +8,16 @@ import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.AuthRepository;
-import io.realmarket.propeler.security.UserAuthentication;
-import io.realmarket.propeler.service.AuthService;
-import io.realmarket.propeler.service.EmailService;
-import io.realmarket.propeler.service.PersonService;
-import io.realmarket.propeler.service.TemporaryTokenService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
-import io.realmarket.propeler.service.exception.WrongPasswordException;
+import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
   private final PersonService personService;
   private final EmailService emailService;
   private final TemporaryTokenService temporaryTokenService;
+  private final JWTService jwtService;
 
   private final PasswordEncoder passwordEncoder;
 
@@ -52,12 +47,24 @@ public class AuthServiceImpl implements AuthService {
       PersonService personService,
       EmailService emailService,
       AuthRepository authRepository,
-      TemporaryTokenService temporaryTokenService) {
+      TemporaryTokenService temporaryTokenService,
+      JWTService jwtService) {
     this.passwordEncoder = passwordEncoder;
     this.personService = personService;
     this.emailService = emailService;
     this.authRepository = authRepository;
     this.temporaryTokenService = temporaryTokenService;
+    this.jwtService = jwtService;
+  }
+
+  public LoginResponseDto login(LoginDto loginDto) {
+    Auth auth =
+        authRepository
+            .findByUsername(loginDto.getUsername())
+            .orElseThrow(
+                () -> new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE));
+    validateLogin(auth, loginDto);
+    return new LoginResponseDto(jwtService.createToken(auth).getValue());
   }
 
   public static Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
@@ -71,11 +78,11 @@ public class AuthServiceImpl implements AuthService {
     if (authRepository.findByUsername(registrationDto.getUsername()).isPresent()) {
       log.error(
           "User with the provided username '{}' already exists!", registrationDto.getUsername());
-      throw new UsernameAlreadyExistsException("User with the provided username already exists!");
+      throw new UsernameAlreadyExistsException(ExceptionMessages.USERNAME_ALREADY_EXISTS);
     }
 
     if (!isRoleAllowed(registrationDto.getUserRole())) {
-      throw new ForbiddenRoleException("Invalid request!");
+      throw new ForbiddenRoleException(ExceptionMessages.INVALID_REQUEST);
     }
 
     Person person = this.personService.save(new Person(registrationDto));
@@ -109,22 +116,15 @@ public class AuthServiceImpl implements AuthService {
     temporaryTokenService.deleteToken(temporaryToken);
   }
 
-  private static String getCurrentToken() {
-    UserAuthentication authentication =
-            (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
-    return authentication.getToken();
-  }
-
   @Transactional
   @Override
   public void changePassword(Long userId, ChangePasswordDto changePasswordDto) {
     Auth auth = findByIdOrThrowException(userId);
     if (!passwordEncoder.matches(changePasswordDto.getOldPassword(), auth.getPassword())) {
-      throw new WrongPasswordException();
+      throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
     auth.setPassword(passwordEncoder.encode((changePasswordDto.getNewPassword())));
     authRepository.save(auth);
-    //tokenService.deleteJWTsForUserExceptActiveOne(userId, getCurrentToken());
   }
 
   @Override
@@ -135,14 +135,13 @@ public class AuthServiceImpl implements AuthService {
   public Auth findByUsernameOrThrowException(String username) {
     return authRepository
         .findByUsername(username)
-        .orElseThrow(
-            () -> new EntityNotFoundException("Person with provided username does not exists."));
+        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXISTS));
   }
 
   public Auth findByIdOrThrowException(Long id) {
     return authRepository
         .findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Person with provided id does not exists."));
+        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXISTS));
   }
 
   private EmailDto populateEmailDto(
@@ -160,5 +159,16 @@ public class AuthServiceImpl implements AuthService {
 
   private Boolean isRoleAllowed(EUserRole role) {
     return ALLOWED_ROLES.contains(role);
+  }
+
+  private void validateLogin(Auth auth, LoginDto loginDto) {
+    if (!auth.getActive()) {
+      log.error("User with auth id '{}' is not active ", auth.getId());
+      throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
+    }
+    if (!passwordEncoder.matches(loginDto.getPassword(), auth.getPassword())) {
+      log.error("User with auth id '{}' provided passwords which do not match ", auth.getId());
+      throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
+    }
   }
 }
