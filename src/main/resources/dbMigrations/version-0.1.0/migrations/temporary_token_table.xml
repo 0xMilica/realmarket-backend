@@ -1,0 +1,30 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ntodorovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence temporary_token_seq;
+            create type etemporarytokentype as enum ('SETUP_2FA_TOKEN', 'LOGIN_TOKEN', 'REGISTRATION_TOKEN',
+            'EMAIL_TOKEN', 'RESET_PASSWORD_TOKEN');
+
+            create table if not exists temporary_token
+            (
+            id bigint not null
+            constraint temporary_token_pkey
+            primary key,
+            expiration_time timestamp,
+            temporary_token_type etemporarytokentype,
+            value varchar(255),
+            auth_id bigint
+            constraint temporary_token_fk1_on_auth
+            references auth,
+            constraint temporary_token_uk_on_temporaryTokenType_and_authId
+            unique (temporary_token_type, auth_id)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

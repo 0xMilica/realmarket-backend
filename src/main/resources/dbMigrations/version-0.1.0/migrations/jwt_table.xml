@@ -4,24 +4,24 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
     http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-    <changeSet author="amirkovic" id="1">
+    <changeSet author="ntodorovic" id="1">
         <sql
                 endDelimiter=";"
                 splitStatements="true"
                 stripComments="true">
-            create sequence token_seq;
-            create table if not exists token
+            create sequence jwt_seq;
+            create table if not exists jwt
             (
-                id bigint not null
-                constraint token_pkey
-                primary key,
-                expiration_time timestamp,
-                jwt varchar(255)
-                constraint token_uk_on_jwt
-                unique,
-                auth_id bigint
-                constraint token_fk1_on_auth
-                references auth
+            id bigint not null
+            constraint jwt_pkey
+            primary key,
+            expiration_time timestamp,
+            value varchar(255)
+            constraint jwt_uk_on_value
+            unique,
+            auth_id bigint
+            constraint jwt_fk1_on_auth
+            references auth
             );
         </sql>
     </changeSet>

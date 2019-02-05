@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel("Confirm registation token information")
+@ApiModel("Confirm registration token information.")
 @Builder
 public class ConfirmRegistrationDto {
   @NotNull private String token;

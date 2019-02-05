@@ -12,15 +12,16 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity(name = "Token")
-@Table(indexes = @Index(columnList = "jwt", unique = true, name = "token_uk_on_jwt"))
-public class Token {
+@Entity(name = "JWT")
+@Table(indexes = @Index(columnList = "value", unique = true, name = "jwt_uk_on_value"))
+public class JWT {
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TOKEN_SEQ")
-  @SequenceGenerator(name = "TOKEN_SEQ", sequenceName = "TOKEN_SEQ", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JWT_SEQ")
+  @SequenceGenerator(name = "JWT_SEQ", sequenceName = "JWT_SEQ", allocationSize = 1)
   private Long id;
 
-  private String jwt;
+  private String value;
+
   private Date expirationTime;
 
   @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "token_fk1_on_auth"))

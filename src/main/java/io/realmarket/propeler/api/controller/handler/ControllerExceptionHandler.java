@@ -1,6 +1,6 @@
 package io.realmarket.propeler.api.controller.handler;
 
-import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
+import io.realmarket.propeler.service.exception.InternalServerErrorException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +24,10 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     if (ex instanceof EntityNotFoundException) {
       status = HttpStatus.NOT_FOUND;
+    }
+
+    if (ex instanceof InternalServerErrorException) {
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     ex.printStackTrace();

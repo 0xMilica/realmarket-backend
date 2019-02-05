@@ -8,6 +8,7 @@
 
     <include file="dbmigrations/version-0.1.0/migrations/person_table.xml"/>
     <include file="dbmigrations/version-0.1.0/migrations/auth_table.xml"/>
-    <include file="dbmigrations/version-0.1.0/migrations/token_table.xml"/>
+    <include file="dbmigrations/version-0.1.0/migrations/temporary_token_table.xml"/>
+    <include file="dbmigrations/version-0.1.0/migrations/jwt_table.xml"/>
 
 </databaseChangeLog>

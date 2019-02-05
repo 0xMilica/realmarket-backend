@@ -24,9 +24,10 @@
                 last_name varchar(255),
                 phone_number varchar(255),
                 profile_picture_url varchar(255)
-            );
+                );
             create index if not exists person_uk_on_email
-            on person (email);
+                on person (email)
+            ;
 
         </sql>
     </changeSet>

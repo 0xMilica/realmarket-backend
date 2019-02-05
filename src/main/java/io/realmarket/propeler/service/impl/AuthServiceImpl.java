@@ -6,19 +6,18 @@ import io.realmarket.propeler.api.dto.RegistrationDto;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Person;
+import io.realmarket.propeler.model.TemporaryToken;
+import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.PersonService;
+import io.realmarket.propeler.service.TemporaryTokenService;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
-import io.realmarket.propeler.service.exception.InvalidTokenException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
-import io.realmarket.propeler.service.helper.DateTimeHelper;
-import io.realmarket.propeler.service.util.TokenValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +30,7 @@ import java.util.*;
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
-  private static final Integer REG_RES_TOKEN_EXPIRATION_TIME = 24;
+
   private static final List<EUserRole> ALLOWED_ROLES =
       Arrays.asList(EUserRole.ROLE_ENTREPRENEUR, EUserRole.ROLE_INVESTOR);
 
@@ -39,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
 
   private final PersonService personService;
   private final EmailService emailService;
+  private final TemporaryTokenService temporaryTokenService;
 
   private final PasswordEncoder passwordEncoder;
 
@@ -47,13 +47,22 @@ public class AuthServiceImpl implements AuthService {
       PasswordEncoder passwordEncoder,
       PersonService personService,
       EmailService emailService,
-      AuthRepository authRepository) {
+      AuthRepository authRepository,
+      TemporaryTokenService temporaryTokenService) {
     this.passwordEncoder = passwordEncoder;
     this.personService = personService;
     this.emailService = emailService;
     this.authRepository = authRepository;
+    this.temporaryTokenService = temporaryTokenService;
   }
 
+  public static Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
+    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+    authorities.add(new SimpleGrantedAuthority(userRole.toString()));
+    return authorities;
+  }
+
+  @Transactional
   public void register(RegistrationDto registrationDto) {
     if (authRepository.findByUsername(registrationDto.getUsername()).isPresent()) {
       log.error(
@@ -73,40 +82,27 @@ public class AuthServiceImpl implements AuthService {
                 .active(false)
                 .userRole(registrationDto.getUserRole())
                 .password(passwordEncoder.encode(registrationDto.getPassword()))
-                .registrationToken(UUID.randomUUID().toString())
-                .registrationTokenExpirationTime(
-                    DateTimeHelper.getPointInTime(Calendar.HOUR, REG_RES_TOKEN_EXPIRATION_TIME))
                 .person(person)
                 .build());
 
-    emailService.sendMailToUser(populateEmailDto(registrationDto, auth));
+    TemporaryToken temporaryToken =
+        temporaryTokenService.createToken(auth, ETemporaryTokenType.REGISTRATION_TOKEN);
+
+    emailService.sendMailToUser(populateEmailDto(registrationDto, temporaryToken));
 
     log.info("User with username '{}' saved successfully.", registrationDto.getUsername());
   }
 
   public void confirmRegistration(ConfirmRegistrationDto confirmRegistrationDto) {
-    Auth auth = findByRegistrationTokenOrThrowException(confirmRegistrationDto.getToken());
+    TemporaryToken temporaryToken =
+        temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            confirmRegistrationDto.getToken());
 
-    if (TokenValidator.isTokenValid(
-        auth.getRegistrationToken(), auth.getRegistrationTokenExpirationTime())) {
-      activateUser(auth);
-    } else {
-      log.error(
-          "Invalid token '{}' provided for auth id '{}', expiration time is '{}' '",
-          confirmRegistrationDto.getToken(),
-          auth.getId(),
-          auth.getRegistrationTokenExpirationTime());
-      throw new InvalidTokenException("Invalid token provided");
-    }
-  }
+    Auth auth = temporaryToken.getAuth();
+    auth.setActive(true);
+    authRepository.save(auth);
 
-  @Transactional
-  @Scheduled(
-      fixedRateString = "${app.cleanse.registration.timeloop}",
-      initialDelayString = "${app.cleanse.registration.timeloop}")
-  public void cleanseFailedRegistrations() {
-    log.trace("Clean failed registrations");
-    authRepository.deleteByRegistrationTokenExpirationTimeLessThanAndActiveIsFalse(new Date());
+    temporaryTokenService.deleteToken(temporaryToken);
   }
 
   @Override
@@ -114,10 +110,8 @@ public class AuthServiceImpl implements AuthService {
     return authRepository.findById(id);
   }
 
-  static public Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
-    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(new SimpleGrantedAuthority(userRole.toString()));
-    return authorities;
+  public Auth findByIdOrThrowException(Long id) {
+    return authRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Auth for id not found."));
   }
 
   public Auth findByUsernameOrThrowException(String username) {
@@ -127,19 +121,14 @@ public class AuthServiceImpl implements AuthService {
             () -> new EntityNotFoundException("User with provided username does not exists."));
   }
 
-  public Auth findByRegistrationTokenOrThrowException(String registrationToken) {
-    return authRepository
-        .findByRegistrationToken(registrationToken)
-        .orElseThrow(() -> new InvalidTokenException("Invalid token provided"));
-  }
-
-  private EmailDto populateEmailDto(RegistrationDto registrationDto, Auth auth) {
+  private EmailDto populateEmailDto(
+      RegistrationDto registrationDto, TemporaryToken temporaryToken) {
     EmailDto emailDto = new EmailDto();
     emailDto.setEmail(registrationDto.getEmail());
     emailDto.setType(EEmailType.REGISTER);
     Map<String, Object> parameterMap = new HashMap<>();
     parameterMap.put(EmailServiceImpl.USERNAME, registrationDto.getUsername());
-    parameterMap.put(EmailServiceImpl.ACTIVATION_TOKEN, auth.getRegistrationToken());
+    parameterMap.put(EmailServiceImpl.ACTIVATION_TOKEN, temporaryToken.getValue());
 
     emailDto.setContent(parameterMap);
     return emailDto;
@@ -147,11 +136,5 @@ public class AuthServiceImpl implements AuthService {
 
   private Boolean isRoleAllowed(EUserRole role) {
     return ALLOWED_ROLES.contains(role);
-  }
-
-  private void activateUser(Auth auth) {
-    auth.setActive(true);
-    auth.setRegistrationToken(null);
-    authRepository.save(auth);
   }
 }

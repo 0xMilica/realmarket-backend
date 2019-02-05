@@ -8,13 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -38,16 +33,8 @@ public class Auth {
   private EUserRole userRole;
 
   private Boolean active;
-  private String registrationToken;
-  private Date registrationTokenExpirationTime;
-  private String resetToken;
-  private Date resetTokenExpirationTime;
-  private Boolean acceptedTermsOfUse;
-  private String temporaryLoginToken;
-  private Date temporaryLoginTokenExpirationTime;
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "auth_fk1_on_person"))
   private Person person;
-
 }

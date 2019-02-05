@@ -1,0 +1,32 @@
+package io.realmarket.propeler.service.util;
+
+import io.realmarket.propeler.service.exception.InternalServerErrorException;
+import lombok.extern.slf4j.Slf4j;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+@Slf4j
+public class RandomStringBuilder {
+  private static final String VALID_SYMBOLS =
+      "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm01234567890-_";
+
+  public static String generateToken(int length) {
+
+    SecureRandom random;
+    StringBuilder stringBuilder = new StringBuilder();
+
+    try {
+      random = SecureRandom.getInstanceStrong();
+    } catch (NoSuchAlgorithmException e) {
+      log.error("No secure algorithm found!");
+      throw new InternalServerErrorException("Could generate token!");
+    }
+
+    for (int i = 0; i < length; i++) {
+      stringBuilder.append(VALID_SYMBOLS.charAt(random.nextInt(VALID_SYMBOLS.length())));
+    }
+
+    return stringBuilder.toString();
+  }
+}

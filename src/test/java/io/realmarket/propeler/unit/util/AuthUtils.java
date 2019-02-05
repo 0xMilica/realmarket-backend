@@ -19,9 +19,7 @@ public class AuthUtils {
   public static final String TEST_PASSWORD = "TEST_PASSWORD";
   public static final EUserRole TEST_ROLE = EUserRole.ROLE_INVESTOR;
   public static final EUserRole TEST_ROLE_FORBIDDEN = EUserRole.ROLE_ADMIN;
-  public static final String TEST_AUTH_TOKEN = "TEST_AUTH_TOKEN";
-
-  public static final Date TEST_DATE = new Date();
+  public static final String TEST_REGISTRATION_TOKEN_VALUE = "TEST_REGISTRATION_TOKEN_VALUE";
 
   private static final String TEST_FIRST_NAME = "TEST_FIRST_NAME";
   public static final EmailDto TEST_EMAIL_DTO =
@@ -31,7 +29,7 @@ public class AuthUtils {
           new HashMap<String, Object>() {
             {
               put(EmailServiceImpl.USERNAME, TEST_USERNAME);
-              put(EmailServiceImpl.ACTIVATION_TOKEN, TEST_AUTH_TOKEN);
+              put(EmailServiceImpl.ACTIVATION_TOKEN, TEST_REGISTRATION_TOKEN_VALUE);
             }
           });
   private static final String TEST_LAST_NAME = "TEST_LAST_NAME";
@@ -67,11 +65,9 @@ public class AuthUtils {
           .active(false)
           .userRole(TEST_ROLE)
           .password(TEST_PASSWORD)
-          .registrationToken(TEST_AUTH_TOKEN)
-          .registrationTokenExpirationTime(TEST_DATE)
           .person(getMockedPerson(TEST_REGISTRATION_DTO))
           .build();
 
   public static final ConfirmRegistrationDto TEST_CONFIRM_REGISTRATION_DTO =
-      ConfirmRegistrationDto.builder().token(TEST_AUTH_TOKEN).build();
+      ConfirmRegistrationDto.builder().token(TEST_REGISTRATION_TOKEN_VALUE).build();
 }
