@@ -95,7 +95,9 @@ public class EmailServiceImpl implements EmailService {
     }
 
     String activationLink =
-        String.format("%s/auth/confirm_registration?registrationToken=%s", frontendServiceUrlPath, activationToken);
+        String.format(
+            "%s/auth/confirm_registration?registrationToken=%s",
+            frontendServiceUrlPath, activationToken);
 
     Map<String, Object> data = new HashMap<>();
     data.put(LOGO, LOGO);

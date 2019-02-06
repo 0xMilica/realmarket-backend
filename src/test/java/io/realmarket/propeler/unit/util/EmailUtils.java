@@ -17,7 +17,6 @@ public class EmailUtils {
   public static final String TEST_EMAIL_TEXT = "TEST_EMAIL_TEXT";
   public static final String TEST_ACTIVATION_SUBJECT = "Propeler - Welcome";
   public static final String TEST_RESET_SUBJECT = "Propeler - Reset Password";
-  public static final String TEST_TEMPLATE_NAME = "TEST_TEMPLATE_NAME";
 
   public static final Map<String, Object> TEST_EMAIL_DATA =
       Collections.singletonMap("activationToken", TEST_ACTIVATION_TOKEN);

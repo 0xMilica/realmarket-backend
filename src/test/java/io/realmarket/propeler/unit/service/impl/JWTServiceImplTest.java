@@ -13,7 +13,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH;
@@ -48,7 +48,7 @@ public class JWTServiceImplTest {
   @Test
   public void FindByValueAndNotExpiredOrThrowException_Should_ReturnValidToken() throws Exception {
     when(jwtRepository.findByValueAndExpirationTimeGreaterThanEqual(
-            any(String.class), any(Date.class)))
+            any(String.class), any(Instant.class)))
         .thenReturn(Optional.of(TEST_JWT));
 
     io.realmarket.propeler.model.JWT retVal =
@@ -60,7 +60,7 @@ public class JWTServiceImplTest {
   @Test(expected = InvalidTokenException.class)
   public void FindByValueAndNotExpiredOrThrowException_Should_ThrowException_IfTokenNotValid() {
     when(jwtRepository.findByValueAndExpirationTimeGreaterThanEqual(
-            any(String.class), any(Date.class)))
+            any(String.class), any(Instant.class)))
         .thenReturn(Optional.empty());
 
     jwtService.findByValueAndNotExpiredOrThrowException(TEST_JWT_VALUE);

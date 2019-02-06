@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Date;
+import java.time.Instant;
 
 @Service
 @Slf4j
@@ -49,7 +49,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
             .value(RandomStringBuilder.generateToken(TOKEN_LENGTH))
             .auth(auth)
             .temporaryTokenType(type)
-            .expirationTime(new Date(System.currentTimeMillis() + getExpirationTime(type)))
+            .expirationTime(Instant.now().plusMillis(getExpirationTime(type)))
             .build());
   }
 
@@ -59,7 +59,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
 
   public TemporaryToken findByValueAndNotExpiredOrThrowException(String value) {
     return temporaryTokenRepository
-        .findByValueAndExpirationTimeGreaterThanEqual(value, new Date())
+        .findByValueAndExpirationTimeGreaterThanEqual(value, Instant.now())
         .orElseThrow(() -> new InvalidTokenException(ExceptionMessages.INVALID_TOKEN_PROVIDED));
   }
 
@@ -69,6 +69,6 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
       initialDelayString = "${app.cleanse.tokens.timeloop}")
   public void deleteExpiredTokens() {
     log.trace("Clean failed registrations");
-    temporaryTokenRepository.deleteAllByExpirationTimeLessThan(new Date());
+    temporaryTokenRepository.deleteAllByExpirationTimeLessThan(Instant.now());
   }
 }

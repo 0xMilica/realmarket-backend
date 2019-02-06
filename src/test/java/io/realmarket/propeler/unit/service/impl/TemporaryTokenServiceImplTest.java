@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH;
@@ -32,7 +32,7 @@ public class TemporaryTokenServiceImplTest {
   @Test
   public void FindByValueAndNotExpiredOrThrowException_Should_ReturnValidToken() throws Exception {
     when(temporaryTokenRepository.findByValueAndExpirationTimeGreaterThanEqual(
-            any(String.class), any(Date.class)))
+            any(String.class), any(Instant.class)))
         .thenReturn(Optional.of(TEST_TEMPORARY_TOKEN));
 
     TemporaryToken retVal =
@@ -44,7 +44,7 @@ public class TemporaryTokenServiceImplTest {
   @Test(expected = InvalidTokenException.class)
   public void FindByValueAndNotExpiredOrThrowException_Should_ThrowException_IfTokenNotValid() {
     when(temporaryTokenRepository.findByValueAndExpirationTimeGreaterThanEqual(
-            any(String.class), any(Date.class)))
+            any(String.class), any(Instant.class)))
         .thenReturn(Optional.empty());
 
     temporaryTokenService.findByValueAndNotExpiredOrThrowException(TEST_TEMPORARY_TOKEN_VALUE);

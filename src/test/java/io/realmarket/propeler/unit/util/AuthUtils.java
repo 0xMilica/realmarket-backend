@@ -60,10 +60,7 @@ public class AuthUtils {
           .build();
 
   public static final ChangePasswordDto TEST_CHANGE_PASSWORD_DTO =
-          ChangePasswordDto.builder()
-                  .oldPassword(TEST_PASSWORD)
-                  .newPassword(TEST_PASSWORD_NEW)
-                  .build();
+      ChangePasswordDto.builder().oldPassword(TEST_PASSWORD).newPassword(TEST_PASSWORD_NEW).build();
 
   public static final Auth TEST_AUTH =
       Auth.builder()
@@ -78,7 +75,7 @@ public class AuthUtils {
       ConfirmRegistrationDto.builder().token(TEST_REGISTRATION_TOKEN_VALUE).build();
 
   public static final UserAuthentication TEST_USER_AUTH =
-          new UserAuthentication(TEST_AUTH,TEST_REGISTRATION_TOKEN_VALUE);
+      new UserAuthentication(TEST_AUTH, TEST_REGISTRATION_TOKEN_VALUE);
 
   public static final LoginDto TEST_LOGIN_DTO =
       LoginDto.builder().password(TEST_PASSWORD).username(TEST_USERNAME).build();

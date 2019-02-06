@@ -4,13 +4,13 @@ import io.realmarket.propeler.model.TemporaryToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 @Repository
 public interface TemporaryTokenRepository extends JpaRepository<TemporaryToken, Long> {
 
-  Optional<TemporaryToken> findByValueAndExpirationTimeGreaterThanEqual(String value, Date date);
+  Optional<TemporaryToken> findByValueAndExpirationTimeGreaterThanEqual(String value, Instant date);
 
-  void deleteAllByExpirationTimeLessThan(Date date);
+  void deleteAllByExpirationTimeLessThan(Instant date);
 }

@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +46,8 @@ public class UserControllerImplTest {
 
   @Test
   public void ChangePassword_Should_CallAuthService() {
-    ResponseEntity responseEntity = userController.changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
+    ResponseEntity responseEntity =
+        userController.changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
 
     verify(authService, times(1)).changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

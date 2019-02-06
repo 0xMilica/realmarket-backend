@@ -10,7 +10,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -32,7 +32,7 @@ public class TemporaryToken {
   @Enumerated(EnumType.STRING)
   private ETemporaryTokenType temporaryTokenType;
 
-  private Date expirationTime;
+  private Instant expirationTime;
 
   @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "token_fk1_on_auth"))
   @ManyToOne

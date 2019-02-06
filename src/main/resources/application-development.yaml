@@ -42,5 +42,5 @@ logging:
     liquibase: INFO
 app:
   scheduler-pool-size: 5
-  cleanse.registration:
+  cleanse.tokens:
     timeloop: 3600000 #1h

@@ -38,5 +38,7 @@ public class Auth {
   @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "auth_fk1_on_person"))
   private Person person;
 
-  public Auth(Long id) { this.id = id;}
+  public Auth(Long id) {
+    this.id = id;
+  }
 }

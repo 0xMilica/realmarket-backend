@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Service
@@ -40,13 +41,13 @@ public class JWTServiceImpl implements JWTService {
         .create()
         .withIssuer(ISSUER)
         .withSubject(String.valueOf(auth.getId()))
-        .withIssuedAt(new Date())
+        .withIssuedAt(Date.from(Instant.now()))
         .sign(Algorithm.HMAC512(hmacSecret));
   }
 
   public JWT findByValueAndNotExpiredOrThrowException(String value) {
     return jwtRepository
-        .findByValueAndExpirationTimeGreaterThanEqual(value, new Date())
+        .findByValueAndExpirationTimeGreaterThanEqual(value, Instant.now())
         .orElseThrow(() -> new InvalidTokenException(ExceptionMessages.INVALID_TOKEN_PROVIDED));
   }
 
@@ -55,7 +56,7 @@ public class JWTServiceImpl implements JWTService {
         JWT.builder()
             .auth(auth)
             .value(generateJWT(auth))
-            .expirationTime(new Date(System.currentTimeMillis() + tokenExpirationTime))
+            .expirationTime(Instant.now().plusMillis(tokenExpirationTime))
             .build();
 
     return jwtRepository.save(jwtToken);
@@ -67,11 +68,11 @@ public class JWTServiceImpl implements JWTService {
       initialDelayString = "${app.cleanse.tokens.timeloop}")
   public void deleteExpiredTokens() {
     log.trace("Clean expired JWT");
-    jwtRepository.deleteAllByExpirationTimeLessThan(new Date());
+    jwtRepository.deleteAllByExpirationTimeLessThan(Instant.now());
   }
 
   public void prolongExpirationTime(JWT jwt) {
-    jwt.setExpirationTime(new Date(System.currentTimeMillis() + tokenExpirationTime));
+    jwt.setExpirationTime(Instant.now().plusMillis(tokenExpirationTime));
     jwtRepository.save(jwt);
   }
 }

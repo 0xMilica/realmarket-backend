@@ -30,11 +30,9 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.*;
+import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
 import static io.realmarket.propeler.unit.util.PersonUtils.TEST_PERSON;
 import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN;
-import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
-
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -60,7 +58,8 @@ public class AuthServiceImplTest {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
     when(personService.save(TEST_PERSON)).thenReturn(TEST_PERSON);
     when(authRepository.save(any(Auth.class))).thenReturn(TEST_AUTH);
-    when(temporaryTokenService.createToken(TEST_AUTH, ETemporaryTokenType.REGISTRATION_TOKEN)).thenReturn(TEST_TEMPORARY_TOKEN);
+    when(temporaryTokenService.createToken(TEST_AUTH, ETemporaryTokenType.REGISTRATION_TOKEN))
+        .thenReturn(TEST_TEMPORARY_TOKEN);
     when(passwordEncoder.encode(TEST_PASSWORD)).thenReturn(TEST_PASSWORD);
     doNothing().when(emailService).sendMailToUser(TEST_EMAIL_DTO);
 
@@ -87,31 +86,30 @@ public class AuthServiceImplTest {
   }
 
   @Test(expected = BadCredentialsException.class)
-  public void ChangePassword_Should_Throw_WrongPassword_OnWrongOldPassword(){
-    when(passwordEncoder.matches(TEST_PASSWORD,TEST_PASSWORD)).thenReturn(false);
+  public void ChangePassword_Should_Throw_WrongPassword_OnWrongOldPassword() {
+    when(passwordEncoder.matches(TEST_PASSWORD, TEST_PASSWORD)).thenReturn(false);
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
 
     authServiceImpl.changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
   }
 
   @Test
-  public void ChangePassword_Should_SaveNewPassword(){
-    when(passwordEncoder.matches(TEST_PASSWORD,TEST_PASSWORD)).thenReturn(true);
+  public void ChangePassword_Should_SaveNewPassword() {
+    when(passwordEncoder.matches(TEST_PASSWORD, TEST_PASSWORD)).thenReturn(true);
     when(passwordEncoder.encode(TEST_PASSWORD_NEW)).thenReturn(TEST_PASSWORD);
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
     SecurityContextHolder.setContext(securityContext);
 
-
     authServiceImpl.changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
 
-    verify(authRepository,times(1)).save(TEST_AUTH);
-    //verify(tokenService,times(1)).deleteJWTsForUserExceptActiveOne(eq(TEST_AUTH_ID),anyString());
+    verify(authRepository, times(1)).save(TEST_AUTH);
+    // verify(tokenService,times(1)).deleteJWTsForUserExceptActiveOne(eq(TEST_AUTH_ID),anyString());
   }
 
   @Test
-  public void FindByIdOrThrowException_Should_ReturnAuth_IfUserExists(){
+  public void FindByIdOrThrowException_Should_ReturnAuth_IfUserExists() {
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.of(TEST_AUTH));
 
     Auth retVal = authServiceImpl.findByIdOrThrowException(TEST_AUTH_ID);
@@ -144,7 +142,9 @@ public class AuthServiceImplTest {
 
   @Test
   public void ConfirmRegistration_Should_ActivateUser() throws Exception {
-    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(TEST_REGISTRATION_TOKEN_VALUE)).thenReturn(TEST_TEMPORARY_TOKEN);
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            TEST_REGISTRATION_TOKEN_VALUE))
+        .thenReturn(TEST_TEMPORARY_TOKEN);
 
     final TemporaryToken mock = PowerMockito.spy(TEST_TEMPORARY_TOKEN);
     PowerMockito.when(mock, "getAuth").thenReturn(TEST_AUTH);
@@ -153,7 +153,8 @@ public class AuthServiceImplTest {
 
     authServiceImpl.confirmRegistration(AuthUtils.TEST_CONFIRM_REGISTRATION_DTO);
 
-    verify(temporaryTokenService, Mockito.times(1)).findByValueAndNotExpiredOrThrowException(TEST_REGISTRATION_TOKEN_VALUE);
+    verify(temporaryTokenService, Mockito.times(1))
+        .findByValueAndNotExpiredOrThrowException(TEST_REGISTRATION_TOKEN_VALUE);
     verify(authRepository, Mockito.times(1)).save(any(Auth.class));
     assertEquals(TEST_AUTH.getActive(), true);
   }

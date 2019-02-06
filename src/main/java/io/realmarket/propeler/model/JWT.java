@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +22,7 @@ public class JWT {
 
   private String value;
 
-  private Date expirationTime;
+  private Instant expirationTime;
 
   @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "token_fk1_on_auth"))
   @ManyToOne
