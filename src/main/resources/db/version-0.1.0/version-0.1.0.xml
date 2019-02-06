@@ -6,9 +6,9 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="db/version-0.1.0/migrations/person_table.xml" relativeToChangelogFile="true"/>
-    <include file="db/version-0.1.0/migrations/auth_table.xml" relativeToChangelogFile="true"/>
-    <include file="db/version-0.1.0/migrations/temporary_token_table.xml" relativeToChangelogFile="true"/>
-    <include file="db/version-0.1.0/migrations/jwt_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/person_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/auth_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/temporary_token_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/jwt_table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
