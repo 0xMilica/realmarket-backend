@@ -26,9 +26,8 @@ public class EmailServiceImpl implements EmailService {
 
   public static final String USERNAME = "username";
   public static final String ACTIVATION_TOKEN = "activationToken";
+  public static final String RESET_TOKEN = "resetToken";
   private static final String LOGO = "logo";
-  private static final String RESET_TOKEN = "resetToken";
-
   private static final String ACTIVATION_LINK = "activationLink";
   private static final String RESET_PASSWORD_LINK = "resetPasswordLink";
 

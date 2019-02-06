@@ -4,6 +4,7 @@ import io.realmarket.propeler.api.controller.AuthController;
 import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
 import io.realmarket.propeler.api.dto.LoginDto;
 import io.realmarket.propeler.api.dto.RegistrationDto;
+import io.realmarket.propeler.api.dto.UsernameDto;
 import io.realmarket.propeler.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,12 @@ public class AuthControllerImpl implements AuthController {
       @RequestBody @Valid ConfirmRegistrationDto confirmRegistrationDto) {
     authService.confirmRegistration(confirmRegistrationDto);
     return new ResponseEntity(OK);
+  }
+
+  @PostMapping(value = "/reset_password")
+  public ResponseEntity resetPassword(@RequestBody UsernameDto usernameDto) {
+    authService.resetPassword(usernameDto);
+    return new ResponseEntity(CREATED);
   }
 
   @PostMapping()

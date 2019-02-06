@@ -1,5 +1,6 @@
 package io.realmarket.propeler.unit.service.impl;
 
+import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
@@ -40,17 +41,12 @@ import static org.mockito.Mockito.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AuthServiceImpl.class)
 public class AuthServiceImplTest {
-  @Mock private PasswordEncoder passwordEncoder;
-
-  @Mock private EmailService emailService;
-
-  @Mock private AuthRepository authRepository;
-
-  @Mock private PersonService personService;
-
-  @Mock private TemporaryTokenService temporaryTokenService;
   @Mock JWTServiceImpl jwtService;
-
+  @Mock private PasswordEncoder passwordEncoder;
+  @Mock private EmailService emailService;
+  @Mock private AuthRepository authRepository;
+  @Mock private PersonService personService;
+  @Mock private TemporaryTokenService temporaryTokenService;
   @InjectMocks private AuthServiceImpl authServiceImpl;
 
   @Test
@@ -61,7 +57,7 @@ public class AuthServiceImplTest {
     when(temporaryTokenService.createToken(TEST_AUTH, ETemporaryTokenType.REGISTRATION_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
     when(passwordEncoder.encode(TEST_PASSWORD)).thenReturn(TEST_PASSWORD);
-    doNothing().when(emailService).sendMailToUser(TEST_EMAIL_DTO);
+    doNothing().when(emailService).sendMailToUser(any(EmailDto.class));
 
     authServiceImpl.register(AuthUtils.TEST_REGISTRATION_DTO);
 
@@ -156,7 +152,28 @@ public class AuthServiceImplTest {
     verify(temporaryTokenService, Mockito.times(1))
         .findByValueAndNotExpiredOrThrowException(TEST_REGISTRATION_TOKEN_VALUE);
     verify(authRepository, Mockito.times(1)).save(any(Auth.class));
-    assertEquals(TEST_AUTH.getActive(), true);
+    assertEquals(true, TEST_AUTH.getActive());
+  }
+
+  @Test
+  public void ResetPassword_Should_CreateResetPasswordRequest() {
+    when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
+    when(temporaryTokenService.createToken(TEST_AUTH, ETemporaryTokenType.RESET_PASSWORD_TOKEN))
+        .thenReturn(TEST_TEMPORARY_TOKEN);
+    doNothing().when(emailService).sendMailToUser(any(EmailDto.class));
+
+    authServiceImpl.resetPassword(TEST_USERNAME_DTO);
+
+    verify(authRepository, Mockito.times(1)).findByUsername(TEST_USERNAME);
+    verify(temporaryTokenService, Mockito.times(1))
+        .createToken(TEST_AUTH, ETemporaryTokenType.RESET_PASSWORD_TOKEN);
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void ResetPassword_Should_Throw_EntityNotFoundException() {
+    when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
+
+    authServiceImpl.resetPassword(TEST_USERNAME_DTO);
   }
 
   @Test

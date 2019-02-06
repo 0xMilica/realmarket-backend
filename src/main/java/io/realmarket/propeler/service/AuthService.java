@@ -1,9 +1,6 @@
 package io.realmarket.propeler.service;
 
-import io.realmarket.propeler.api.dto.ChangePasswordDto;
-import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
-import io.realmarket.propeler.api.dto.LoginDto;
-import io.realmarket.propeler.api.dto.RegistrationDto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 
@@ -23,4 +20,6 @@ public interface AuthService {
   Auth findByIdOrThrowException(Long id);
 
   void confirmRegistration(ConfirmRegistrationDto confirmRegistrationDto);
+
+  void resetPassword(UsernameDto usernameDto);
 }

@@ -71,6 +71,8 @@ public class AuthUtils {
           .person(getMockedPerson(TEST_REGISTRATION_DTO))
           .build();
 
+  public static final UsernameDto TEST_USERNAME_DTO = new UsernameDto(TEST_USERNAME);
+
   public static final ConfirmRegistrationDto TEST_CONFIRM_REGISTRATION_DTO =
       ConfirmRegistrationDto.builder().token(TEST_REGISTRATION_TOKEN_VALUE).build();
 

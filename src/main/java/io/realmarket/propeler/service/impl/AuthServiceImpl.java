@@ -23,7 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -57,6 +60,12 @@ public class AuthServiceImpl implements AuthService {
     this.jwtService = jwtService;
   }
 
+  public static Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
+    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+    authorities.add(new SimpleGrantedAuthority(userRole.toString()));
+    return authorities;
+  }
+
   public LoginResponseDto login(LoginDto loginDto) {
     Auth auth =
         authRepository
@@ -65,12 +74,6 @@ public class AuthServiceImpl implements AuthService {
                 () -> new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE));
     validateLogin(auth, loginDto);
     return new LoginResponseDto(jwtService.createToken(auth).getValue());
-  }
-
-  public static Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
-    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(new SimpleGrantedAuthority(userRole.toString()));
-    return authorities;
   }
 
   @Transactional
@@ -99,7 +102,16 @@ public class AuthServiceImpl implements AuthService {
     TemporaryToken temporaryToken =
         temporaryTokenService.createToken(auth, ETemporaryTokenType.REGISTRATION_TOKEN);
 
-    emailService.sendMailToUser(populateEmailDto(registrationDto, temporaryToken));
+    emailService.sendMailToUser(
+        new EmailDto(
+            registrationDto.getEmail(),
+            EEmailType.REGISTER,
+            Collections.unmodifiableMap(
+                Stream.of(
+                        new SimpleEntry<>(EmailServiceImpl.USERNAME, registrationDto.getUsername()),
+                        new SimpleEntry<>(
+                            EmailServiceImpl.ACTIVATION_TOKEN, temporaryToken.getValue()))
+                    .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)))));
 
     log.info("User with username '{}' saved successfully.", registrationDto.getUsername());
   }
@@ -114,6 +126,19 @@ public class AuthServiceImpl implements AuthService {
     authRepository.save(auth);
 
     temporaryTokenService.deleteToken(temporaryToken);
+  }
+
+  public void resetPassword(UsernameDto usernameDto) {
+    Auth auth = findByUsernameOrThrowException(usernameDto.getUsername());
+
+    TemporaryToken temporaryToken =
+        temporaryTokenService.createToken(auth, ETemporaryTokenType.RESET_PASSWORD_TOKEN);
+
+    emailService.sendMailToUser(
+        new EmailDto(
+            auth.getPerson().getEmail(),
+            EEmailType.RESET_PASSWORD,
+            Collections.singletonMap(EmailServiceImpl.RESET_TOKEN, temporaryToken.getValue())));
   }
 
   @Transactional
@@ -142,19 +167,6 @@ public class AuthServiceImpl implements AuthService {
     return authRepository
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXISTS));
-  }
-
-  private EmailDto populateEmailDto(
-      RegistrationDto registrationDto, TemporaryToken temporaryToken) {
-    EmailDto emailDto = new EmailDto();
-    emailDto.setEmail(registrationDto.getEmail());
-    emailDto.setType(EEmailType.REGISTER);
-    Map<String, Object> parameterMap = new HashMap<>();
-    parameterMap.put(EmailServiceImpl.USERNAME, registrationDto.getUsername());
-    parameterMap.put(EmailServiceImpl.ACTIVATION_TOKEN, temporaryToken.getValue());
-
-    emailDto.setContent(parameterMap);
-    return emailDto;
   }
 
   private Boolean isRoleAllowed(EUserRole role) {
