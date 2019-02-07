@@ -1,9 +1,6 @@
 package io.realmarket.propeler.api.controller;
 
-import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
-import io.realmarket.propeler.api.dto.LoginDto;
-import io.realmarket.propeler.api.dto.RegistrationDto;
-import io.realmarket.propeler.api.dto.UsernameDto;
+import io.realmarket.propeler.api.dto.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -51,7 +48,18 @@ public interface AuthController {
     @ApiResponse(code = 201, message = "Reset password request created."),
     @ApiResponse(code = 400, message = "Username doesn't exist.")
   })
-  ResponseEntity resetPassword(UsernameDto usernameDto);
+  ResponseEntity initializeResetPassword(@RequestBody @Valid UsernameDto usernameDto);
+
+  @ApiOperation(
+      value = "Finalize reset password",
+      httpMethod = "PATCH",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully reset password."),
+    @ApiResponse(code = 400, message = "Invalid token provided.")
+  })
+  ResponseEntity finalizeResetPassword(@RequestBody @Valid ResetPasswordDto resetPasswordDto);
 
   @ApiOperation(
       value = "Login",

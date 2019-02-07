@@ -11,4 +11,8 @@ public interface JWTService {
   void deleteExpiredTokens();
 
   void prolongExpirationTime(JWT jwt);
+
+  void deleteAllByAuth(Auth auth);
+
+  void deleteAllByAuthAndValueNot(Auth auth, String value);
 }

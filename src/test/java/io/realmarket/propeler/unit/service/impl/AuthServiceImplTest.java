@@ -32,6 +32,7 @@ import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.*;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
+import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT_VALUE;
 import static io.realmarket.propeler.unit.util.PersonUtils.TEST_PERSON;
 import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN;
 import static org.junit.Assert.assertEquals;
@@ -97,11 +98,12 @@ public class AuthServiceImplTest {
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
     SecurityContextHolder.setContext(securityContext);
+    doNothing().when(jwtService).deleteAllByAuthAndValueNot(TEST_AUTH, TEST_JWT_VALUE);
 
     authServiceImpl.changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
 
     verify(authRepository, times(1)).save(TEST_AUTH);
-    // verify(tokenService,times(1)).deleteJWTsForUserExceptActiveOne(eq(TEST_AUTH_ID),anyString());
+    verify(jwtService,times(1)).deleteAllByAuthAndValueNot(eq(TEST_AUTH),anyString());
   }
 
   @Test
@@ -138,8 +140,7 @@ public class AuthServiceImplTest {
 
   @Test
   public void ConfirmRegistration_Should_ActivateUser() throws Exception {
-    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
-            TEST_REGISTRATION_TOKEN_VALUE))
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(TEST_TEMPORARY_TOKEN_VALUE))
         .thenReturn(TEST_TEMPORARY_TOKEN);
 
     final TemporaryToken mock = PowerMockito.spy(TEST_TEMPORARY_TOKEN);
@@ -150,19 +151,19 @@ public class AuthServiceImplTest {
     authServiceImpl.confirmRegistration(AuthUtils.TEST_CONFIRM_REGISTRATION_DTO);
 
     verify(temporaryTokenService, Mockito.times(1))
-        .findByValueAndNotExpiredOrThrowException(TEST_REGISTRATION_TOKEN_VALUE);
+        .findByValueAndNotExpiredOrThrowException(TEST_TEMPORARY_TOKEN_VALUE);
     verify(authRepository, Mockito.times(1)).save(any(Auth.class));
     assertEquals(true, TEST_AUTH.getActive());
   }
 
   @Test
-  public void ResetPassword_Should_CreateResetPasswordRequest() {
+  public void InitializeResetPassword_Should_CreateResetPasswordRequest() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
     when(temporaryTokenService.createToken(TEST_AUTH, ETemporaryTokenType.RESET_PASSWORD_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
     doNothing().when(emailService).sendMailToUser(any(EmailDto.class));
 
-    authServiceImpl.resetPassword(TEST_USERNAME_DTO);
+    authServiceImpl.initializeResetPassword(TEST_USERNAME_DTO);
 
     verify(authRepository, Mockito.times(1)).findByUsername(TEST_USERNAME);
     verify(temporaryTokenService, Mockito.times(1))
@@ -170,10 +171,27 @@ public class AuthServiceImplTest {
   }
 
   @Test(expected = EntityNotFoundException.class)
-  public void ResetPassword_Should_Throw_EntityNotFoundException() {
+  public void InitializeResetPassword_Should_Throw_EntityNotFoundException() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
 
-    authServiceImpl.resetPassword(TEST_USERNAME_DTO);
+    authServiceImpl.initializeResetPassword(TEST_USERNAME_DTO);
+  }
+
+  @Test
+  public void FinalizeResetPassword_Should_ChangeUserPassword() throws Exception {
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(TEST_TEMPORARY_TOKEN_VALUE))
+        .thenReturn(TEST_TEMPORARY_TOKEN);
+    when(passwordEncoder.encode(TEST_PASSWORD_NEW)).thenReturn(TEST_PASSWORD);
+
+    final TemporaryToken mock = PowerMockito.spy(TEST_TEMPORARY_TOKEN);
+    PowerMockito.when(mock, "getAuth").thenReturn(TEST_AUTH);
+    when(authRepository.save(TEST_AUTH)).thenReturn(TEST_AUTH);
+
+    authServiceImpl.finalizeResetPassword(TEST_RESET_PASSWORD_DTO);
+
+    verify(temporaryTokenService, Mockito.times(1))
+        .findByValueAndNotExpiredOrThrowException(TEST_TEMPORARY_TOKEN_VALUE);
+    verify(authRepository, times(1)).save(TEST_AUTH);
   }
 
   @Test

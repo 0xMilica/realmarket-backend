@@ -1,18 +1,12 @@
 package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.AuthController;
-import io.realmarket.propeler.api.dto.ConfirmRegistrationDto;
-import io.realmarket.propeler.api.dto.LoginDto;
-import io.realmarket.propeler.api.dto.RegistrationDto;
-import io.realmarket.propeler.api.dto.UsernameDto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -45,9 +39,16 @@ public class AuthControllerImpl implements AuthController {
   }
 
   @PostMapping(value = "/reset_password")
-  public ResponseEntity resetPassword(@RequestBody UsernameDto usernameDto) {
-    authService.resetPassword(usernameDto);
+  public ResponseEntity initializeResetPassword(@RequestBody @Valid UsernameDto usernameDto) {
+    authService.initializeResetPassword(usernameDto);
     return new ResponseEntity(CREATED);
+  }
+
+  @PatchMapping(value = "/reset_password")
+  public ResponseEntity finalizeResetPassword(
+      @RequestBody @Valid ResetPasswordDto resetPasswordDto) {
+    authService.finalizeResetPassword(resetPasswordDto);
+    return new ResponseEntity(OK);
   }
 
   @PostMapping()

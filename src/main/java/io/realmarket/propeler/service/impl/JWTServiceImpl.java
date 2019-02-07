@@ -75,4 +75,12 @@ public class JWTServiceImpl implements JWTService {
     jwt.setExpirationTime(Instant.now().plusMillis(tokenExpirationTime));
     jwtRepository.save(jwt);
   }
+
+  public void deleteAllByAuth(Auth auth) {
+    jwtRepository.deleteAllByAuth(auth);
+  }
+
+  public void deleteAllByAuthAndValueNot(Auth auth, String value) {
+    jwtRepository.deleteAllByAuthAndValueNot(auth, value);
+  }
 }

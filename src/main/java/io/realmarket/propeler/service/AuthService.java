@@ -21,5 +21,7 @@ public interface AuthService {
 
   void confirmRegistration(ConfirmRegistrationDto confirmRegistrationDto);
 
-  void resetPassword(UsernameDto usernameDto);
+  void initializeResetPassword(UsernameDto usernameDto);
+
+  void finalizeResetPassword(ResetPasswordDto resetPasswordDto);
 }

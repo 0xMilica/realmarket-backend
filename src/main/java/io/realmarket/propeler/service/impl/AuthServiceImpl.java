@@ -8,6 +8,7 @@ import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.AuthRepository;
+import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
@@ -128,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
     temporaryTokenService.deleteToken(temporaryToken);
   }
 
-  public void resetPassword(UsernameDto usernameDto) {
+  public void initializeResetPassword(UsernameDto usernameDto) {
     Auth auth = findByUsernameOrThrowException(usernameDto.getUsername());
 
     TemporaryToken temporaryToken =
@@ -142,14 +143,31 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Transactional
+  public void finalizeResetPassword(ResetPasswordDto resetPasswordDto) {
+    TemporaryToken temporaryToken =
+        temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            resetPasswordDto.getResetPasswordToken());
+
+    Auth auth = temporaryToken.getAuth();
+
+    jwtService.deleteAllByAuth(auth);
+    temporaryTokenService.deleteToken(temporaryToken);
+
+    auth.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
+    authRepository.save(auth);
+  }
+
+  @Transactional
   @Override
   public void changePassword(Long userId, ChangePasswordDto changePasswordDto) {
     Auth auth = findByIdOrThrowException(userId);
     if (!passwordEncoder.matches(changePasswordDto.getOldPassword(), auth.getPassword())) {
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
-    auth.setPassword(passwordEncoder.encode((changePasswordDto.getNewPassword())));
+    auth.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
     authRepository.save(auth);
+
+    jwtService.deleteAllByAuthAndValueNot(auth, AuthenticationUtil.getAuthentication().getToken());
   }
 
   @Override

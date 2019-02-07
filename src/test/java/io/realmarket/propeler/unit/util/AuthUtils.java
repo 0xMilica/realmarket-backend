@@ -18,10 +18,8 @@ public class AuthUtils {
   public static final String TEST_PASSWORD_NEW = "TEST_PASSWORD_NEW";
   public static final EUserRole TEST_ROLE = EUserRole.ROLE_INVESTOR;
   public static final EUserRole TEST_ROLE_FORBIDDEN = EUserRole.ROLE_ADMIN;
-  public static final String TEST_REGISTRATION_TOKEN_VALUE = "TEST_REGISTRATION_TOKEN_VALUE";
+  public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
-
-  private static final String TEST_FIRST_NAME = "TEST_FIRST_NAME";
   public static final EmailDto TEST_EMAIL_DTO =
       new EmailDto(
           TEST_EMAIL,
@@ -29,9 +27,21 @@ public class AuthUtils {
           new HashMap<String, Object>() {
             {
               put(EmailServiceImpl.USERNAME, TEST_USERNAME);
-              put(EmailServiceImpl.ACTIVATION_TOKEN, TEST_REGISTRATION_TOKEN_VALUE);
+              put(EmailServiceImpl.ACTIVATION_TOKEN, TEST_TEMPORARY_TOKEN_VALUE);
             }
           });
+  public static final ChangePasswordDto TEST_CHANGE_PASSWORD_DTO =
+      ChangePasswordDto.builder().oldPassword(TEST_PASSWORD).newPassword(TEST_PASSWORD_NEW).build();
+
+  public static final UsernameDto TEST_USERNAME_DTO = new UsernameDto(TEST_USERNAME);
+  public static final ConfirmRegistrationDto TEST_CONFIRM_REGISTRATION_DTO =
+      ConfirmRegistrationDto.builder().token(TEST_TEMPORARY_TOKEN_VALUE).build();
+
+  public static final LoginDto TEST_LOGIN_DTO =
+      LoginDto.builder().password(TEST_PASSWORD).username(TEST_USERNAME).build();
+  public static final ResetPasswordDto TEST_RESET_PASSWORD_DTO =
+      new ResetPasswordDto(TEST_TEMPORARY_TOKEN_VALUE, TEST_PASSWORD_NEW);
+  private static final String TEST_FIRST_NAME = "TEST_FIRST_NAME";
   private static final String TEST_LAST_NAME = "TEST_LAST_NAME";
   public static final RegistrationDto TEST_REGISTRATION_DTO =
       RegistrationDto.builder()
@@ -45,7 +55,6 @@ public class AuthUtils {
           .city("TEST_CITY")
           .address("TEST_ADDRESS")
           .build();
-
   public static final RegistrationDto TEST_REGISTRATION_DTO_ROLE_NOT_ALLOWED =
       RegistrationDto.builder()
           .email(TEST_EMAIL)
@@ -59,26 +68,15 @@ public class AuthUtils {
           .address("TEST_ADDRESS")
           .build();
 
-  public static final ChangePasswordDto TEST_CHANGE_PASSWORD_DTO =
-      ChangePasswordDto.builder().oldPassword(TEST_PASSWORD).newPassword(TEST_PASSWORD_NEW).build();
-
   public static final Auth TEST_AUTH =
-      Auth.builder()
-          .username(TEST_USERNAME)
-          .active(false)
-          .userRole(TEST_ROLE)
-          .password(TEST_PASSWORD)
-          .person(getMockedPerson(TEST_REGISTRATION_DTO))
-          .build();
-
-  public static final UsernameDto TEST_USERNAME_DTO = new UsernameDto(TEST_USERNAME);
-
-  public static final ConfirmRegistrationDto TEST_CONFIRM_REGISTRATION_DTO =
-      ConfirmRegistrationDto.builder().token(TEST_REGISTRATION_TOKEN_VALUE).build();
+          Auth.builder()
+                  .username(TEST_USERNAME)
+                  .active(false)
+                  .userRole(TEST_ROLE)
+                  .password(TEST_PASSWORD)
+                  .person(getMockedPerson(TEST_REGISTRATION_DTO))
+                  .build();
 
   public static final UserAuthentication TEST_USER_AUTH =
-      new UserAuthentication(TEST_AUTH, TEST_REGISTRATION_TOKEN_VALUE);
-
-  public static final LoginDto TEST_LOGIN_DTO =
-      LoginDto.builder().password(TEST_PASSWORD).username(TEST_USERNAME).build();
+          new UserAuthentication(TEST_AUTH, TEST_TEMPORARY_TOKEN_VALUE);
 }
