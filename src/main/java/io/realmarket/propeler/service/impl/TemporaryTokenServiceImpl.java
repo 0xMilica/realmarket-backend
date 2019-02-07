@@ -44,6 +44,8 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   }
 
   public TemporaryToken createToken(Auth auth, ETemporaryTokenType type) {
+    log.info("BIGB - creating temp token");
+
     return temporaryTokenRepository.save(
         TemporaryToken.builder()
             .value(RandomStringBuilder.generateToken(TOKEN_LENGTH))

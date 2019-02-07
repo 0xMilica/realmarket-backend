@@ -13,12 +13,15 @@ public class RandomStringBuilder {
       "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm01234567890-_";
 
   public static String generateToken(int length) {
+    log.info("BIGB - generateToken temp token");
 
     SecureRandom random;
     StringBuilder stringBuilder = new StringBuilder();
 
     try {
       random = SecureRandom.getInstanceStrong();
+      log.info("BIGB - random -  " + random);
+
     } catch (NoSuchAlgorithmException e) {
       log.error("No secure algorithm found!");
       throw new InternalServerErrorException(ExceptionMessages.COULD_NOT_GENERATE_TOKEN);

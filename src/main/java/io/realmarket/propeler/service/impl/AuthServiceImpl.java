@@ -94,7 +94,7 @@ public class AuthServiceImpl implements AuthService {
 
     Person person = this.personService.save(new Person(registrationDto));
 
-    log.info("BIGB - person is created");
+    log.info("BIGB - person is created - id - " + person.getId());
 
     Auth auth =
         this.authRepository.save(
@@ -106,11 +106,11 @@ public class AuthServiceImpl implements AuthService {
                 .person(person)
                 .build());
 
-    log.info("BIGB - auth is created");
+    log.info("BIGB - auth is created - id - " + auth.getId());
 
     TemporaryToken temporaryToken =
         temporaryTokenService.createToken(auth, ETemporaryTokenType.REGISTRATION_TOKEN);
-    log.info("BIGB - temp token is created");
+    log.info("BIGB - temp token is created" + temporaryToken.getId());
 
     emailService.sendMailToUser(
         new EmailDto(
