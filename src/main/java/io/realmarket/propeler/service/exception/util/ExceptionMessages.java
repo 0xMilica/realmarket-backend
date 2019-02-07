@@ -10,8 +10,6 @@ public interface ExceptionMessages {
 
   String INVALID_REQUEST = "Invalid request!";
 
-  String TOKEN_IS_NOT_PROVIDED = "Token is not provided";
-
   String EMAIL_SENDING_EXCEPTION = "Email Sending exception: ";
 
   String INVALID_TOKEN_PROVIDED = "Invalid token provided";
@@ -19,4 +17,5 @@ public interface ExceptionMessages {
   String INVALID_TOKEN_TYPE = "Invalid token type";
 
   String COULD_NOT_GENERATE_TOKEN = "Could not generate token";
+
 }

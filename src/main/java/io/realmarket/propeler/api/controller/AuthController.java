@@ -19,7 +19,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public interface AuthController {
 
   @ApiOperation(
-      value = "/register",
+      value = "Register new user",
       httpMethod = "POST",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
@@ -32,7 +32,7 @@ public interface AuthController {
   ResponseEntity register(RegistrationDto registerDto);
 
   @ApiOperation(
-      value = "/confirm_registration",
+      value = "Confirm registered user.",
       httpMethod = "POST",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
@@ -43,7 +43,7 @@ public interface AuthController {
   ResponseEntity confirmRegistration(ConfirmRegistrationDto confirmRegistrationDto);
 
   @ApiOperation(
-      value = "/reset_password",
+      value = "Reset password.",
       httpMethod = "POST",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
@@ -54,7 +54,7 @@ public interface AuthController {
   ResponseEntity resetPassword(UsernameDto usernameDto);
 
   @ApiOperation(
-      value = "",
+      value = "Login",
       httpMethod = "POST",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)

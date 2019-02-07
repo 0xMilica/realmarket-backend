@@ -90,7 +90,7 @@ public class EmailServiceImpl implements EmailService {
   private Map<String, Object> getRegistrationEmailData(EmailDto emailDto) {
     String activationToken = (String) emailDto.getContent().get(ACTIVATION_TOKEN);
     if (activationToken == null) {
-      throw new IllegalArgumentException(ExceptionMessages.TOKEN_IS_NOT_PROVIDED);
+      throw new IllegalArgumentException(ExceptionMessages.INVALID_TOKEN_PROVIDED);
     }
 
     String activationLink =
@@ -109,7 +109,7 @@ public class EmailServiceImpl implements EmailService {
   private Map<String, Object> getResetTokenEmailData(EmailDto emailDto) {
     String resetToken = (String) emailDto.getContent().get(RESET_TOKEN);
     if (resetToken == null) {
-      throw new IllegalArgumentException(ExceptionMessages.TOKEN_IS_NOT_PROVIDED);
+      throw new IllegalArgumentException(ExceptionMessages.INVALID_TOKEN_PROVIDED);
     }
 
     String resetPasswordLink =

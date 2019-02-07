@@ -1,5 +1,7 @@
 package io.realmarket.propeler.api.swagger;
 
+import com.fasterxml.classmate.TypeResolver;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -14,13 +16,17 @@ import java.util.Collections;
 @EnableSwagger2
 public class SwaggerConfig {
 
+  @Bean
   public Docket api() {
+    TypeResolver typeResolver = new TypeResolver();
     return new Docket(DocumentationType.SWAGGER_2)
+        .useDefaultResponseMessages(false)
         .select()
         .apis(RequestHandlerSelectors.basePackage("io.realmarket.propeler.api.controller"))
-        .paths(PathSelectors.ant("/api/*"))
+        .paths(PathSelectors.any())
         .build()
-        .apiInfo(getApiInfo());
+        .apiInfo(getApiInfo())
+        .enableUrlTemplating(false);
   }
 
   private ApiInfo getApiInfo() {

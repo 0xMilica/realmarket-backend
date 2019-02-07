@@ -9,23 +9,30 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Api(value = "/users")
 public interface UserController {
 
+  @ApiOperation(value = "Check if the user with provided username exists.", httpMethod = "HEAD")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "username", value = "Username that is provided for existence checking")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "User with username already exists"),
+    @ApiResponse(code = 404, message = "Username is available"),
+  })
   ResponseEntity<Void> userExists(String username);
 
   @ApiOperation(
-      value = "/{userId}/password",
+      value = "Password change.",
       httpMethod = "PATCH",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
     @ApiImplicitParam(
         name = "userId",
-        value =
-            "id of person that password is about to change",
-        dataType = "long"),
+        value = "id of person that password is about to change",
+        required = true,
+        dataType = "Long"),
     @ApiImplicitParam(
         name = "changePasswordDto",
-        value =
-            "Old/New password pair needed for changing password",
+        value = "Old/New password pair needed for changing password",
         dataType = "ChangePasswordDto")
   })
   @ApiResponses({
