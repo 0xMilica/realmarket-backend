@@ -79,17 +79,23 @@ public class AuthServiceImpl implements AuthService {
 
   @Transactional
   public void register(RegistrationDto registrationDto) {
+    log.info("BIGB - register in service started");
     if (authRepository.findByUsername(registrationDto.getUsername()).isPresent()) {
       log.error(
           "User with the provided username '{}' already exists!", registrationDto.getUsername());
       throw new UsernameAlreadyExistsException(ExceptionMessages.USERNAME_ALREADY_EXISTS);
     }
+    log.info("BIGB - user name is not occupied");
 
     if (!isRoleAllowed(registrationDto.getUserRole())) {
       throw new ForbiddenRoleException(ExceptionMessages.INVALID_REQUEST);
     }
+    log.info("BIGB - role is not admin");
 
     Person person = this.personService.save(new Person(registrationDto));
+
+    log.info("BIGB - person is created");
+
     Auth auth =
         this.authRepository.save(
             Auth.builder()
@@ -100,8 +106,11 @@ public class AuthServiceImpl implements AuthService {
                 .person(person)
                 .build());
 
+    log.info("BIGB - auth is created");
+
     TemporaryToken temporaryToken =
         temporaryTokenService.createToken(auth, ETemporaryTokenType.REGISTRATION_TOKEN);
+    log.info("BIGB - temp token is created");
 
     emailService.sendMailToUser(
         new EmailDto(
