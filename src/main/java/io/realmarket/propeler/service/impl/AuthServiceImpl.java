@@ -103,7 +103,6 @@ public class AuthServiceImpl implements AuthService {
 
     TemporaryToken temporaryToken =
         temporaryTokenService.createToken(auth, ETemporaryTokenType.REGISTRATION_TOKEN);
-    log.info("BIGB - temp token is created" + temporaryToken.getId());
 
     emailService.sendMailToUser(
         new EmailDto(

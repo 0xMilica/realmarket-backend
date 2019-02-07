@@ -7,7 +7,6 @@ import io.realmarket.propeler.repository.TemporaryTokenRepository;
 import io.realmarket.propeler.service.TemporaryTokenService;
 import io.realmarket.propeler.service.exception.InvalidTokenException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
-import io.realmarket.propeler.service.util.RandomStringBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -44,11 +44,10 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   }
 
   public TemporaryToken createToken(Auth auth, ETemporaryTokenType type) {
-    log.info("BIGB - creating temp token");
 
     return temporaryTokenRepository.save(
         TemporaryToken.builder()
-            .value(RandomStringBuilder.generateToken(TOKEN_LENGTH))
+            .value(UUID.randomUUID().toString())
             .auth(auth)
             .temporaryTokenType(type)
             .expirationTime(Instant.now().plusMillis(getExpirationTime(type)))
