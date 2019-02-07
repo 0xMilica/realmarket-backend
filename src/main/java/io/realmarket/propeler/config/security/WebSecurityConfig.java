@@ -4,7 +4,6 @@ import io.realmarket.propeler.security.AuthorizationFilter;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -17,8 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
@@ -71,16 +70,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public FilterRegistrationBean filterRegistrationBean() {
-    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    final CorsConfiguration config = new CorsConfiguration();
+  CorsConfigurationSource corsConfigurationSource() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration config = new CorsConfiguration();
+    config.addExposedHeader("Authorization");
     config.setAllowCredentials(true);
     config.addAllowedOrigin("*");
-    config.addAllowedHeader("*");
-    config.addAllowedMethod("*");
+    config.addAllowedHeader("Content-Type");
+    config.addAllowedHeader("x-xsrf-token");
+    config.addAllowedHeader("Authorization");
+    config.addAllowedHeader("Access-Control-Allow-Headers");
+    config.addAllowedHeader("Access-Control-Expose-Headers");
+    config.addAllowedHeader("Origin");
+    config.addAllowedHeader("Accept");
+    config.addAllowedHeader("X-Requested-With");
+    config.addAllowedHeader("Access-Control-Request-Method");
+    config.addAllowedHeader("Access-Control-Request-Headers");
+    config.addAllowedMethod("OPTIONS");
+    config.addAllowedMethod("GET");
+    config.addAllowedMethod("PUT");
+    config.addAllowedMethod("POST");
+    config.addAllowedMethod("PATCH");
+    config.addAllowedMethod("DELETE");
+
     source.registerCorsConfiguration("/**", config);
-    final FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-    bean.setOrder(0);
-    return bean;
+    return source;
   }
 }
