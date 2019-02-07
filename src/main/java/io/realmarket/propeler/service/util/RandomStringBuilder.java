@@ -20,7 +20,7 @@ public class RandomStringBuilder {
 
     try {
       random = SecureRandom.getInstanceStrong();
-      log.info("BIGB - random -  " + random);
+      log.info("BIGB - random -  " + random.getAlgorithm());
 
     } catch (NoSuchAlgorithmException e) {
       log.error("No secure algorithm found!");
@@ -28,8 +28,13 @@ public class RandomStringBuilder {
     }
 
     for (int i = 0; i < length; i++) {
+      log.info("BIGB - index for generating -  " + i);
+
       stringBuilder.append(VALID_SYMBOLS.charAt(random.nextInt(VALID_SYMBOLS.length())));
+      log.info("BIGB - current token value -  " + stringBuilder.toString());
+
     }
+    log.info("BIGB - generated token value -  " + stringBuilder.toString());
 
     return stringBuilder.toString();
   }

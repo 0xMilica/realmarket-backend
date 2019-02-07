@@ -47,8 +47,6 @@ public class EmailServiceImpl implements EmailService {
 
   @Async
   public void sendMailToUser(EmailDto emailDto) {
-    log.info("BIGB - sending registration mail");
-
     sendMessage(generateMailMessage(emailDto));
   }
 
@@ -125,10 +123,8 @@ public class EmailServiceImpl implements EmailService {
   }
 
   private void sendMessage(EmailMessageDto emailMessageDto) {
-    log.info("BIGB - emailMessageDto generated sending message");
 
     MimeMessage email = javaMailSender.createMimeMessage();
-    log.info("BIGB - email created");
 
     try {
       MimeMessageHelper helper = new MimeMessageHelper(email, true, "UTF-8");

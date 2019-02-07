@@ -44,9 +44,6 @@ access-token.expiration-time: 3600000
 logging:
   level:
     liquibase: INFO
-    org:
-      hibernate:
-        type: trace
 
 app:
   scheduler-pool-size: 5
