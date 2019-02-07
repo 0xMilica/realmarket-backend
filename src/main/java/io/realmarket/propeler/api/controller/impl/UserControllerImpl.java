@@ -2,7 +2,10 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.UserController;
 import io.realmarket.propeler.api.dto.ChangePasswordDto;
+import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.service.AuthService;
+import io.realmarket.propeler.service.PersonService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +17,12 @@ import javax.validation.Valid;
 public class UserControllerImpl implements UserController {
 
   private final AuthService authService;
+  private final PersonService personService;
 
-  public UserControllerImpl(AuthService authService) {
+  public UserControllerImpl(AuthService authService,
+                            PersonService personService) {
     this.authService = authService;
+    this.personService = personService;
   }
 
   @RequestMapping(value = "{username}", method = RequestMethod.HEAD)
@@ -31,5 +37,11 @@ public class UserControllerImpl implements UserController {
       @PathVariable Long userId, @RequestBody @Valid ChangePasswordDto changePasswordDto) {
     authService.changePassword(userId, changePasswordDto);
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @Override
+  @GetMapping(value = "/{userId}")
+  public ResponseEntity<PersonDto> getPerson(@PathVariable Long userId) {
+    return ResponseEntity.ok(personService.getPerson(userId));
   }
 }

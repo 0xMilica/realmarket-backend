@@ -1,6 +1,7 @@
 package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.ChangePasswordDto;
+import io.realmarket.propeler.api.dto.PersonDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 
@@ -41,4 +42,22 @@ public interface UserController {
     @ApiResponse(code = 500, message = "A problem with changing password has occurred.")
   })
   ResponseEntity changePassword(Long userId, ChangePasswordDto changePasswordDto);
+
+  @ApiOperation(
+      value = "Get person profile",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "userId",
+        value = "id of person that profile we want get",
+        required = true,
+        dataType = "Long"),
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Returned user profile."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+  })
+  ResponseEntity<PersonDto> getPerson(Long userId);
 }
