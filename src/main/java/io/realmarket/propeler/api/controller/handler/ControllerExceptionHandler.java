@@ -1,5 +1,6 @@
 package io.realmarket.propeler.api.controller.handler;
 
+import io.realmarket.propeler.service.exception.COSException;
 import io.realmarket.propeler.service.exception.InternalServerErrorException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,10 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     if (ex instanceof InternalServerErrorException) {
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+
+    if( ex instanceof COSException) {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
