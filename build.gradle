@@ -9,6 +9,7 @@ buildscript {
         auth0Version = '3.4.0'
         ibmCosVersion = '2.4.2'
         commonsIOVersion = '2.6'
+        modelMapperVersion = '2.3.2'
     }
     repositories {
         mavenCentral()
@@ -46,6 +47,7 @@ dependencies {
     implementation "org.liquibase:liquibase-core:$liquibaseVersion"
 
     implementation "com.ibm.cos:ibm-cos-java-sdk:$ibmCosVersion"
+    implementation "org.modelmapper:modelmapper:$modelMapperVersion"
 
     runtimeOnly "org.postgresql:postgresql"
     compileOnly "org.projectlombok:lombok:$lombokVersion"

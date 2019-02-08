@@ -71,7 +71,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/auth/register",
             "/auth/reset_password",
             "/auth/recover_username",
-            "/auth/confirm_registration");
+            "/auth/confirm_registration",
+            "/auth/recover_username");
+        /*.antMatchers(HttpMethod.POST, "**")
+        .antMatchers(HttpMethod.PATCH, "**")
+        .antMatchers(HttpMethod.GET, "**");
+         //left these commented lines on purpose,
+         //because it is easier to just uncomment them,
+         //then retyping them again.*/
   }
 
   @Bean

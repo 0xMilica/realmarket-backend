@@ -2,6 +2,7 @@ package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.ChangePasswordDto;
 import io.realmarket.propeler.api.dto.PersonDto;
+import io.realmarket.propeler.api.dto.PersonPatchDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 
@@ -60,4 +61,22 @@ public interface UserController {
     @ApiResponse(code = 400, message = "Invalid request."),
   })
   ResponseEntity<PersonDto> getPerson(Long userId);
+
+  @ApiOperation(
+      value = "Patch person arguments",
+      httpMethod = "PATCH",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "userId",
+        value = "Identifier of person that profile we want patch",
+        required = true,
+        dataType = "Long")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Return person profile."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+  })
+  ResponseEntity<PersonDto> patchPerson(Long userId, PersonPatchDto personPatchDto);
 }

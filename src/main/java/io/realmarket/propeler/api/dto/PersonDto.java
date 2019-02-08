@@ -56,6 +56,5 @@ public class PersonDto {
     this.email = person.getEmail();
     this.phoneNumber = person.getPhoneNumber();
     this.profilePictureUrl = person.getProfilePictureUrl();
-
   }
 }

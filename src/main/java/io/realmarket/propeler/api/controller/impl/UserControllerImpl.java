@@ -3,9 +3,9 @@ package io.realmarket.propeler.api.controller.impl;
 import io.realmarket.propeler.api.controller.UserController;
 import io.realmarket.propeler.api.dto.ChangePasswordDto;
 import io.realmarket.propeler.api.dto.PersonDto;
+import io.realmarket.propeler.api.dto.PersonPatchDto;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.PersonService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,5 +43,11 @@ public class UserControllerImpl implements UserController {
   @GetMapping(value = "/{userId}")
   public ResponseEntity<PersonDto> getPerson(@PathVariable Long userId) {
     return ResponseEntity.ok(personService.getPerson(userId));
+  }
+
+  @Override
+  @PatchMapping(value = "/{userId}")
+  public ResponseEntity<PersonDto> patchPerson(@PathVariable Long userId, @RequestBody PersonPatchDto personPatchDto) {
+    return ResponseEntity.ok(personService.patchPerson(userId, personPatchDto));
   }
 }
