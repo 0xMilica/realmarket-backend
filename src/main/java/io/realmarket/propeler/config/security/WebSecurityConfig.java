@@ -69,7 +69,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/auth",
             "/auth/register",
             "/auth/reset_password",
-            "/auth/recover_username");
+            "/auth/recover_username",
+            "/auth/confirm_registration");
   }
 
   @Bean
