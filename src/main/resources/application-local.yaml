@@ -4,7 +4,10 @@ server:
 
 spring:
   profiles.active: local
-
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   datasource:
     url: jdbc:postgresql://localhost:5432/propeler
     username: postgres
@@ -36,6 +39,8 @@ app:
   cleanse.tokens:
     timeloop: 86400000 #24h
 cos:
+  file_prefix:
+    user_picture: user_picture/
   api.key.id: MChcbyspqfz11w3SXCwq7HNf43juW7zpIqviRmBaZrni
   service.crn: crn:v1:bluemix:public:iam-identity::a/e5d5a8d969c24db5b8173d0fbd8059ad::serviceid:ServiceId-b736aca2-13a6-4bd3-917f-fc8a27d56187
   endpoint: s3.eu-de.objectstorage.softlayer.net

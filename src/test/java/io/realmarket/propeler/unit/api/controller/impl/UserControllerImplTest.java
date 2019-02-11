@@ -52,4 +52,5 @@ public class UserControllerImplTest {
     verify(authService, times(1)).changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
   }
+
 }

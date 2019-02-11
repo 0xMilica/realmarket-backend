@@ -5,6 +5,7 @@ import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.api.dto.PersonPatchDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -79,4 +80,22 @@ public interface UserController {
     @ApiResponse(code = 400, message = "Invalid request."),
   })
   ResponseEntity<PersonDto> patchPerson(Long userId, PersonPatchDto personPatchDto);
+
+  @ApiOperation(
+      value = "Upload profile picture",
+      httpMethod = "POST",
+      consumes = "multipart/form-data",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams(
+      @ApiImplicitParam(
+          name = "profile picture",
+          dataType = "file",
+          value = "Picture to be uploaded",
+          paramType = "form",
+          required = true))
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Picture successfully uploaded."),
+    @ApiResponse(code = 400, message = "Picture cannot be saved.")
+  })
+  ResponseEntity uploadProfilePicture(Long userId, MultipartFile picture);
 }
