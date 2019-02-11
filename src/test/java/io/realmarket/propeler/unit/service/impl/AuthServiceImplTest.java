@@ -12,6 +12,7 @@ import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.impl.AuthServiceImpl;
 import io.realmarket.propeler.service.impl.JWTServiceImpl;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import io.realmarket.propeler.unit.util.AuthUtils;
 import org.junit.Test;
@@ -28,12 +29,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
 import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.*;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT_VALUE;
-import static io.realmarket.propeler.unit.util.PersonUtils.TEST_PERSON;
+import static io.realmarket.propeler.unit.util.PersonUtils.TEST_PERSON_LIST;
+import static io.realmarket.propeler.unit.util.PersonUtils.TEST_REGISTRATION_PERSON;
 import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,17 +56,17 @@ public class AuthServiceImplTest {
   @Test
   public void Register_Should_RegisterUser() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
-    when(personService.save(TEST_PERSON)).thenReturn(TEST_PERSON);
+    when(personService.save(TEST_REGISTRATION_PERSON)).thenReturn(TEST_REGISTRATION_PERSON);
     when(authRepository.save(any(Auth.class))).thenReturn(TEST_AUTH);
     when(temporaryTokenService.createToken(TEST_AUTH, ETemporaryTokenType.REGISTRATION_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
     when(passwordEncoder.encode(TEST_PASSWORD)).thenReturn(TEST_PASSWORD);
-    doNothing().when(emailService).sendMailToUser(any(EmailDto.class));
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
     authServiceImpl.register(AuthUtils.TEST_REGISTRATION_DTO);
 
     verify(authRepository, Mockito.times(1)).findByUsername(TEST_USERNAME);
-    verify(personService, Mockito.times(1)).save(TEST_PERSON);
+    verify(personService, Mockito.times(1)).save(TEST_REGISTRATION_PERSON);
     verify(authRepository, Mockito.times(1)).save(any(Auth.class));
     verify(passwordEncoder, Mockito.times(1)).encode(TEST_PASSWORD);
   }
@@ -103,7 +106,7 @@ public class AuthServiceImplTest {
     authServiceImpl.changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
 
     verify(authRepository, times(1)).save(TEST_AUTH);
-    verify(jwtService,times(1)).deleteAllByAuthAndValueNot(eq(TEST_AUTH),anyString());
+    verify(jwtService, times(1)).deleteAllByAuthAndValueNot(eq(TEST_AUTH), anyString());
   }
 
   @Test
@@ -157,11 +160,29 @@ public class AuthServiceImplTest {
   }
 
   @Test
+  public void RecoverUsername_Should_SendEmailWithUsernameList() {
+    when(personService.findByEmail(TEST_EMAIL)).thenReturn(TEST_PERSON_LIST);
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+
+    authServiceImpl.recoverUsername(new EmailDto(TEST_EMAIL));
+
+    verify(personService, Mockito.times(1)).findByEmail(TEST_EMAIL);
+    verify(emailService, times(1)).sendMailToUser(any(MailContentHolder.class));
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void RecoverUsername_Should_Throw_EntityNotFoundException() {
+    when(personService.findByEmail(TEST_EMAIL)).thenReturn(Collections.emptyList());
+
+    authServiceImpl.recoverUsername(new EmailDto(TEST_EMAIL));
+  }
+
+  @Test
   public void InitializeResetPassword_Should_CreateResetPasswordRequest() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
     when(temporaryTokenService.createToken(TEST_AUTH, ETemporaryTokenType.RESET_PASSWORD_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
-    doNothing().when(emailService).sendMailToUser(any(EmailDto.class));
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
     authServiceImpl.initializeResetPassword(TEST_USERNAME_DTO);
 

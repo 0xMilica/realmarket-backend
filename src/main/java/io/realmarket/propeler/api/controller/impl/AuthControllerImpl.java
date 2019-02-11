@@ -3,6 +3,7 @@ package io.realmarket.propeler.api.controller.impl;
 import io.realmarket.propeler.api.controller.AuthController;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.AuthService;
+import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -52,8 +53,13 @@ public class AuthControllerImpl implements AuthController {
   }
 
   @PostMapping()
-  public ResponseEntity login(@RequestBody @Valid LoginDto loginDto) {
-    authService.login(loginDto);
+  public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginDto loginDto) {
+    return new ResponseEntity<>(authService.login(loginDto), CREATED);
+  }
+
+  @PostMapping("/recover_username")
+  public ResponseEntity recoverUsername(@RequestBody @Valid EmailDto emailDto) {
+    authService.recoverUsername(emailDto);
     return new ResponseEntity(CREATED);
   }
 }

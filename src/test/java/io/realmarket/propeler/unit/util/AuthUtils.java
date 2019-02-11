@@ -6,6 +6,7 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.EmailServiceImpl;
+import io.realmarket.propeler.service.util.MailContentHolder;
 
 import java.util.HashMap;
 
@@ -20,8 +21,10 @@ public class AuthUtils {
   public static final EUserRole TEST_ROLE_FORBIDDEN = EUserRole.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
-  public static final EmailDto TEST_EMAIL_DTO =
-      new EmailDto(
+
+  private static final String TEST_FIRST_NAME = "TEST_FIRST_NAME";
+  public static final MailContentHolder TEST_EMAIL_DTO =
+      new MailContentHolder(
           TEST_EMAIL,
           EEmailType.REGISTER,
           new HashMap<String, Object>() {
@@ -41,7 +44,6 @@ public class AuthUtils {
       LoginDto.builder().password(TEST_PASSWORD).username(TEST_USERNAME).build();
   public static final ResetPasswordDto TEST_RESET_PASSWORD_DTO =
       new ResetPasswordDto(TEST_TEMPORARY_TOKEN_VALUE, TEST_PASSWORD_NEW);
-  private static final String TEST_FIRST_NAME = "TEST_FIRST_NAME";
   private static final String TEST_LAST_NAME = "TEST_LAST_NAME";
   public static final RegistrationDto TEST_REGISTRATION_DTO =
       RegistrationDto.builder()

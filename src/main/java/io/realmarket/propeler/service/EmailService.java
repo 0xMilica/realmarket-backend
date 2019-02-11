@@ -1,8 +1,8 @@
 package io.realmarket.propeler.service;
 
-import io.realmarket.propeler.api.dto.EmailDto;
+import io.realmarket.propeler.service.util.MailContentHolder;
 
 public interface EmailService {
 
-  void sendMailToUser(EmailDto emailDto);
+  void sendMailToUser(MailContentHolder mailContentHolder);
 }

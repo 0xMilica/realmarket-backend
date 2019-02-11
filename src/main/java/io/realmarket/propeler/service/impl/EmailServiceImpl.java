@@ -1,10 +1,10 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.exception.EmailSendingException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.MailContentBuilder;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.dto.EmailMessageDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +26,12 @@ public class EmailServiceImpl implements EmailService {
 
   public static final String USERNAME = "username";
   public static final String ACTIVATION_TOKEN = "activationToken";
+  public static final String USERNAME_LIST = "username_list";
   public static final String RESET_TOKEN = "resetToken";
+
   private static final String LOGO = "logo";
   private static final String ACTIVATION_LINK = "activationLink";
   private static final String RESET_PASSWORD_LINK = "resetPasswordLink";
-
   private static final String LOGO_PATH = "/static/images/logo.png";
 
   private JavaMailSender javaMailSender;
@@ -46,38 +47,42 @@ public class EmailServiceImpl implements EmailService {
   }
 
   @Async
-  public void sendMailToUser(EmailDto emailDto) {
-    sendMessage(generateMailMessage(emailDto));
+  public void sendMailToUser(MailContentHolder mailContentHolder) {
+    sendMessage(generateMailMessage(mailContentHolder));
   }
 
   /**
-   * Uses EmailDto object to prepare EmailMessageDto object with a subject, receiver and email
-   * content (body).
+   * Uses MailContentHolder object to prepare EmailMessageDto object with a subject, receiver and
+   * email content (body).
    *
-   * @param emailDto receiver email address, template type and params for template
+   * @param mailContentHolder receiver email address, template type and params for template
    * @return EmailMessageDto
    */
-  private EmailMessageDto generateMailMessage(EmailDto emailDto) {
+  private EmailMessageDto generateMailMessage(MailContentHolder mailContentHolder) {
     EmailMessageDto emailMessageDto = new EmailMessageDto();
-    emailMessageDto.setReceiver(emailDto.getEmail());
+    emailMessageDto.setReceiver(mailContentHolder.getEmail());
     String subject = "";
 
     Map<String, Object> data = null;
     String templateName = null;
 
-    switch (emailDto.getType()) {
+    switch (mailContentHolder.getType()) {
       case REGISTER:
         subject = "Propeler - Welcome";
-        data = getRegistrationEmailData(emailDto);
+        data = getRegistrationEmailData(mailContentHolder);
         templateName = "activateAccountMailTemplate";
         break;
 
       case RESET_PASSWORD:
         subject = "Propeler - Reset Password";
-        data = getResetTokenEmailData(emailDto);
+        data = getResetTokenEmailData(mailContentHolder);
         templateName = "resetPasswordMailTemplate";
         break;
 
+      case RECOVER_USERNAME:
+        subject = "Propeler - Recover Username";
+        data = getRecoverUsernameEmailData(mailContentHolder);
+        templateName = "recoverUsernameMailTemplate";
       default:
     }
 
@@ -87,8 +92,8 @@ public class EmailServiceImpl implements EmailService {
     return emailMessageDto;
   }
 
-  private Map<String, Object> getRegistrationEmailData(EmailDto emailDto) {
-    String activationToken = (String) emailDto.getContent().get(ACTIVATION_TOKEN);
+  private Map<String, Object> getRegistrationEmailData(MailContentHolder mailContentHolder) {
+    String activationToken = (String) mailContentHolder.getContent().get(ACTIVATION_TOKEN);
     if (activationToken == null) {
       throw new IllegalArgumentException(ExceptionMessages.INVALID_TOKEN_PROVIDED);
     }
@@ -100,14 +105,14 @@ public class EmailServiceImpl implements EmailService {
 
     Map<String, Object> data = new HashMap<>();
     data.put(LOGO, LOGO);
-    data.put(USERNAME, emailDto.getContent().get(USERNAME));
+    data.put(USERNAME, mailContentHolder.getContent().get(USERNAME));
     data.put(ACTIVATION_LINK, activationLink);
 
     return data;
   }
 
-  private Map<String, Object> getResetTokenEmailData(EmailDto emailDto) {
-    String resetToken = (String) emailDto.getContent().get(RESET_TOKEN);
+  private Map<String, Object> getResetTokenEmailData(MailContentHolder mailContentHolder) {
+    String resetToken = (String) mailContentHolder.getContent().get(RESET_TOKEN);
     if (resetToken == null) {
       throw new IllegalArgumentException(ExceptionMessages.INVALID_TOKEN_PROVIDED);
     }
@@ -118,6 +123,14 @@ public class EmailServiceImpl implements EmailService {
     Map<String, Object> data = new HashMap<>();
     data.put(LOGO, LOGO);
     data.put(RESET_PASSWORD_LINK, resetPasswordLink);
+
+    return data;
+  }
+
+  private Map<String, Object> getRecoverUsernameEmailData(MailContentHolder mailContentHolder) {
+    Map<String, Object> data = new HashMap<>();
+    data.put(LOGO, LOGO);
+    data.put(USERNAME_LIST, mailContentHolder.getContent().get(USERNAME_LIST));
 
     return data;
   }

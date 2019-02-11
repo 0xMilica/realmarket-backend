@@ -8,6 +8,8 @@ public interface ExceptionMessages {
 
   String USERNAME_DOES_NOT_EXISTS = "Person with provided username does not exists.";
 
+  String EMAIL_DOES_NOT_EXIST = "Person with provided e-mail address does not exist!";
+
   String INVALID_REQUEST = "Invalid request!";
 
   String EMAIL_SENDING_EXCEPTION = "Email Sending exception: ";

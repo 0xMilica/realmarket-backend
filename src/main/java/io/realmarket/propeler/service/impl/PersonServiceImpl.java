@@ -6,7 +6,7 @@ import io.realmarket.propeler.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -22,4 +22,7 @@ public class PersonServiceImpl implements PersonService {
     return personRepository.save(person);
   }
 
+  public List<Person> findByEmail(String email) {
+    return personRepository.findByEmail(email);
+  }
 }

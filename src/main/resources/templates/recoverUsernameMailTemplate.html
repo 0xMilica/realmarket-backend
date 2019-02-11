@@ -1,0 +1,185 @@
+<!--
+	HTML Email Starter Kit
+	Documentation: https://github.com/timothylong/html-email-starter-kit
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" initial-scale="1">
+    <!--[if !mso]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <![endif]-->
+    <meta name="x-apple-disable-message-reformatting">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <title></title>
+    <!--[if mso]>
+    <style>
+        * {
+            font-family: "Open Sans", sans-serif !important;
+        }
+    </style>
+    <![endif]-->
+    <!--[if !mso]><!-->
+    <!-- Insert font reference, e.g. <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet"> -->
+    <!--<![endif]-->
+    <style>
+        *,
+        *:after,
+        *:before {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        tr, td {
+            text-align: center;
+        }
+
+        html,
+        body,
+        .document {
+            font-family: "Open Sans", sans-serif !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        div[style*="margin: 16px 0"] {
+            margin: 0 !important;
+        }
+
+        table,
+        td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: 0 auto;
+        }
+
+        img {
+            -ms-interpolation-mode: bicubic;
+            max-width: 100%;
+            border: 0;
+        }
+
+        *[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .x-gmail-data-detectors,
+        .x-gmail-data-detectors *,
+        .aBn {
+            border-bottom: 0 !important;
+            cursor: default !important;
+        }
+
+        @media screen and (max-width: 750px) {
+            .container {
+                width: 100%;
+                margin: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<div style="display: none; max-height: 0px; overflow: hidden;">
+    <!-- Preheader message here -->
+</div>
+<div style="display: none; max-height: 0px; overflow: hidden;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>
+<table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center"
+       class="document">
+    <tr>
+        <td valign="top">
+            <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center"
+                   width="600" class="container">
+                <tr>
+                    <td>
+                        <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0"
+                               align="center" width="100%">
+                            <tr>
+                                <td>
+                                    <img style="width: 50%" th:src="|cid:${logo}|" alt="Logo">
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center"
+                   width="600" class="container">
+                <tr>
+                    <td>
+                        <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0"
+                               align="center" width="100%">
+                            <tr>
+                                <td>
+                                    <h1 style="color: #39316c; font-size: 30px; font-weight: 600; line-height: 45px;">
+                                        Username search requested</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; color: #39316c;">
+                                        Thanks for getting in touch. You asked us to search for your username tied to this email address. If you made this request, find the right username below. </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table th:each="item : ${username_list}" th:remove="tag">
+                                        <tr>
+                                            <td>
+                                                <p style="display: inline-block; font-size: 14px; font-weight: bold; line-height: 21px; color: #39316c; margin-bottom: 0">
+                                                    <span th:text="${item}"></span>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <table style="margin-top: 20px; border-top: 1px solid #9498b8;" role="presentation" aria-hidden="true"
+                   cellspacing="0" cellpadding="0" border="0" align="center" width="600" class="container">
+                <tr>
+                    <td>
+                        <!-- Physical address -->
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <footer style="color: #9498b8; font-size: 14px; font-weight: 400; line-height: 21px; margin-top: 20px">
+                            If this activity is not your own operation, please <a
+                                style="color: #3dc6fa; font-size: 14px; font-weight: 400; line-height: 21px; display: inline-block;"
+                                href="#">contact us</a> immediately.
+                            <br/>
+                            This is automated message. please do not reply.
+                        </footer>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

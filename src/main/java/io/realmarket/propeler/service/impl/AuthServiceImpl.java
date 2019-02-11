@@ -13,6 +13,7 @@ import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +106,7 @@ public class AuthServiceImpl implements AuthService {
         temporaryTokenService.createToken(auth, ETemporaryTokenType.REGISTRATION_TOKEN);
 
     emailService.sendMailToUser(
-        new EmailDto(
+        new MailContentHolder(
             registrationDto.getEmail(),
             EEmailType.REGISTER,
             Collections.unmodifiableMap(
@@ -130,6 +131,23 @@ public class AuthServiceImpl implements AuthService {
     temporaryTokenService.deleteToken(temporaryToken);
   }
 
+  public void recoverUsername(EmailDto emailDto) {
+    List<Person> personList = personService.findByEmail(emailDto.getEmail());
+
+    if (personList.isEmpty()) {
+      throw new EntityNotFoundException(ExceptionMessages.EMAIL_DOES_NOT_EXIST);
+    }
+    List<String> usernameList =
+        personList.stream().map(p -> p.getAuth().getUsername()).collect(Collectors.toList());
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            emailDto.getEmail(),
+            EEmailType.RECOVER_USERNAME,
+            Collections.singletonMap(EmailServiceImpl.USERNAME_LIST, usernameList)));
+
+  }
+  
   public void initializeResetPassword(UsernameDto usernameDto) {
     Auth auth = findByUsernameOrThrowException(usernameDto.getUsername());
 
@@ -137,7 +155,7 @@ public class AuthServiceImpl implements AuthService {
         temporaryTokenService.createToken(auth, ETemporaryTokenType.RESET_PASSWORD_TOKEN);
 
     emailService.sendMailToUser(
-        new EmailDto(
+        new MailContentHolder(
             auth.getPerson().getEmail(),
             EEmailType.RESET_PASSWORD,
             Collections.singletonMap(EmailServiceImpl.RESET_TOKEN, temporaryToken.getValue())));

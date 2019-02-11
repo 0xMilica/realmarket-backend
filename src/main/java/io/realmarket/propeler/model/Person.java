@@ -31,7 +31,7 @@ public class Person {
   @OneToOne(
       mappedBy = "person",
       cascade = CascadeType.ALL,
-      fetch = FetchType.LAZY,
+      fetch = FetchType.EAGER,
       optional = false)
   private Auth auth;
 
