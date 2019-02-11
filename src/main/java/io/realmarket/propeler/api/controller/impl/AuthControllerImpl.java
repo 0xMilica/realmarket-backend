@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -61,5 +62,11 @@ public class AuthControllerImpl implements AuthController {
   public ResponseEntity recoverUsername(@RequestBody @Valid EmailDto emailDto) {
     authService.recoverUsername(emailDto);
     return new ResponseEntity(CREATED);
+  }
+
+  @DeleteMapping()
+  public ResponseEntity logout() {
+    authService.logout();
+    return new ResponseEntity(NO_CONTENT);
   }
 }

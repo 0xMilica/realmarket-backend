@@ -74,6 +74,17 @@ public interface AuthController {
   ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginDto loginDto);
 
   @ApiOperation(
+      value = "Logout",
+      httpMethod = "DELETE",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 204, message = "Successfully logged out"),
+    @ApiResponse(code = 400, message = "Invalid attempt to logout\n")
+  })
+  ResponseEntity logout();
+
+  @ApiOperation(
       value = "Recovering username",
       httpMethod = "POST",
       consumes = APPLICATION_JSON_VALUE,

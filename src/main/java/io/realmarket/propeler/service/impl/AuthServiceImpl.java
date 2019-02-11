@@ -177,6 +177,11 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Transactional
+  public void logout() {
+    jwtService.deleteByValue(AuthenticationUtil.getAuthentication().getToken());
+  }
+
+  @Transactional
   @Override
   public void changePassword(Long userId, ChangePasswordDto changePasswordDto) {
     Auth auth = findByIdOrThrowException(userId);

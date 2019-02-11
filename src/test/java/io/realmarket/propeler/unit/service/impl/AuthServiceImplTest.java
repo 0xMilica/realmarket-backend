@@ -5,6 +5,7 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.repository.AuthRepository;
+import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.TemporaryTokenService;
@@ -15,6 +16,7 @@ import io.realmarket.propeler.service.impl.JWTServiceImpl;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import io.realmarket.propeler.unit.util.AuthUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -52,6 +54,14 @@ public class AuthServiceImplTest {
   @Mock private PersonService personService;
   @Mock private TemporaryTokenService temporaryTokenService;
   @InjectMocks private AuthServiceImpl authServiceImpl;
+
+  @Before
+  public void setUpAuthContext() {
+    UserAuthentication auth = TEST_USER_AUTH;
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(auth);
+    SecurityContextHolder.setContext(securityContext);
+  }
 
   @Test
   public void Register_Should_RegisterUser() {
@@ -258,5 +268,11 @@ public class AuthServiceImplTest {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
 
     authSpy.login(TEST_LOGIN_DTO);
+  }
+
+  @Test
+  public void Logout_Should_Remove_JWT_Token() {
+    authServiceImpl.logout();
+    verify(jwtService, times(1)).deleteByValue(TEST_USER_AUTH.getToken());
   }
 }

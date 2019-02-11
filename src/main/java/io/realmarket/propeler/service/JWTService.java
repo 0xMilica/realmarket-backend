@@ -15,4 +15,6 @@ public interface JWTService {
   void deleteAllByAuth(Auth auth);
 
   void deleteAllByAuthAndValueNot(Auth auth, String value);
+
+  void deleteByValue(final String token);
 }

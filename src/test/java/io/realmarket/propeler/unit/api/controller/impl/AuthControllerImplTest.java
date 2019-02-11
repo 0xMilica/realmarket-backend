@@ -54,4 +54,11 @@ public class AuthControllerImplTest {
     when(authService.login(TEST_LOGIN_DTO)).thenThrow(BadCredentialsException.class);
     authControllerImpl.login(AuthUtils.TEST_LOGIN_DTO);
   }
+
+  @Test
+  public void Logout_Should_Return_NO_CONTENT() {
+    ResponseEntity responseEntity = authControllerImpl.logout();
+    verify(authService, Mockito.times(1)).logout();
+    assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
+  }
 }

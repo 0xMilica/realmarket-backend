@@ -26,4 +26,6 @@ public interface AuthService {
   void initializeResetPassword(UsernameDto usernameDto);
 
   void finalizeResetPassword(ResetPasswordDto resetPasswordDto);
+
+  void logout();
 }

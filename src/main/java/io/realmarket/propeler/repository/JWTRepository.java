@@ -17,4 +17,6 @@ public interface JWTRepository extends JpaRepository<JWT, Long> {
   void deleteAllByAuth(Auth auth);
 
   void deleteAllByAuthAndValueNot(Auth auth, String Value);
+
+  void deleteByValue(String value);
 }

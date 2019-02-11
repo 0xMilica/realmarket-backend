@@ -83,4 +83,8 @@ public class JWTServiceImpl implements JWTService {
   public void deleteAllByAuthAndValueNot(Auth auth, String value) {
     jwtRepository.deleteAllByAuthAndValueNot(auth, value);
   }
+
+  public void deleteByValue(final String token){
+    jwtRepository.deleteByValue(token);
+  }
 }
