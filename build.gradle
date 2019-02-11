@@ -7,6 +7,8 @@ buildscript {
         liquibaseVersion = '3.6.2'
         lombokVersion = '1.18.4'
         auth0Version = '3.4.0'
+        ibmCosVersion = '2.4.2'
+        commonsIOVersion = '2.6'
     }
     repositories {
         mavenCentral()
@@ -38,9 +40,12 @@ dependencies {
     implementation "io.springfox:springfox-swagger2:$swaggerVersion"
     implementation "io.springfox:springfox-swagger-ui:$swaggerVersion"
 
+    implementation "commons-io:commons-io:$commonsIOVersion"
     implementation "com.vladmihalcea:hibernate-types-52:$hibernateTypesVesion"
     implementation "com.auth0:java-jwt:$auth0Version"
     implementation "org.liquibase:liquibase-core:$liquibaseVersion"
+
+    implementation "com.ibm.cos:ibm-cos-java-sdk:$ibmCosVersion"
 
     runtimeOnly "org.postgresql:postgresql"
     compileOnly "org.projectlombok:lombok:$lombokVersion"
