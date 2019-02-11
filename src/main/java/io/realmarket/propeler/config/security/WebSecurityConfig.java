@@ -17,8 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
@@ -75,30 +75,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  CorsConfigurationSource corsConfigurationSource() {
+  CorsFilter corsFilter() {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration config = new CorsConfiguration();
     config.addExposedHeader("Authorization");
     config.setAllowCredentials(true);
     config.addAllowedOrigin("*");
-    config.addAllowedHeader("Content-Type");
-    config.addAllowedHeader("x-xsrf-token");
-    config.addAllowedHeader("Authorization");
-    config.addAllowedHeader("Access-Control-Allow-Headers");
-    config.addAllowedHeader("Access-Control-Expose-Headers");
-    config.addAllowedHeader("Origin");
-    config.addAllowedHeader("Accept");
-    config.addAllowedHeader("X-Requested-With");
-    config.addAllowedHeader("Access-Control-Request-Method");
-    config.addAllowedHeader("Access-Control-Request-Headers");
-    config.addAllowedMethod("OPTIONS");
-    config.addAllowedMethod("GET");
-    config.addAllowedMethod("PUT");
-    config.addAllowedMethod("POST");
-    config.addAllowedMethod("PATCH");
-    config.addAllowedMethod("DELETE");
+    config.addAllowedMethod("*");
+    config.addAllowedHeader("*");
 
     source.registerCorsConfiguration("/**", config);
-    return source;
+    return new CorsFilter(source);
   }
 }
