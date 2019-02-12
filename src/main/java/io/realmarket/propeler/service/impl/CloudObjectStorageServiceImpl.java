@@ -11,12 +11,13 @@ import com.ibm.cloud.objectstorage.services.s3.model.GetObjectRequest;
 import com.ibm.cloud.objectstorage.services.s3.model.ObjectMetadata;
 import com.ibm.cloud.objectstorage.services.s3.model.PutObjectRequest;
 import com.ibm.cloud.objectstorage.services.s3.model.S3ObjectId;
-import io.realmarket.propeler.service.CloudObjectService;
+import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.exception.COSException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.io.InputStream;
 
 @Service
 @Slf4j
-public class CloudObjectServiceImpl implements CloudObjectService {
+public class CloudObjectStorageServiceImpl implements CloudObjectStorageService {
 
   @Value(value = "${cos.api.key.id}")
   private String cosApiKeyId;
@@ -70,6 +71,7 @@ public class CloudObjectServiceImpl implements CloudObjectService {
 
   @Override
   public byte[] download(String fileName) {
+    log.info("Download file:"+fileName);
     try {
       AmazonS3 cloudClient =
           createCloudClient(cosApiKeyId, cosServiceCrn, cosEndpoint, cosBucketLocation);
@@ -84,7 +86,7 @@ public class CloudObjectServiceImpl implements CloudObjectService {
         log.debug("File with name '{}' does not exist.", fileName);
         throw new EntityNotFoundException("File with the provided name does not exist.");
       } else {
-        log.error("SDK Error: {}", sdke.getMessage());
+        log.error("SDK download Error: {}", sdke.getMessage());
         throw new COSException("Could not retrieve file.");
       }
     } catch (IOException e) {
@@ -93,9 +95,20 @@ public class CloudObjectServiceImpl implements CloudObjectService {
     }
   }
 
+  public void upload(String name, MultipartFile file) {
+    InputStream inputStream;
+    try {
+      inputStream = file.getInputStream();
+    } catch(IOException exception) {
+      throw new COSException("Could not extract file.");
+    }
+    upload(name, inputStream, Math.toIntExact(file.getSize()));
+  }
+
   @Override
   @Async
   public void upload(String name, InputStream inputStream, int fileSize) {
+    log.info("Uploading file["+String.valueOf(fileSize)+"]:"+name);
     ObjectMetadata metadata = new ObjectMetadata();
     metadata.setContentLength(fileSize);
 
@@ -109,13 +122,14 @@ public class CloudObjectServiceImpl implements CloudObjectService {
       log.info("Stored object on cloud: {}", name);
 
     } catch (SdkClientException sdke) {
-      log.error("SDK Error: {}", sdke.getMessage());
+      log.error("SDK upload Error: {}", sdke.getMessage());
       throw new COSException("Could not save file.");
     }
   }
 
   @Override
   public void delete(String fileName) {
+    log.info("Delete file:"+fileName);
     AmazonS3 cloudClient =
         createCloudClient(cosApiKeyId, cosServiceCrn, cosEndpoint, cosBucketLocation);
     try {

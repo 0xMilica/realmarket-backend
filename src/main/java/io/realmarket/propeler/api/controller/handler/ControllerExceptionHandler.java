@@ -25,13 +25,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     if (ex instanceof EntityNotFoundException) {
       status = HttpStatus.NOT_FOUND;
-    }
-
-    if (ex instanceof InternalServerErrorException) {
-      status = HttpStatus.INTERNAL_SERVER_ERROR;
-    }
-
-    if( ex instanceof COSException) {
+    } else if (ex instanceof InternalServerErrorException || ex instanceof COSException) {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 

@@ -7,10 +7,13 @@ import io.realmarket.propeler.api.dto.PersonPatchDto;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.PersonService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/users")
@@ -19,8 +22,7 @@ public class UserControllerImpl implements UserController {
   private final AuthService authService;
   private final PersonService personService;
 
-  public UserControllerImpl(AuthService authService,
-                            PersonService personService) {
+  public UserControllerImpl(AuthService authService, PersonService personService) {
     this.authService = authService;
     this.personService = personService;
   }
@@ -47,7 +49,19 @@ public class UserControllerImpl implements UserController {
 
   @Override
   @PatchMapping(value = "/{userId}")
-  public ResponseEntity<PersonDto> patchPerson(@PathVariable Long userId, @RequestBody PersonPatchDto personPatchDto) {
+  public ResponseEntity<PersonDto> patchPerson(
+      @PathVariable Long userId, @RequestBody PersonPatchDto personPatchDto) {
     return ResponseEntity.ok(personService.patchPerson(userId, personPatchDto));
+  }
+
+  @PostMapping(
+      value = "/{userId}/picture",
+      consumes = "multipart/form-data",
+      produces = MediaType.TEXT_PLAIN_VALUE)
+  public ResponseEntity uploadProfilePicture(
+      @PathVariable Long userId, @RequestParam("picture") MultipartFile picture) {
+    personService.uploadProfilePicture(userId, picture);
+    return new ResponseEntity<>(HttpStatus.CREATED);
+
   }
 }

@@ -4,27 +4,41 @@ import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.api.dto.PersonPatchDto;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.repository.PersonRepository;
+import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.FileUtils;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
+@Slf4j
 public class PersonServiceImpl implements PersonService {
 
   private final PersonRepository personRepository;
   private final ModelMapperBlankString modelMapperBlankString;
+  private final CloudObjectStorageService cloudObjectStorageService;
+
+  @Value(value = "${cos.file_prefix.user_picture}")
+  private String userPicturePrefix;
 
   @Autowired
   public PersonServiceImpl(
-      PersonRepository personRepository, ModelMapperBlankString modelMapperBlankString) {
+      PersonRepository personRepository,
+      ModelMapperBlankString modelMapperBlankString,
+      CloudObjectStorageService cloudObjectStorageService) {
     this.personRepository = personRepository;
     this.modelMapperBlankString = modelMapperBlankString;
+    this.cloudObjectStorageService = cloudObjectStorageService;
   }
 
   public Person save(Person person) {
@@ -51,5 +65,22 @@ public class PersonServiceImpl implements PersonService {
     Person person = findByIdOrThrowException(id);
     modelMapperBlankString.map(personPatchDto, person);
     return new PersonDto(personRepository.save(person));
+  }
+
+  @Override
+  @Transactional
+  public void uploadProfilePicture(Long id, MultipartFile picture) {
+    log.info("Picture upload requested");
+    String extension = FileUtils.getExtensionOrThrowException(picture);
+    Person person = findByIdOrThrowException(id);
+    String url = userPicturePrefix + person.getAuth().getUsername() + "." + extension;
+    String oldUrl = person.getProfilePictureUrl();
+    if (oldUrl != null && !oldUrl.equals(url)) {
+      cloudObjectStorageService.delete(oldUrl);
+    }
+    cloudObjectStorageService.upload(url, picture);
+    person.setProfilePictureUrl(url);
+
+    personRepository.save(person);
   }
 }

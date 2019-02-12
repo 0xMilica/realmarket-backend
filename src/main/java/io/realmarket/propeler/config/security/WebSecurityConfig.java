@@ -73,7 +73,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/auth/recover_username",
             "/auth/confirm_registration",
             "/auth/recover_username");
-        /*.antMatchers(HttpMethod.POST, "**")
+        /*
+        .antMatchers(HttpMethod.POST, "**")
         .antMatchers(HttpMethod.PATCH, "**")
         .antMatchers(HttpMethod.GET, "**");
          //left these commented lines on purpose,

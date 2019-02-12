@@ -1,8 +1,10 @@
 package io.realmarket.propeler.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.InputStream;
 
-public interface CloudObjectService {
+public interface CloudObjectStorageService {
 
   /**
    * @param fileName name of the file to be retrieved
@@ -16,6 +18,12 @@ public interface CloudObjectService {
    * @param fileSize size of the file
    */
   void upload(String name, InputStream inputStream, int fileSize);
+
+  /**
+   * @param name name of the file
+   * @param file multipart file to upload
+   */
+  void upload(String name, MultipartFile file);
 
   /**
    * Delete file with the provided name from the cloud object storage.
