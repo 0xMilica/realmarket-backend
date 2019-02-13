@@ -41,6 +41,7 @@ public class JWTServiceImpl implements JWTService {
         .create()
         .withIssuer(ISSUER)
         .withSubject(String.valueOf(auth.getId()))
+        .withClaim("username", auth.getUsername())
         .withIssuedAt(Date.from(Instant.now()))
         .sign(Algorithm.HMAC512(hmacSecret));
   }
@@ -84,7 +85,7 @@ public class JWTServiceImpl implements JWTService {
     jwtRepository.deleteAllByAuthAndValueNot(auth, value);
   }
 
-  public void deleteByValue(final String token){
+  public void deleteByValue(final String token) {
     jwtRepository.deleteByValue(token);
   }
 }
