@@ -10,5 +10,7 @@
     <include file="migrations/auth_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/temporary_token_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/jwt_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/email_change_request_table.xml" relativeToChangelogFile="true"/>
+
 
 </databaseChangeLog>

@@ -2,15 +2,18 @@ package io.realmarket.propeler.unit.service.impl;
 
 import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.model.Auth;
+import io.realmarket.propeler.model.EmailChangeRequest;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.security.UserAuthentication;
+import io.realmarket.propeler.service.EmailChangeRequestService;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.TemporaryTokenService;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
+import io.realmarket.propeler.service.exception.util.ForbiddenOperationException;
 import io.realmarket.propeler.service.impl.AuthServiceImpl;
 import io.realmarket.propeler.service.impl.JWTServiceImpl;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -53,11 +56,13 @@ public class AuthServiceImplTest {
   @Mock private AuthRepository authRepository;
   @Mock private PersonService personService;
   @Mock private TemporaryTokenService temporaryTokenService;
+  @Mock private EmailChangeRequestService emailChangeRequestService;
   @InjectMocks private AuthServiceImpl authServiceImpl;
 
   @Before
   public void setUpAuthContext() {
     UserAuthentication auth = TEST_USER_AUTH;
+    auth.getAuth().setId(TEST_AUTH_ID);
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     Mockito.when(securityContext.getAuthentication()).thenReturn(auth);
     SecurityContextHolder.setContext(securityContext);
@@ -274,5 +279,37 @@ public class AuthServiceImplTest {
   public void Logout_Should_Remove_JWT_Token() {
     authServiceImpl.logout();
     verify(jwtService, times(1)).deleteByValue(TEST_USER_AUTH.getToken());
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void CreateChangeEmailRequest_Should_Throw_Exception_When_Not_Allowed() {
+
+    Auth auth = TEST_AUTH;
+    auth.setId(1000L);
+    final EmailDto emailDto = EmailDto.builder().email(TEST_EMAIL).build();
+    when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.of(auth));
+    authServiceImpl.createChangeEmailRequest(TEST_AUTH_ID, emailDto);
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void CreateChangeEmailRequest_Should_Throw_Exception_When_Not_Existing_AuthId() {
+    final EmailDto emailDto = EmailDto.builder().email(TEST_EMAIL).build();
+    authServiceImpl.createChangeEmailRequest(TEST_AUTH.getId(), emailDto);
+    verify(emailChangeRequestService, Mockito.times(0)).save(any(EmailChangeRequest.class));
+    verify(emailService, times(0)).sendMailToUser(any());
+  }
+
+  @Test
+  public void CreateChangeEmailRequest_Should_Save_Request() {
+    Auth auth = TEST_AUTH;
+    auth.setId(TEST_AUTH_ID);
+    final EmailDto emailDto = EmailDto.builder().email(TEST_EMAIL).build();
+    when(authRepository.findById(auth.getId())).thenReturn(Optional.of(auth));
+    when(temporaryTokenService.createToken(any(), any())).thenReturn(TEST_TEMPORARY_TOKEN);
+    authServiceImpl.createChangeEmailRequest(auth.getId(), emailDto);
+
+    verify(emailChangeRequestService, Mockito.times(1)).save(any(EmailChangeRequest.class));
+    verify(emailService, times(1)).sendMailToUser(any());
+    verify(temporaryTokenService, times(1)).createToken(any(), any());
   }
 }

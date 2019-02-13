@@ -27,5 +27,7 @@ public interface AuthService {
 
   void finalizeResetPassword(ResetPasswordDto resetPasswordDto);
 
+  void createChangeEmailRequest(final Long authId, final EmailDto emaildto);
+
   void logout();
 }

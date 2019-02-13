@@ -21,4 +21,6 @@ public interface ExceptionMessages {
   String INVALID_TOKEN_TYPE = "Invalid token type";
 
   String COULD_NOT_GENERATE_TOKEN = "Could not generate token";
+
+  String FORBIDDEN_OPERATION_EXCEPTION = "Not allowed operation";
 }

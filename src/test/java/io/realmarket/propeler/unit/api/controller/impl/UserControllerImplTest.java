@@ -1,6 +1,7 @@
 package io.realmarket.propeler.unit.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.impl.UserControllerImpl;
+import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.service.AuthService;
 import org.junit.Test;
@@ -51,6 +52,16 @@ public class UserControllerImplTest {
 
     verify(authService, times(1)).changePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+  }
+
+  @Test
+  public void CreateChangeEmailRequest_Should_CallAuthService() {
+    EmailDto emailDto = EmailDto.builder().email(TEST_EMAIL).build();
+    ResponseEntity responseEntity =
+        userController.createEmailChangeRequest(TEST_AUTH_ID,emailDto);
+
+    verify(authService, times(1)).createChangeEmailRequest(TEST_AUTH_ID, emailDto);
+    assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
   }
 
 }

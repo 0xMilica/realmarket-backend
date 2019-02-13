@@ -32,6 +32,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
     switch (tokenType) {
       case SETUP_2FA:
         return 1800000L;
+      case EMAIL_CHANGE_TOKEN:
       case EMAIL_TOKEN:
         return 300000L;
       case LOGIN_TOKEN:
@@ -43,7 +44,10 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
     }
   }
 
+  @Transactional
   public TemporaryToken createToken(Auth auth, ETemporaryTokenType type) {
+
+    deleteByTemporaryTokenTypeAndAuthId(auth.getId(), type);
 
     return temporaryTokenRepository.save(
         TemporaryToken.builder()
@@ -52,6 +56,11 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
             .temporaryTokenType(type)
             .expirationTime(Instant.now().plusMillis(getExpirationTime(type)))
             .build());
+  }
+
+  private void deleteByTemporaryTokenTypeAndAuthId(Long authId, ETemporaryTokenType type) {
+    temporaryTokenRepository.deleteByTemporaryTokenTypeAndAuthId(type, authId);
+    temporaryTokenRepository.flush();
   }
 
   public void deleteToken(TemporaryToken temporaryToken) {

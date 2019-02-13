@@ -28,6 +28,7 @@ public class EmailServiceImpl implements EmailService {
   public static final String ACTIVATION_TOKEN = "activationToken";
   public static final String USERNAME_LIST = "username_list";
   public static final String RESET_TOKEN = "resetToken";
+  public static final String EMAIL_CHANGE_TOKEN= "changeEmailToken";
 
   private static final String LOGO = "logo";
   private static final String ACTIVATION_LINK = "activationLink";
@@ -83,6 +84,11 @@ public class EmailServiceImpl implements EmailService {
         subject = "Propeler - Recover Username";
         data = getRecoverUsernameEmailData(mailContentHolder);
         templateName = "recoverUsernameMailTemplate";
+
+      case CHANGE_EMAIL:
+        subject = "Propeler - Change email";
+        data = getChangeEmailEmailData(mailContentHolder);
+        templateName = "requestEmailChangeTemplate";
       default:
     }
 
@@ -100,7 +106,7 @@ public class EmailServiceImpl implements EmailService {
 
     String activationLink =
         String.format(
-            "%s/auth/confirm_registration?registrationToken=%s",
+            "%s/auth/confirm-registration?registrationToken=%s",
             frontendServiceUrlPath, activationToken);
 
     Map<String, Object> data = new HashMap<>();
@@ -131,6 +137,22 @@ public class EmailServiceImpl implements EmailService {
     Map<String, Object> data = new HashMap<>();
     data.put(LOGO, LOGO);
     data.put(USERNAME_LIST, mailContentHolder.getContent().get(USERNAME_LIST));
+
+    return data;
+  }
+
+  private Map<String, Object> getChangeEmailEmailData(MailContentHolder mailContentHolder) {
+    String token = (String) mailContentHolder.getContent().get(EMAIL_CHANGE_TOKEN);
+    if (token == null) {
+      throw new IllegalArgumentException(ExceptionMessages.INVALID_TOKEN_PROVIDED);
+    }
+
+    String changeEmailLink =
+        String.format("%s/auth/change-email?emailChangeToken=%s", frontendServiceUrlPath, token);
+
+    Map<String, Object> data = new HashMap<>();
+    data.put(LOGO, LOGO);
+    data.put(EMAIL_CHANGE_TOKEN, changeEmailLink);
 
     return data;
   }

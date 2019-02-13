@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
+import io.realmarket.propeler.model.EmailChangeRequest;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
@@ -13,6 +14,7 @@ import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.exception.util.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +48,8 @@ public class AuthServiceImpl implements AuthService {
 
   private final PasswordEncoder passwordEncoder;
 
+  private final EmailChangeRequestService emailChangeRequestService;
+
   @Autowired
   public AuthServiceImpl(
       PasswordEncoder passwordEncoder,
@@ -53,13 +57,15 @@ public class AuthServiceImpl implements AuthService {
       EmailService emailService,
       AuthRepository authRepository,
       TemporaryTokenService temporaryTokenService,
-      JWTService jwtService) {
+      JWTService jwtService,
+      EmailChangeRequestService emailChangeRequestService) {
     this.passwordEncoder = passwordEncoder;
     this.personService = personService;
     this.emailService = emailService;
     this.authRepository = authRepository;
     this.temporaryTokenService = temporaryTokenService;
     this.jwtService = jwtService;
+    this.emailChangeRequestService = emailChangeRequestService;
   }
 
   public static Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
@@ -145,9 +151,8 @@ public class AuthServiceImpl implements AuthService {
             emailDto.getEmail(),
             EEmailType.RECOVER_USERNAME,
             Collections.singletonMap(EmailServiceImpl.USERNAME_LIST, usernameList)));
-
   }
-  
+
   public void initializeResetPassword(UsernameDto usernameDto) {
     Auth auth = findByUsernameOrThrowException(usernameDto.getUsername());
 
@@ -211,6 +216,28 @@ public class AuthServiceImpl implements AuthService {
         .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXISTS));
   }
 
+  @Transactional
+  public void createChangeEmailRequest(final Long authId, final EmailDto emaildto) {
+    checkIfAllowed(authId);
+    final Auth auth = findByIdOrThrowException(authId);
+    final TemporaryToken token =
+        temporaryTokenService.createToken(auth, ETemporaryTokenType.EMAIL_CHANGE_TOKEN);
+
+    final EmailChangeRequest emailChangeRequest =
+        EmailChangeRequest.builder()
+            .newEmail(emaildto.getEmail())
+            .person(auth.getPerson())
+            .temporaryToken(token)
+            .build();
+    emailChangeRequestService.save(emailChangeRequest);
+    log.info("Token for change email {}", token.getValue());
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            emailChangeRequest.getNewEmail(),
+            EEmailType.CHANGE_EMAIL,
+            Collections.singletonMap(EmailServiceImpl.EMAIL_CHANGE_TOKEN, token.getValue())));
+  }
+
   private Boolean isRoleAllowed(EUserRole role) {
     return ALLOWED_ROLES.contains(role);
   }
@@ -223,6 +250,12 @@ public class AuthServiceImpl implements AuthService {
     if (!passwordEncoder.matches(loginDto.getPassword(), auth.getPassword())) {
       log.error("User with auth id '{}' provided passwords which do not match ", auth.getId());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
+    }
+  }
+
+  private void checkIfAllowed(final Long authIdFromRequestPath) {
+    if (!authIdFromRequestPath.equals(AuthenticationUtil.getAuthentication().getAuth().getId())) {
+      throw new ForbiddenOperationException(ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION);
     }
   }
 }

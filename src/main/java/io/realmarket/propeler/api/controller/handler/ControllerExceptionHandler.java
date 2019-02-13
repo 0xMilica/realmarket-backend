@@ -2,6 +2,7 @@ package io.realmarket.propeler.api.controller.handler;
 
 import io.realmarket.propeler.service.exception.COSException;
 import io.realmarket.propeler.service.exception.InternalServerErrorException;
+import io.realmarket.propeler.service.exception.util.ForbiddenOperationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
       status = HttpStatus.NOT_FOUND;
     } else if (ex instanceof InternalServerErrorException || ex instanceof COSException) {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
+    } else if (ex instanceof ForbiddenOperationException) {
+      status = HttpStatus.FORBIDDEN;
     }
 
     ex.printStackTrace();

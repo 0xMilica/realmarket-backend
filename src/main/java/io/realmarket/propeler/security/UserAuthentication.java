@@ -57,4 +57,8 @@ public class UserAuthentication implements Authentication {
   public String getToken() {
     return token;
   }
+
+  public Auth getAuth() {
+    return auth;
+  }
 }

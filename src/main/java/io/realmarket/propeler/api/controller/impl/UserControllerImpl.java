@@ -2,6 +2,7 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.UserController;
 import io.realmarket.propeler.api.dto.ChangePasswordDto;
+import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.api.dto.PersonPatchDto;
 import io.realmarket.propeler.service.AuthService;
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/users")
@@ -47,6 +49,13 @@ public class UserControllerImpl implements UserController {
     return ResponseEntity.ok(personService.getPerson(userId));
   }
 
+  @PostMapping("/{authId}/email")
+  public ResponseEntity createEmailChangeRequest(
+      @PathVariable Long authId, @RequestBody @Valid EmailDto emailDto) {
+    authService.createChangeEmailRequest(authId, emailDto);
+    return new ResponseEntity(CREATED);
+  }
+
   @Override
   @PatchMapping(value = "/{userId}")
   public ResponseEntity<PersonDto> patchPerson(
@@ -62,6 +71,5 @@ public class UserControllerImpl implements UserController {
       @PathVariable Long userId, @RequestParam("picture") MultipartFile picture) {
     personService.uploadProfilePicture(userId, picture);
     return new ResponseEntity<>(HttpStatus.CREATED);
-
   }
 }
