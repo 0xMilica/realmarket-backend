@@ -1,10 +1,7 @@
 package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.UserController;
-import io.realmarket.propeler.api.dto.ChangePasswordDto;
-import io.realmarket.propeler.api.dto.EmailDto;
-import io.realmarket.propeler.api.dto.PersonDto;
-import io.realmarket.propeler.api.dto.PersonPatchDto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.PersonService;
 import org.springframework.http.HttpStatus;
@@ -72,5 +69,16 @@ public class UserControllerImpl implements UserController {
           @PathVariable Long userId, @RequestParam("picture") MultipartFile picture) {
     personService.uploadProfilePicture(userId, picture);
     return new ResponseEntity<>(HttpStatus.CREATED);
+  }
+
+  @GetMapping(value = "/{userId}/picture", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<FileDto> getProfilePicture(@PathVariable Long userId) {
+    return ResponseEntity.ok(personService.getProfilePicture(userId));
+  }
+
+  @DeleteMapping(value = "/{userId}/picture")
+  public ResponseEntity deleteProfilePicture(@PathVariable Long userId) {
+    personService.deleteProfilePicture(userId);
+    return ResponseEntity.noContent().build();
   }
 }

@@ -20,10 +20,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.TestPropertySource;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
+import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH_ID;
+import static io.realmarket.propeler.unit.util.FileUtils.TEST_FILE_BYTES;
 import static io.realmarket.propeler.unit.util.FileUtils.TEST_FILE_NAME_2;
-import static io.realmarket.propeler.unit.util.PersonUtils.TEST_REGISTRATION_PERSON;
+import static io.realmarket.propeler.unit.util.PersonUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -55,9 +58,9 @@ public class PersonServiceImplTest {
 
   @Test
   public void PatchPerson_Should_CallModelMapper() {
-    Person testPerson = PersonUtils.TEST_PERSON.toBuilder().build();
+    Person testPerson = TEST_PERSON.toBuilder().build();
     PersonPatchDto personPatchDto = PersonUtils.TEST_PERSON_PATCH_DTO_LAST_NAME();
-    when(personRepository.findById(AuthUtils.TEST_AUTH_ID)).thenReturn(Optional.of(testPerson));
+    when(personRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.of(testPerson));
     when(personRepository.save(testPerson)).thenReturn(testPerson);
     doAnswer(
             invocation -> {
@@ -68,49 +71,48 @@ public class PersonServiceImplTest {
         .when(modelMapperBlankString)
         .map(personPatchDto, testPerson);
 
-    PersonDto personDto = personServiceImpl.patchPerson(AuthUtils.TEST_AUTH_ID, personPatchDto);
+    PersonDto personDto = personServiceImpl.patchPerson(TEST_AUTH_ID, personPatchDto);
     assertEquals(PersonUtils.TEST_PERSON_LAST_NAME, personDto.getLastName());
   }
 
   @Test
   public void UploadFile_Should_SaveToRepository() {
-    Person testPerson = PersonUtils.TEST_PERSON.toBuilder().build();
-    when(personRepository.findById(AuthUtils.TEST_AUTH_ID)).thenReturn(Optional.of(testPerson));
+    Person testPerson = TEST_PERSON.toBuilder().build();
+    testPerson.setProfilePictureUrl(null);
+    when(personRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.of(testPerson));
 
-    personServiceImpl.uploadProfilePicture(AuthUtils.TEST_AUTH_ID, FileUtils.MOCK_FILE_VALID);
+    personServiceImpl.uploadProfilePicture(TEST_AUTH_ID, FileUtils.MOCK_FILE_VALID);
 
-    verify(cloudObjectStorageService, times(0))
-            .delete(any());
+    verify(cloudObjectStorageService, times(0)).delete(any());
     verify(cloudObjectStorageService, times(1))
-        .upload(userPicturePrefix+AuthUtils.TEST_USERNAME+"."+FileUtils.TEST_FILE_TYPE, FileUtils.MOCK_FILE_VALID);
-    verify(personRepository, times(1))
-            .save(testPerson);
+        .upload(
+            userPicturePrefix + AuthUtils.TEST_USERNAME + "." + FileUtils.TEST_FILE_TYPE,
+            FileUtils.MOCK_FILE_VALID);
+    verify(personRepository, times(1)).save(testPerson);
   }
 
   @Test
   public void UploadFile_Should_DeleteOldPicture_And_SaveToRepository() {
-    Person testPerson = PersonUtils.TEST_PERSON.toBuilder().build();
+    Person testPerson = TEST_PERSON.toBuilder().build();
     testPerson.setProfilePictureUrl(TEST_FILE_NAME_2);
-    when(personRepository.findById(AuthUtils.TEST_AUTH_ID)).thenReturn(Optional.of(testPerson));
+    when(personRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.of(testPerson));
 
-    personServiceImpl.uploadProfilePicture(AuthUtils.TEST_AUTH_ID, FileUtils.MOCK_FILE_VALID);
+    personServiceImpl.uploadProfilePicture(TEST_AUTH_ID, FileUtils.MOCK_FILE_VALID);
 
+    verify(cloudObjectStorageService, times(1)).delete(TEST_FILE_NAME_2);
     verify(cloudObjectStorageService, times(1))
-            .delete(TEST_FILE_NAME_2);
-    verify(cloudObjectStorageService, times(1))
-            .upload(testPerson.getProfilePictureUrl(), FileUtils.MOCK_FILE_VALID);
-    verify(personRepository, times(1))
-            .save(testPerson);
+        .upload(testPerson.getProfilePictureUrl(), FileUtils.MOCK_FILE_VALID);
+    verify(personRepository, times(1)).save(testPerson);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void UploadFile_Should_ThrowException_OnEmptyFile() {
-    personServiceImpl.uploadProfilePicture(AuthUtils.TEST_AUTH_ID, FileUtils.MOCK_FILE_EMPTY);
+    personServiceImpl.uploadProfilePicture(TEST_AUTH_ID, FileUtils.MOCK_FILE_EMPTY);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void UploadFile_Should_ThrowException_NoExtension() {
-    personServiceImpl.uploadProfilePicture(AuthUtils.TEST_AUTH_ID, FileUtils.MOCK_FILE_NO_EXTENSION);
+    personServiceImpl.uploadProfilePicture(TEST_AUTH_ID, FileUtils.MOCK_FILE_NO_EXTENSION);
   }
 
   /*
@@ -131,4 +133,44 @@ public class PersonServiceImplTest {
     verify(fileService, times(0)).uploadFile(TestUtils.MOCK_FILE_EMPTY);
     assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
   }*/
+
+  @Test
+  public void GetProfilePicture_Should_ReturnProfilePicture() {
+    when(personRepository.findById(TEST_PERSON_ID))
+        .thenReturn(Optional.of(TEST_PERSON.toBuilder().build()));
+    when(cloudObjectStorageService.download(TEST_PROFILE_PICTURE_URL)).thenReturn(TEST_FILE_BYTES);
+
+    personServiceImpl.getProfilePicture(TEST_PERSON_ID);
+
+    verify(personRepository, Mockito.times(1)).findById(TEST_PERSON_ID);
+    verify(cloudObjectStorageService, Mockito.times(1)).download(TEST_PROFILE_PICTURE_URL);
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void GetProfilePicture_Should_Throw_EntityNotFoundException() {
+    when(personRepository.findById(TEST_PERSON_ID))
+        .thenReturn(Optional.of(TEST_PERSON_NO_PROFILE_PICTURE));
+
+    personServiceImpl.getProfilePicture(TEST_PERSON_ID);
+  }
+
+  @Test
+  public void DeleteProfilePicture_Should_DeleteProfilePicture() {
+    when(personRepository.findById(TEST_PERSON_ID))
+        .thenReturn(Optional.of(TEST_PERSON.toBuilder().build()));
+    doNothing().when(cloudObjectStorageService).delete(TEST_PROFILE_PICTURE_URL);
+
+    personServiceImpl.deleteProfilePicture(TEST_PERSON_ID);
+
+    verify(personRepository, Mockito.times(1)).findById(TEST_PERSON_ID);
+    verify(cloudObjectStorageService, Mockito.times(1)).delete(TEST_PROFILE_PICTURE_URL);
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void DeleteProfilePicture_Should_Throw_EntityNotFoundException() {
+    when(personRepository.findById(TEST_PERSON_ID))
+        .thenReturn(Optional.of(TEST_PERSON_NO_PROFILE_PICTURE));
+
+    personServiceImpl.deleteProfilePicture(TEST_PERSON_ID);
+  }
 }

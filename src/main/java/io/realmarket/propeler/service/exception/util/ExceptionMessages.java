@@ -22,5 +22,7 @@ public interface ExceptionMessages {
 
   String COULD_NOT_GENERATE_TOKEN = "Could not generate token";
 
+  String PROFILE_PICTURE_DOES_NOT_EXIST = "Profile picture does not exist!";
+
   String FORBIDDEN_OPERATION_EXCEPTION = "Not allowed operation";
 }

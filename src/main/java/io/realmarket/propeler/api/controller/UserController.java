@@ -1,9 +1,6 @@
 package io.realmarket.propeler.api.controller;
 
-import io.realmarket.propeler.api.dto.ChangePasswordDto;
-import io.realmarket.propeler.api.dto.EmailDto;
-import io.realmarket.propeler.api.dto.PersonDto;
-import io.realmarket.propeler.api.dto.PersonPatchDto;
+import io.realmarket.propeler.api.dto.*;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -111,4 +108,24 @@ public interface UserController {
     @ApiResponse(code = 400, message = "Picture cannot be saved.")
   })
   ResponseEntity uploadProfilePicture(Long userId, MultipartFile picture);
+
+  @ApiOperation(
+      value = "Get profile picture",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Picture retrieved successfully."),
+    @ApiResponse(code = 404, message = "Picture not found.")
+  })
+  ResponseEntity<FileDto> getProfilePicture(@PathVariable Long userId);
+
+  @ApiOperation(
+      value = "Get profile picture",
+      httpMethod = "DELETE",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 204, message = "Picture deleted successfully."),
+    @ApiResponse(code = 404, message = "Picture not found.")
+  })
+  ResponseEntity deleteProfilePicture(@PathVariable Long userId);
 }

@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.api.dto.PersonPatchDto;
 import io.realmarket.propeler.model.Person;
@@ -10,13 +11,16 @@ import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.FileUtils;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -81,5 +85,31 @@ public class PersonServiceImpl implements PersonService {
     person.setProfilePictureUrl(url);
 
     personRepository.save(person);
+  }
+
+  public FileDto getProfilePicture(Long personId) {
+    String pictureUrl = findByIdOrThrowException(personId).getProfilePictureUrl();
+
+    if (StringUtils.isEmpty(pictureUrl)) {
+      throw new EntityNotFoundException(ExceptionMessages.PROFILE_PICTURE_DOES_NOT_EXIST);
+    }
+
+    return new FileDto(
+        FilenameUtils.getExtension(pictureUrl),
+        Base64.getEncoder().encodeToString(cloudObjectStorageService.download(pictureUrl)));
+  }
+
+  public void deleteProfilePicture(Long personId) {
+    Person person = findByIdOrThrowException(personId);
+    String pictureUrl = person.getProfilePictureUrl();
+
+    if (StringUtils.isEmpty(pictureUrl)) {
+      throw new EntityNotFoundException(ExceptionMessages.PROFILE_PICTURE_DOES_NOT_EXIST);
+    }
+
+    cloudObjectStorageService.delete(pictureUrl);
+
+    person.setProfilePictureUrl(null);
+    save(person);
   }
 }

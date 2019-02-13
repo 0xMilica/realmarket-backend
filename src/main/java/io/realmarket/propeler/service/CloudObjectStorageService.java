@@ -8,7 +8,7 @@ public interface CloudObjectStorageService {
 
   /**
    * @param fileName name of the file to be retrieved
-   * @return String Base64-encoded bytes of the retrieved file
+   * @return Byte array of the retrieved file
    */
   byte[] download(String fileName);
 
