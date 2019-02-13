@@ -31,7 +31,7 @@ spring:
         auth: true
         starttls.enable: true
 
-frontend.service.url: localhost:3000
+frontend.service.url: http://localhost:3000
 hmac.secret: s3cr3t
 access-token.expiration-time: 3600000
 app:

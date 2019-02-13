@@ -71,14 +71,17 @@ public class AuthUtils {
           .build();
 
   public static final Auth TEST_AUTH =
-          Auth.builder()
-                  .username(TEST_USERNAME)
-                  .active(false)
-                  .userRole(TEST_ROLE)
-                  .password(TEST_PASSWORD)
-                  .person(getMockedPerson(TEST_REGISTRATION_DTO))
-                  .build();
+      Auth.builder()
+          .username(TEST_USERNAME)
+          .active(false)
+          .userRole(TEST_ROLE)
+          .password(TEST_PASSWORD)
+          .person(getMockedPerson(TEST_REGISTRATION_DTO))
+          .build();
+
+  public static final ConfirmEmailChangeDto TEST_CONFIRM_EMAIL_CHANGE_DTO =
+      ConfirmEmailChangeDto.builder().token(TEST_TEMPORARY_TOKEN_VALUE).build();
 
   public static final UserAuthentication TEST_USER_AUTH =
-          new UserAuthentication(TEST_AUTH, TEST_TEMPORARY_TOKEN_VALUE);
+      new UserAuthentication(TEST_AUTH, TEST_TEMPORARY_TOKEN_VALUE);
 }

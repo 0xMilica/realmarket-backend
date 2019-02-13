@@ -57,9 +57,7 @@ public class UserControllerImplTest {
   @Test
   public void CreateChangeEmailRequest_Should_CallAuthService() {
     EmailDto emailDto = EmailDto.builder().email(TEST_EMAIL).build();
-    ResponseEntity responseEntity =
-        userController.createEmailChangeRequest(TEST_AUTH_ID,emailDto);
-
+    ResponseEntity responseEntity = userController.createEmailChangeRequest(TEST_AUTH_ID, emailDto);
     verify(authService, times(1)).createChangeEmailRequest(TEST_AUTH_ID, emailDto);
     assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
   }

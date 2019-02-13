@@ -17,6 +17,8 @@ import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequestMapping("/users")
 public class UserControllerImpl implements UserController {
@@ -55,20 +57,19 @@ public class UserControllerImpl implements UserController {
     authService.createChangeEmailRequest(authId, emailDto);
     return new ResponseEntity(CREATED);
   }
-
   @Override
   @PatchMapping(value = "/{userId}")
   public ResponseEntity<PersonDto> patchPerson(
-      @PathVariable Long userId, @RequestBody PersonPatchDto personPatchDto) {
+          @PathVariable Long userId, @RequestBody PersonPatchDto personPatchDto) {
     return ResponseEntity.ok(personService.patchPerson(userId, personPatchDto));
   }
 
   @PostMapping(
-      value = "/{userId}/picture",
-      consumes = "multipart/form-data",
-      produces = MediaType.TEXT_PLAIN_VALUE)
+          value = "/{userId}/picture",
+          consumes = "multipart/form-data",
+          produces = MediaType.TEXT_PLAIN_VALUE)
   public ResponseEntity uploadProfilePicture(
-      @PathVariable Long userId, @RequestParam("picture") MultipartFile picture) {
+          @PathVariable Long userId, @RequestParam("picture") MultipartFile picture) {
     personService.uploadProfilePicture(userId, picture);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }

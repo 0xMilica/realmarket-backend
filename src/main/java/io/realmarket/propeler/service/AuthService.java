@@ -29,5 +29,7 @@ public interface AuthService {
 
   void createChangeEmailRequest(final Long authId, final EmailDto emaildto);
 
+  void finalizeEmailChange(final ConfirmEmailChangeDto confirmEmailChangeDto);
+
   void logout();
 }

@@ -11,10 +11,10 @@ import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
-import io.realmarket.propeler.service.exception.util.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -238,6 +238,17 @@ public class AuthServiceImpl implements AuthService {
             Collections.singletonMap(EmailServiceImpl.EMAIL_CHANGE_TOKEN, token.getValue())));
   }
 
+  @Transactional
+  public void finalizeEmailChange(final ConfirmEmailChangeDto confirmEmailChangeDto) {
+    final TemporaryToken token =
+        temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            confirmEmailChangeDto.getToken());
+    final EmailChangeRequest emailChangeRequest =
+        emailChangeRequestService.findByTokenOrThrowException(token);
+    changePersonEmail(token, emailChangeRequest);
+    temporaryTokenService.deleteToken(token);
+  }
+
   private Boolean isRoleAllowed(EUserRole role) {
     return ALLOWED_ROLES.contains(role);
   }
@@ -251,6 +262,13 @@ public class AuthServiceImpl implements AuthService {
       log.error("User with auth id '{}' provided passwords which do not match ", auth.getId());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
+  }
+
+  private void changePersonEmail(
+      final TemporaryToken token, final EmailChangeRequest emailChangeRequest) {
+    Person person = token.getAuth().getPerson();
+    person.setEmail(emailChangeRequest.getNewEmail());
+    personService.save(person);
   }
 
   private void checkIfAllowed(final Long authIdFromRequestPath) {

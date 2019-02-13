@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -62,6 +60,12 @@ public class AuthControllerImpl implements AuthController {
   public ResponseEntity recoverUsername(@RequestBody @Valid EmailDto emailDto) {
     authService.recoverUsername(emailDto);
     return new ResponseEntity(CREATED);
+  }
+
+  @PatchMapping("/email_confirm")
+  public ResponseEntity finalizeEmailChange(@RequestBody @Valid ConfirmEmailChangeDto confirmEmailChangeDto) {
+    authService.finalizeEmailChange(confirmEmailChangeDto);
+    return new ResponseEntity(OK);
   }
 
   @DeleteMapping()

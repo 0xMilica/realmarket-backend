@@ -1,6 +1,7 @@
 package io.realmarket.propeler.unit.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.impl.AuthControllerImpl;
+import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.unit.util.AuthUtils;
 import org.junit.Test;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.*;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,5 +62,12 @@ public class AuthControllerImplTest {
     ResponseEntity responseEntity = authControllerImpl.logout();
     verify(authService, Mockito.times(1)).logout();
     assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
+  }
+
+  @Test
+  public void FinalizeEmailChange_Should_CallAuthService() {
+    ResponseEntity responseEntity = authControllerImpl.finalizeEmailChange(TEST_CONFIRM_EMAIL_CHANGE_DTO);
+    verify(authService, times(1)).finalizeEmailChange(TEST_CONFIRM_EMAIL_CHANGE_DTO);
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
   }
 }

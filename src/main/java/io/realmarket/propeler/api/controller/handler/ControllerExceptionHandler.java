@@ -1,8 +1,8 @@
 package io.realmarket.propeler.api.controller.handler;
 
 import io.realmarket.propeler.service.exception.COSException;
+import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.InternalServerErrorException;
-import io.realmarket.propeler.service.exception.util.ForbiddenOperationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

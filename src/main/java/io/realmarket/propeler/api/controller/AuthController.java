@@ -94,4 +94,15 @@ public interface AuthController {
     @ApiResponse(code = 400, message = "Invalid username provided.")
   })
   ResponseEntity recoverUsername(EmailDto emailDto);
+
+  @ApiOperation(
+          value = "Changing email",
+          httpMethod = "PATCH",
+          consumes = APPLICATION_JSON_VALUE,
+          produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+          @ApiResponse(code = 201, message = "Changed email successfully."),
+          @ApiResponse(code = 400, message = "Invalid token provided.")
+  })
+  ResponseEntity finalizeEmailChange(ConfirmEmailChangeDto confirmEmailChangeDto);
 }

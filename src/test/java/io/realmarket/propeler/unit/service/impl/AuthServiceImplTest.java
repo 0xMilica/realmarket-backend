@@ -3,6 +3,7 @@ package io.realmarket.propeler.unit.service.impl;
 import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.EmailChangeRequest;
+import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.repository.AuthRepository;
@@ -11,9 +12,9 @@ import io.realmarket.propeler.service.EmailChangeRequestService;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.TemporaryTokenService;
+import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
-import io.realmarket.propeler.service.exception.util.ForbiddenOperationException;
 import io.realmarket.propeler.service.impl.AuthServiceImpl;
 import io.realmarket.propeler.service.impl.JWTServiceImpl;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -38,10 +39,11 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.*;
+import static io.realmarket.propeler.unit.util.EmailChangeRequestUtils.TEST_EMAIL_CHANGE_REQUEST;
+import static io.realmarket.propeler.unit.util.EmailChangeRequestUtils.TEST_NEW_EMAIL;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT_VALUE;
-import static io.realmarket.propeler.unit.util.PersonUtils.TEST_PERSON_LIST;
-import static io.realmarket.propeler.unit.util.PersonUtils.TEST_REGISTRATION_PERSON;
+import static io.realmarket.propeler.unit.util.PersonUtils.*;
 import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -311,5 +313,41 @@ public class AuthServiceImplTest {
     verify(emailChangeRequestService, Mockito.times(1)).save(any(EmailChangeRequest.class));
     verify(emailService, times(1)).sendMailToUser(any());
     verify(temporaryTokenService, times(1)).createToken(any(), any());
+  }
+
+  @Test
+  public void FinalizeEmailChange_Should_ChangeEmail() {
+    TEST_PERSON.setEmail(TEST_NEW_EMAIL);
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            TEST_CONFIRM_EMAIL_CHANGE_DTO.getToken()))
+        .thenReturn(TEST_TEMPORARY_TOKEN);
+    when(emailChangeRequestService.findByTokenOrThrowException(TEST_TEMPORARY_TOKEN))
+        .thenReturn(TEST_EMAIL_CHANGE_REQUEST);
+    when(personService.save(any(Person.class))).thenReturn(TEST_PERSON);
+    authServiceImpl.finalizeEmailChange(TEST_CONFIRM_EMAIL_CHANGE_DTO);
+    verify(temporaryTokenService, Mockito.times(1))
+        .findByValueAndNotExpiredOrThrowException(TEST_CONFIRM_EMAIL_CHANGE_DTO.getToken());
+    verify(emailChangeRequestService, times(1)).findByTokenOrThrowException(TEST_TEMPORARY_TOKEN);
+    verify(personService, times(1)).save(any(Person.class));
+    verify(temporaryTokenService, times(1)).deleteToken(TEST_TEMPORARY_TOKEN);
+    assertEquals(TEST_PERSON.getEmail(), TEST_EMAIL_CHANGE_REQUEST.getNewEmail());
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void FinalizeEmailChange_Should_ThrowInvalidTokenException_WhenNotValidToken() {
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            TEST_CONFIRM_EMAIL_CHANGE_DTO.getToken()))
+        .thenThrow(EntityNotFoundException.class);
+    authServiceImpl.finalizeEmailChange(TEST_CONFIRM_EMAIL_CHANGE_DTO);
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void FinalizeEmailChange_Should_ThrowInvalidTokenException_WhenNotCorrespondingEmail() {
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            TEST_CONFIRM_EMAIL_CHANGE_DTO.getToken()))
+        .thenReturn(TEST_TEMPORARY_TOKEN);
+    when(emailChangeRequestService.findByTokenOrThrowException(TEST_TEMPORARY_TOKEN))
+        .thenThrow(EntityNotFoundException.class);
+    authServiceImpl.finalizeEmailChange(TEST_CONFIRM_EMAIL_CHANGE_DTO);
   }
 }

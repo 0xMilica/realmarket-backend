@@ -28,7 +28,7 @@ public class EmailServiceImpl implements EmailService {
   public static final String ACTIVATION_TOKEN = "activationToken";
   public static final String USERNAME_LIST = "username_list";
   public static final String RESET_TOKEN = "resetToken";
-  public static final String EMAIL_CHANGE_TOKEN= "changeEmailToken";
+  public static final String EMAIL_CHANGE_TOKEN = "changeEmailToken";
 
   private static final String LOGO = "logo";
   private static final String ACTIVATION_LINK = "activationLink";
@@ -84,12 +84,15 @@ public class EmailServiceImpl implements EmailService {
         subject = "Propeler - Recover Username";
         data = getRecoverUsernameEmailData(mailContentHolder);
         templateName = "recoverUsernameMailTemplate";
+        break;
 
       case CHANGE_EMAIL:
         subject = "Propeler - Change email";
         data = getChangeEmailEmailData(mailContentHolder);
         templateName = "requestEmailChangeTemplate";
+        break;
       default:
+        break;
     }
 
     emailMessageDto.setSubject(subject);

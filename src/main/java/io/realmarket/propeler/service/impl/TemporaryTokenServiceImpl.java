@@ -31,8 +31,8 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   private static Long getExpirationTime(ETemporaryTokenType tokenType) {
     switch (tokenType) {
       case SETUP_2FA:
-        return 1800000L;
       case EMAIL_CHANGE_TOKEN:
+        return 1800000L;
       case EMAIL_TOKEN:
         return 300000L;
       case LOGIN_TOKEN:
