@@ -125,6 +125,17 @@ public class AuthServiceImpl implements AuthService {
     log.info("User with username '{}' saved successfully.", registrationDto.getUsername());
   }
 
+  @Transactional
+  public void updateSecretById(Long id, String secret) {
+    Auth auth = findByIdOrThrowException(id);
+    auth.setTotpSecret(secret);
+    authRepository.save(auth);
+  }
+
+  public String findSecretById(Long id) {
+    return findByIdOrThrowException(id).getTotpSecret();
+  }
+
   public void confirmRegistration(ConfirmRegistrationDto confirmRegistrationDto) {
     TemporaryToken temporaryToken =
         temporaryTokenService.findByValueAndNotExpiredOrThrowException(

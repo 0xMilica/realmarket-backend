@@ -54,3 +54,8 @@ app:
   scheduler-pool-size: 5
   cleanse.tokens:
     timeloop: 3600000 #1h
+  otp:
+    secret.size: 16
+    wildcard:
+      size: 12
+      batch_size: 10

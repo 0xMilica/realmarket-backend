@@ -10,6 +10,7 @@ buildscript {
         ibmCosVersion = '2.4.2'
         commonsIOVersion = '2.6'
         modelMapperVersion = '2.3.2'
+        aerogearOTPVersion = '1.0.0'
     }
     repositories {
         mavenCentral()
@@ -45,6 +46,7 @@ dependencies {
     implementation "com.vladmihalcea:hibernate-types-52:$hibernateTypesVesion"
     implementation "com.auth0:java-jwt:$auth0Version"
     implementation "org.liquibase:liquibase-core:$liquibaseVersion"
+    implementation "org.jboss.aerogear:aerogear-otp-java:$aerogearOTPVersion"
 
     implementation "com.ibm.cos:ibm-cos-java-sdk:$ibmCosVersion"
     implementation "org.modelmapper:modelmapper:$modelMapperVersion"

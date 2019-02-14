@@ -38,6 +38,12 @@ app:
   scheduler-pool-size: 5
   cleanse.tokens:
     timeloop: 86400000 #24h
+  otp:
+    secret.size: 16
+    wildcard:
+      size: 12
+      batch_size: 10
+
 cos:
   file_prefix:
     user_picture: user_picture/
@@ -48,3 +54,4 @@ cos:
   bucket:
     location: eu-de
     name: mvp-bucket
+

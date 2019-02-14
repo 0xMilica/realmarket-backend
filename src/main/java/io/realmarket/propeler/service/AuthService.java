@@ -32,4 +32,7 @@ public interface AuthService {
   void finalizeEmailChange(final ConfirmEmailChangeDto confirmEmailChangeDto);
 
   void logout();
+
+  void updateSecretById(Long id, String secret);
+
 }

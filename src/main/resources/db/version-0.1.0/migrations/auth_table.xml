@@ -17,6 +17,7 @@
             active boolean,
             password varchar(255),
             user_role euserrole,
+            totp_secret varchar(255),
             username varchar(255)
             constraint auth_uk_on_username
             unique,

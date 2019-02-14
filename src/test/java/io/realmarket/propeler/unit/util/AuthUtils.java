@@ -17,6 +17,7 @@ public class AuthUtils {
   public static final String TEST_EMAIL = "TEST_EMAIL";
   public static final String TEST_PASSWORD = "TEST_PASSWORD";
   public static final String TEST_PASSWORD_NEW = "TEST_PASSWORD_NEW";
+  public static final String TEST_ENCODED_SECRET = "enc_secret";
   public static final EUserRole TEST_ROLE = EUserRole.ROLE_INVESTOR;
   public static final EUserRole TEST_ROLE_FORBIDDEN = EUserRole.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
@@ -76,6 +77,7 @@ public class AuthUtils {
           .active(false)
           .userRole(TEST_ROLE)
           .password(TEST_PASSWORD)
+          .totpSecret(TEST_ENCODED_SECRET)
           .person(getMockedPerson(TEST_REGISTRATION_DTO))
           .build();
 

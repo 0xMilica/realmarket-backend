@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="rakita" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence otp_wildcard_seq;
+            create table if not exists otp_wildcard
+            (
+            id bigint not null
+            constraint otp_wildcard_pkey
+            primary key,
+            wildcard varchar(255),
+            auth_id bigint
+            constraint otp_wildcard_on_auth
+            references auth
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

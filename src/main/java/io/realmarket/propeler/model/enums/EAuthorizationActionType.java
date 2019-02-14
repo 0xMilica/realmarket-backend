@@ -1,0 +1,19 @@
+package io.realmarket.propeler.model.enums;
+
+public enum EAuthorizationActionType {
+  AUTH_ACTION_NEW_TOTP_SECRET("NEW_TOTP_SECRET"),
+  AUTH_ACTION_NEW_EMAIL("NEW_EMAIL"),
+  AUTH_ACTION_NEW_PASSWORD("NEW_PASSWORD");
+
+  private final String text;
+
+  EAuthorizationActionType(final String text) {
+    this.text = text;
+  }
+
+  @Override
+  public String toString() {
+    return text;
+  }
+
+}

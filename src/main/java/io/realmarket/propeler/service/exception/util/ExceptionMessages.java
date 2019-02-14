@@ -25,4 +25,8 @@ public interface ExceptionMessages {
   String PROFILE_PICTURE_DOES_NOT_EXIST = "Profile picture does not exist!";
 
   String FORBIDDEN_OPERATION_EXCEPTION = "Not allowed operation";
+
+  String COULD_NOT_GENERATE_RANDOM_STRING = "Could not generate random string";
+
+  String AUTHORIZATION_ACTION_NOT_FOUND = "Authorization action not found";
 }

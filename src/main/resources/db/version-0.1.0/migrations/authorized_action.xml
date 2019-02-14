@@ -1,0 +1,27 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="rakita" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence authorized_action_seq;
+            create type eauthorizedactiontype as enum ('NEW_TOTP_SECRET', 'NEW_EMAIL', 'NEW_PASSWORD');
+            create table if not exists authorized_action
+            (
+            id bigint not null
+            constraint authorized_action_pkey
+            primary key,
+            auth_id bigint not null
+            constraint authorized_action_on_auth
+            references auth,
+            data varchar(255),
+            expiration timestamp,
+            type eauthorizedactiontype,
+            unique (type, auth_id)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

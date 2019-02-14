@@ -38,7 +38,10 @@ public class Auth {
   @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "auth_fk1_on_person"))
   private Person person;
 
+  private String totpSecret;
+
   public Auth(Long id) {
     this.id = id;
   }
+
 }
