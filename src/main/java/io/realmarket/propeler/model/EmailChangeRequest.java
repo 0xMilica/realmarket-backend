@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.time.Instant;
 
 @Data
 @Builder
@@ -28,7 +29,10 @@ public class EmailChangeRequest {
   @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "email_change_req_fk1_on_person"))
   private Person person;
 
+  @OnDelete(action = OnDeleteAction.CASCADE)
   @OneToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "tokenId", foreignKey = @ForeignKey(name = "email_change_req_fk1_on_temporary_token"))
+  @JoinColumn(
+      name = "tokenId",
+      foreignKey = @ForeignKey(name = "email_change_req_fk1_on_temporary_token"))
   private TemporaryToken temporaryToken;
 }
