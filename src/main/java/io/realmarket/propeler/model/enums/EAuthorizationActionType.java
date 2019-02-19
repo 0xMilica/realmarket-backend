@@ -1,9 +1,9 @@
 package io.realmarket.propeler.model.enums;
 
 public enum EAuthorizationActionType {
-  AUTH_ACTION_NEW_TOTP_SECRET("NEW_TOTP_SECRET"),
-  AUTH_ACTION_NEW_EMAIL("NEW_EMAIL"),
-  AUTH_ACTION_NEW_PASSWORD("NEW_PASSWORD");
+  NEW_TOTP_SECRET("NEW_TOTP_SECRET"),
+  NEW_EMAIL("NEW_EMAIL"),
+  NEW_PASSWORD("NEW_PASSWORD");
 
   private final String text;
 

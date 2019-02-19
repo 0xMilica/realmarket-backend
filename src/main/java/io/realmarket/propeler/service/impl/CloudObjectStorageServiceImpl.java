@@ -108,7 +108,7 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
   @Override
   @Async
   public void upload(String name, InputStream inputStream, int fileSize) {
-    log.info("Uploading file["+String.valueOf(fileSize)+"]:"+name);
+    log.info("Uploading file["+ fileSize +"]:"+name);
     ObjectMetadata metadata = new ObjectMetadata();
     metadata.setContentLength(fileSize);
 

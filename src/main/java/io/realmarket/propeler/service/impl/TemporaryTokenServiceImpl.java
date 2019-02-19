@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,7 +31,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
 
   private static Long getExpirationTime(ETemporaryTokenType tokenType) {
     switch (tokenType) {
-      case SETUP_2FA:
+      case SETUP_2FA_TOKEN:
       case EMAIL_CHANGE_TOKEN:
         return 1800000L;
       case EMAIL_TOKEN:
@@ -42,6 +43,17 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
       default:
         throw new EntityNotFoundException(ExceptionMessages.INVALID_TOKEN_TYPE);
     }
+  }
+
+  @Transactional
+  public boolean validateTokenAndDeleteIt(String value, ETemporaryTokenType type) {
+    Optional<TemporaryToken> temporaryToken =
+        temporaryTokenRepository.findByValueAndExpirationTimeGreaterThanEqual(value, Instant.now());
+    if (!temporaryToken.isPresent() || temporaryToken.get().getTemporaryTokenType().equals(type)) {
+      return false;
+    }
+    deleteToken(temporaryToken.get());
+    return true;
   }
 
   @Transactional

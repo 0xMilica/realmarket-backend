@@ -1,5 +1,6 @@
 package io.realmarket.propeler.unit.service.impl;
 
+import io.realmarket.propeler.api.dto.AuthResponseDto;
 import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.EmailChangeRequest;
@@ -236,17 +237,18 @@ public class AuthServiceImplTest {
   public void Login_Should_Return_Valid_JWT_Token() {
 
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
-    Auth auth = TEST_AUTH;
+    Auth auth = TEST_AUTH.toBuilder().build();
     auth.setActive(true);
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
     when(passwordEncoder.matches(TEST_LOGIN_DTO.getPassword(), auth.getPassword()))
         .thenReturn(true);
+    when(temporaryTokenService.createToken(any(),any())).thenReturn(TEST_TEMPORARY_TOKEN);
 
     when(jwtService.createToken(auth)).thenReturn(TEST_JWT);
 
-    LoginResponseDto login = authSpy.login(TEST_LOGIN_DTO);
+    AuthResponseDto login = authSpy.login(TEST_LOGIN_DTO);
 
-    assertEquals(TEST_JWT.getValue(), login.getJwt());
+    assertEquals(TEST_TEMPORARY_TOKEN.getValue(), login.getToken());
   }
 
   @Test(expected = BadCredentialsException.class)

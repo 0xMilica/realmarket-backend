@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Entity(name = "Auth")
 @Table(indexes = @Index(columnList = "username", unique = true, name = "auth_uk_on_username"))
 @TypeDef(name = "euserrole", typeClass = PostgreSQLEnumType.class)

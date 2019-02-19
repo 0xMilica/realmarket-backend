@@ -1,7 +1,6 @@
 package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.*;
-import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -71,7 +70,7 @@ public interface AuthController {
     @ApiResponse(code = 201, message = "Created (if success)"),
     @ApiResponse(code = 400, message = "Invalid Request (on failure to login)\n")
   })
-  ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginDto loginDto);
+  ResponseEntity<AuthResponseDto> login(@RequestBody @Valid LoginDto loginDto);
 
   @ApiOperation(
       value = "Logout",
@@ -96,13 +95,13 @@ public interface AuthController {
   ResponseEntity recoverUsername(EmailDto emailDto);
 
   @ApiOperation(
-          value = "Changing email",
-          httpMethod = "PATCH",
-          consumes = APPLICATION_JSON_VALUE,
-          produces = APPLICATION_JSON_VALUE)
+      value = "Changing email",
+      httpMethod = "PATCH",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-          @ApiResponse(code = 201, message = "Changed email successfully."),
-          @ApiResponse(code = 400, message = "Invalid token provided.")
+    @ApiResponse(code = 201, message = "Changed email successfully."),
+    @ApiResponse(code = 400, message = "Invalid token provided.")
   })
   ResponseEntity finalizeEmailChange(ConfirmEmailChangeDto confirmEmailChangeDto);
 }

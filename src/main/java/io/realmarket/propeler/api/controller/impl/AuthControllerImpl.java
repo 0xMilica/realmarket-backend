@@ -3,7 +3,6 @@ package io.realmarket.propeler.api.controller.impl;
 import io.realmarket.propeler.api.controller.AuthController;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.AuthService;
-import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +51,7 @@ public class AuthControllerImpl implements AuthController {
   }
 
   @PostMapping()
-  public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginDto loginDto) {
+  public ResponseEntity<AuthResponseDto> login(@RequestBody @Valid LoginDto loginDto) {
     return new ResponseEntity<>(authService.login(loginDto), CREATED);
   }
 
@@ -63,7 +62,8 @@ public class AuthControllerImpl implements AuthController {
   }
 
   @PatchMapping("/email_confirm")
-  public ResponseEntity finalizeEmailChange(@RequestBody @Valid ConfirmEmailChangeDto confirmEmailChangeDto) {
+  public ResponseEntity finalizeEmailChange(
+      @RequestBody @Valid ConfirmEmailChangeDto confirmEmailChangeDto) {
     authService.finalizeEmailChange(confirmEmailChangeDto);
     return new ResponseEntity(OK);
   }

@@ -1,5 +1,6 @@
 package io.realmarket.propeler.unit.service.impl;
 
+import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.OTPWildcard;
 import io.realmarket.propeler.repository.AuthorizedActionRepository;
 import io.realmarket.propeler.repository.OTPWildcardRepository;
@@ -20,8 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
-import static io.realmarket.propeler.model.enums.EAuthorizationActionType.AUTH_ACTION_NEW_EMAIL;
-import static io.realmarket.propeler.model.enums.EAuthorizationActionType.AUTH_ACTION_NEW_TOTP_SECRET;
+import static io.realmarket.propeler.model.enums.EAuthorizationActionType.NEW_EMAIL;
+import static io.realmarket.propeler.model.enums.EAuthorizationActionType.NEW_TOTP_SECRET;
 import static io.realmarket.propeler.unit.util.AuthUtils.*;
 import static io.realmarket.propeler.unit.util.OTPUtils.*;
 import static org.junit.Assert.*;
@@ -55,7 +56,7 @@ public class OTPServiceImplTest {
     otpService = PowerMockito.spy(otpService);
     doReturn(false).when(otpService, "validateCode", anyString(), anyString());
 
-    Boolean isValid = otpService.validate(TEST_AUTH, TEST_SECRET);
+    Boolean isValid = otpService.validate(TEST_AUTH, new TwoFADto(TEST_TOTP_CODE_1,null));
     assertEquals(isValid, false);
   }
 
@@ -64,7 +65,7 @@ public class OTPServiceImplTest {
     OTPServiceImpl otpServiceSpy = PowerMockito.spy(otpService);
     PowerMockito.doReturn(false).when(otpServiceSpy, "validateCode", anyString(), anyString());
 
-    Boolean isValid = otpServiceSpy.validate(TEST_AUTH, TEST_TOTP_CODE_1);
+    Boolean isValid = otpServiceSpy.validate(TEST_AUTH, new TwoFADto(TEST_TOTP_CODE_1,null));
     assertEquals(isValid, false);
   }
 
@@ -74,7 +75,7 @@ public class OTPServiceImplTest {
         .thenReturn(OTPUtils.TEST_OTP_WILDCARD_LIST());
     when(passwordEncoder.matches(TEST_OTP_WILDCARD_1, TEST_OTP_WILDCARD_1)).thenReturn(true);
 
-    Boolean isValid = otpService.validate(TEST_AUTH, TEST_OTP_WILDCARD_1);
+    Boolean isValid = otpService.validate(TEST_AUTH, new TwoFADto(null,TEST_OTP_WILDCARD_1));
     assertEquals(isValid, true);
     OTPWildcard otpWildcard = OTPUtils.TEST_OTP_WILDCARD_1();
     verify(otpWildcardRepository, times(1)).deleteById(otpWildcard.getId());
@@ -86,7 +87,7 @@ public class OTPServiceImplTest {
         .thenReturn(OTPUtils.TEST_OTP_WILDCARD_LIST());
     when(passwordEncoder.matches(TEST_OTP_WILDCARD_1, TEST_OTP_WILDCARD_1)).thenReturn(false);
 
-    Boolean isValid = otpService.validate(TEST_AUTH, TEST_OTP_WILDCARD_1);
+    Boolean isValid = otpService.validate(TEST_AUTH, new TwoFADto(null,TEST_OTP_WILDCARD_1));
     assertEquals(isValid, false);
   }
 
@@ -149,7 +150,7 @@ public class OTPServiceImplTest {
   public void ValidateAuthorizedAction_Should_ReturnEmpty_On_NEW2FA_Check() {
     Optional<String> ret =
         otpService.validateAuthorizationAction(
-            TEST_AUTH, AUTH_ACTION_NEW_TOTP_SECRET, TEST_TOTP_CODE_1);
+            TEST_AUTH, NEW_TOTP_SECRET, TEST_TOTP_CODE_1);
     assertFalse(ret.isPresent());
   }
 
@@ -162,7 +163,7 @@ public class OTPServiceImplTest {
     doReturn(true).when(otpService, "validateCode", anyString(), anyString());
 
     Optional<String> ret =
-        otpService.validateAuthorizationAction(TEST_AUTH, AUTH_ACTION_NEW_EMAIL, TEST_TOTP_CODE_1);
+        otpService.validateAuthorizationAction(TEST_AUTH, NEW_EMAIL, TEST_TOTP_CODE_1);
     assertTrue(ret.isPresent());
     assertEquals(TEST_EMAIL, ret.get());
   }
@@ -177,7 +178,7 @@ public class OTPServiceImplTest {
     doReturn(false).when(otpService, "validateCode", anyString(), anyString());
 
     Optional<String> ret =
-        otpService.validateAuthorizationAction(TEST_AUTH, AUTH_ACTION_NEW_EMAIL, TEST_TOTP_CODE_1);
+        otpService.validateAuthorizationAction(TEST_AUTH, NEW_EMAIL, TEST_TOTP_CODE_1);
     assertFalse(ret.isPresent());
   }
 }

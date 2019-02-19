@@ -1,6 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
+import io.realmarket.propeler.api.dto.enums.E2FAStatus;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.EmailChangeRequest;
@@ -16,7 +17,6 @@ import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.MailContentHolder;
-import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -74,14 +74,14 @@ public class AuthServiceImpl implements AuthService {
     return authorities;
   }
 
-  public LoginResponseDto login(LoginDto loginDto) {
+  public AuthResponseDto login(LoginDto loginDto) {
     Auth auth =
         authRepository
             .findByUsername(loginDto.getUsername())
             .orElseThrow(
                 () -> new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE));
     validateLogin(auth, loginDto);
-    return new LoginResponseDto(jwtService.createToken(auth).getValue());
+    return getAuthResponse(auth);
   }
 
   @Transactional
@@ -262,6 +262,17 @@ public class AuthServiceImpl implements AuthService {
 
   private Boolean isRoleAllowed(EUserRole role) {
     return ALLOWED_ROLES.contains(role);
+  }
+
+  private AuthResponseDto getAuthResponse(Auth auth) {
+    if (auth.getTotpSecret() == null) {
+      return new AuthResponseDto(
+          E2FAStatus.INITIALIZE,
+          temporaryTokenService.createToken(auth, ETemporaryTokenType.SETUP_2FA_TOKEN).getValue());
+    }
+    return new AuthResponseDto(
+        E2FAStatus.VALIDATE,
+        temporaryTokenService.createToken(auth, ETemporaryTokenType.LOGIN_TOKEN).getValue());
   }
 
   private void validateLogin(Auth auth, LoginDto loginDto) {

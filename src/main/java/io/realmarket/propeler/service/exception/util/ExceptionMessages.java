@@ -20,6 +20,10 @@ public interface ExceptionMessages {
 
   String INVALID_TOKEN_TYPE = "Invalid token type";
 
+  String TOTP_CODE_NOT_PROVIDED = "TOTP code not provided";
+
+  String INVALID_TOTP_CODE_PROVIDED = "Invalid TOTP code provided";
+
   String COULD_NOT_GENERATE_TOKEN = "Could not generate token";
 
   String PROFILE_PICTURE_DOES_NOT_EXIST = "Profile picture does not exist!";

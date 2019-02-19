@@ -1,14 +1,13 @@
 package io.realmarket.propeler.service;
 
+import io.realmarket.propeler.api.dto.TwoFADto;
+import io.realmarket.propeler.api.dto.TwoFATokenDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.enums.EAuthorizationActionType;
 import java.util.List;
 import java.util.Optional;
 
 public interface OTPService {
-  // Create secret
-  String generateTOTPSecret(Long authId);
-
   /**
    * Generate new secret and store it to AuthorizedAction.
    * @param auth Person that requests change of secret.
@@ -36,15 +35,15 @@ public interface OTPService {
    * @param code Code to be validated
    * @return true if code is valid or false if not.
    */
-  Boolean validate(Auth auth, String code);
+  Boolean validate(Auth auth, TwoFADto code);
 
   /** Store data for safe keeping. And request proper code to obtain data.
-   * @param authId Person that request data tobe saved
+   * @param auth Person that request data tobe saved
    * @param type  Type of dataSafe
    * @param data  Data to be saved
    * @param mmTimeout Timeout in milliseconds
    */
-  void storeAuthorizationAction(Long authId, EAuthorizationActionType type, String data, Long mmTimeout);
+  void storeAuthorizationAction(Auth auth, EAuthorizationActionType type, String data, Long mmTimeout);
 
   /**
    * Validate code and return data if code is valid.

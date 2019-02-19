@@ -23,4 +23,12 @@ public class TemporaryTokenUtils {
           .temporaryTokenType(TEST_TEMPORARY_TOKEN_TYPE)
           .value(TEST_TEMPORARY_TOKEN_VALUE)
           .build();
+
+  public static final TemporaryToken TEST_TEMPORARY_2FA_SETUP_TOKEN =
+          TemporaryToken.builder()
+                  .auth(TEST_AUTH)
+                  .expirationTime(TEST_EXPIRATION_TIME)
+                  .temporaryTokenType(ETemporaryTokenType.SETUP_2FA_TOKEN)
+                  .value(TEST_TEMPORARY_TOKEN_VALUE)
+                  .build();
 }

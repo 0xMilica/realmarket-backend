@@ -41,7 +41,7 @@ public class OTPUtils {
             .auth(TEST_AUTH)
             .data(TEST_SECRET)
             .expiration(Instant.now().plusMillis(1000000L))
-            .type(AUTH_ACTION_NEW_TOTP_SECRET)
+            .type(NEW_TOTP_SECRET)
             .build();
   }
 
@@ -50,7 +50,7 @@ public class OTPUtils {
             .auth(TEST_AUTH)
             .data(TEST_EMAIL)
             .expiration(Instant.now().plusMillis(1000000L))
-            .type(AUTH_ACTION_NEW_EMAIL)
+            .type(NEW_EMAIL)
             .build();
   }
 
@@ -59,8 +59,12 @@ public class OTPUtils {
             .auth(TEST_AUTH)
             .data(TEST_SECRET)
             .expiration(Instant.now().minusMillis(1000000L))
-            .type(AUTH_ACTION_NEW_TOTP_SECRET)
+            .type(NEW_TOTP_SECRET)
             .build();
+  }
+
+  public static List<String> TEST_OTP_WILDCARD_STRING_LIST() {
+    return Arrays.asList(TEST_OTP_WILDCARD_1,TEST_OTP_WILDCARD_2,TEST_OTP_WILDCARD_3);
   }
 
 

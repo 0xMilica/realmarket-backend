@@ -11,7 +11,7 @@
     <include file="migrations/temporary_token_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/jwt_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/email_change_request_table.xml" relativeToChangelogFile="true"/>
-    <include file="migrations/otp_wildcard.xml" relativeToChangelogFile="true"/>
-    <include file="migrations/authorized_action.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/otp_wildcard_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/authorized_action_table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

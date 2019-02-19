@@ -5,6 +5,7 @@ import io.realmarket.propeler.model.enums.PostgreSQLEnumType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -13,12 +14,12 @@ import java.time.Instant;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity(name = "AuthorizedAction")
 @Table(uniqueConstraints =  {@UniqueConstraint(columnNames = {"type", "authId"} , name = "authorized_action_uk_on_type_and_authId")})
 @TypeDef(name = "eauthorizedactiontype", typeClass = PostgreSQLEnumType.class)
 public class AuthorizedAction {
-
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AUTHORIZED_ACTION_SEQ")
   @SequenceGenerator(name = "AUTHORIZED_ACTION_SEQ", sequenceName = "AUTHORIZED_ACTION_SEQ", allocationSize = 1)
