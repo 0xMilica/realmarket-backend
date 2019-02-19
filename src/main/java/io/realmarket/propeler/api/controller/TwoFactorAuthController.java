@@ -44,5 +44,5 @@ public interface TwoFactorAuthController {
     @ApiResponse(code = 201, message = "User successfully verified secret and codes are returned."),
     @ApiResponse(code = 400, message = "Invalid code or token provided")
   })
-  ResponseEntity<OTPWildcardResponseDto> verifySecretAndCreateWildcards(TwoFATokenDto twoFATokenDto);
+  ResponseEntity<OTPWildcardResponseDto> verifySecretAndCreateWildcards(TwoFASecretVerifyDto twoFATokenDto);
 }

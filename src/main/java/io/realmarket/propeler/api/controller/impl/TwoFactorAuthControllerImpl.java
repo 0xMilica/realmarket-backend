@@ -1,10 +1,7 @@
 package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.TwoFactorAuthController;
-import io.realmarket.propeler.api.dto.OTPWildcardResponseDto;
-import io.realmarket.propeler.api.dto.TwoFASecretRequestDto;
-import io.realmarket.propeler.api.dto.TwoFASecretResponseDto;
-import io.realmarket.propeler.api.dto.TwoFATokenDto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.TwoFactorAuthService;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +44,7 @@ public class TwoFactorAuthControllerImpl implements TwoFactorAuthController {
   @Override
   @PostMapping(value = "/verify")
   public ResponseEntity<OTPWildcardResponseDto> verifySecretAndCreateWildcards(
-      @RequestBody @Valid TwoFATokenDto twoFATokenDto) {
-    return ResponseEntity.ok(twoFactorAuthService.createWildcards(twoFATokenDto));
+      @RequestBody @Valid TwoFASecretVerifyDto twoFASecretVerifyDto) {
+    return ResponseEntity.ok(twoFactorAuthService.createWildcards(twoFASecretVerifyDto));
   }
 }

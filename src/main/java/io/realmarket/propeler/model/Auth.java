@@ -1,5 +1,6 @@
 package io.realmarket.propeler.model;
 
+import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.model.enums.PostgreSQLEnumType;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import javax.persistence.*;
 @Entity(name = "Auth")
 @Table(indexes = @Index(columnList = "username", unique = true, name = "auth_uk_on_username"))
 @TypeDef(name = "euserrole", typeClass = PostgreSQLEnumType.class)
+@TypeDef(name = "eauthstate", typeClass = PostgreSQLEnumType.class)
 public class Auth {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AUTH_SEQ")
@@ -32,7 +34,10 @@ public class Auth {
   @Enumerated(EnumType.STRING)
   private EUserRole userRole;
 
-  private Boolean active;
+  @Column(columnDefinition = "eauthstate")
+  @Type(type = "eauthstate")
+  @Enumerated(EnumType.STRING)
+  private EAuthState state;
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "auth_fk1_on_person"))
@@ -43,5 +48,4 @@ public class Auth {
   public Auth(Long id) {
     this.id = id;
   }
-
 }

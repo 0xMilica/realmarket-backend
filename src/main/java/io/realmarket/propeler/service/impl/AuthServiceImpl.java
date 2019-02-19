@@ -7,6 +7,7 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.EmailChangeRequest;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.TemporaryToken;
+import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.AuthRepository;
@@ -80,8 +81,7 @@ public class AuthServiceImpl implements AuthService {
             .findByUsername(loginDto.getUsername())
             .orElseThrow(
                 () -> new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE));
-    validateLogin(auth, loginDto);
-    return getAuthResponse(auth);
+    return validateLogin(auth, loginDto);
   }
 
   @Transactional
@@ -102,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
         this.authRepository.save(
             Auth.builder()
                 .username(registrationDto.getUsername())
-                .active(false)
+                .state(EAuthState.CONFIRM_REGISTRATION)
                 .userRole(registrationDto.getUserRole())
                 .password(passwordEncoder.encode(registrationDto.getPassword()))
                 .person(person)
@@ -132,6 +132,12 @@ public class AuthServiceImpl implements AuthService {
     authRepository.save(auth);
   }
 
+  @Override
+  public void finalize2faInitialization(Auth auth) {
+    auth.setState(EAuthState.ACTIVE);
+    authRepository.save(auth);
+  }
+
   public String findSecretById(Long id) {
     return findByIdOrThrowException(id).getTotpSecret();
   }
@@ -142,7 +148,7 @@ public class AuthServiceImpl implements AuthService {
             confirmRegistrationDto.getToken());
 
     Auth auth = temporaryToken.getAuth();
-    auth.setActive(true);
+    auth.setState(EAuthState.INITIALIZE_2FA);
     authRepository.save(auth);
 
     temporaryTokenService.deleteToken(temporaryToken);
@@ -264,19 +270,9 @@ public class AuthServiceImpl implements AuthService {
     return ALLOWED_ROLES.contains(role);
   }
 
-  private AuthResponseDto getAuthResponse(Auth auth) {
-    if (auth.getTotpSecret() == null) {
-      return new AuthResponseDto(
-          E2FAStatus.INITIALIZE,
-          temporaryTokenService.createToken(auth, ETemporaryTokenType.SETUP_2FA_TOKEN).getValue());
-    }
-    return new AuthResponseDto(
-        E2FAStatus.VALIDATE,
-        temporaryTokenService.createToken(auth, ETemporaryTokenType.LOGIN_TOKEN).getValue());
-  }
 
-  private void validateLogin(Auth auth, LoginDto loginDto) {
-    if (!auth.getActive()) {
+  private AuthResponseDto validateLogin(Auth auth, LoginDto loginDto) {
+    if (auth.getState().equals(EAuthState.CONFIRM_REGISTRATION)) {
       log.error("User with auth id '{}' is not active ", auth.getId());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
@@ -284,6 +280,14 @@ public class AuthServiceImpl implements AuthService {
       log.error("User with auth id '{}' provided passwords which do not match ", auth.getId());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
+    if(auth.getState().equals(EAuthState.INITIALIZE_2FA)) {
+      return new AuthResponseDto(
+              E2FAStatus.INITIALIZE,
+              temporaryTokenService.createToken(auth, ETemporaryTokenType.SETUP_2FA_TOKEN).getValue());
+    }
+    return new AuthResponseDto(
+            E2FAStatus.VALIDATE,
+            temporaryTokenService.createToken(auth, ETemporaryTokenType.LOGIN_TOKEN).getValue());
   }
 
   private void changePersonEmail(

@@ -6,6 +6,7 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.EmailChangeRequest;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.TemporaryToken;
+import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.security.UserAuthentication;
@@ -174,7 +175,7 @@ public class AuthServiceImplTest {
     verify(temporaryTokenService, Mockito.times(1))
         .findByValueAndNotExpiredOrThrowException(TEST_TEMPORARY_TOKEN_VALUE);
     verify(authRepository, Mockito.times(1)).save(any(Auth.class));
-    assertEquals(true, TEST_AUTH.getActive());
+    assertEquals(EAuthState.INITIALIZE_2FA, TEST_AUTH.getState());
   }
 
   @Test
@@ -238,7 +239,7 @@ public class AuthServiceImplTest {
 
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     Auth auth = TEST_AUTH.toBuilder().build();
-    auth.setActive(true);
+    auth.setState(EAuthState.ACTIVE);
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
     when(passwordEncoder.matches(TEST_LOGIN_DTO.getPassword(), auth.getPassword()))
         .thenReturn(true);
@@ -273,7 +274,7 @@ public class AuthServiceImplTest {
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
 
     Auth auth = TEST_AUTH;
-    auth.setActive(true);
+    auth.setState(EAuthState.ACTIVE);
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
 
     authSpy.login(TEST_LOGIN_DTO);

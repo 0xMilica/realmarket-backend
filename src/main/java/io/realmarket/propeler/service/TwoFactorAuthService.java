@@ -7,5 +7,5 @@ public interface TwoFactorAuthService {
 
   TwoFASecretResponseDto createSecret(TwoFASecretRequestDto twoFASecretRequestDto);
 
-  OTPWildcardResponseDto createWildcards(TwoFATokenDto twoFATokenDto);
+  OTPWildcardResponseDto createWildcards(TwoFASecretVerifyDto twoFASecretVerifyDto);
 }

@@ -1,9 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.OTPWildcardResponseDto;
-import io.realmarket.propeler.api.dto.TwoFASecretRequestDto;
-import io.realmarket.propeler.api.dto.TwoFASecretResponseDto;
-import io.realmarket.propeler.api.dto.TwoFATokenDto;
+import io.realmarket.propeler.api.dto.*;
+import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.service.AuthService;
@@ -39,6 +37,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     return true;
   }
 
+  @Override
   @Transactional
   public TwoFASecretResponseDto createSecret(TwoFASecretRequestDto twoFASecretRequestDto) {
     TemporaryToken temporaryToken =
@@ -51,21 +50,21 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     return TwoFASecretResponseDto.builder().secret(secret).token(temporaryToken.getValue()).build();
   }
 
+  @Override
   @Transactional
-  public OTPWildcardResponseDto createWildcards(TwoFATokenDto twoFATokenDto) {
+  public OTPWildcardResponseDto createWildcards(TwoFASecretVerifyDto twoFASecretVerifyDto) {
     TemporaryToken temporaryToken =
-        temporaryTokenService.findByValueAndNotExpiredOrThrowException(twoFATokenDto.getToken());
+        temporaryTokenService.findByValueAndNotExpiredOrThrowException(twoFASecretVerifyDto.getToken());
     if (temporaryToken.getTemporaryTokenType() != ETemporaryTokenType.SETUP_2FA_TOKEN) {
       throw new ForbiddenOperationException(ExceptionMessages.INVALID_TOKEN_TYPE);
     }
-    if (twoFATokenDto.getCode() == null) {
-      throw new IllegalArgumentException(ExceptionMessages.TOTP_CODE_NOT_PROVIDED);
-    }
-    if (!otpService.validateTOTPSecretChange(temporaryToken.getAuth(), twoFATokenDto.getCode())) {
+    Auth auth = temporaryToken.getAuth();
+    if (!otpService.validateTOTPSecretChange(auth, twoFASecretVerifyDto.getCode())) {
       throw new ForbiddenOperationException(ExceptionMessages.INVALID_TOTP_CODE_PROVIDED);
     }
     List<String> wildcards = otpService.generateRecoveryCodes(temporaryToken.getAuth());
     temporaryTokenService.deleteToken(temporaryToken);
+    authService.finalize2faInitialization(auth);
     return OTPWildcardResponseDto.builder().wildcards(wildcards).build();
   }
 }

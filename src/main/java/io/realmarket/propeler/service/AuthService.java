@@ -34,4 +34,5 @@ public interface AuthService {
 
   void updateSecretById(Long id, String secret);
 
+  void finalize2faInitialization(Auth auth);
 }

@@ -9,12 +9,13 @@
                 stripComments="true">
             create sequence auth_seq;
             create type euserrole as enum ('ROLE_ADMIN', 'ROLE_INVESTOR', 'ROLE_ENTREPRENEUR');
+            create type eauthstate as enum ('CONFIRM_REGISTRATION', 'INITIALIZE_2FA', 'ACTIVE');
             create table if not exists auth
             (
             id bigint not null
             constraint auth_pkey
             primary key,
-            active boolean,
+            state eauthstate,
             password varchar(255),
             user_role euserrole,
             totp_secret varchar(255),

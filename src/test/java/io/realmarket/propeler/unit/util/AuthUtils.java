@@ -3,6 +3,7 @@ package io.realmarket.propeler.unit.util;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
+import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.EmailServiceImpl;
@@ -74,7 +75,7 @@ public class AuthUtils {
   public static final Auth TEST_AUTH =
       Auth.builder()
           .username(TEST_USERNAME)
-          .active(false)
+          .state(EAuthState.ACTIVE)
           .userRole(TEST_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
