@@ -16,5 +16,6 @@ public interface AuthorizedActionRepository extends JpaRepository<AuthorizedActi
 
   void deleteAllByAuthAndType(Auth auth, EAuthorizationActionType type);
 
-  Optional<AuthorizedAction> findByAuthAndTypeAndExpirationIsAfter(Auth auth, EAuthorizationActionType type, Instant now);
+  Optional<AuthorizedAction> findByAuthAndTypeAndExpirationIsAfter(
+      Auth auth, EAuthorizationActionType type, Instant now);
 }

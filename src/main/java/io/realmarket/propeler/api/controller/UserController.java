@@ -157,12 +157,31 @@ public interface UserController {
   ResponseEntity deleteProfilePicture(@PathVariable Long userId);
 
   @ApiOperation(
-          value = "Change email request verification",
-          httpMethod = "PATCH",
-          produces = APPLICATION_JSON_VALUE)
+      value = "Change email request verification",
+      httpMethod = "PATCH",
+      produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-          @ApiResponse(code = 200, message = "Email change request verified."),
-          @ApiResponse(code = 400, message = "Invalid request.")
+    @ApiResponse(code = 200, message = "Email change request verified."),
+    @ApiResponse(code = 400, message = "Invalid request.")
   })
-  ResponseEntity verifyEmailChangeRequest(@PathVariable Long userId, @RequestBody TwoFADto twoFACDto);
+  ResponseEntity verifyEmailChangeRequest(
+      @PathVariable Long userId, @RequestBody TwoFADto twoFACDto);
+
+  @ApiOperation(
+      value = "Generate new secret codes",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams(
+      @ApiImplicitParam(
+          name = "userId",
+          value = "id of person that password is about to change",
+          required = true,
+          dataType = "Long"))
+  @ApiResponses({
+    @ApiResponse(code = 201, message = "Created."),
+    @ApiResponse(code = 400, message = "Invalid request.")
+  })
+  ResponseEntity<SecretDto> generateNewSecret(
+      Long userId, GenerateNewSecretDto generateNewSecretDto);
 }

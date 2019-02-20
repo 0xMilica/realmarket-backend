@@ -82,6 +82,26 @@ public class AuthUtils {
           .person(getMockedPerson(TEST_REGISTRATION_DTO))
           .build();
 
+  public static final Auth TEST_AUTH_OLD_SECRET =
+      Auth.builder()
+          .username(TEST_USERNAME)
+          .state(EAuthState.ACTIVE)
+          .userRole(TEST_ROLE)
+          .password(TEST_PASSWORD)
+          .totpSecret(OTPUtils.TEST_SECRET_1)
+          .person(getMockedPerson(TEST_REGISTRATION_DTO))
+          .build();
+
+  public static final Auth TEST_AUTH_NEW_SECRET =
+      Auth.builder()
+          .username(TEST_USERNAME)
+          .state(EAuthState.ACTIVE)
+          .userRole(TEST_ROLE)
+          .password(TEST_PASSWORD)
+          .totpSecret(OTPUtils.TEST_SECRET_2)
+          .person(getMockedPerson(TEST_REGISTRATION_DTO))
+          .build();
+
   public static final ConfirmEmailChangeDto TEST_CONFIRM_EMAIL_CHANGE_DTO =
       ConfirmEmailChangeDto.builder().token(TEST_TEMPORARY_TOKEN_VALUE).build();
 

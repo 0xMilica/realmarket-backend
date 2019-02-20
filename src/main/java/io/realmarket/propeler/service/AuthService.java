@@ -16,6 +16,8 @@ public interface AuthService {
 
   Auth findByUsernameOrThrowException(String username);
 
+  Auth findByUserIdrThrowException(Long userId);
+
   Optional<Auth> findById(Long id);
 
   Auth findByIdOrThrowException(Long id);
@@ -39,4 +41,6 @@ public interface AuthService {
   void initializeEmailChange(final Long authId, final EmailDto emailDto);
 
   void finalize2faInitialization(Auth auth);
+
+  void checkLoginCredentials(Auth auth, String password);
 }

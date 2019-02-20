@@ -13,7 +13,9 @@ import static io.realmarket.propeler.unit.util.AuthUtils.TEST_EMAIL;
 
 public class OTPUtils {
 
-  public static final String TEST_SECRET = "235562";
+  public static final String TEST_SECRET_1 = "235562";
+  public static final String TEST_SECRET_2 = "696969";
+
 
   public static final String TEST_TOTP_CODE_1 = "123456";
   public static final String TEST_TOTP_CODE_2 = "678901";
@@ -39,7 +41,7 @@ public class OTPUtils {
   public static AuthorizedAction TEST_AUTH_ACTION_NEW2FA() {
     return AuthorizedAction.builder()
             .auth(TEST_AUTH)
-            .data(TEST_SECRET)
+            .data(TEST_SECRET_1)
             .expiration(Instant.now().plusMillis(1000000L))
             .type(NEW_TOTP_SECRET)
             .build();
@@ -57,7 +59,7 @@ public class OTPUtils {
   public static AuthorizedAction TEST_AUTH_ACTION_NEW2FA_EXPIRED() {
     return AuthorizedAction.builder()
             .auth(TEST_AUTH)
-            .data(TEST_SECRET)
+            .data(TEST_SECRET_1)
             .expiration(Instant.now().minusMillis(1000000L))
             .type(NEW_TOTP_SECRET)
             .build();

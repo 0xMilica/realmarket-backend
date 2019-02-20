@@ -115,7 +115,7 @@ public class OTPServiceImplTest {
     Boolean ret = otpService.validateTOTPSecretChange(TEST_AUTH, TEST_TOTP_CODE_1);
 
     assertEquals(true, ret);
-    verify(authService, times(1)).updateSecretById(TEST_AUTH.getId(), TEST_SECRET);
+    verify(authService, times(1)).updateSecretById(TEST_AUTH.getId(), TEST_SECRET_1);
   }
 
   @Test

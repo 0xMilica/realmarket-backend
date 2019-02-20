@@ -4,6 +4,7 @@ import io.realmarket.propeler.api.controller.UserController;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.PersonService;
+import io.realmarket.propeler.service.TwoFactorAuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +22,15 @@ public class UserControllerImpl implements UserController {
 
   private final AuthService authService;
   private final PersonService personService;
+  private final TwoFactorAuthService twoFactorAuthService;
 
-  public UserControllerImpl(AuthService authService, PersonService personService) {
+  public UserControllerImpl(
+      AuthService authService,
+      PersonService personService,
+      TwoFactorAuthService twoFactorAuthService) {
     this.authService = authService;
     this.personService = personService;
+    this.twoFactorAuthService = twoFactorAuthService;
   }
 
   @RequestMapping(value = "{username}", method = RequestMethod.HEAD)
@@ -92,5 +98,12 @@ public class UserControllerImpl implements UserController {
       @PathVariable Long authId, @RequestBody @Valid TwoFADto twoFADto) {
     authService.verifyEmailChangeRequest(authId, twoFADto);
     return ResponseEntity.ok().build();
+  }
+
+  @PostMapping(value = "/{userId}/secret")
+  public ResponseEntity<SecretDto> generateNewSecret(
+      @PathVariable Long userId, @RequestBody GenerateNewSecretDto generateNewSecretDto) {
+    return new ResponseEntity<>(
+        twoFactorAuthService.generateNewSecret(generateNewSecretDto, userId), CREATED);
   }
 }

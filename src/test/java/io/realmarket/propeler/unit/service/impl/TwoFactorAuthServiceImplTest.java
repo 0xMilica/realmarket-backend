@@ -1,9 +1,7 @@
 package io.realmarket.propeler.unit.service.impl;
 
-import io.realmarket.propeler.api.dto.OTPWildcardResponseDto;
-import io.realmarket.propeler.api.dto.TwoFADto;
-import io.realmarket.propeler.api.dto.TwoFASecretResponseDto;
-import io.realmarket.propeler.api.dto.TwoFASecretVerifyDto;
+import io.realmarket.propeler.api.dto.*;
+import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.service.AuthService;
@@ -14,25 +12,25 @@ import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.impl.OTPServiceImpl;
 import io.realmarket.propeler.service.impl.TwoFactorAuthServiceImpl;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
-import io.realmarket.propeler.unit.util.OTPUtils;
-import io.realmarket.propeler.unit.util.TemporaryTokenUtils;
-import io.realmarket.propeler.unit.util.TwoFactorAuthUtils;
+import io.realmarket.propeler.unit.util.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
-import static io.realmarket.propeler.unit.util.OTPUtils.TEST_SECRET;
+import static io.realmarket.propeler.unit.util.OTPUtils.TEST_SECRET_1;
 import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN;
 import static io.realmarket.propeler.unit.util.TwoFactorAuthUtils.TEST_TWO_FA_TOKEN;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -52,14 +50,14 @@ public class TwoFactorAuthServiceImplTest {
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(any()))
         .thenReturn(TemporaryTokenUtils.TEST_TEMPORARY_2FA_SETUP_TOKEN);
 
-    when(otpService.generateTOTPSecret(any())).thenReturn(TEST_SECRET);
+    when(otpService.generateTOTPSecret(any())).thenReturn(TEST_SECRET_1);
 
     TwoFASecretResponseDto twoFASecretResponseDto =
         twoFactorAuthService.createSecret(TwoFactorAuthUtils.TEST_2FA_SECRET_REQUEST);
     assertEquals(
         TemporaryTokenUtils.TEST_TEMPORARY_2FA_SETUP_TOKEN.getValue(),
         twoFASecretResponseDto.getToken());
-    assertEquals(TEST_SECRET, twoFASecretResponseDto.getSecret());
+    assertEquals(TEST_SECRET_1, twoFASecretResponseDto.getSecret());
   }
 
   @Test(expected = ForbiddenOperationException.class)
@@ -172,5 +170,43 @@ public class TwoFactorAuthServiceImplTest {
         .thenReturn(false);
 
     twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN);
+  }
+
+  @Test
+  public void generateNewSecret_Should_Return_Codes() {
+    Auth testAuth = AuthUtils.TEST_AUTH_OLD_SECRET;
+    when(authService.findByUserIdrThrowException(PersonUtils.TEST_PERSON_ID)).thenReturn(testAuth);
+
+    when(otpService.validate(any(), any())).thenReturn(true);
+    when(otpService.generateTOTPSecret(testAuth)).thenReturn(OTPUtils.TEST_SECRET_2);
+    when(otpService.generateRecoveryCodes(testAuth))
+        .thenReturn(OTPUtils.TEST_OTP_WILDCARD_STRING_LIST());
+
+    SecretDto secretDto =
+        twoFactorAuthService.generateNewSecret(
+            TwoFactorAuthUtils.NEW_SECRET_REQUEST_1_DTO, PersonUtils.TEST_PERSON_ID);
+    assertNotNull(secretDto.getSecret());
+  }
+
+  @Test(expected = BadCredentialsException.class)
+  public void generateNewSecret_Should_Throw_Exception_On_Wrong_Password() {
+    Auth testAuth = AuthUtils.TEST_AUTH_OLD_SECRET;
+    when(authService.findByUserIdrThrowException(PersonUtils.TEST_PERSON_ID)).thenReturn(testAuth);
+    when(otpService.validate(any(), any())).thenReturn(true);
+
+    doThrow(BadCredentialsException.class).when(authService).checkLoginCredentials(any(), any());
+
+    twoFactorAuthService.generateNewSecret(
+        TwoFactorAuthUtils.NEW_SECRET_REQUEST_2_DTO, PersonUtils.TEST_PERSON_ID);
+  }
+
+  @Test(expected = BadCredentialsException.class)
+  public void generateNewSecret_Should_Throw_Exception_On_Wrong_2faCode() {
+    Auth testAuth = AuthUtils.TEST_AUTH_OLD_SECRET;
+    when(authService.findByUserIdrThrowException(PersonUtils.TEST_PERSON_ID)).thenReturn(testAuth);
+    when(otpService.validate(any(), any())).thenReturn(false);
+
+    twoFactorAuthService.generateNewSecret(
+        TwoFactorAuthUtils.NEW_SECRET_REQUEST_1_DTO, PersonUtils.TEST_PERSON_ID);
   }
 }

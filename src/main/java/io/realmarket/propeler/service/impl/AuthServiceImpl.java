@@ -88,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
             .findByUsername(loginDto.getUsername())
             .orElseThrow(
                 () -> new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE));
-    return validateLogin(auth, loginDto);
+    return validateLogin(auth, loginDto.getPassword());
   }
 
   @Transactional
@@ -258,6 +258,13 @@ public class AuthServiceImpl implements AuthService {
         .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXISTS));
   }
 
+  public Auth findByUserIdrThrowException(Long userId) {
+    return authRepository
+        .findByPersonId(userId)
+        .orElseThrow(
+            () -> new EntityNotFoundException(ExceptionMessages.PERSON_ID_DOES_NOT_EXISTS));
+  }
+
   public Auth findByIdOrThrowException(Long id) {
     return authRepository
         .findById(id)
@@ -280,7 +287,7 @@ public class AuthServiceImpl implements AuthService {
     final Optional<String> newEmail =
         authorizedActionService.validateAuthorizationAction(
             auth, EAuthorizationActionType.NEW_EMAIL, twoFACodeDto);
-    if (!newEmail.isPresent()){
+    if (!newEmail.isPresent()) {
       throw new InternalServerErrorException(ExceptionMessages.INVALID_REQUEST);
     }
     final TemporaryToken token =
@@ -314,15 +321,8 @@ public class AuthServiceImpl implements AuthService {
     return ALLOWED_ROLES.contains(role);
   }
 
-  private AuthResponseDto validateLogin(Auth auth, LoginDto loginDto) {
-    if (auth.getState().equals(EAuthState.CONFIRM_REGISTRATION)) {
-      log.error("User with auth id '{}' is not active ", auth.getId());
-      throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
-    }
-    if (!passwordEncoder.matches(loginDto.getPassword(), auth.getPassword())) {
-      log.error("User with auth id '{}' provided passwords which do not match ", auth.getId());
-      throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
-    }
+  private AuthResponseDto validateLogin(Auth auth, String password) {
+    checkLoginCredentials(auth, password);
     if (auth.getState().equals(EAuthState.INITIALIZE_2FA)) {
       return new AuthResponseDto(
           E2FAStatus.INITIALIZE,
@@ -331,6 +331,18 @@ public class AuthServiceImpl implements AuthService {
     return new AuthResponseDto(
         E2FAStatus.VALIDATE,
         temporaryTokenService.createToken(auth, ETemporaryTokenType.LOGIN_TOKEN).getValue());
+  }
+
+  public void checkLoginCredentials(Auth auth, String password) {
+    if (auth.getState().equals(EAuthState.CONFIRM_REGISTRATION)) {
+
+      log.error("User with auth id '{}' is not active ", auth.getId());
+      throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
+    }
+    if (!passwordEncoder.matches(password, auth.getPassword())) {
+      log.error("User with auth id '{}' provided passwords which do not match ", auth.getId());
+      throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
+    }
   }
 
   private void changePersonEmail(

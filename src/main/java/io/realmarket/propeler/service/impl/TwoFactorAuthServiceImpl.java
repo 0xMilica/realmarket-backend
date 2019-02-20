@@ -10,6 +10,7 @@ import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,5 +87,17 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     temporaryTokenService.deleteToken(temporaryToken);
     authService.finalize2faInitialization(auth);
     return OTPWildcardResponseDto.builder().wildcards(wildcards).build();
+  }
+
+  public SecretDto generateNewSecret(GenerateNewSecretDto generateNewSecretDto, Long userId) {
+    Auth auth = authService.findByUserIdrThrowException(userId);
+
+    authService.checkLoginCredentials(auth, generateNewSecretDto.getPassword());
+
+    if (!otpService.validate(auth, generateNewSecretDto.getTwoFa())) {
+      throw new BadCredentialsException(ExceptionMessages.INVALID_TOTP_CODE_PROVIDED);
+    }
+    String secret = otpService.generateTOTPSecret(auth);
+    return new SecretDto(secret);
   }
 }
