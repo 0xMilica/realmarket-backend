@@ -1,15 +1,19 @@
 package io.realmarket.propeler.unit.service.impl;
 
 import io.realmarket.propeler.api.dto.OTPWildcardResponseDto;
+import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.api.dto.TwoFASecretResponseDto;
 import io.realmarket.propeler.api.dto.TwoFASecretVerifyDto;
-import io.realmarket.propeler.api.dto.TwoFATokenDto;
+import io.realmarket.propeler.model.TemporaryToken;
+import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.service.AuthService;
+import io.realmarket.propeler.service.JWTService;
 import io.realmarket.propeler.service.OTPService;
 import io.realmarket.propeler.service.TemporaryTokenService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.impl.OTPServiceImpl;
 import io.realmarket.propeler.service.impl.TwoFactorAuthServiceImpl;
+import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import io.realmarket.propeler.unit.util.OTPUtils;
 import io.realmarket.propeler.unit.util.TemporaryTokenUtils;
 import io.realmarket.propeler.unit.util.TwoFactorAuthUtils;
@@ -20,9 +24,14 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
+import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH;
+import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
 import static io.realmarket.propeler.unit.util.OTPUtils.TEST_SECRET;
+import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN;
+import static io.realmarket.propeler.unit.util.TwoFactorAuthUtils.TEST_TWO_FA_TOKEN;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -32,6 +41,7 @@ import static org.mockito.Mockito.*;
 public class TwoFactorAuthServiceImplTest {
 
   @Mock private OTPService otpService;
+  @Mock private JWTService jwtService;
   @Mock private AuthService authService;
   @Mock private TemporaryTokenService temporaryTokenService;
 
@@ -55,7 +65,7 @@ public class TwoFactorAuthServiceImplTest {
   @Test(expected = ForbiddenOperationException.class)
   public void createSecret_Should_Throw_On_WrongTokenType() {
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(any()))
-        .thenReturn(TemporaryTokenUtils.TEST_TEMPORARY_TOKEN);
+        .thenReturn(TEST_TEMPORARY_TOKEN);
     twoFactorAuthService.createSecret(TwoFactorAuthUtils.TEST_2FA_SECRET_REQUEST);
   }
 
@@ -96,8 +106,71 @@ public class TwoFactorAuthServiceImplTest {
   public void createWildcards_Should_Throw_On_WrongCode() {
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(any()))
         .thenReturn(TemporaryTokenUtils.TEST_TEMPORARY_2FA_SETUP_TOKEN);
-    when(otpService.validateTOTPSecretChange(any(),any())).thenReturn(false);
+    when(otpService.validateTOTPSecretChange(any(), any())).thenReturn(false);
 
     twoFactorAuthService.createWildcards(TwoFactorAuthUtils.TEST_TWO_FA_SECRET_VERIFY_REQUEST);
+  }
+
+  @Test
+  public void Login2FA_Should_Return_2FATokenDto() {
+    TemporaryToken temporaryTokenMocked =
+        TemporaryToken.builder()
+            .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
+            .auth(TEST_AUTH)
+            .value("TEST_VALUE")
+            .build();
+
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            TEST_TWO_FA_TOKEN.getToken()))
+        .thenReturn(temporaryTokenMocked);
+    when(otpService.validate(
+            TEST_AUTH, new TwoFADto(TEST_TWO_FA_TOKEN.getCode(), TEST_TWO_FA_TOKEN.getWildcard())))
+        .thenReturn(true);
+    when(jwtService.createToken(TEST_AUTH)).thenReturn(TEST_JWT);
+
+    LoginResponseDto retVal = twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN);
+
+    assertEquals(TEST_JWT.getValue(), retVal.getJwt());
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void Login2FA_Should_Throw_NotFoundException_IfTokenNotExists() {
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            TEST_TWO_FA_TOKEN.getToken()))
+        .thenThrow(EntityNotFoundException.class);
+
+    twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void Login2FA_Should_Return_ForbiddenOperationException_IfTokenNotValid() {
+    TemporaryToken temporaryTokenMocked = TemporaryToken.builder().auth(TEST_AUTH).build();
+
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            TEST_TWO_FA_TOKEN.getToken()))
+        .thenReturn(temporaryTokenMocked);
+    when(otpService.validate(
+            TEST_AUTH, new TwoFADto(TEST_TWO_FA_TOKEN.getCode(), TEST_TWO_FA_TOKEN.getWildcard())))
+        .thenReturn(true);
+
+    twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void Login2FA_Should_Return_ForbiddenOperationException_IfCodeNotValid() {
+    TemporaryToken temporaryTokenMocked =
+        TemporaryToken.builder()
+            .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
+            .auth(TEST_AUTH)
+            .build();
+
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            TEST_TWO_FA_TOKEN.getToken()))
+        .thenReturn(temporaryTokenMocked);
+    when(otpService.validate(
+            TEST_AUTH, new TwoFADto(TEST_TWO_FA_TOKEN.getCode(), TEST_TWO_FA_TOKEN.getWildcard())))
+        .thenReturn(false);
+
+    twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN);
   }
 }

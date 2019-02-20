@@ -4,12 +4,10 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
-import io.realmarket.propeler.service.AuthService;
-import io.realmarket.propeler.service.OTPService;
-import io.realmarket.propeler.service.TemporaryTokenService;
-import io.realmarket.propeler.service.TwoFactorAuthService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,19 +20,40 @@ import java.util.List;
 public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
 
   private OTPService otpService;
+  private JWTService jwtService;
   private AuthService authService;
   private TemporaryTokenService temporaryTokenService;
 
   @Autowired
   TwoFactorAuthServiceImpl(
-      OTPService otpService, AuthService authService, TemporaryTokenService temporaryTokenService) {
+      OTPService otpService,
+      JWTService jwtService,
+      AuthService authService,
+      TemporaryTokenService temporaryTokenService) {
     this.otpService = otpService;
+    this.jwtService = jwtService;
     this.authService = authService;
     this.temporaryTokenService = temporaryTokenService;
   }
 
-  public Boolean login2FA() {
-    return true;
+  @Transactional
+  public LoginResponseDto login2FA(TwoFATokenDto twoFATokenDto) {
+    TemporaryToken temporaryToken =
+        temporaryTokenService.findByValueAndNotExpiredOrThrowException(twoFATokenDto.getToken());
+
+    if (temporaryToken.getTemporaryTokenType() != ETemporaryTokenType.LOGIN_TOKEN) {
+      throw new ForbiddenOperationException(ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION);
+    }
+
+    if (!otpService.validate(
+        temporaryToken.getAuth(),
+        new TwoFADto(twoFATokenDto.getCode(), twoFATokenDto.getWildcard()))) {
+      throw new ForbiddenOperationException("Validation of code not passed");
+    }
+
+    temporaryTokenService.deleteToken(temporaryToken);
+
+    return new LoginResponseDto(jwtService.createToken(temporaryToken.getAuth()).getValue());
   }
 
   @Override
@@ -54,7 +73,8 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
   @Transactional
   public OTPWildcardResponseDto createWildcards(TwoFASecretVerifyDto twoFASecretVerifyDto) {
     TemporaryToken temporaryToken =
-        temporaryTokenService.findByValueAndNotExpiredOrThrowException(twoFASecretVerifyDto.getToken());
+        temporaryTokenService.findByValueAndNotExpiredOrThrowException(
+            twoFASecretVerifyDto.getToken());
     if (temporaryToken.getTemporaryTokenType() != ETemporaryTokenType.SETUP_2FA_TOKEN) {
       throw new ForbiddenOperationException(ExceptionMessages.INVALID_TOKEN_TYPE);
     }

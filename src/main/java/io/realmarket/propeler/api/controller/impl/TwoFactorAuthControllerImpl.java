@@ -27,11 +27,10 @@ public class TwoFactorAuthControllerImpl implements TwoFactorAuthController {
   }
 
   @Override
-  @PostMapping(value = "")
+  @PostMapping
   public ResponseEntity<LoginResponseDto> login2FA(
       @RequestBody @Valid TwoFATokenDto twoFATokenDto) {
-    twoFactorAuthService.login2FA();
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(twoFactorAuthService.login2FA(twoFATokenDto));
   }
 
   @Override

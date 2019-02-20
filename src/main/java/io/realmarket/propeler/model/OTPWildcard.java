@@ -17,7 +17,10 @@ public class OTPWildcard {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "OTP_WILDCARD_SEQ")
-  @SequenceGenerator(name = "OTP_WILDCARD_SEQ", sequenceName = "OTP_WILDCARD_SEQ", allocationSize = 1)
+  @SequenceGenerator(
+      name = "OTP_WILDCARD_SEQ",
+      sequenceName = "OTP_WILDCARD_SEQ",
+      allocationSize = 1)
   private Long id;
 
   private String wildcard;

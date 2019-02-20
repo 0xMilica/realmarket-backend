@@ -1,9 +1,10 @@
 package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.*;
+import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 
 public interface TwoFactorAuthService {
-  Boolean login2FA();
+  LoginResponseDto login2FA(TwoFATokenDto twoFATokenDto);
 
   TwoFASecretResponseDto createSecret(TwoFASecretRequestDto twoFASecretRequestDto);
 
