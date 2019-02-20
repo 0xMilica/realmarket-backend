@@ -4,27 +4,23 @@ import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.AuthorizedAction;
 import io.realmarket.propeler.model.OTPWildcard;
-import io.realmarket.propeler.model.enums.EAuthorizationActionType;
-import io.realmarket.propeler.repository.AuthorizedActionRepository;
 import io.realmarket.propeler.repository.OTPWildcardRepository;
 import io.realmarket.propeler.service.AuthService;
+import io.realmarket.propeler.service.AuthorizedActionService;
 import io.realmarket.propeler.service.OTPService;
-import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.RandomStringBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityNotFoundException;
-import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import static io.realmarket.propeler.model.enums.EAuthorizationActionType.NEW_TOTP_SECRET;
 
@@ -32,8 +28,9 @@ import static io.realmarket.propeler.model.enums.EAuthorizationActionType.NEW_TO
 @Slf4j
 public class OTPServiceImpl implements OTPService {
 
+  private static final Integer SIZE_OF_OTP_CODE = 6;
   private AuthService authService; // needed for change secret
-  private AuthorizedActionRepository authorizedActionRepository;
+  private AuthorizedActionService authorizedActionService;
   private OTPWildcardRepository otpWildcardRepository;
   private PasswordEncoder passwordEncoder;
 
@@ -48,22 +45,23 @@ public class OTPServiceImpl implements OTPService {
 
   @Autowired
   OTPServiceImpl(
-      AuthService authService,
-      AuthorizedActionRepository authorizedActionRepository,
+      @Lazy AuthService authService,
+      AuthorizedActionService authorizedActionService,
       OTPWildcardRepository otpWildcardRepository,
       PasswordEncoder passwordEncoder) {
     this.authService = authService;
     this.otpWildcardRepository = otpWildcardRepository;
-    this.authorizedActionRepository = authorizedActionRepository;
+    this.authorizedActionService = authorizedActionService;
     this.passwordEncoder = passwordEncoder;
   }
 
   @Transactional
   public String generateTOTPSecret(Auth auth) {
     String secret = RandomStringBuilder.generateBase32String(otpSecretSize);
-    String encriptedSecret = encryptSecret(secret);
+    String encryptedSecret = encryptSecret(secret);
 
-    storeAuthorizationAction(auth, NEW_TOTP_SECRET, encriptedSecret, 3600 * 1000L);
+    authorizedActionService.storeAuthorizationAction(
+        auth.getId(), NEW_TOTP_SECRET, encryptedSecret, 3600 * 1000L);
     return secret;
   }
 
@@ -82,7 +80,7 @@ public class OTPServiceImpl implements OTPService {
 
   @Transactional
   public Boolean validate(Auth auth, TwoFADto code) {
-    if ( StringUtils.hasText(code.getCode())) {
+    if (StringUtils.hasText(code.getCode())) {
       return validateCode(auth.getTotpSecret(), code.getCode());
     } else if (StringUtils.hasText(code.getWildcard())) {
       return validateRecoveryCode(auth, code.getWildcard());
@@ -91,49 +89,18 @@ public class OTPServiceImpl implements OTPService {
   }
 
   @Transactional
-  public Boolean validateTOTPSecretChange(Auth auth, String totpcode) {
-    AuthorizedAction authorizedAction = findAuthorizedActionOrThrow(auth, NEW_TOTP_SECRET);
+  public Boolean validateTOTPSecretChange(Auth auth, String totpCode) {
+    AuthorizedAction authorizedAction =
+        authorizedActionService.findAuthorizedActionOrThrowException(auth, NEW_TOTP_SECRET);
     String newSecret = decryptSecret(authorizedAction.getData());
-    if (!validateCode(newSecret, totpcode)) {
+    if (!validateCode(newSecret, totpCode)) {
       return false;
     }
     // save new secret
     authService.updateSecretById(auth.getId(), newSecret);
+
+    authorizedActionService.deleteByAuthAndType(auth, NEW_TOTP_SECRET);
     return true;
-  }
-
-  private void deleteByAuthAndType(Auth auth, EAuthorizationActionType type) {
-    authorizedActionRepository.deleteAllByAuthAndType(auth, type);
-    authorizedActionRepository.flush();
-  }
-
-  @Transactional
-  public void storeAuthorizationAction(
-      Auth auth, EAuthorizationActionType type, String data, Long mmTimeout) {
-    deleteByAuthAndType(auth, type);
-    log.info("Store authorization action.");
-    AuthorizedAction authorizedAction =
-        AuthorizedAction.builder()
-            .auth(auth)
-            .type(type)
-            .data(data)
-            .expiration(Instant.now().plusMillis(mmTimeout))
-            .build();
-    authorizedActionRepository.save(authorizedAction);
-  }
-
-  @Transactional
-  public Optional<String> validateAuthorizationAction(
-      Auth auth, EAuthorizationActionType type, String code) {
-    if (type.equals(NEW_TOTP_SECRET)) {
-      return Optional.empty();
-    }
-    AuthorizedAction authorizedAction = findAuthorizedActionOrThrow(auth, type);
-
-    if (validate(auth, new TwoFADto(code, null))) {
-      return Optional.of(authorizedAction.getData());
-    }
-    return Optional.empty();
   }
 
   private boolean validateCode(String encriptedSecret, String code) {
@@ -154,15 +121,6 @@ public class OTPServiceImpl implements OTPService {
       }
     }
     return false;
-  }
-
-  private AuthorizedAction findAuthorizedActionOrThrow(Auth auth, EAuthorizationActionType type) {
-    Optional<AuthorizedAction> authorizedAction =
-        authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(auth, type, Instant.now());
-    if (!authorizedAction.isPresent()) {
-      throw new EntityNotFoundException(ExceptionMessages.AUTHORIZATION_ACTION_NOT_FOUND);
-    }
-    return authorizedAction.get();
   }
 
   // Decript/Encript secret Take salt from property and use it as key for encription

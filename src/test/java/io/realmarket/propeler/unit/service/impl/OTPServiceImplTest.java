@@ -21,11 +21,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
-import static io.realmarket.propeler.model.enums.EAuthorizationActionType.NEW_EMAIL;
-import static io.realmarket.propeler.model.enums.EAuthorizationActionType.NEW_TOTP_SECRET;
-import static io.realmarket.propeler.unit.util.AuthUtils.*;
+import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH;
 import static io.realmarket.propeler.unit.util.OTPUtils.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -56,7 +55,7 @@ public class OTPServiceImplTest {
     otpService = PowerMockito.spy(otpService);
     doReturn(false).when(otpService, "validateCode", anyString(), anyString());
 
-    Boolean isValid = otpService.validate(TEST_AUTH, new TwoFADto(TEST_TOTP_CODE_1,null));
+    Boolean isValid = otpService.validate(TEST_AUTH, new TwoFADto(TEST_TOTP_CODE_1, null));
     assertEquals(isValid, false);
   }
 
@@ -65,17 +64,16 @@ public class OTPServiceImplTest {
     OTPServiceImpl otpServiceSpy = PowerMockito.spy(otpService);
     PowerMockito.doReturn(false).when(otpServiceSpy, "validateCode", anyString(), anyString());
 
-    Boolean isValid = otpServiceSpy.validate(TEST_AUTH, new TwoFADto(TEST_TOTP_CODE_1,null));
+    Boolean isValid = otpServiceSpy.validate(TEST_AUTH, new TwoFADto(TEST_TOTP_CODE_1, null));
     assertEquals(isValid, false);
   }
 
   @Test
   public void Validate_Should_ValidateRecoveryCode() throws Exception {
-    when(otpWildcardRepository.findAllByAuth(any()))
-        .thenReturn(OTPUtils.TEST_OTP_WILDCARD_LIST());
+    when(otpWildcardRepository.findAllByAuth(any())).thenReturn(OTPUtils.TEST_OTP_WILDCARD_LIST());
     when(passwordEncoder.matches(TEST_OTP_WILDCARD_1, TEST_OTP_WILDCARD_1)).thenReturn(true);
 
-    Boolean isValid = otpService.validate(TEST_AUTH, new TwoFADto(null,TEST_OTP_WILDCARD_1));
+    Boolean isValid = otpService.validate(TEST_AUTH, new TwoFADto(null, TEST_OTP_WILDCARD_1));
     assertEquals(isValid, true);
     OTPWildcard otpWildcard = OTPUtils.TEST_OTP_WILDCARD_1();
     verify(otpWildcardRepository, times(1)).deleteById(otpWildcard.getId());
@@ -83,11 +81,10 @@ public class OTPServiceImplTest {
 
   @Test
   public void Validate_Should_UnvalidatedRecoveryCode() throws Exception {
-    when(otpWildcardRepository.findAllByAuth(any()))
-        .thenReturn(OTPUtils.TEST_OTP_WILDCARD_LIST());
+    when(otpWildcardRepository.findAllByAuth(any())).thenReturn(OTPUtils.TEST_OTP_WILDCARD_LIST());
     when(passwordEncoder.matches(TEST_OTP_WILDCARD_1, TEST_OTP_WILDCARD_1)).thenReturn(false);
 
-    Boolean isValid = otpService.validate(TEST_AUTH, new TwoFADto(null,TEST_OTP_WILDCARD_1));
+    Boolean isValid = otpService.validate(TEST_AUTH, new TwoFADto(null, TEST_OTP_WILDCARD_1));
     assertEquals(isValid, false);
   }
 
@@ -110,7 +107,7 @@ public class OTPServiceImplTest {
 
   @Test
   public void ValidateTOTPSecretChange_Should_UpdateSecret() throws Exception {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(),any()))
+    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any()))
         .thenReturn(Optional.of(OTPUtils.TEST_AUTH_ACTION_NEW2FA()));
     otpService = PowerMockito.spy(otpService);
     doReturn(true).when(otpService, "validateCode", anyString(), anyString());
@@ -123,7 +120,7 @@ public class OTPServiceImplTest {
 
   @Test
   public void ValidateTOTPSecretChange_Should_NotUpdateSecret_OnInvalidCode() throws Exception {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(),any()))
+    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any()))
         .thenReturn(Optional.of(OTPUtils.TEST_AUTH_ACTION_NEW2FA()));
     otpService = PowerMockito.spy(otpService);
     doReturn(false).when(otpService, "validateCode", anyString(), anyString());
@@ -141,44 +138,10 @@ public class OTPServiceImplTest {
   }
 
   @Test(expected = EntityNotFoundException.class)
-  public void ValidateTOTPSecretChange_Should_ThrowException_OnNoAuthorizationAction() throws Exception {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any())).thenReturn(Optional.empty());
+  public void ValidateTOTPSecretChange_Should_ThrowException_OnNoAuthorizationAction()
+      throws Exception {
+    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any()))
+        .thenReturn(Optional.empty());
     otpService.validateTOTPSecretChange(TEST_AUTH, TEST_TOTP_CODE_1);
-  }
-
-  @Test
-  public void ValidateAuthorizedAction_Should_ReturnEmpty_On_NEW2FA_Check() {
-    Optional<String> ret =
-        otpService.validateAuthorizationAction(
-            TEST_AUTH, NEW_TOTP_SECRET, TEST_TOTP_CODE_1);
-    assertFalse(ret.isPresent());
-  }
-
-  @Test
-  public void ValidateAuthorizationAction_Should_ValidateAndReturnSafedData() throws Exception {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(),any()))
-        .thenReturn(Optional.of(OTPUtils.TEST_AUTH_ACTION_NEWEMAIL()));
-
-    otpService = PowerMockito.spy(otpService);
-    doReturn(true).when(otpService, "validateCode", anyString(), anyString());
-
-    Optional<String> ret =
-        otpService.validateAuthorizationAction(TEST_AUTH, NEW_EMAIL, TEST_TOTP_CODE_1);
-    assertTrue(ret.isPresent());
-    assertEquals(TEST_EMAIL, ret.get());
-  }
-
-  @Test
-  public void ValidateAuthorizationAction_Should_ValidateAndReturnEmpty() throws Exception {
-
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(),any()))
-        .thenReturn(Optional.of(OTPUtils.TEST_AUTH_ACTION_NEWEMAIL()));
-
-    otpService = PowerMockito.spy(otpService);
-    doReturn(false).when(otpService, "validateCode", anyString(), anyString());
-
-    Optional<String> ret =
-        otpService.validateAuthorizationAction(TEST_AUTH, NEW_EMAIL, TEST_TOTP_CODE_1);
-    assertFalse(ret.isPresent());
   }
 }

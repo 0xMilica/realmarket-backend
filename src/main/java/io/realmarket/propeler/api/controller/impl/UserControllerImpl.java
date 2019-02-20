@@ -13,8 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.CREATED;
-
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/users")
@@ -31,42 +30,48 @@ public class UserControllerImpl implements UserController {
   @RequestMapping(value = "{username}", method = RequestMethod.HEAD)
   public ResponseEntity<Void> userExists(@PathVariable String username) {
     authService.findByUsernameOrThrowException(username);
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(OK);
   }
 
-  @Override
-  @PatchMapping(value = "/{userId}/password")
-  public ResponseEntity changePassword(
-      @PathVariable Long userId, @RequestBody @Valid ChangePasswordDto changePasswordDto) {
-    authService.changePassword(userId, changePasswordDto);
-    return new ResponseEntity<>(HttpStatus.OK);
+  @PostMapping(value = "/{authId}/password")
+  public ResponseEntity initializeChangePassword(
+      @PathVariable Long authId, @RequestBody @Valid ChangePasswordDto changePasswordDto) {
+    authService.initializeChangePassword(authId, changePasswordDto);
+    return new ResponseEntity<>(CREATED);
   }
 
-  @Override
+  @PatchMapping(value = "/{authId}/password")
+  public ResponseEntity finalizeChangePassword(
+      @PathVariable Long authId, @RequestBody @Valid TwoFADto twoFADto) {
+    authService.finalizeChangePassword(authId, twoFADto);
+    return new ResponseEntity<>(OK);
+  }
+
   @GetMapping(value = "/{userId}")
   public ResponseEntity<PersonDto> getPerson(@PathVariable Long userId) {
     return ResponseEntity.ok(personService.getPerson(userId));
   }
 
   @PostMapping("/{authId}/email")
-  public ResponseEntity createEmailChangeRequest(
+  public ResponseEntity initializeEmailChange(
       @PathVariable Long authId, @RequestBody @Valid EmailDto emailDto) {
-    authService.createChangeEmailRequest(authId, emailDto);
+    authService.initializeEmailChange(authId, emailDto);
     return new ResponseEntity(CREATED);
   }
+
   @Override
   @PatchMapping(value = "/{userId}")
   public ResponseEntity<PersonDto> patchPerson(
-          @PathVariable Long userId, @RequestBody PersonPatchDto personPatchDto) {
+      @PathVariable Long userId, @RequestBody PersonPatchDto personPatchDto) {
     return ResponseEntity.ok(personService.patchPerson(userId, personPatchDto));
   }
 
   @PostMapping(
-          value = "/{userId}/picture",
-          consumes = "multipart/form-data",
-          produces = MediaType.TEXT_PLAIN_VALUE)
+      value = "/{userId}/picture",
+      consumes = "multipart/form-data",
+      produces = MediaType.TEXT_PLAIN_VALUE)
   public ResponseEntity uploadProfilePicture(
-          @PathVariable Long userId, @RequestParam("picture") MultipartFile picture) {
+      @PathVariable Long userId, @RequestParam("picture") MultipartFile picture) {
     personService.uploadProfilePicture(userId, picture);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
@@ -80,5 +85,12 @@ public class UserControllerImpl implements UserController {
   public ResponseEntity deleteProfilePicture(@PathVariable Long userId) {
     personService.deleteProfilePicture(userId);
     return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping(value = "/{authId}/email")
+  public ResponseEntity verifyEmailChangeRequest(
+      @PathVariable Long authId, @RequestBody @Valid TwoFADto twoFADto) {
+    authService.verifyEmailChangeRequest(authId, twoFADto);
+    return ResponseEntity.ok().build();
   }
 }

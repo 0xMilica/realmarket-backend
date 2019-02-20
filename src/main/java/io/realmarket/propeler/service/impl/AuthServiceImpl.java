@@ -4,10 +4,11 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.E2FAStatus;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
-import io.realmarket.propeler.model.EmailChangeRequest;
+import io.realmarket.propeler.model.AuthorizedAction;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.EAuthState;
+import io.realmarket.propeler.model.enums.EAuthorizationActionType;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.AuthRepository;
@@ -15,6 +16,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
+import io.realmarket.propeler.service.exception.InternalServerErrorException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -33,9 +35,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
+
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
+
+  public static final Long EMAIL_CHANGE_ACTION_MILLISECONDS = 300000L;
+
+  private static final Long PASSWORD_CHANGE_ACTION_MILLISECONDS = 180000L;
 
   private static final List<EUserRole> ALLOWED_ROLES =
       Arrays.asList(EUserRole.ROLE_ENTREPRENEUR, EUserRole.ROLE_INVESTOR);
@@ -46,10 +54,9 @@ public class AuthServiceImpl implements AuthService {
   private final EmailService emailService;
   private final TemporaryTokenService temporaryTokenService;
   private final JWTService jwtService;
+  private final AuthorizedActionService authorizedActionService;
 
   private final PasswordEncoder passwordEncoder;
-
-  private final EmailChangeRequestService emailChangeRequestService;
 
   @Autowired
   public AuthServiceImpl(
@@ -59,14 +66,14 @@ public class AuthServiceImpl implements AuthService {
       AuthRepository authRepository,
       TemporaryTokenService temporaryTokenService,
       JWTService jwtService,
-      EmailChangeRequestService emailChangeRequestService) {
+      AuthorizedActionService authorizedActionService) {
     this.passwordEncoder = passwordEncoder;
     this.personService = personService;
     this.emailService = emailService;
     this.authRepository = authRepository;
     this.temporaryTokenService = temporaryTokenService;
     this.jwtService = jwtService;
-    this.emailChangeRequestService = emailChangeRequestService;
+    this.authorizedActionService = authorizedActionService;
   }
 
   public static Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
@@ -93,7 +100,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     if (!isRoleAllowed(registrationDto.getUserRole())) {
-      throw new ForbiddenRoleException(ExceptionMessages.INVALID_REQUEST);
+      throw new ForbiddenRoleException(INVALID_REQUEST);
     }
 
     Person person = this.personService.save(new Person(registrationDto));
@@ -205,14 +212,38 @@ public class AuthServiceImpl implements AuthService {
 
   @Transactional
   @Override
-  public void changePassword(Long userId, ChangePasswordDto changePasswordDto) {
-    Auth auth = findByIdOrThrowException(userId);
+  public void initializeChangePassword(Long authId, ChangePasswordDto changePasswordDto) {
+    checkIfAllowed(authId);
+
+    Auth auth = findByIdOrThrowException(authId);
     if (!passwordEncoder.matches(changePasswordDto.getOldPassword(), auth.getPassword())) {
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
-    auth.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
-    authRepository.save(auth);
 
+    authorizedActionService.storeAuthorizationAction(
+        auth.getId(),
+        EAuthorizationActionType.NEW_PASSWORD,
+        passwordEncoder.encode(changePasswordDto.getNewPassword()),
+        PASSWORD_CHANGE_ACTION_MILLISECONDS);
+  }
+
+  @Transactional
+  public void finalizeChangePassword(Long authId, TwoFADto twoFACodeDto) {
+    checkIfAllowed(authId);
+    Auth auth = findByIdOrThrowException(authId);
+
+    Optional<String> optionalPassword =
+        authorizedActionService.validateAuthorizationAction(
+            auth, EAuthorizationActionType.NEW_PASSWORD, twoFACodeDto);
+
+    if (!optionalPassword.isPresent()) {
+      throw new ForbiddenOperationException(INVALID_REQUEST);
+    }
+
+    auth.setPassword(optionalPassword.get());
+    auth = authRepository.save(auth);
+
+    authorizedActionService.deleteByAuthAndType(auth, EAuthorizationActionType.NEW_PASSWORD);
     jwtService.deleteAllByAuthAndValueNot(auth, AuthenticationUtil.getAuthentication().getToken());
   }
 
@@ -233,24 +264,33 @@ public class AuthServiceImpl implements AuthService {
         .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXISTS));
   }
 
+  public void initializeEmailChange(final Long authId, final EmailDto emaildto) {
+    checkIfAllowed(authId);
+    authorizedActionService.storeAuthorizationAction(
+        authId,
+        EAuthorizationActionType.NEW_EMAIL,
+        emaildto.getEmail(),
+        EMAIL_CHANGE_ACTION_MILLISECONDS);
+  }
+
   @Transactional
-  public void createChangeEmailRequest(final Long authId, final EmailDto emaildto) {
+  public void verifyEmailChangeRequest(final Long authId, final TwoFADto twoFACodeDto) {
     checkIfAllowed(authId);
     final Auth auth = findByIdOrThrowException(authId);
+    final Optional<String> newEmail =
+        authorizedActionService.validateAuthorizationAction(
+            auth, EAuthorizationActionType.NEW_EMAIL, twoFACodeDto);
+    if (!newEmail.isPresent()){
+      throw new InternalServerErrorException(ExceptionMessages.INVALID_REQUEST);
+    }
     final TemporaryToken token =
         temporaryTokenService.createToken(auth, ETemporaryTokenType.EMAIL_CHANGE_TOKEN);
 
-    final EmailChangeRequest emailChangeRequest =
-        EmailChangeRequest.builder()
-            .newEmail(emaildto.getEmail())
-            .person(auth.getPerson())
-            .temporaryToken(token)
-            .build();
-    emailChangeRequestService.save(emailChangeRequest);
     log.info("Token for change email {}", token.getValue());
+
     emailService.sendMailToUser(
         new MailContentHolder(
-            emailChangeRequest.getNewEmail(),
+            newEmail.get(),
             EEmailType.CHANGE_EMAIL,
             Collections.singletonMap(EmailServiceImpl.EMAIL_CHANGE_TOKEN, token.getValue())));
   }
@@ -260,16 +300,19 @@ public class AuthServiceImpl implements AuthService {
     final TemporaryToken token =
         temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             confirmEmailChangeDto.getToken());
-    final EmailChangeRequest emailChangeRequest =
-        emailChangeRequestService.findByTokenOrThrowException(token);
-    changePersonEmail(token, emailChangeRequest);
+    final Auth currentAuth = token.getAuth();
+    final AuthorizedAction authorizedAction =
+        authorizedActionService.findAuthorizedActionOrThrowException(
+            currentAuth, EAuthorizationActionType.NEW_EMAIL);
+    changePersonEmail(token, authorizedAction);
     temporaryTokenService.deleteToken(token);
+    authorizedActionService.deleteByAuthAndType(
+        authorizedAction.getAuth(), authorizedAction.getType());
   }
 
   private Boolean isRoleAllowed(EUserRole role) {
     return ALLOWED_ROLES.contains(role);
   }
-
 
   private AuthResponseDto validateLogin(Auth auth, LoginDto loginDto) {
     if (auth.getState().equals(EAuthState.CONFIRM_REGISTRATION)) {
@@ -280,20 +323,20 @@ public class AuthServiceImpl implements AuthService {
       log.error("User with auth id '{}' provided passwords which do not match ", auth.getId());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
-    if(auth.getState().equals(EAuthState.INITIALIZE_2FA)) {
+    if (auth.getState().equals(EAuthState.INITIALIZE_2FA)) {
       return new AuthResponseDto(
-              E2FAStatus.INITIALIZE,
-              temporaryTokenService.createToken(auth, ETemporaryTokenType.SETUP_2FA_TOKEN).getValue());
+          E2FAStatus.INITIALIZE,
+          temporaryTokenService.createToken(auth, ETemporaryTokenType.SETUP_2FA_TOKEN).getValue());
     }
     return new AuthResponseDto(
-            E2FAStatus.VALIDATE,
-            temporaryTokenService.createToken(auth, ETemporaryTokenType.LOGIN_TOKEN).getValue());
+        E2FAStatus.VALIDATE,
+        temporaryTokenService.createToken(auth, ETemporaryTokenType.LOGIN_TOKEN).getValue());
   }
 
   private void changePersonEmail(
-      final TemporaryToken token, final EmailChangeRequest emailChangeRequest) {
+      final TemporaryToken token, final AuthorizedAction changeEmailAction) {
     Person person = token.getAuth().getPerson();
-    person.setEmail(emailChangeRequest.getNewEmail());
+    person.setEmail(changeEmailAction.getData());
     personService.save(person);
   }
 

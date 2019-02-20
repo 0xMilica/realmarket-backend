@@ -8,7 +8,9 @@ import java.util.Optional;
 public interface AuthService {
   void register(RegistrationDto registrationDto);
 
-  void changePassword(Long userId, ChangePasswordDto changePasswordDto);
+  void initializeChangePassword(Long userId, ChangePasswordDto changePasswordDto);
+
+  void finalizeChangePassword(Long authId, TwoFADto twoFACodeDto);
 
   AuthResponseDto login(LoginDto loginDto);
 
@@ -26,13 +28,15 @@ public interface AuthService {
 
   void finalizeResetPassword(ResetPasswordDto resetPasswordDto);
 
-  void createChangeEmailRequest(final Long authId, final EmailDto emaildto);
+  void verifyEmailChangeRequest(final Long authId, final TwoFADto twoFACodeDto);
 
   void finalizeEmailChange(final ConfirmEmailChangeDto confirmEmailChangeDto);
 
   void logout();
 
   void updateSecretById(Long id, String secret);
+
+  void initializeEmailChange(final Long authId, final EmailDto emailDto);
 
   void finalize2faInitialization(Auth auth);
 }

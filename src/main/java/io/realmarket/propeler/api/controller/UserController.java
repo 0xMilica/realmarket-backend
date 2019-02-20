@@ -4,7 +4,10 @@ import io.realmarket.propeler.api.dto.*;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -22,14 +25,14 @@ public interface UserController {
   ResponseEntity<Void> userExists(String username);
 
   @ApiOperation(
-      value = "Password change.",
-      httpMethod = "PATCH",
+      value = "Password change initialization",
+      httpMethod = "POST",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
     @ApiImplicitParam(
-        name = "userId",
-        value = "id of person that password is about to change",
+        name = "authId",
+        value = "id of auth for person for whom the password is about to change",
         required = true,
         dataType = "Long"),
     @ApiImplicitParam(
@@ -38,11 +41,35 @@ public interface UserController {
         dataType = "ChangePasswordDto")
   })
   @ApiResponses({
-    @ApiResponse(code = 200, message = "User changes password."),
+    @ApiResponse(code = 200, message = "Change password request created."),
     @ApiResponse(code = 400, message = "Invalid request."),
     @ApiResponse(code = 500, message = "A problem with changing password has occurred.")
   })
-  ResponseEntity changePassword(Long userId, ChangePasswordDto changePasswordDto);
+  ResponseEntity initializeChangePassword(Long authId, ChangePasswordDto changePasswordDto);
+
+  @ApiOperation(
+      value = "Password change finalization",
+      httpMethod = "PATCH",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "authId",
+        value = "id of auth for person for whom the password is about to change",
+        required = true,
+        dataType = "Long"),
+    @ApiImplicitParam(
+        name = "twoFACodeDto",
+        value = "Two-factor authentication code dto",
+        dataType = "TwoFACodeDto")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Change password request created."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 500, message = "A problem with changing password has occurred.")
+  })
+  ResponseEntity finalizeChangePassword(
+      @PathVariable Long authId, @RequestBody @Valid TwoFADto twoFADto);
 
   @ApiOperation(
       value = "Get person profile",
@@ -71,7 +98,7 @@ public interface UserController {
     @ApiResponse(code = 201, message = "Change email request created."),
     @ApiResponse(code = 400, message = "Invalid request.")
   })
-  ResponseEntity createEmailChangeRequest(@PathVariable Long userId, EmailDto emailDto);
+  ResponseEntity initializeEmailChange(@PathVariable Long userId, EmailDto emailDto);
 
   @ApiOperation(
       value = "Patch person arguments",
@@ -128,4 +155,14 @@ public interface UserController {
     @ApiResponse(code = 404, message = "Picture not found.")
   })
   ResponseEntity deleteProfilePicture(@PathVariable Long userId);
+
+  @ApiOperation(
+          value = "Change email request verification",
+          httpMethod = "PATCH",
+          produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+          @ApiResponse(code = 200, message = "Email change request verified."),
+          @ApiResponse(code = 400, message = "Invalid request.")
+  })
+  ResponseEntity verifyEmailChangeRequest(@PathVariable Long userId, @RequestBody TwoFADto twoFACDto);
 }

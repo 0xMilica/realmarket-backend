@@ -8,7 +8,7 @@
                 splitStatements="true"
                 stripComments="true">
             create sequence authorized_action_seq;
-            create type eauthorizedactiontype as enum ('NEW_TOTP_SECRET', 'NEW_EMAIL', 'NEW_PASSWORD');
+            create type eauthorizedactiontype as enum ('NEW_TOTP_SECRET', 'NEW_PASSWORD', 'NEW_EMAIL');
             create table if not exists authorized_action
             (
             id bigint not null

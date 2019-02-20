@@ -17,12 +17,20 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 @Entity(name = "AuthorizedAction")
-@Table(uniqueConstraints =  {@UniqueConstraint(columnNames = {"type", "authId"} , name = "authorized_action_uk_on_type_and_authId")})
+@Table(
+    uniqueConstraints = {
+      @UniqueConstraint(
+          columnNames = {"type", "authId"},
+          name = "authorized_action_uk_on_type_and_authId")
+    })
 @TypeDef(name = "eauthorizedactiontype", typeClass = PostgreSQLEnumType.class)
 public class AuthorizedAction {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AUTHORIZED_ACTION_SEQ")
-  @SequenceGenerator(name = "AUTHORIZED_ACTION_SEQ", sequenceName = "AUTHORIZED_ACTION_SEQ", allocationSize = 1)
+  @SequenceGenerator(
+      name = "AUTHORIZED_ACTION_SEQ",
+      sequenceName = "AUTHORIZED_ACTION_SEQ",
+      allocationSize = 1)
   private Long id;
 
   @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "authorized_action_on_auth"))

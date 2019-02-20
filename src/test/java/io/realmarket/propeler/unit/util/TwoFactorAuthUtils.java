@@ -1,5 +1,6 @@
 package io.realmarket.propeler.unit.util;
 
+import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.api.dto.TwoFASecretRequestDto;
 import io.realmarket.propeler.api.dto.TwoFASecretVerifyDto;
 import io.realmarket.propeler.api.dto.TwoFATokenDto;
@@ -20,6 +21,8 @@ public class TwoFactorAuthUtils {
           OTPUtils.TEST_TOTP_CODE_1,
           OTPUtils.TEST_OTP_WILDCARD_1);
 
+  public static String TEST_2FA_CODE = "TEST_2FA_CODE";
+  public static final TwoFADto TEST_2FA_DTO = new TwoFADto(TEST_2FA_CODE, "");
   public static LoginResponseDto TEST_LOGIN_RESPONSE_DTO = new LoginResponseDto(TEST_JWT_VALUE);
 
   public static TwoFASecretVerifyDto TEST_TWO_FA_SECRET_VERIFY_REQUEST =

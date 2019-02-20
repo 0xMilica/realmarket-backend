@@ -16,6 +16,7 @@ public class PersonUtils {
   public static final String TEST_PROFILE_PICTURE_URL = "TEST_PROFILE_PICTURE_URL.EXT";
   public static final Long TEST_PERSON_ID = 1L;
   public static final byte[] TEST_PROFILE_PICTURE = "TEST_PROFILE_PICTURE".getBytes();
+  public static final String TEST_NEW_EMAIL = "TEST_NEW_EMAIL";
 
   public static final Person TEST_PERSON =
       Person.builder()
