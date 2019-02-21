@@ -49,7 +49,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     if (!otpService.validate(
         temporaryToken.getAuth(),
         new TwoFADto(twoFATokenDto.getCode(), twoFATokenDto.getWildcard()))) {
-      throw new ForbiddenOperationException("Validation of code not passed");
+      throw new ForbiddenOperationException("Provided code not valid!");
     }
 
     temporaryTokenService.deleteToken(temporaryToken);
