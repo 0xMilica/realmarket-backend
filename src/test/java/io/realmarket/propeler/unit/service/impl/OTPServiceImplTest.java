@@ -5,6 +5,7 @@ import io.realmarket.propeler.model.OTPWildcard;
 import io.realmarket.propeler.repository.AuthorizedActionRepository;
 import io.realmarket.propeler.repository.OTPWildcardRepository;
 import io.realmarket.propeler.service.AuthService;
+import io.realmarket.propeler.service.AuthorizedActionService;
 import io.realmarket.propeler.service.impl.OTPServiceImpl;
 import io.realmarket.propeler.unit.util.OTPUtils;
 import org.junit.Before;
@@ -18,11 +19,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
-
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH;
+import static io.realmarket.propeler.unit.util.AuthorizedActionUtils.TEST_AUTHORIZED_ACTION;
 import static io.realmarket.propeler.unit.util.OTPUtils.*;
+import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_SECRET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,6 +40,8 @@ public class OTPServiceImplTest {
   @Mock private OTPWildcardRepository otpWildcardRepository;
 
   @Mock private PasswordEncoder passwordEncoder;
+
+  @Mock private AuthorizedActionService authorizedActionService;
 
   @InjectMocks private OTPServiceImpl otpService;
 
@@ -90,10 +92,13 @@ public class OTPServiceImplTest {
 
   @Test
   public void GenerateSecret_Should_ReturnSecret() {
+    doNothing()
+        .when(authorizedActionService)
+        .storeAuthorizationAction(anyLong(), any(), any(), anyLong());
 
     String secret = otpService.generateTOTPSecret(TEST_AUTH);
+
     assertNotNull(secret);
-    verify(authorizedActionRepository).save(any());
   }
 
   @Test
@@ -107,41 +112,25 @@ public class OTPServiceImplTest {
 
   @Test
   public void ValidateTOTPSecretChange_Should_UpdateSecret() throws Exception {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any()))
-        .thenReturn(Optional.of(OTPUtils.TEST_AUTH_ACTION_NEW2FA()));
+    when(authorizedActionService.findAuthorizedActionOrThrowException(any(), any()))
+        .thenReturn(TEST_AUTHORIZED_ACTION);
     otpService = PowerMockito.spy(otpService);
     doReturn(true).when(otpService, "validateCode", anyString(), anyString());
 
-    Boolean ret = otpService.validateTOTPSecretChange(TEST_AUTH, TEST_TOTP_CODE_1);
+    Boolean ret = otpService.validateTOTPSecretChange(TEST_AUTH, TEST_SECRET);
 
     assertEquals(true, ret);
-    verify(authService, times(1)).updateSecretById(TEST_AUTH.getId(), TEST_SECRET_1);
+    verify(authService, times(1)).updateSecretById(TEST_AUTH.getId(), TEST_SECRET);
   }
 
   @Test
   public void ValidateTOTPSecretChange_Should_NotUpdateSecret_OnInvalidCode() throws Exception {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any()))
-        .thenReturn(Optional.of(OTPUtils.TEST_AUTH_ACTION_NEW2FA()));
+    when(authorizedActionService.findAuthorizedActionOrThrowException(any(), any()))
+        .thenReturn(TEST_AUTHORIZED_ACTION);
     otpService = PowerMockito.spy(otpService);
     doReturn(false).when(otpService, "validateCode", anyString(), anyString());
 
     Boolean ret = otpService.validateTOTPSecretChange(TEST_AUTH, TEST_TOTP_CODE_1);
     assertEquals(false, ret);
-  }
-
-  @Test(expected = EntityNotFoundException.class)
-  public void validateTOTPSecretChange_Should_ThrowException_OnExpiredChange() throws Exception {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any()))
-        .thenReturn(Optional.empty());
-
-    otpService.validateTOTPSecretChange(TEST_AUTH, TEST_TOTP_CODE_1);
-  }
-
-  @Test(expected = EntityNotFoundException.class)
-  public void ValidateTOTPSecretChange_Should_ThrowException_OnNoAuthorizationAction()
-      throws Exception {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any()))
-        .thenReturn(Optional.empty());
-    otpService.validateTOTPSecretChange(TEST_AUTH, TEST_TOTP_CODE_1);
   }
 }

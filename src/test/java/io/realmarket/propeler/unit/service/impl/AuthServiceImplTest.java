@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static io.realmarket.propeler.service.impl.AuthServiceImpl.EMAIL_CHANGE_ACTION_MILLISECONDS;
+import static io.realmarket.propeler.service.impl.AuthServiceImpl.PASSWORD_CHANGE_ACTION_MILLISECONDS;
 import static io.realmarket.propeler.unit.util.AuthUtils.*;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT_VALUE;
@@ -124,13 +125,13 @@ public class AuthServiceImplTest {
     doNothing()
         .when(authorizedActionService)
         .storeAuthorizationAction(
-            TEST_AUTH_ID, EAuthorizationActionType.NEW_PASSWORD, TEST_PASSWORD, 84000L);
+            TEST_AUTH_ID, EAuthorizationActionType.NEW_PASSWORD, TEST_PASSWORD, PASSWORD_CHANGE_ACTION_MILLISECONDS);
 
     authServiceImpl.initializeChangePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
 
     verify(authorizedActionService, Mockito.times(1))
         .storeAuthorizationAction(
-            TEST_AUTH_ID, EAuthorizationActionType.NEW_PASSWORD, TEST_PASSWORD, 84000L);
+            TEST_AUTH_ID, EAuthorizationActionType.NEW_PASSWORD, TEST_PASSWORD, PASSWORD_CHANGE_ACTION_MILLISECONDS);
   }
 
   @Test
@@ -402,7 +403,7 @@ public class AuthServiceImplTest {
   }
 
   @Test(expected = EntityNotFoundException.class)
-  public void FinalizeEmailChange_Should_ThrowInvalidTokenException_WhenNotValidToken() {
+  public void FinalizeEmailChange_Should_ThrowEntityNotFoundException_WhenNotValidToken() {
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             TEST_CONFIRM_EMAIL_CHANGE_DTO.getToken()))
         .thenThrow(EntityNotFoundException.class);
@@ -410,7 +411,7 @@ public class AuthServiceImplTest {
   }
 
   @Test(expected = EntityNotFoundException.class)
-  public void FinalizeEmailChange_Should_ThrowInvalidTokenException_WhenNotCorrespondingEmail() {
+  public void FinalizeEmailChange_Should_ThrowEntityNotFoundException_WhenNotCorrespondingEmail() {
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             TEST_CONFIRM_EMAIL_CHANGE_DTO.getToken()))
         .thenReturn(TEST_TEMPORARY_TOKEN);

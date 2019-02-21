@@ -47,12 +47,12 @@ public class UserControllerImplTest {
   }
 
   @Test
-  public void ChangePassword_Should_CallAuthService() {
+  public void InitializeChangePassword_Should_CallAuthService() {
     ResponseEntity responseEntity =
         userController.initializeChangePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
     // TODO: PREPRAVITI
     verify(authService, times(1)).initializeChangePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
-    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
   }
 
   @Test

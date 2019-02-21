@@ -74,6 +74,7 @@ public class AuthUtils {
 
   public static final Auth TEST_AUTH =
       Auth.builder()
+          .id(TEST_AUTH_ID)
           .username(TEST_USERNAME)
           .state(EAuthState.ACTIVE)
           .userRole(TEST_ROLE)

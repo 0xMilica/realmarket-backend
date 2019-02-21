@@ -16,7 +16,6 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
-import io.realmarket.propeler.service.exception.InternalServerErrorException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -43,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
 
   public static final Long EMAIL_CHANGE_ACTION_MILLISECONDS = 300000L;
 
-  private static final Long PASSWORD_CHANGE_ACTION_MILLISECONDS = 180000L;
+  public static final Long PASSWORD_CHANGE_ACTION_MILLISECONDS = 180000L;
 
   private static final List<EUserRole> ALLOWED_ROLES =
       Arrays.asList(EUserRole.ROLE_ENTREPRENEUR, EUserRole.ROLE_INVESTOR);
@@ -232,15 +231,12 @@ public class AuthServiceImpl implements AuthService {
     checkIfAllowed(authId);
     Auth auth = findByIdOrThrowException(authId);
 
-    Optional<String> optionalPassword =
-        authorizedActionService.validateAuthorizationAction(
-            auth, EAuthorizationActionType.NEW_PASSWORD, twoFACodeDto);
+    final String newPassword =
+        authorizedActionService
+            .validateAuthorizationAction(auth, EAuthorizationActionType.NEW_PASSWORD, twoFACodeDto)
+            .orElseThrow(() -> new ForbiddenOperationException(INVALID_REQUEST));
 
-    if (!optionalPassword.isPresent()) {
-      throw new ForbiddenOperationException(INVALID_REQUEST);
-    }
-
-    auth.setPassword(optionalPassword.get());
+    auth.setPassword(newPassword);
     auth = authRepository.save(auth);
 
     authorizedActionService.deleteByAuthAndType(auth, EAuthorizationActionType.NEW_PASSWORD);
@@ -284,12 +280,10 @@ public class AuthServiceImpl implements AuthService {
   public void verifyEmailChangeRequest(final Long authId, final TwoFADto twoFACodeDto) {
     checkIfAllowed(authId);
     final Auth auth = findByIdOrThrowException(authId);
-    final Optional<String> newEmail =
-        authorizedActionService.validateAuthorizationAction(
-            auth, EAuthorizationActionType.NEW_EMAIL, twoFACodeDto);
-    if (!newEmail.isPresent()) {
-      throw new InternalServerErrorException(ExceptionMessages.INVALID_REQUEST);
-    }
+    final String newEmail =
+        authorizedActionService
+            .validateAuthorizationAction(auth, EAuthorizationActionType.NEW_EMAIL, twoFACodeDto)
+            .orElseThrow(() -> new ForbiddenOperationException(ExceptionMessages.INVALID_REQUEST));
     final TemporaryToken token =
         temporaryTokenService.createToken(auth, ETemporaryTokenType.EMAIL_CHANGE_TOKEN);
 
@@ -297,7 +291,7 @@ public class AuthServiceImpl implements AuthService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            newEmail.get(),
+            newEmail,
             EEmailType.CHANGE_EMAIL,
             Collections.singletonMap(EmailServiceImpl.EMAIL_CHANGE_TOKEN, token.getValue())));
   }
