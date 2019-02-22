@@ -106,4 +106,11 @@ public class UserControllerImpl implements UserController {
     return new ResponseEntity<>(
         twoFactorAuthService.generateNewSecret(generateNewSecretDto, userId), CREATED);
   }
+
+  @Override
+  @PostMapping(value = "/{userId}/recovery_code")
+  public ResponseEntity<OTPWildcardResponseDto> regenerateWildcards(
+      @PathVariable Long userId, @RequestBody TwoFADto twoFADto) {
+    return new ResponseEntity<>(twoFactorAuthService.createWildcards(userId, twoFADto), CREATED);
+  }
 }

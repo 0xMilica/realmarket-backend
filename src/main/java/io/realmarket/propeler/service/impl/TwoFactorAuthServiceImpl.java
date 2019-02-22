@@ -100,4 +100,14 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     String secret = otpService.generateTOTPSecret(auth);
     return new SecretDto(secret);
   }
+
+  @Override
+  @Transactional
+  public OTPWildcardResponseDto createWildcards(Long authId, TwoFADto twoFADto) {
+    Auth auth = authService.findByIdOrThrowException(authId);
+    if (!otpService.validate(auth, twoFADto)) {
+      throw new BadCredentialsException(ExceptionMessages.INVALID_TOTP_CODE_PROVIDED);
+    }
+    return new OTPWildcardResponseDto(otpService.generateRecoveryCodes(auth));
+  }
 }

@@ -109,6 +109,29 @@ public class TwoFactorAuthServiceImplTest {
     twoFactorAuthService.createWildcards(TwoFactorAuthUtils.TEST_TWO_FA_SECRET_VERIFY_REQUEST);
   }
 
+  @Test(expected = BadCredentialsException.class)
+  public void createWildcards2_Should_Throw_On_WrongCode() {
+    when(authService.findByIdOrThrowException(any())).thenReturn(AuthUtils.TEST_AUTH);
+
+    when(otpService.validate(any(), any())).thenReturn(false);
+
+    twoFactorAuthService.createWildcards(AuthUtils.TEST_AUTH_ID, TwoFactorAuthUtils.TEST_2FA_DTO);
+  }
+
+  @Test(expected = BadCredentialsException.class)
+  public void createWildcards2_Should_ReturnWildcards() {
+    List<String> wildcardList = OTPUtils.TEST_OTP_WILDCARD_STRING_LIST();
+    when(authService.findByIdOrThrowException(any())).thenReturn(AuthUtils.TEST_AUTH);
+    when(otpService.validate(any(), any())).thenReturn(false);
+    when(otpService.generateRecoveryCodes(any())).thenReturn(wildcardList);
+
+    OTPWildcardResponseDto otpWildcardResponseDto =
+        twoFactorAuthService.createWildcards(
+            AuthUtils.TEST_AUTH_ID, TwoFactorAuthUtils.TEST_2FA_DTO);
+
+    assertEquals(wildcardList, otpWildcardResponseDto);
+  }
+
   @Test
   public void Login2FA_Should_Return_2FATokenDto() {
     TemporaryToken temporaryTokenMocked =

@@ -30,7 +30,5 @@ public interface ExceptionMessages {
 
   String FORBIDDEN_OPERATION_EXCEPTION = "Not allowed operation";
 
-  String COULD_NOT_GENERATE_RANDOM_STRING = "Could not generate random string";
-
   String AUTHORIZATION_ACTION_NOT_FOUND = "Authorization action not found";
 }

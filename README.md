@@ -19,7 +19,7 @@ or from powershell:
 $env:SPRING_PROFILES_ACTIVE='local'
 .\gradlew clean bootRun
 ```
-If application is stuck running in background  you can use this commands in powershell to kill it
+If application is stuck running in background you can use this commands in powershell to kill it
 ```sh
 netstat -ano | findstr :8080
 taskkill /PID 210912 /F

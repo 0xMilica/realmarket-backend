@@ -184,4 +184,20 @@ public interface UserController {
   })
   ResponseEntity<SecretDto> generateNewSecret(
       Long userId, GenerateNewSecretDto generateNewSecretDto);
+
+  @ApiOperation(
+      value = "Regenerate wildcard codes",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParam(
+          name = "userId",
+          value = "id of person that wildcards will be regenerated",
+          required = true,
+          dataType = "Long")
+  @ApiResponses({
+    @ApiResponse(code = 201, message = "Regenerated new wildcard codes."),
+    @ApiResponse(code = 404, message = "Person not found.")
+  })
+  ResponseEntity<OTPWildcardResponseDto> regenerateWildcards(Long userId, TwoFADto twoFADto);
 }
