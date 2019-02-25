@@ -1,12 +1,14 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
+import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +26,20 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
   private JWTService jwtService;
   private AuthService authService;
   private TemporaryTokenService temporaryTokenService;
+  private EmailService emailService;
 
   @Autowired
   TwoFactorAuthServiceImpl(
       OTPService otpService,
       JWTService jwtService,
       AuthService authService,
-      TemporaryTokenService temporaryTokenService) {
+      TemporaryTokenService temporaryTokenService,
+      EmailService emailService) {
     this.otpService = otpService;
     this.jwtService = jwtService;
     this.authService = authService;
     this.temporaryTokenService = temporaryTokenService;
+    this.emailService = emailService;
   }
 
   @Transactional
@@ -109,5 +114,14 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
       throw new BadCredentialsException(ExceptionMessages.INVALID_TOTP_CODE_PROVIDED);
     }
     return new OTPWildcardResponseDto(otpService.generateRecoveryCodes(auth));
+  }
+
+  public void verifyNewSecret(VerifySecretChangeDto verifySecretChangeDto, Long userId) {
+    Auth auth = authService.findByUserIdrThrowException(userId);
+    if (!otpService.validateTOTPSecretChange(auth, verifySecretChangeDto.getTwoFaCode())) {
+      throw new BadCredentialsException(ExceptionMessages.INVALID_TOTP_CODE_PROVIDED);
+    }
+    emailService.sendMailToUser(
+        new MailContentHolder(auth.getPerson().getEmail(), EEmailType.SECRET_CHANGE, null));
   }
 }

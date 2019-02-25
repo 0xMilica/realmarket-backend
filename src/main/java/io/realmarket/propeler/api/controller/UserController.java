@@ -175,7 +175,7 @@ public interface UserController {
   @ApiImplicitParams(
       @ApiImplicitParam(
           name = "userId",
-          value = "id of person that password is about to change",
+          value = "id of person that secret is about to change",
           required = true,
           dataType = "Long"))
   @ApiResponses({
@@ -191,13 +191,30 @@ public interface UserController {
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParam(
-          name = "userId",
-          value = "id of person that wildcards will be regenerated",
-          required = true,
-          dataType = "Long")
+      name = "userId",
+      value = "id of person that wildcards will be regenerated",
+      required = true,
+      dataType = "Long")
   @ApiResponses({
     @ApiResponse(code = 201, message = "Regenerated new wildcard codes."),
     @ApiResponse(code = 404, message = "Person not found.")
   })
   ResponseEntity<OTPWildcardResponseDto> regenerateWildcards(Long userId, TwoFADto twoFADto);
+
+  @ApiOperation(
+      value = "Verify newly generated secret",
+      httpMethod = "PATCH",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams(
+      @ApiImplicitParam(
+          name = "userId",
+          value = "id of person that secret is verifying",
+          required = true,
+          dataType = "Long"))
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "OK"),
+    @ApiResponse(code = 400, message = "Invalid request.")
+  })
+  ResponseEntity verifySecretChange(Long userId, VerifySecretChangeDto verifySecretChangeDto);
 }

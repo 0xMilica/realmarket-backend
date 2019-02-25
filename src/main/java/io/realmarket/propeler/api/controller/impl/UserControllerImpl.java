@@ -113,4 +113,11 @@ public class UserControllerImpl implements UserController {
       @PathVariable Long userId, @RequestBody TwoFADto twoFADto) {
     return new ResponseEntity<>(twoFactorAuthService.createWildcards(userId, twoFADto), CREATED);
   }
+
+  @PatchMapping(value = "/{userId}/secret")
+  public ResponseEntity<SecretDto> verifySecretChange(
+      @PathVariable Long userId, @RequestBody VerifySecretChangeDto verifySecretChangeDto) {
+    twoFactorAuthService.verifyNewSecret(verifySecretChangeDto, userId);
+    return ResponseEntity.ok().build();
+  }
 }

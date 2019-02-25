@@ -91,6 +91,12 @@ public class EmailServiceImpl implements EmailService {
         data = getChangeEmailEmailData(mailContentHolder);
         templateName = "requestEmailChangeTemplate";
         break;
+
+      case SECRET_CHANGE:
+        subject = "Propeler - Secret Changed";
+        data = getBasicEmailData();
+        templateName = "secretCHangeMailTemplate";
+        break;
       default:
         break;
     }
@@ -112,8 +118,7 @@ public class EmailServiceImpl implements EmailService {
             "%s/auth/confirm-registration?registrationToken=%s",
             frontendServiceUrlPath, activationToken);
 
-    Map<String, Object> data = new HashMap<>();
-    data.put(LOGO, LOGO);
+    Map<String, Object> data = getBasicEmailData();
     data.put(USERNAME, mailContentHolder.getContent().get(USERNAME));
     data.put(ACTIVATION_LINK, activationLink);
 
@@ -129,16 +134,14 @@ public class EmailServiceImpl implements EmailService {
     String resetPasswordLink =
         String.format("%s/auth/change-password?reset=%s", frontendServiceUrlPath, resetToken);
 
-    Map<String, Object> data = new HashMap<>();
-    data.put(LOGO, LOGO);
+    Map<String, Object> data = getBasicEmailData();
     data.put(RESET_PASSWORD_LINK, resetPasswordLink);
 
     return data;
   }
 
   private Map<String, Object> getRecoverUsernameEmailData(MailContentHolder mailContentHolder) {
-    Map<String, Object> data = new HashMap<>();
-    data.put(LOGO, LOGO);
+    Map<String, Object> data = getBasicEmailData();
     data.put(USERNAME_LIST, mailContentHolder.getContent().get(USERNAME_LIST));
 
     return data;
@@ -153,10 +156,15 @@ public class EmailServiceImpl implements EmailService {
     String changeEmailLink =
         String.format("%s/auth/change-email?emailChangeToken=%s", frontendServiceUrlPath, token);
 
-    Map<String, Object> data = new HashMap<>();
-    data.put(LOGO, LOGO);
+    Map<String, Object> data = getBasicEmailData();
     data.put(EMAIL_CHANGE_TOKEN, changeEmailLink);
 
+    return data;
+  }
+
+  private Map<String, Object> getBasicEmailData() {
+    Map<String, Object> data = new HashMap<>();
+    data.put(LOGO, LOGO);
     return data;
   }
 
