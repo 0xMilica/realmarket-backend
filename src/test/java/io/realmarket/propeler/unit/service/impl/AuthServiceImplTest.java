@@ -10,10 +10,7 @@ import io.realmarket.propeler.model.enums.EAuthorizationActionType;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.security.UserAuthentication;
-import io.realmarket.propeler.service.AuthorizedActionService;
-import io.realmarket.propeler.service.EmailService;
-import io.realmarket.propeler.service.PersonService;
-import io.realmarket.propeler.service.TemporaryTokenService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
@@ -60,6 +57,7 @@ public class AuthServiceImplTest {
   @Mock private PasswordEncoder passwordEncoder;
   @Mock private EmailService emailService;
   @Mock private AuthRepository authRepository;
+  @Mock private RememberMeCookieService rememberMeCookieService;
   @Mock private PersonService personService;
   @Mock private TemporaryTokenService temporaryTokenService;
   @Mock private AuthorizedActionService authorizedActionService;
@@ -289,7 +287,7 @@ public class AuthServiceImplTest {
 
     when(jwtService.createToken(auth)).thenReturn(TEST_JWT);
 
-    AuthResponseDto login = authSpy.login(TEST_LOGIN_DTO);
+    AuthResponseDto login = authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
 
     assertEquals(TEST_TEMPORARY_TOKEN.getValue(), login.getToken());
   }
@@ -298,7 +296,7 @@ public class AuthServiceImplTest {
   public void Login_Should_Throw_Exception_When_Not_Existing_Username() {
 
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
-    authSpy.login(TEST_LOGIN_DTO);
+    authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
   }
 
   @Test(expected = BadCredentialsException.class)
@@ -307,7 +305,7 @@ public class AuthServiceImplTest {
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
 
-    authSpy.login(TEST_LOGIN_DTO);
+    authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
   }
 
   @Test(expected = BadCredentialsException.class)
@@ -319,8 +317,10 @@ public class AuthServiceImplTest {
     auth.setState(EAuthState.ACTIVE);
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
 
-    authSpy.login(TEST_LOGIN_DTO);
+    authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
   }
+
+  // TODO : login with remember me cookie returns 2fa status REMEMBER_ME
 
   @Test
   public void Logout_Should_Remove_JWT_Token() {

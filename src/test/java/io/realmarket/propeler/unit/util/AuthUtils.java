@@ -8,10 +8,15 @@ import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.EmailServiceImpl;
 import io.realmarket.propeler.service.util.MailContentHolder;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
+import javax.servlet.http.Cookie;
 import java.util.HashMap;
 
+import static io.realmarket.propeler.service.util.RememberMeCookieHelper.COOKIE_NAME;
 import static io.realmarket.propeler.unit.util.PersonUtils.getMockedPerson;
+import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_VALUE;
 
 public class AuthUtils {
   public static final String TEST_USERNAME = "TEST_USERNAME";
@@ -108,4 +113,14 @@ public class AuthUtils {
 
   public static final UserAuthentication TEST_USER_AUTH =
       new UserAuthentication(TEST_AUTH, TEST_TEMPORARY_TOKEN_VALUE);
+
+  public static final MockHttpServletRequest TEST_REQUEST = new MockHttpServletRequest();
+
+  public static final MockHttpServletResponse TEST_RESPONSE = new MockHttpServletResponse();
+
+  public static final Cookie TEST_COOKIE = new Cookie(COOKIE_NAME, TEST_VALUE);
+
+  static {
+    TEST_REQUEST.setCookies(TEST_COOKIE);
+  }
 }

@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -70,7 +71,8 @@ public interface AuthController {
     @ApiResponse(code = 201, message = "Created (if success)"),
     @ApiResponse(code = 400, message = "Invalid Request (on failure to login)\n")
   })
-  ResponseEntity<AuthResponseDto> login(@RequestBody @Valid LoginDto loginDto);
+  ResponseEntity<AuthResponseDto> login(
+      @RequestBody @Valid LoginDto loginDto, HttpServletRequest request);
 
   @ApiOperation(
       value = "Logout",

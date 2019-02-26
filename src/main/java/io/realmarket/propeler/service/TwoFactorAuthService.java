@@ -3,8 +3,13 @@ package io.realmarket.propeler.service;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public interface TwoFactorAuthService {
-  LoginResponseDto login2FA(TwoFATokenDto twoFATokenDto);
+  LoginResponseDto login2FA(LoginTwoFADto loginTwoFADto, HttpServletResponse response);
+
+  LoginResponseDto loginRememberMe(LoginTwoFADto loginTwoFADto, HttpServletRequest request);
 
   TwoFASecretResponseDto createSecret(TwoFASecretRequestDto twoFASecretRequestDto);
 

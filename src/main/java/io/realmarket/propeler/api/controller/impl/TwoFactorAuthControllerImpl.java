@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -29,8 +31,15 @@ public class TwoFactorAuthControllerImpl implements TwoFactorAuthController {
   @Override
   @PostMapping
   public ResponseEntity<LoginResponseDto> login2FA(
-      @RequestBody @Valid TwoFATokenDto twoFATokenDto) {
-    return ResponseEntity.ok(twoFactorAuthService.login2FA(twoFATokenDto));
+      @RequestBody @Valid LoginTwoFADto loginTwoFADto, HttpServletResponse response) {
+    return ResponseEntity.ok(twoFactorAuthService.login2FA(loginTwoFADto, response));
+  }
+
+  @Override
+  @PostMapping(value = "/remember_me")
+  public ResponseEntity<LoginResponseDto> loginRememberMe(
+      @RequestBody @Valid LoginTwoFADto loginTwoFADto, HttpServletRequest request) {
+    return ResponseEntity.ok(twoFactorAuthService.loginRememberMe(loginTwoFADto, request));
   }
 
   @Override

@@ -3,6 +3,7 @@ package io.realmarket.propeler.service;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Auth;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 public interface AuthService {
@@ -12,7 +13,7 @@ public interface AuthService {
 
   void finalizeChangePassword(Long authId, TwoFADto twoFACodeDto);
 
-  AuthResponseDto login(LoginDto loginDto);
+  AuthResponseDto login(LoginDto loginDto, HttpServletRequest request);
 
   Auth findByUsernameOrThrowException(String username);
 

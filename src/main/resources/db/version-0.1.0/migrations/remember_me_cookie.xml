@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="vivkovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create table if not exists remember_me_cookie
+            (
+            id bigint not null
+            constraint remember_me_cookie_pkey
+            primary key,
+            expiration_time timestamp,
+            value varchar(255),
+            auth_id bigint
+            constraint remember_me_cookie_fk1_on_auth
+            references auth
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

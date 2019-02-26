@@ -12,8 +12,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import static io.realmarket.propeler.unit.util.AuthUtils.TEST_RESPONSE;
+import static io.realmarket.propeler.unit.util.TwoFactorAuthUtils.LOGIN_2F_DTO_RM;
 import static io.realmarket.propeler.unit.util.TwoFactorAuthUtils.TEST_LOGIN_RESPONSE_DTO;
-import static io.realmarket.propeler.unit.util.TwoFactorAuthUtils.TEST_TWO_FA_TOKEN;
 import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -26,9 +27,11 @@ public class TwoFactorAuthControllerImplTest {
 
   @Test
   public void Login2FA_Should_Return_LoginResponseDto() {
-    when(twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN)).thenReturn(TEST_LOGIN_RESPONSE_DTO);
+    when(twoFactorAuthService.login2FA(LOGIN_2F_DTO_RM, TEST_RESPONSE))
+        .thenReturn(TEST_LOGIN_RESPONSE_DTO);
 
-    ResponseEntity<LoginResponseDto> retVal = twoFactorAuthController.login2FA(TEST_TWO_FA_TOKEN);
+    ResponseEntity<LoginResponseDto> retVal =
+        twoFactorAuthController.login2FA(LOGIN_2F_DTO_RM, TEST_RESPONSE);
 
     assertEquals(HttpStatus.OK, retVal.getStatusCode());
     assertEquals(TEST_LOGIN_RESPONSE_DTO, retVal.getBody());
@@ -36,10 +39,11 @@ public class TwoFactorAuthControllerImplTest {
 
   @Test(expected = ForbiddenOperationException.class)
   public void Login2FA_Should_Return_Forbidden() {
-    when(twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN))
+    when(twoFactorAuthService.login2FA(LOGIN_2F_DTO_RM, TEST_RESPONSE))
         .thenThrow(ForbiddenOperationException.class);
 
-    ResponseEntity<LoginResponseDto> retVal = twoFactorAuthController.login2FA(TEST_TWO_FA_TOKEN);
+    ResponseEntity<LoginResponseDto> retVal =
+        twoFactorAuthController.login2FA(LOGIN_2F_DTO_RM, TEST_RESPONSE);
 
     assertEquals(HttpStatus.FORBIDDEN, retVal.getStatusCode());
   }

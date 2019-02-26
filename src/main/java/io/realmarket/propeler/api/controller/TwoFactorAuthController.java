@@ -8,6 +8,9 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Api(value = "/auth/2fa")
@@ -22,7 +25,20 @@ public interface TwoFactorAuthController {
     @ApiResponse(code = 201, message = "Pass 2fa for login"),
     @ApiResponse(code = 400, message = "Invalid token or code provided.")
   })
-  ResponseEntity<LoginResponseDto> login2FA(TwoFATokenDto twoFATokenDto);
+  ResponseEntity<LoginResponseDto> login2FA(
+      LoginTwoFADto loginTwoFADto, HttpServletResponse response);
+
+  @ApiOperation(
+      value = "",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 201, message = "Remember me for login"),
+    @ApiResponse(code = 400, message = "Invalid token or code provided.")
+  })
+  ResponseEntity<LoginResponseDto> loginRememberMe(
+      LoginTwoFADto loginTwoFADto, HttpServletRequest request);
 
   @ApiOperation(
       value = "Create secret",

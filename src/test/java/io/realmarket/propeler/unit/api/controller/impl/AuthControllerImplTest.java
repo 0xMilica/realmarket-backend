@@ -42,16 +42,17 @@ public class AuthControllerImplTest {
 
   @Test
   public void Login_Should_Return_CREATED() {
-    ResponseEntity responseEntity = authControllerImpl.login(AuthUtils.TEST_LOGIN_DTO);
+    ResponseEntity responseEntity =
+        authControllerImpl.login(AuthUtils.TEST_LOGIN_DTO, TEST_REQUEST);
 
-    verify(authService, Mockito.times(1)).login(TEST_LOGIN_DTO);
+    verify(authService, Mockito.times(1)).login(TEST_LOGIN_DTO, TEST_REQUEST);
     assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
   }
 
   @Test(expected = BadCredentialsException.class)
   public void Login_Should_Throw_Exception() {
-    when(authService.login(TEST_LOGIN_DTO)).thenThrow(BadCredentialsException.class);
-    authControllerImpl.login(AuthUtils.TEST_LOGIN_DTO);
+    when(authService.login(TEST_LOGIN_DTO, TEST_REQUEST)).thenThrow(BadCredentialsException.class);
+    authControllerImpl.login(AuthUtils.TEST_LOGIN_DTO, TEST_REQUEST);
   }
 
   @Test

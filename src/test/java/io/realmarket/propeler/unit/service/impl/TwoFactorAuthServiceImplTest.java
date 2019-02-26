@@ -4,10 +4,7 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
-import io.realmarket.propeler.service.AuthService;
-import io.realmarket.propeler.service.JWTService;
-import io.realmarket.propeler.service.OTPService;
-import io.realmarket.propeler.service.TemporaryTokenService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.impl.OTPServiceImpl;
 import io.realmarket.propeler.service.impl.TwoFactorAuthServiceImpl;
@@ -23,11 +20,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
-import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH;
+import static io.realmarket.propeler.unit.util.AuthUtils.*;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
 import static io.realmarket.propeler.unit.util.OTPUtils.TEST_SECRET_1;
+import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_RM_COOKIE;
+import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_VALUE;
 import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN;
+import static io.realmarket.propeler.unit.util.TwoFactorAuthUtils.LOGIN_2F_DTO_RM;
 import static io.realmarket.propeler.unit.util.TwoFactorAuthUtils.TEST_TWO_FA_TOKEN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -41,6 +42,7 @@ public class TwoFactorAuthServiceImplTest {
   @Mock private OTPService otpService;
   @Mock private JWTService jwtService;
   @Mock private AuthService authService;
+  @Mock private RememberMeCookieService rememberMeCookieService;
   @Mock private TemporaryTokenService temporaryTokenService;
 
   @InjectMocks private TwoFactorAuthServiceImpl twoFactorAuthService;
@@ -133,7 +135,7 @@ public class TwoFactorAuthServiceImplTest {
   }
 
   @Test
-  public void Login2FA_Should_Return_2FATokenDto() {
+  public void Login2FA_Should_Return_LoginResponseDto() {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
             .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
@@ -148,10 +150,12 @@ public class TwoFactorAuthServiceImplTest {
             TEST_AUTH, new TwoFADto(TEST_TWO_FA_TOKEN.getCode(), TEST_TWO_FA_TOKEN.getWildcard())))
         .thenReturn(true);
     when(jwtService.createToken(TEST_AUTH)).thenReturn(TEST_JWT);
+    when(rememberMeCookieService.createCookie(TEST_AUTH)).thenReturn(TEST_RM_COOKIE);
 
-    LoginResponseDto retVal = twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN);
+    LoginResponseDto retVal = twoFactorAuthService.login2FA(LOGIN_2F_DTO_RM, TEST_RESPONSE);
 
     assertEquals(TEST_JWT.getValue(), retVal.getJwt());
+    // TODO : assertEquals(TEST_RM_COOKIE.getValue(), TEST_RESPONSE.getCookie())
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -160,7 +164,7 @@ public class TwoFactorAuthServiceImplTest {
             TEST_TWO_FA_TOKEN.getToken()))
         .thenThrow(EntityNotFoundException.class);
 
-    twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN);
+    twoFactorAuthService.login2FA(LOGIN_2F_DTO_RM, TEST_RESPONSE);
   }
 
   @Test(expected = ForbiddenOperationException.class)
@@ -174,7 +178,7 @@ public class TwoFactorAuthServiceImplTest {
             TEST_AUTH, new TwoFADto(TEST_TWO_FA_TOKEN.getCode(), TEST_TWO_FA_TOKEN.getWildcard())))
         .thenReturn(true);
 
-    twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN);
+    twoFactorAuthService.login2FA(LOGIN_2F_DTO_RM, TEST_RESPONSE);
   }
 
   @Test(expected = ForbiddenOperationException.class)
@@ -185,14 +189,65 @@ public class TwoFactorAuthServiceImplTest {
             .auth(TEST_AUTH)
             .build();
 
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(LOGIN_2F_DTO_RM.getToken()))
+        .thenReturn(temporaryTokenMocked);
+    when(otpService.validate(
+            TEST_AUTH, new TwoFADto(LOGIN_2F_DTO_RM.getCode(), LOGIN_2F_DTO_RM.getWildcard())))
+        .thenReturn(false);
+
+    twoFactorAuthService.login2FA(LOGIN_2F_DTO_RM, TEST_RESPONSE);
+  }
+
+  @Test
+  public void LoginRememberMe_Return_LoginResponseDto() {
+    TemporaryToken temporaryTokenMocked =
+        TemporaryToken.builder()
+            .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
+            .auth(TEST_AUTH)
+            .build();
+
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(LOGIN_2F_DTO_RM.getToken()))
+        .thenReturn(temporaryTokenMocked);
+    when(rememberMeCookieService.findByValueAndNotExpired(TEST_VALUE))
+        .thenReturn(Optional.of(TEST_RM_COOKIE));
+    when(jwtService.createToken(TEST_AUTH)).thenReturn(TEST_JWT);
+
+    LoginResponseDto retVal = twoFactorAuthService.loginRememberMe(LOGIN_2F_DTO_RM, TEST_REQUEST);
+
+    assertEquals(TEST_JWT.getValue(), retVal.getJwt());
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void LoginRememberMe_Should_Return_ForbiddenOperationException_IfTokenNotExists() {
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(LOGIN_2F_DTO_RM.getToken()))
+        .thenThrow(EntityNotFoundException.class);
+    twoFactorAuthService.loginRememberMe(LOGIN_2F_DTO_RM, TEST_REQUEST);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void LoginRememberMe_Should_Return_ForbiddenOperationException_IfTokenNotValid() {
+    TemporaryToken temporaryTokenMocked = TemporaryToken.builder().auth(TEST_AUTH).build();
+
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             TEST_TWO_FA_TOKEN.getToken()))
         .thenReturn(temporaryTokenMocked);
-    when(otpService.validate(
-            TEST_AUTH, new TwoFADto(TEST_TWO_FA_TOKEN.getCode(), TEST_TWO_FA_TOKEN.getWildcard())))
-        .thenReturn(false);
 
-    twoFactorAuthService.login2FA(TEST_TWO_FA_TOKEN);
+    twoFactorAuthService.loginRememberMe(LOGIN_2F_DTO_RM, TEST_REQUEST);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void LoginRememberMe_Should_Return_ForbiddenOperationException_IfCookieNotValid() {
+    TemporaryToken temporaryTokenMocked =
+        TemporaryToken.builder()
+            .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
+            .auth(TEST_AUTH)
+            .build();
+
+    when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(LOGIN_2F_DTO_RM.getToken()))
+        .thenReturn(temporaryTokenMocked);
+    when(rememberMeCookieService.findByValueAndNotExpired(TEST_VALUE)).thenReturn(Optional.empty());
+
+    twoFactorAuthService.loginRememberMe(LOGIN_2F_DTO_RM, TEST_REQUEST);
   }
 
   @Test

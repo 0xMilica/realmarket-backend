@@ -8,6 +8,7 @@ import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +17,20 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Service
 @Slf4j
 public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
 
-  private OTPService otpService;
-  private JWTService jwtService;
-  private AuthService authService;
-  private TemporaryTokenService temporaryTokenService;
-  private EmailService emailService;
+  private final OTPService otpService;
+  private final JWTService jwtService;
+  private final AuthService authService;
+  private final TemporaryTokenService temporaryTokenService;
+  private final EmailService emailService;
+  private final RememberMeCookieService rememberMeCookieService;
 
   @Autowired
   TwoFactorAuthServiceImpl(
@@ -34,32 +38,60 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
       JWTService jwtService,
       AuthService authService,
       TemporaryTokenService temporaryTokenService,
+      RememberMeCookieService rememberMeCookieService,
       EmailService emailService) {
     this.otpService = otpService;
     this.jwtService = jwtService;
     this.authService = authService;
     this.temporaryTokenService = temporaryTokenService;
+    this.rememberMeCookieService = rememberMeCookieService;
     this.emailService = emailService;
   }
 
   @Transactional
-  public LoginResponseDto login2FA(TwoFATokenDto twoFATokenDto) {
-    TemporaryToken temporaryToken =
-        temporaryTokenService.findByValueAndNotExpiredOrThrowException(twoFATokenDto.getToken());
-
-    if (temporaryToken.getTemporaryTokenType() != ETemporaryTokenType.LOGIN_TOKEN) {
-      throw new ForbiddenOperationException(ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION);
-    }
+  public LoginResponseDto login2FA(LoginTwoFADto loginTwoFADto, HttpServletResponse response) {
+    TemporaryToken temporaryToken = findTemporaryLoginToken(loginTwoFADto.getToken());
 
     if (!otpService.validate(
         temporaryToken.getAuth(),
-        new TwoFADto(twoFATokenDto.getCode(), twoFATokenDto.getWildcard()))) {
+        new TwoFADto(loginTwoFADto.getCode(), loginTwoFADto.getWildcard()))) {
       throw new ForbiddenOperationException("Provided code not valid!");
+    }
+
+    if (loginTwoFADto.getRememberMe()) {
+      RememberMeCookieHelper.setRememberMeCookie(
+          rememberMeCookieService.createCookie(temporaryToken.getAuth()), response);
     }
 
     temporaryTokenService.deleteToken(temporaryToken);
 
     return new LoginResponseDto(jwtService.createToken(temporaryToken.getAuth()).getValue());
+  }
+
+  @Transactional
+  public LoginResponseDto loginRememberMe(LoginTwoFADto loginTwoFADto, HttpServletRequest request) {
+    TemporaryToken temporaryToken = findTemporaryLoginToken(loginTwoFADto.getToken());
+
+    if (rememberMeCookieService
+        .findByValueAndNotExpired(RememberMeCookieHelper.getCookie(request))
+        .isPresent()) {
+      temporaryTokenService.deleteToken(temporaryToken);
+
+      return new LoginResponseDto(jwtService.createToken(temporaryToken.getAuth()).getValue());
+    } else {
+      throw new ForbiddenOperationException("Invalid remember me cookie");
+    }
+  }
+
+  private TemporaryToken findTemporaryLoginToken(String token) {
+    TemporaryToken temporaryToken =
+        temporaryTokenService.findByValueAndNotExpiredOrThrowException(token);
+
+    if (temporaryToken.getTemporaryTokenType() != ETemporaryTokenType.LOGIN_TOKEN) {
+      throw new ForbiddenOperationException(ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION);
+    }
+
+    return temporaryToken;
   }
 
   @Override

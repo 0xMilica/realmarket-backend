@@ -19,6 +19,7 @@ import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.MailContentHolder;
+import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,6 +59,8 @@ public class AuthServiceImpl implements AuthService {
 
   private final PasswordEncoder passwordEncoder;
 
+  private final RememberMeCookieService rememberMeCookieService;
+
   @Autowired
   public AuthServiceImpl(
       PasswordEncoder passwordEncoder,
@@ -64,6 +68,7 @@ public class AuthServiceImpl implements AuthService {
       EmailService emailService,
       AuthRepository authRepository,
       TemporaryTokenService temporaryTokenService,
+      RememberMeCookieService rememberMeCookieService,
       JWTService jwtService,
       AuthorizedActionService authorizedActionService) {
     this.passwordEncoder = passwordEncoder;
@@ -72,6 +77,7 @@ public class AuthServiceImpl implements AuthService {
     this.authRepository = authRepository;
     this.temporaryTokenService = temporaryTokenService;
     this.jwtService = jwtService;
+    this.rememberMeCookieService = rememberMeCookieService;
     this.authorizedActionService = authorizedActionService;
   }
 
@@ -81,13 +87,13 @@ public class AuthServiceImpl implements AuthService {
     return authorities;
   }
 
-  public AuthResponseDto login(LoginDto loginDto) {
+  public AuthResponseDto login(LoginDto loginDto, HttpServletRequest request) {
     Auth auth =
         authRepository
             .findByUsername(loginDto.getUsername())
             .orElseThrow(
                 () -> new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE));
-    return validateLogin(auth, loginDto.getPassword());
+    return checkIfRemembered(validateLogin(auth, loginDto.getPassword()), request);
   }
 
   @Transactional
@@ -350,5 +356,17 @@ public class AuthServiceImpl implements AuthService {
     if (!authIdFromRequestPath.equals(AuthenticationUtil.getAuthentication().getAuth().getId())) {
       throw new ForbiddenOperationException(ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION);
     }
+  }
+
+  private AuthResponseDto checkIfRemembered(
+      AuthResponseDto authResponseDto, HttpServletRequest request) {
+    if (E2FAStatus.VALIDATE == authResponseDto.getTwoFAStatus()
+        && rememberMeCookieService
+            .findByValueAndNotExpired(RememberMeCookieHelper.getCookie(request))
+            .isPresent()) {
+      authResponseDto.setTwoFAStatus(E2FAStatus.REMEMBER_ME);
+    }
+
+    return authResponseDto;
   }
 }

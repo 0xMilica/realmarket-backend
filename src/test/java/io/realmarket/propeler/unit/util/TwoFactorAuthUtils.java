@@ -26,6 +26,20 @@ public class TwoFactorAuthUtils {
       new TwoFASecretVerifyDto(
           OTPUtils.TEST_TOTP_CODE_1, TemporaryTokenUtils.TEST_TEMPORARY_2FA_SETUP_TOKEN.getValue());
 
+  public static LoginTwoFADto LOGIN_2F_DTO_RM =
+      new LoginTwoFADto(
+          TemporaryTokenUtils.TEST_TEMPORARY_2FA_SETUP_TOKEN.getValue(),
+          OTPUtils.TEST_TOTP_CODE_1,
+          OTPUtils.TEST_OTP_WILDCARD_1,
+          true);
+
+  public static LoginTwoFADto LOGIN_2F_DTO_NRM =
+      new LoginTwoFADto(
+          TemporaryTokenUtils.TEST_TEMPORARY_2FA_SETUP_TOKEN.getValue(),
+          OTPUtils.TEST_TOTP_CODE_1,
+          OTPUtils.TEST_OTP_WILDCARD_1,
+          true);
+
   public static GenerateNewSecretDto NEW_SECRET_REQUEST_1_DTO =
       new GenerateNewSecretDto(
           AuthUtils.TEST_PASSWORD, new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null));

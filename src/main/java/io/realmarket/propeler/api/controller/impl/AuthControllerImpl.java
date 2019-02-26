@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.*;
@@ -51,8 +52,9 @@ public class AuthControllerImpl implements AuthController {
   }
 
   @PostMapping()
-  public ResponseEntity<AuthResponseDto> login(@RequestBody @Valid LoginDto loginDto) {
-    return new ResponseEntity<>(authService.login(loginDto), CREATED);
+  public ResponseEntity<AuthResponseDto> login(
+      @RequestBody @Valid LoginDto loginDto, HttpServletRequest request) {
+    return new ResponseEntity<>(authService.login(loginDto, request), CREATED);
   }
 
   @PostMapping("/recover_username")

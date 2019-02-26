@@ -74,6 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/auth/confirm_registration",
             "/auth/recover_username",
             "/auth/2fa",
+            "/auth/2fa/remember_me",
             "/auth/2fa/secret",
             "/auth/2fa/verify")
         .antMatchers(HttpMethod.PATCH, "/auth/email_confirm");
