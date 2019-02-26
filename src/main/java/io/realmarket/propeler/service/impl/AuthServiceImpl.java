@@ -211,8 +211,9 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Transactional
-  public void logout() {
+  public void logout(HttpServletRequest request) {
     jwtService.deleteByValue(AuthenticationUtil.getAuthentication().getToken());
+    rememberMeCookieService.deleteCurrentCookie(request);
   }
 
   @Transactional

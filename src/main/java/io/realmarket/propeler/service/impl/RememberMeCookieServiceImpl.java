@@ -5,14 +5,20 @@ import io.realmarket.propeler.model.RememberMeCookie;
 import io.realmarket.propeler.repository.RememberMeCookieRepository;
 import io.realmarket.propeler.service.RememberMeCookieService;
 import io.realmarket.propeler.service.util.RandomStringBuilder;
+import io.realmarket.propeler.service.util.RememberMeCookieHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class RememberMeCookieServiceImpl implements RememberMeCookieService {
 
   private static final int COOKIE_LENGTH = 54;
@@ -43,5 +49,22 @@ public class RememberMeCookieServiceImpl implements RememberMeCookieService {
 
   public void deleteCookie(RememberMeCookie rememberMeCookie) {
     rememberMeCookieRepository.delete(rememberMeCookie);
+  }
+
+  @Transactional
+  public void deleteCurrentCookie(HttpServletRequest request) {
+    String cookieToken = RememberMeCookieHelper.getCookie(request);
+    if (cookieToken != null) {
+      findByValueAndNotExpired(cookieToken).ifPresent(this::deleteCookie);
+    }
+  }
+
+  @Transactional
+  @Scheduled(
+      fixedRateString = "${app.cleanse.cookies.timeloop}",
+      initialDelayString = "${app.cleanse.cookies.timeloop}")
+  public void cleanseExpiredCookie() {
+    log.trace("Cleanse expired cookies");
+    rememberMeCookieRepository.deleteAllByExpirationTimeLessThan(Instant.now());
   }
 }

@@ -83,7 +83,7 @@ public interface AuthController {
     @ApiResponse(code = 204, message = "Successfully logged out"),
     @ApiResponse(code = 400, message = "Invalid attempt to logout\n")
   })
-  ResponseEntity logout();
+  ResponseEntity logout(HttpServletRequest request);
 
   @ApiOperation(
       value = "Recovering username",

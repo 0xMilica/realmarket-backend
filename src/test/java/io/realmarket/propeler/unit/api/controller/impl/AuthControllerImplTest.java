@@ -57,8 +57,8 @@ public class AuthControllerImplTest {
 
   @Test
   public void Logout_Should_Return_NO_CONTENT() {
-    ResponseEntity responseEntity = authControllerImpl.logout();
-    verify(authService, Mockito.times(1)).logout();
+    ResponseEntity responseEntity = authControllerImpl.logout(TEST_REQUEST);
+    verify(authService, Mockito.times(1)).logout(TEST_REQUEST);
     assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
   }
 

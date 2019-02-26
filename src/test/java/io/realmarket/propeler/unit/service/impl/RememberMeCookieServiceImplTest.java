@@ -3,6 +3,7 @@ package io.realmarket.propeler.unit.service.impl;
 import io.realmarket.propeler.model.RememberMeCookie;
 import io.realmarket.propeler.repository.RememberMeCookieRepository;
 import io.realmarket.propeler.service.impl.RememberMeCookieServiceImpl;
+import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,6 +14,8 @@ import java.time.Instant;
 import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH;
+import static io.realmarket.propeler.unit.util.AuthUtils.TEST_COOKIE;
+import static io.realmarket.propeler.unit.util.AuthUtils.TEST_REQUEST;
 import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_RM_COOKIE;
 import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_VALUE;
 import static org.junit.Assert.assertEquals;
@@ -55,6 +58,17 @@ public class RememberMeCookieServiceImplTest {
   @Test
   public void deleteCookie_Should_DeleteCookie() {
     rememberMeCookieService.deleteCookie(TEST_RM_COOKIE);
+
+    verify(rememberMeCookieRepository, times(1)).delete(TEST_RM_COOKIE);
+  }
+
+  @Test
+  public void deleteCurrentCookie_Should_DeleteCookie() {
+    when(rememberMeCookieRepository.findByValueAndExpirationTimeGreaterThanEqual(
+            anyString(), any(Instant.class)))
+            .thenReturn(Optional.of(TEST_RM_COOKIE));
+
+    rememberMeCookieService.deleteCurrentCookie(TEST_REQUEST);
 
     verify(rememberMeCookieRepository, times(1)).delete(TEST_RM_COOKIE);
   }

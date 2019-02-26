@@ -324,7 +324,7 @@ public class AuthServiceImplTest {
 
   @Test
   public void Logout_Should_Remove_JWT_Token() {
-    authServiceImpl.logout();
+    authServiceImpl.logout(TEST_REQUEST);
     verify(jwtService, times(1)).deleteByValue(TEST_USER_AUTH.getToken());
   }
 

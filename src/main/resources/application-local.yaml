@@ -36,8 +36,9 @@ hmac.secret: s3cr3t
 access-token.expiration-time: 3600000
 app:
   scheduler-pool-size: 5
-  cleanse.tokens:
-    timeloop: 86400000 #24h
+  cleanse:
+    tokens.timeloop: 86400000 #24h
+    cookies.timeloop: 86400000 #24h
   remember_me.expiration: 2592000000 #30d * 24h * 60m * 60s * 1000ms
   otp:
     secret.size: 16

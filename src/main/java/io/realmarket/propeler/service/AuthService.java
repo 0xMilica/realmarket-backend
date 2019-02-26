@@ -35,7 +35,7 @@ public interface AuthService {
 
   void finalizeEmailChange(final ConfirmEmailChangeDto confirmEmailChangeDto);
 
-  void logout();
+  void logout(HttpServletRequest request);
 
   void updateSecretById(Long id, String secret);
 
