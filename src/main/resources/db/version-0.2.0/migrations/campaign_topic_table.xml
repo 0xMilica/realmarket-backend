@@ -1,0 +1,28 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ntodorovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence campaign_topic_seq;
+            create type ecampaigntopictype as enum ('PROBLEM', 'SOLUTION', 'RISK_AND_COMPETITION', 'CAPITAL_AND_EXIT',
+            'UPDATES', 'OVERVIEW');
+            create table if not exists campaign_topic
+            (
+            id bigint not null
+            constraint campaign_topic_pkey
+            primary key,
+            content varchar(255),
+            type ecampaigntopictype,
+            campaign_id bigint
+            constraint campaign_topic_fk_on_campaign
+            references campaign,
+            constraint campaign_topic_uk_on_type_and_campaignId
+            unique (type, campaign_id)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,30 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ntodorovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence campaign_seq;
+            create table if not exists campaign
+            (
+            id bigint not null
+            constraint campaign_pkey
+            primary key,
+            friendly_url varchar(255)
+            constraint campaign_uk_on_friendlyUrl
+            unique,
+            funding_goals bigint,
+            market_image_url varchar(255),
+            max_equity_offered double precision,
+            min_equity_offered double precision,
+            name varchar(255)
+            constraint campaign_uk_on_name
+            unique,
+            time_to_raise_funds bytea
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

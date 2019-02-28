@@ -1,0 +1,34 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ntodorovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence campaign_investor_seq;
+            create table if not exists campaign_investor
+            (
+            id bigint not null
+            constraint campaign_investor_pkey
+            primary key,
+            custom_profile_url varchar(255),
+            description varchar(255),
+            facebook_url varchar(255),
+            invested_amount numeric(19,2),
+            is_anonymous boolean,
+            linkedin_url varchar(255),
+            location varchar(255),
+            name varchar(255),
+            order_number bytea,
+            photo_url varchar(255),
+            twitter_url varchar(255),
+            campaign_id bigint
+            constraint campaign_investor_fk_on_campaign
+            references campaign
+            );
+
+        </sql>
+    </changeSet>
+</databaseChangeLog>

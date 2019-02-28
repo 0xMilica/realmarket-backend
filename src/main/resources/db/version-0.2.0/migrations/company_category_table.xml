@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ntodorovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence company_category_seq;
+            create table if not exists company_category
+            (
+            id bigint not null
+            constraint company_category_pkey
+            primary key,
+            name varchar(255)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="ntodorovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence campaign_document_seq;
+            create type ecampaigndocumentaccesslevel as enum ('PLATFORM_ADMINS', 'INVESTORS', 'PUBLIC');
+            create type ecampaigndocumenttype as enum ('DOCTYPE1', 'DOCTYPE2', 'DOCTYPE3');
+            create table if not exists campaign_document
+            (
+            id bigint not null
+            constraint campaign_document_pkey
+            primary key,
+            access_level ecampaigndocumentaccesslevel,
+            title varchar(255),
+            type ecampaigndocumenttype,
+            upload_date timestamp,
+            url varchar(255),
+            campaign_id bigint
+            constraint campaign_document_fk_on_campaign
+            references campaign
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
