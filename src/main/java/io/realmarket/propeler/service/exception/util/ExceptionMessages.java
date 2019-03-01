@@ -28,6 +28,8 @@ public interface ExceptionMessages {
 
   String PROFILE_PICTURE_DOES_NOT_EXIST = "Profile picture does not exist!";
 
+  String IMAGE_DOES_NOT_EXIST = "Image does not exist!";
+
   String FORBIDDEN_OPERATION_EXCEPTION = "Not allowed operation";
 
   String AUTHORIZATION_ACTION_NOT_FOUND = "Authorization action not found";
