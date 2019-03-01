@@ -51,7 +51,7 @@ public class EmailServiceImplTest {
     assertEquals(TEST_USER_EMAIL, mockedEmailMessageDto.getReceiver());
     assertEquals(TEST_ACTIVATION_SUBJECT, mockedEmailMessageDto.getSubject());
     assertEquals(TEST_EMAIL_TEXT, mockedEmailMessageDto.getText());
-    assertEquals(3, mockedResetEmailData.size());
+    assertEquals(4, mockedResetEmailData.size());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -92,7 +92,7 @@ public class EmailServiceImplTest {
     assertEquals(TEST_USER_EMAIL, mockedEmailMessageDto.getReceiver());
     assertEquals(TEST_RESET_SUBJECT, mockedEmailMessageDto.getSubject());
     assertEquals(TEST_EMAIL_TEXT, mockedEmailMessageDto.getText());
-    assertEquals(2, mockedResetEmailData.size());
+    assertEquals(3, mockedResetEmailData.size());
   }
 
   @Test(expected = IllegalArgumentException.class)

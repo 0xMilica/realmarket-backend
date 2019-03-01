@@ -51,6 +51,8 @@ logging:
     liquibase: INFO
 
 app:
+  email:
+    contact_us: support@realmarket.io
   scheduler-pool-size: 5
   cleanse:
     tokens.timeloop: 86400000 #24h

@@ -30,16 +30,22 @@ public class EmailServiceImpl implements EmailService {
   public static final String RESET_TOKEN = "resetToken";
   public static final String EMAIL_CHANGE_TOKEN = "changeEmailToken";
 
+  private static final String CONTACT_US_EMAIL = "contactUsEmail";
   private static final String LOGO = "logo";
   private static final String ACTIVATION_LINK = "activationLink";
   private static final String RESET_PASSWORD_LINK = "resetPasswordLink";
   private static final String LOGO_PATH = "/static/images/logo.png";
+
+  private static final String CONTACT_US_SUBJECT = "Realmarket team would like to hear from you!";
 
   private JavaMailSender javaMailSender;
   private MailContentBuilder mailContentBuilder;
 
   @Value(value = "${frontend.service.url}")
   private String frontendServiceUrlPath;
+
+  @Value(value = "${app.email.contact_us}")
+  private String contactMeEmail;
 
   @Autowired
   public EmailServiceImpl(JavaMailSender javaMailSender, MailContentBuilder mailContentBuilder) {
@@ -98,8 +104,10 @@ public class EmailServiceImpl implements EmailService {
         templateName = "secretCHangeMailTemplate";
         break;
       default:
+        data = new HashMap<>();
         break;
     }
+    data.put(CONTACT_US_EMAIL,"mailto:"+contactMeEmail+"?subject="+CONTACT_US_SUBJECT);
 
     emailMessageDto.setSubject(subject);
     emailMessageDto.setText(mailContentBuilder.build(data, templateName));
