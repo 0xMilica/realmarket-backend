@@ -13,6 +13,8 @@ public interface AuthService {
 
   void finalizeChangePassword(Long authId, TwoFADto twoFACodeDto);
 
+  TokenDto verifyPasswordAndReturnToken(Long authId, PasswordDto passwordDto);
+
   AuthResponseDto login(LoginDto loginDto, HttpServletRequest request);
 
   Auth findByUsernameOrThrowException(String username);

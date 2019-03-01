@@ -90,6 +90,18 @@ public class AuthServiceImplTest {
     verify(passwordEncoder, Mockito.times(1)).encode(TEST_PASSWORD);
   }
 
+  @Test
+  public void VerifyPasswordAndReturnToken_Should_CreateToken() {
+    when(temporaryTokenService.createToken(any(),any())).thenReturn(TEST_TEMPORARY_TOKEN);
+    when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.of(TEST_AUTH));
+    when(passwordEncoder.matches(TEST_AUTH.getPassword(), TEST_PASSWORD_DTO.getPassword())).thenReturn(true);
+
+    authServiceImpl.verifyPasswordAndReturnToken(TEST_AUTH_ID,TEST_PASSWORD_DTO);
+
+    verify(temporaryTokenService,times(1)).createToken(any(),any());
+
+  }
+
   @Test(expected = UsernameAlreadyExistsException.class)
   public void Register_Should_Throw_UsernameAlreadyExistsException_WhenUsernameExists() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));

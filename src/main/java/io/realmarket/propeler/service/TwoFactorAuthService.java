@@ -15,7 +15,7 @@ public interface TwoFactorAuthService {
 
   OTPWildcardResponseDto createWildcards(TwoFASecretVerifyDto twoFASecretVerifyDto);
 
-  SecretDto generateNewSecret(GenerateNewSecretDto generateNewSecretDto, Long userId);
+  SecretDto generateNewSecret(TwoFATokenDto twoFATokenDto, Long userId);
 
   OTPWildcardResponseDto createWildcards(Long authId, TwoFADto twoFADto);
 

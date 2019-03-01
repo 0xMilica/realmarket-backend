@@ -36,6 +36,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.realmarket.propeler.model.enums.ETemporaryTokenType.PASSWORD_VERIFIED_TOKEN;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
 
 @Service
@@ -251,6 +252,14 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
+  public TokenDto verifyPasswordAndReturnToken(Long authId, PasswordDto passwordDto) {
+    Auth auth = findByIdOrThrowException(authId);
+    checkPasswordOrThrow(auth, passwordDto.getPassword());
+    return new TokenDto(
+        temporaryTokenService.createToken(auth, PASSWORD_VERIFIED_TOKEN).getValue());
+  }
+
+  @Override
   public Optional<Auth> findById(Long id) {
     return authRepository.findById(id);
   }
@@ -336,10 +345,13 @@ public class AuthServiceImpl implements AuthService {
 
   public void checkLoginCredentials(Auth auth, String password) {
     if (auth.getState().equals(EAuthState.CONFIRM_REGISTRATION)) {
-
       log.error("User with auth id '{}' is not active ", auth.getId());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
+    checkPasswordOrThrow(auth, password);
+  }
+
+  private void checkPasswordOrThrow(Auth auth, String password) {
     if (!passwordEncoder.matches(password, auth.getPassword())) {
       log.error("User with auth id '{}' provided passwords which do not match ", auth.getId());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);

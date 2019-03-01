@@ -72,6 +72,29 @@ public interface UserController {
       @PathVariable Long authId, @RequestBody @Valid TwoFADto twoFADto);
 
   @ApiOperation(
+      value = "Verify password and return token",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "authId",
+        value = "id of auth for person for whom want to verify its password",
+        required = true,
+        dataType = "Long"),
+    @ApiImplicitParam(
+        name = "PasswordDto",
+        value = "Password that we want to verify.",
+        dataType = "TwoFACodeDto")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Password verified"),
+    @ApiResponse(code = 400, message = "Invalid request."),
+  })
+  ResponseEntity<TokenDto> verifyPassword(
+      @PathVariable Long authId, @RequestBody @Valid PasswordDto passwordDto);
+
+  @ApiOperation(
       value = "Get person profile",
       httpMethod = "GET",
       consumes = APPLICATION_JSON_VALUE,
@@ -182,8 +205,7 @@ public interface UserController {
     @ApiResponse(code = 201, message = "Created."),
     @ApiResponse(code = 400, message = "Invalid request.")
   })
-  ResponseEntity<SecretDto> generateNewSecret(
-      Long userId, GenerateNewSecretDto generateNewSecretDto);
+  ResponseEntity<SecretDto> generateNewSecret(Long userId, TwoFATokenDto twoFATokenDto);
 
   @ApiOperation(
       value = "Regenerate wildcard codes",

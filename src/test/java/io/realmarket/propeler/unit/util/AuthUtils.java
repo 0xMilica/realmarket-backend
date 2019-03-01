@@ -43,6 +43,8 @@ public class AuthUtils {
   public static final ChangePasswordDto TEST_CHANGE_PASSWORD_DTO =
       ChangePasswordDto.builder().oldPassword(TEST_PASSWORD).newPassword(TEST_PASSWORD_NEW).build();
 
+  public static final PasswordDto TEST_PASSWORD_DTO = new PasswordDto(TEST_PASSWORD);
+
   public static final UsernameDto TEST_USERNAME_DTO = new UsernameDto(TEST_USERNAME);
   public static final ConfirmRegistrationDto TEST_CONFIRM_REGISTRATION_DTO =
       ConfirmRegistrationDto.builder().token(TEST_TEMPORARY_TOKEN_VALUE).build();

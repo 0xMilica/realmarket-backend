@@ -8,8 +8,8 @@ import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
-import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import io.realmarket.propeler.service.util.MailContentHolder;
+import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,15 +126,19 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     return OTPWildcardResponseDto.builder().wildcards(wildcards).build();
   }
 
-  public SecretDto generateNewSecret(GenerateNewSecretDto generateNewSecretDto, Long userId) {
+  @Transactional
+  public SecretDto generateNewSecret(TwoFATokenDto twoFATokenDto, Long userId) {
+    TemporaryToken temporaryToken =
+        temporaryTokenService.findByValueAndTypeOrThrowException(
+            twoFATokenDto.getToken(), ETemporaryTokenType.PASSWORD_VERIFIED_TOKEN);
     Auth auth = authService.findByUserIdrThrowException(userId);
 
-    authService.checkLoginCredentials(auth, generateNewSecretDto.getPassword());
-
-    if (!otpService.validate(auth, generateNewSecretDto.getTwoFa())) {
+    if (!otpService.validate(
+        auth, new TwoFADto(twoFATokenDto.getCode(), twoFATokenDto.getWildcard()))) {
       throw new BadCredentialsException(ExceptionMessages.INVALID_TOTP_CODE_PROVIDED);
     }
     String secret = otpService.generateTOTPSecret(auth);
+    temporaryTokenService.deleteToken(temporaryToken);
     return new SecretDto(secret);
   }
 
@@ -150,7 +154,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
 
   public void verifyNewSecret(VerifySecretChangeDto verifySecretChangeDto, Long userId) {
     Auth auth = authService.findByUserIdrThrowException(userId);
-    if (!otpService.validateTOTPSecretChange(auth, verifySecretChangeDto.getTwoFaCode())) {
+    if (!otpService.validateTOTPSecretChange(auth, verifySecretChangeDto.getCode())) {
       throw new BadCredentialsException(ExceptionMessages.INVALID_TOTP_CODE_PROVIDED);
     }
     emailService.sendMailToUser(

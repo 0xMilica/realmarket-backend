@@ -53,6 +53,13 @@ public class UserControllerImpl implements UserController {
     return new ResponseEntity<>(OK);
   }
 
+  @Override
+  @PostMapping(value = "/{authId}/password/verify")
+  public ResponseEntity<TokenDto> verifyPassword(
+      @PathVariable Long authId, @RequestBody @Valid PasswordDto passwordDto) {
+    return ResponseEntity.ok(authService.verifyPasswordAndReturnToken(authId, passwordDto));
+  }
+
   @GetMapping(value = "/{userId}")
   public ResponseEntity<PersonDto> getPerson(@PathVariable Long userId) {
     return ResponseEntity.ok(personService.getPerson(userId));
@@ -102,9 +109,9 @@ public class UserControllerImpl implements UserController {
 
   @PostMapping(value = "/{userId}/secret")
   public ResponseEntity<SecretDto> generateNewSecret(
-      @PathVariable Long userId, @RequestBody GenerateNewSecretDto generateNewSecretDto) {
+      @PathVariable Long userId, @RequestBody TwoFATokenDto twoFATokenDto) {
     return new ResponseEntity<>(
-        twoFactorAuthService.generateNewSecret(generateNewSecretDto, userId), CREATED);
+        twoFactorAuthService.generateNewSecret(twoFATokenDto, userId), CREATED);
   }
 
   @Override
@@ -115,7 +122,7 @@ public class UserControllerImpl implements UserController {
   }
 
   @PatchMapping(value = "/{userId}/secret")
-  public ResponseEntity<SecretDto> verifySecretChange(
+  public ResponseEntity verifySecretChange(
       @PathVariable Long userId, @RequestBody VerifySecretChangeDto verifySecretChangeDto) {
     twoFactorAuthService.verifyNewSecret(verifySecretChangeDto, userId);
     return ResponseEntity.ok().build();

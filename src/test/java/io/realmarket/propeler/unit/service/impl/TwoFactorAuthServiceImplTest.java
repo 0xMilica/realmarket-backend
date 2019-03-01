@@ -135,7 +135,7 @@ public class TwoFactorAuthServiceImplTest {
   }
 
   @Test
-  public void Login2FA_Should_Return_LoginResponseDto() {
+  public void login2FA_Should_Return_LoginResponseDto() {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
             .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
@@ -159,7 +159,7 @@ public class TwoFactorAuthServiceImplTest {
   }
 
   @Test(expected = EntityNotFoundException.class)
-  public void Login2FA_Should_Throw_NotFoundException_IfTokenNotExists() {
+  public void login2FA_Should_Throw_NotFoundException_IfTokenNotExists() {
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             TEST_TWO_FA_TOKEN.getToken()))
         .thenThrow(EntityNotFoundException.class);
@@ -168,7 +168,7 @@ public class TwoFactorAuthServiceImplTest {
   }
 
   @Test(expected = ForbiddenOperationException.class)
-  public void Login2FA_Should_Return_ForbiddenOperationException_IfTokenNotValid() {
+  public void login2FA_Should_Return_ForbiddenOperationException_IfTokenNotValid() {
     TemporaryToken temporaryTokenMocked = TemporaryToken.builder().auth(TEST_AUTH).build();
 
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
@@ -182,7 +182,7 @@ public class TwoFactorAuthServiceImplTest {
   }
 
   @Test(expected = ForbiddenOperationException.class)
-  public void Login2FA_Should_Return_ForbiddenOperationException_IfCodeNotValid() {
+  public void login2FA_Should_Return_ForbiddenOperationException_IfCodeNotValid() {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
             .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
@@ -199,7 +199,7 @@ public class TwoFactorAuthServiceImplTest {
   }
 
   @Test
-  public void LoginRememberMe_Return_LoginResponseDto() {
+  public void loginRememberMe_Return_LoginResponseDto() {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
             .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
@@ -218,14 +218,14 @@ public class TwoFactorAuthServiceImplTest {
   }
 
   @Test(expected = EntityNotFoundException.class)
-  public void LoginRememberMe_Should_Return_ForbiddenOperationException_IfTokenNotExists() {
+  public void loginRememberMe_Should_Return_ForbiddenOperationException_IfTokenNotExists() {
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(LOGIN_2F_DTO_RM.getToken()))
         .thenThrow(EntityNotFoundException.class);
     twoFactorAuthService.loginRememberMe(LOGIN_2F_DTO_RM, TEST_REQUEST);
   }
 
   @Test(expected = ForbiddenOperationException.class)
-  public void LoginRememberMe_Should_Return_ForbiddenOperationException_IfTokenNotValid() {
+  public void loginRememberMe_Should_Return_ForbiddenOperationException_IfTokenNotValid() {
     TemporaryToken temporaryTokenMocked = TemporaryToken.builder().auth(TEST_AUTH).build();
 
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
@@ -236,7 +236,7 @@ public class TwoFactorAuthServiceImplTest {
   }
 
   @Test(expected = ForbiddenOperationException.class)
-  public void LoginRememberMe_Should_Return_ForbiddenOperationException_IfCookieNotValid() {
+  public void loginRememberMe_Should_Return_ForbiddenOperationException_IfCookieNotValid() {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
             .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
@@ -254,7 +254,8 @@ public class TwoFactorAuthServiceImplTest {
   public void generateNewSecret_Should_Return_Codes() {
     Auth testAuth = AuthUtils.TEST_AUTH_OLD_SECRET;
     when(authService.findByUserIdrThrowException(PersonUtils.TEST_PERSON_ID)).thenReturn(testAuth);
-
+    when(temporaryTokenService.findByValueAndTypeOrThrowException(any(),any()))
+            .thenReturn(TEST_TEMPORARY_TOKEN);
     when(otpService.validate(any(), any())).thenReturn(true);
     when(otpService.generateTOTPSecret(testAuth)).thenReturn(OTPUtils.TEST_SECRET_2);
     when(otpService.generateRecoveryCodes(testAuth))
@@ -262,20 +263,9 @@ public class TwoFactorAuthServiceImplTest {
 
     SecretDto secretDto =
         twoFactorAuthService.generateNewSecret(
-            TwoFactorAuthUtils.NEW_SECRET_REQUEST_1_DTO, PersonUtils.TEST_PERSON_ID);
+            TwoFactorAuthUtils.TEST_TWO_FA_TOKEN_1, PersonUtils.TEST_PERSON_ID);
     assertNotNull(secretDto.getSecret());
-  }
-
-  @Test(expected = BadCredentialsException.class)
-  public void generateNewSecret_Should_Throw_Exception_On_Wrong_Password() {
-    Auth testAuth = AuthUtils.TEST_AUTH_OLD_SECRET;
-    when(authService.findByUserIdrThrowException(PersonUtils.TEST_PERSON_ID)).thenReturn(testAuth);
-    when(otpService.validate(any(), any())).thenReturn(true);
-
-    doThrow(BadCredentialsException.class).when(authService).checkLoginCredentials(any(), any());
-
-    twoFactorAuthService.generateNewSecret(
-        TwoFactorAuthUtils.NEW_SECRET_REQUEST_2_DTO, PersonUtils.TEST_PERSON_ID);
+    verify(temporaryTokenService,times(1)).deleteToken(TEST_TEMPORARY_TOKEN);
   }
 
   @Test(expected = BadCredentialsException.class)
@@ -285,6 +275,6 @@ public class TwoFactorAuthServiceImplTest {
     when(otpService.validate(any(), any())).thenReturn(false);
 
     twoFactorAuthService.generateNewSecret(
-        TwoFactorAuthUtils.NEW_SECRET_REQUEST_1_DTO, PersonUtils.TEST_PERSON_ID);
+        TwoFactorAuthUtils.TEST_TWO_FA_TOKEN_1, PersonUtils.TEST_PERSON_ID);
   }
 }

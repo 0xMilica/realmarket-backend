@@ -6,20 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
-@ApiModel("Token and 2fa code for verification.")
+@ApiModel("Password")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TwoFATokenDto {
+public class PasswordDto {
 
-  @NotBlank(message = "Please provide token")
-  private String token;
-
-  private String code;
-
-  private String wildcard;
+  @NotNull(message = "Please provide password")
+  @Size(min = 8, message = "Password must be at least 8 characters long.")
+  String password;
 }

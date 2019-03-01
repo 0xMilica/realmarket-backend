@@ -10,7 +10,7 @@ public interface TemporaryTokenService {
 
   TemporaryToken createToken(Auth auth, ETemporaryTokenType type);
 
-  boolean validateTokenAndDeleteIt(String value, ETemporaryTokenType type);
+  TemporaryToken findByValueAndTypeOrThrowException(String value, ETemporaryTokenType type);
 
   void deleteToken(TemporaryToken temporaryToken);
 }

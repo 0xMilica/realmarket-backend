@@ -40,11 +40,7 @@ public class TwoFactorAuthUtils {
           OTPUtils.TEST_OTP_WILDCARD_1,
           true);
 
-  public static GenerateNewSecretDto NEW_SECRET_REQUEST_1_DTO =
-      new GenerateNewSecretDto(
-          AuthUtils.TEST_PASSWORD, new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null));
-
-  public static GenerateNewSecretDto NEW_SECRET_REQUEST_2_DTO =
-      new GenerateNewSecretDto(
-          AuthUtils.TEST_PASSWORD_NEW, new TwoFADto(null, OTPUtils.TEST_OTP_WILDCARD_1));
+  public static TwoFATokenDto TEST_TWO_FA_TOKEN_1 =
+      new TwoFATokenDto(
+          TemporaryTokenUtils.TEST_TEMPORARY_TOKEN_VALUE, OTPUtils.TEST_TOTP_CODE_1, null);
 }

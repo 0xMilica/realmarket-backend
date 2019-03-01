@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(
-        value = "PersonDto",
-        description = "Person profile information")
+@ApiModel(value = "PersonDto", description = "Person profile information")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
