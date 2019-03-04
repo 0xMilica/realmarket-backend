@@ -25,6 +25,9 @@ public class CompanyServiceImpl implements CompanyService {
   @Value(value = "${cos.file_prefix.company_logo}")
   private String companyLogoPrefix;
 
+  @Value(value = "${cos.file_prefix.company_featured_image}")
+  private String companyFeaturedImage;
+
   @Autowired
   public CompanyServiceImpl(
       CompanyRepository companyRepository, CloudObjectStorageService cloudObjectStorageService) {
@@ -62,11 +65,38 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Override
   public void deleteLogo(Long companyId) {
-    log.info("Delete company[" + companyId + "] logo requested");
+    log.info("Delete company[{}] logo requested",companyId);
     Company company = findByIdOrThrowException(companyId);
     cloudObjectStorageService.delete(company.getLogoUrl());
 
     company.setLogoUrl(null);
+    companyRepository.save(company);
+  }
+
+  @Override
+  @Transactional
+  public void uploadFeaturedImage(Long companyId, MultipartFile logo) {
+    log.info("Featured image upload requested");
+    String extension = FileUtils.getExtensionOrThrowException(logo);
+    Company company = findByIdOrThrowException(companyId);
+    String url = companyFeaturedImage + company.getId() + "." + extension;
+    cloudObjectStorageService.uploadAndReplace(company.getFeaturedImageUrl(), url, logo);
+    company.setFeaturedImageUrl(url);
+    companyRepository.save(company);
+  }
+
+  @Override
+  public FileDto downloadFeaturedImage(Long companyId) {
+    return cloudObjectStorageService.downloadFileDto(
+        findByIdOrThrowException(companyId).getFeaturedImageUrl());
+  }
+
+  @Override
+  public void deleteFeaturedImage(Long companyId) {
+    log.info("Delete company[{}] featured image requested",companyId);
+    Company company = findByIdOrThrowException(companyId);
+    cloudObjectStorageService.delete(company.getFeaturedImageUrl());
+    company.setFeaturedImageUrl(null);
     companyRepository.save(company);
   }
 }
