@@ -72,4 +72,44 @@ public interface CompanyController {
           @ApiResponse(code = 500, message = "Internal server error.")
   })
   ResponseEntity deleteLogo(Long companyId);
+
+  @ApiOperation(
+          value = "Upload company featured image",
+          httpMethod = "POST",
+          consumes = "multipart/form-data",
+          produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams(
+          @ApiImplicitParam(
+                  name = "featured image",
+                  dataType = "file",
+                  value = "Featured image to be uploaded",
+                  paramType = "form",
+                  required = true))
+  @ApiResponses({
+          @ApiResponse(code = 201, message = "Featured image successfully uploaded."),
+          @ApiResponse(code = 400, message = "Featured image cannot be saved.")
+  })
+  ResponseEntity uploadFeaturedImage(Long companyId, MultipartFile picture);
+
+  @ApiOperation(
+          value = "Download company featured image",
+          httpMethod = "GET",
+          consumes = APPLICATION_JSON_VALUE,
+          produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+          @ApiResponse(code = 200, message = "Featured image retrieved successfully."),
+          @ApiResponse(code = 400, message = "Featured image cannot be found.")
+  })
+  ResponseEntity<FileDto> downloadFeaturedImage(Long companyId);
+
+  @ApiOperation(
+          value = "Delete company featured image",
+          httpMethod = "DELETE",
+          consumes = APPLICATION_JSON_VALUE,
+          produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+          @ApiResponse(code = 204, message = "Featured image successfully deleted."),
+          @ApiResponse(code = 500, message = "Internal server error.")
+  })
+  ResponseEntity deleteFeaturedImage(Long companyId);
 }

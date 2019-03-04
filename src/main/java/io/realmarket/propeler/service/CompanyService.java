@@ -15,4 +15,10 @@ public interface CompanyService {
   FileDto downloadLogo(Long companyId);
 
   void deleteLogo(Long companyId);
+
+  void uploadFeaturedImage(Long companyId, MultipartFile featuredImage);
+
+  FileDto downloadFeaturedImage(Long companyId);
+
+  void deleteFeaturedImage(Long companyId);
 }
