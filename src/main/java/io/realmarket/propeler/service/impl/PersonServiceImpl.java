@@ -77,26 +77,15 @@ public class PersonServiceImpl implements PersonService {
     String extension = FileUtils.getExtensionOrThrowException(picture);
     Person person = findByIdOrThrowException(id);
     String url = userPicturePrefix + person.getAuth().getUsername() + "." + extension;
-    String oldUrl = person.getProfilePictureUrl();
-    if (oldUrl != null && !oldUrl.equals(url)) {
-      cloudObjectStorageService.delete(oldUrl);
-    }
-    cloudObjectStorageService.upload(url, picture);
+    cloudObjectStorageService.uploadAndReplace(person.getProfilePictureUrl(),url, picture);
     person.setProfilePictureUrl(url);
 
     personRepository.save(person);
   }
 
   public FileDto getProfilePicture(Long personId) {
-    String pictureUrl = findByIdOrThrowException(personId).getProfilePictureUrl();
-
-    if (StringUtils.isEmpty(pictureUrl)) {
-      throw new EntityNotFoundException(ExceptionMessages.PROFILE_PICTURE_DOES_NOT_EXIST);
-    }
-
-    return new FileDto(
-        FilenameUtils.getExtension(pictureUrl),
-        Base64.getEncoder().encodeToString(cloudObjectStorageService.download(pictureUrl)));
+    return cloudObjectStorageService.downloadFileDto(
+            findByIdOrThrowException(personId).getProfilePictureUrl());
   }
 
   public void deleteProfilePicture(Long personId) {

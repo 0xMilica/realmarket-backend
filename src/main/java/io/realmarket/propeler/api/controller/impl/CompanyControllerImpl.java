@@ -2,12 +2,14 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.CompanyController;
 import io.realmarket.propeler.api.dto.CompanyDto;
+import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/companies")
@@ -27,9 +29,27 @@ public class CompanyControllerImpl implements CompanyController {
         new CompanyDto(companyService.save(companyDto.buildCompany())), HttpStatus.CREATED);
   }
 
-  @GetMapping(value = "/{id}")
-  public ResponseEntity<CompanyDto> getCompany(@PathVariable Long id) {
+  @PostMapping(value = "/{companyId}/logo")
+  public ResponseEntity uploadLogo(
+      @PathVariable Long companyId, @RequestParam("picture") MultipartFile picture) {
+    companyService.uploadLogo(companyId, picture);
+    return new ResponseEntity(HttpStatus.CREATED);
+  }
+
+  @GetMapping(value = "/{companyId}/logo")
+  public ResponseEntity<FileDto> downloadLogo(@PathVariable Long companyId) {
+    return ResponseEntity.ok(companyService.downloadLogo(companyId));
+  }
+
+  @DeleteMapping(value = "/{companyId}/logo")
+  public ResponseEntity deleteLogo(@PathVariable Long companyId) {
+    companyService.deleteLogo(companyId);
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping(value = "/{companyId}")
+  public ResponseEntity<CompanyDto> getCompany(@PathVariable Long companyId) {
     return new ResponseEntity<>(
-        new CompanyDto(companyService.findByIdOrThrowException(id)), HttpStatus.OK);
+        new CompanyDto(companyService.findByIdOrThrowException(companyId)), HttpStatus.OK);
   }
 }

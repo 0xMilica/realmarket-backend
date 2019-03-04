@@ -1,5 +1,6 @@
 package io.realmarket.propeler.unit.service.impl;
 
+import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.api.dto.PersonPatchDto;
 import io.realmarket.propeler.model.Person;
@@ -35,7 +36,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest(PersonServiceImpl.class)
 @TestPropertySource(
     properties = {
-      "cos.file_prefix.user_picture=user_picture",
+      "cos.file_prefix.user_picture=user_picture/",
     })
 public class PersonServiceImplTest {
   @Mock private PersonRepository personRepository;
@@ -80,12 +81,11 @@ public class PersonServiceImplTest {
     Person testPerson = TEST_PERSON.toBuilder().build();
     testPerson.setProfilePictureUrl(null);
     when(personRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.of(testPerson));
-
     personServiceImpl.uploadProfilePicture(TEST_AUTH_ID, FileUtils.MOCK_FILE_VALID);
 
-    verify(cloudObjectStorageService, times(0)).delete(any());
+    //verify(cloudObjectStorageService, times(0)).delete(any());
     verify(cloudObjectStorageService, times(1))
-        .upload(
+        .uploadAndReplace(null,
             userPicturePrefix + AuthUtils.TEST_USERNAME + "." + FileUtils.TEST_FILE_TYPE,
             FileUtils.MOCK_FILE_VALID);
     verify(personRepository, times(1)).save(testPerson);
@@ -99,9 +99,8 @@ public class PersonServiceImplTest {
 
     personServiceImpl.uploadProfilePicture(TEST_AUTH_ID, FileUtils.MOCK_FILE_VALID);
 
-    verify(cloudObjectStorageService, times(1)).delete(TEST_FILE_NAME_2);
     verify(cloudObjectStorageService, times(1))
-        .upload(testPerson.getProfilePictureUrl(), FileUtils.MOCK_FILE_VALID);
+        .uploadAndReplace(TEST_FILE_NAME_2,testPerson.getProfilePictureUrl(), FileUtils.MOCK_FILE_VALID);
     verify(personRepository, times(1)).save(testPerson);
   }
 
@@ -138,18 +137,20 @@ public class PersonServiceImplTest {
   public void GetProfilePicture_Should_ReturnProfilePicture() {
     when(personRepository.findById(TEST_PERSON_ID))
         .thenReturn(Optional.of(TEST_PERSON.toBuilder().build()));
-    when(cloudObjectStorageService.download(TEST_PROFILE_PICTURE_URL)).thenReturn(TEST_FILE_BYTES);
+    when(cloudObjectStorageService.downloadFileDto(TEST_PROFILE_PICTURE_URL)).thenReturn(FileUtils.TEST_FILE_DTO);
 
-    personServiceImpl.getProfilePicture(TEST_PERSON_ID);
+    FileDto returnFileDto = personServiceImpl.getProfilePicture(TEST_PERSON_ID);
 
+    assertEquals(FileUtils.TEST_FILE_DTO, returnFileDto);
     verify(personRepository, Mockito.times(1)).findById(TEST_PERSON_ID);
-    verify(cloudObjectStorageService, Mockito.times(1)).download(TEST_PROFILE_PICTURE_URL);
+    verify(cloudObjectStorageService, Mockito.times(1)).downloadFileDto(TEST_PROFILE_PICTURE_URL);
   }
 
   @Test(expected = EntityNotFoundException.class)
   public void GetProfilePicture_Should_Throw_EntityNotFoundException() {
     when(personRepository.findById(TEST_PERSON_ID))
         .thenReturn(Optional.of(TEST_PERSON_NO_PROFILE_PICTURE));
+    doThrow(EntityNotFoundException.class).when(cloudObjectStorageService).downloadFileDto(any());
 
     personServiceImpl.getProfilePicture(TEST_PERSON_ID);
   }

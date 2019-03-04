@@ -49,9 +49,11 @@ public class CompanyDto {
   private String website;
 
   @ApiModelProperty(value = "Company's logo URL")
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String logoUrl;
 
   @ApiModelProperty(value = "Company's logo URL")
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String featuredImageUrl;
 
   @ApiModelProperty(value = "Company's category")
@@ -85,8 +87,6 @@ public class CompanyDto {
         .city(this.getCity())
         .address(this.getAddress())
         .website(this.getWebsite())
-        .logoUrl(this.getLogoUrl())
-        .featuredImageUrl(this.getFeaturedImageUrl())
         .companyCategory(this.getCompanyCategory())
         .auth(AuthenticationUtil.getAuthentication().getAuth())
         .build();

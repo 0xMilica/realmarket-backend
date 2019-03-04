@@ -11,17 +11,23 @@ import com.ibm.cloud.objectstorage.services.s3.model.GetObjectRequest;
 import com.ibm.cloud.objectstorage.services.s3.model.ObjectMetadata;
 import com.ibm.cloud.objectstorage.services.s3.model.PutObjectRequest;
 import com.ibm.cloud.objectstorage.services.s3.model.S3ObjectId;
+import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.exception.COSException;
+import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 
 @Service
 @Slf4j
@@ -71,7 +77,7 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
 
   @Override
   public byte[] download(String fileName) {
-    log.info("Download file:"+fileName);
+    log.info("Download file:" + fileName);
     try {
       AmazonS3 cloudClient =
           createCloudClient(cosApiKeyId, cosServiceCrn, cosEndpoint, cosBucketLocation);
@@ -95,20 +101,43 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
     }
   }
 
+  @Override
+  public FileDto downloadFileDto(String fileName) {
+    if (StringUtils.isEmpty(fileName)) {
+      throw new EntityNotFoundException(ExceptionMessages.IMAGE_DOES_NOT_EXIST);
+    }
+    return new FileDto(
+            FilenameUtils.getExtension(fileName),
+            Base64.getEncoder().encodeToString(download(fileName)));
+  }
+
   public void upload(String name, MultipartFile file) {
     InputStream inputStream;
     try {
       inputStream = file.getInputStream();
-    } catch(IOException exception) {
+    } catch (IOException exception) {
       throw new COSException("Could not extract file.");
     }
     upload(name, inputStream, Math.toIntExact(file.getSize()));
   }
 
   @Override
+  @Transactional
+  public void uploadAndReplace(String oldName, String name, MultipartFile file) {
+    if (oldName != null && !oldName.equals(name)) {
+      try {
+        delete(oldName);
+      } catch (EntityNotFoundException enfe) {
+        log.warn("Image not exists. Skipping delete.");
+      }
+    }
+    upload(name, file);
+  }
+
+  @Override
   @Async
   public void upload(String name, InputStream inputStream, int fileSize) {
-    log.info("Uploading file["+ fileSize +"]:"+name);
+    log.info("Uploading file[" + fileSize + "]:" + name);
     ObjectMetadata metadata = new ObjectMetadata();
     metadata.setContentLength(fileSize);
 
@@ -129,7 +158,10 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
 
   @Override
   public void delete(String fileName) {
-    log.info("Delete file:"+fileName);
+    if (StringUtils.isEmpty(fileName)) {
+      return;
+    }
+    log.info("Delete file:" + fileName);
     AmazonS3 cloudClient =
         createCloudClient(cosApiKeyId, cosServiceCrn, cosEndpoint, cosBucketLocation);
     try {
