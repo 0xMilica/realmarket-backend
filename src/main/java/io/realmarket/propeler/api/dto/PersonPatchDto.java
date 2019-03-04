@@ -7,9 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(
-        value = "PersonPatchDto",
-        description = "Person arguments to patch")
+@ApiModel(value = "PersonPatchDto", description = "Person arguments to patch")
 @Data
 @Builder
 @NoArgsConstructor

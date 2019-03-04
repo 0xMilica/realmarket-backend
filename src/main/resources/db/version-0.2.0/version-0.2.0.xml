@@ -13,5 +13,6 @@
     <include file="migrations/campaign_document_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_investor_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_team_member_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/company_category_init.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
