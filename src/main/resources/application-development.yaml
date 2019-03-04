@@ -35,6 +35,7 @@ spring:
 cos:
   file_prefix:
     user_picture: user_picture/
+    company_featured_image: company_featured_image/
     company_logo: company_logo/
   api.key.id: ${COS_API_KEY}
   service.crn: ${COS_SERVICE_CRN}
