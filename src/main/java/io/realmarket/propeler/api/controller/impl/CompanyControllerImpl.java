@@ -48,8 +48,8 @@ public class CompanyControllerImpl implements CompanyController {
   }
 
   @GetMapping(value = "/{companyId}")
-  public ResponseEntity<CompanyDto> getCompany(@PathVariable Long id) {
+  public ResponseEntity<CompanyDto> getCompany(@PathVariable Long companyId) {
     return new ResponseEntity<>(
-        new CompanyDto(companyService.findByIdOrThrowException(id)), HttpStatus.OK);
+        new CompanyDto(companyService.findByIdOrThrowException(companyId)), HttpStatus.OK);
   }
 }

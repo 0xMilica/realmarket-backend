@@ -31,7 +31,7 @@ public interface CompanyController {
     @ApiResponse(code = 200, message = "Company successfully retrieved."),
     @ApiResponse(code = 404, message = "Company does not exists.")
   })
-  ResponseEntity getCompany(Long id);
+  ResponseEntity getCompany(Long companyId);
 
   @ApiOperation(
       value = "Upload company logo",

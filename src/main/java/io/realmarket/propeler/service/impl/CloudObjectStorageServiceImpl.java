@@ -125,7 +125,11 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
   @Transactional
   public void uploadAndReplace(String oldName, String name, MultipartFile file) {
     if (oldName != null && !oldName.equals(name)) {
-      delete(oldName);
+      try {
+        delete(oldName);
+      } catch (EntityNotFoundException enfe) {
+        log.warn("Image not exists. Skipping delete.");
+      }
     }
     upload(name, file);
   }
