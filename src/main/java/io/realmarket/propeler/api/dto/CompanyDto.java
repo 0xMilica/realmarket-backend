@@ -56,6 +56,18 @@ public class CompanyDto {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String featuredImageUrl;
 
+  @ApiModelProperty(value = "Company's linkedin URL")
+  private String linkedinUrl;
+
+  @ApiModelProperty(value = "Company's twitter URL")
+  private String twitterUrl;
+
+  @ApiModelProperty(value = "Company's facebook URL")
+  private String facebookUrl;
+
+  @ApiModelProperty(value = "Company's custom url")
+  private String customUrl;
+
   @ApiModelProperty(value = "Company's category")
   private CompanyCategory companyCategory;
 
@@ -74,6 +86,10 @@ public class CompanyDto {
     this.website = company.getWebsite();
     this.logoUrl = company.getLogoUrl();
     this.featuredImageUrl = company.getFeaturedImageUrl();
+    this.linkedinUrl = company.getLinkedinUrl();
+    this.twitterUrl = company.getTwitterUrl();
+    this.facebookUrl = company.getFacebookUrl();
+    this.customUrl = company.getCustomUrl();
     this.companyCategory = company.getCompanyCategory();
     this.ownerId = company.getAuth().getId();
   }
@@ -87,6 +103,10 @@ public class CompanyDto {
         .city(this.getCity())
         .address(this.getAddress())
         .website(this.getWebsite())
+        .linkedinUrl(this.getLinkedinUrl())
+        .twitterUrl(this.getTwitterUrl())
+        .facebookUrl(this.getFacebookUrl())
+        .customUrl(this.getCustomUrl())
         .companyCategory(this.getCompanyCategory())
         .auth(AuthenticationUtil.getAuthentication().getAuth())
         .build();

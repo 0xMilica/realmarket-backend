@@ -22,6 +22,10 @@
             name varchar(255),
             tax_identifier varchar(255),
             website varchar(255),
+            linkedin_url varchar(255),
+            twitter_url varchar(255),
+            facebook_url varchar(255),
+            custom_url varchar(255),
             auth_id bigint
             constraint company_fk_on_auth
             references auth,

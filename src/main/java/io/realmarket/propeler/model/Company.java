@@ -29,6 +29,10 @@ public class Company {
   private String website;
   private String logoUrl;
   private String featuredImageUrl;
+  private String linkedinUrl;
+  private String twitterUrl;
+  private String facebookUrl;
+  private String customUrl;
 
   @JoinColumn(
       name = "companyCategoryId",
