@@ -55,18 +55,18 @@ public class CompanyControllerImpl implements CompanyController {
 
   @PostMapping(value = "/{companyId}/featured_image")
   public ResponseEntity uploadFeaturedImage(@PathVariable Long companyId, @RequestParam("picture") MultipartFile picture) {
-    companyService.uploadLogo(companyId,picture);
+    companyService.uploadFeaturedImage(companyId,picture);
     return new ResponseEntity(HttpStatus.CREATED);
   }
 
   @GetMapping(value = "/{companyId}/featured_image")
   public ResponseEntity<FileDto> downloadFeaturedImage(@PathVariable Long companyId){
-    return ResponseEntity.ok(companyService.downloadLogo(companyId));
+    return ResponseEntity.ok(companyService.downloadFeaturedImage(companyId));
   }
 
   @DeleteMapping(value = "/{companyId}/featured_image")
   public ResponseEntity deleteFeaturedImage(@PathVariable Long companyId) {
-    companyService.deleteLogo(companyId);
+    companyService.deleteFeaturedImage(companyId);
     return ResponseEntity.noContent().build();
   }
 }
