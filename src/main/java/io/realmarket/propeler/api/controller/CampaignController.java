@@ -1,5 +1,6 @@
 package io.realmarket.propeler.api.controller;
 
+import io.realmarket.propeler.api.dto.CampaignDocumentDto;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.swagger.annotations.*;
@@ -67,4 +68,24 @@ public interface CampaignController {
     @ApiResponse(code = 400, message = "Invalid request."),
   })
   ResponseEntity<CampaignDto> patchCampaign(String campaignName, CampaignPatchDto campaignPatchDto);
+
+  @ApiOperation(
+      value = "Submit campaign document",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE)
+  @ApiImplicitParam(
+      name = "campaignDocumentDto",
+      value = "Dto that contains information about user and submitted document",
+      required = true,
+      dataType = "CampaignDocumentDto",
+      paramType = "body")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully saved campaign document."),
+    @ApiResponse(
+        code = 400,
+        message =
+            "Campaign documents not saved. Check request body -  probably missing document type in request, or title and user id are blank.")
+  })
+  ResponseEntity<CampaignDocumentDto> submitCampaignDocument(
+      CampaignDocumentDto campaignDocumentDto, String campaignName);
 }

@@ -5,6 +5,7 @@ import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.repository.CampaignRepository;
+import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
@@ -12,7 +13,9 @@ import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -45,8 +48,14 @@ public class CampaignServiceImpl implements CampaignService {
         .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_NOT_FOUND));
   }
 
+  @Transactional
   public void createCampaign(CampaignDto campaignDto) {
     Company company = companyService.findByIdOrThrowException(campaignDto.getCompanyId());
+
+    if (!company.getAuth().equals(AuthenticationUtil.getAuthentication().getAuth())) {
+      throw new AccessDeniedException(ExceptionMessages.NOT_COMPANY_OWNER);
+    }
+
     if (campaignRepository.findByUrlFriendlyName(campaignDto.getUrlFriendlyName()).isPresent()) {
       log.error("Campaign with the provided name '{}' already exists!", campaignDto.getName());
       throw new CampaignNameAlreadyExistsException(ExceptionMessages.CAMPAIGN_NAME_ALREADY_EXISTS);
