@@ -1,23 +1,23 @@
 package io.realmarket.propeler.model;
 
 import com.google.common.primitives.UnsignedInteger;
+import io.realmarket.propeler.api.dto.CampaignDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder=true)
 @Entity
 @Table(
     name = "campaign",
     indexes = {
       @Index(columnList = "name", unique = true, name = "campaign_uk_on_name"),
-      @Index(columnList = "friendlyUrl", unique = true, name = "campaign_uk_on_friendlyUrl")
+      @Index(columnList = "urlFriendlyName", unique = true, name = "campaign_uk_on_urlFriendlyName")
     })
 public class Campaign {
 
@@ -27,10 +27,25 @@ public class Campaign {
   private Long id;
 
   private String name;
-  private String friendlyUrl;
+  private String urlFriendlyName;
   private Long fundingGoals;
   private UnsignedInteger timeToRaiseFunds;
-  private Double minEquityOffered;
-  private Double maxEquityOffered;
+  private BigDecimal minEquityOffered;
+  private BigDecimal maxEquityOffered;
   private String marketImageUrl;
+
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "companyId", foreignKey = @ForeignKey(name = "campaign_fk_on_company"))
+  private Company company;
+
+  public Campaign() {}
+
+  public Campaign(CampaignDto campaignDto) {
+    this.name = campaignDto.getName();
+    this.fundingGoals = campaignDto.getFundingGoals();
+    this.timeToRaiseFunds = campaignDto.getTimeToRaiseFunds();
+    this.minEquityOffered = campaignDto.getMinEquityOffered();
+    this.maxEquityOffered = campaignDto.getMaxEquityOffered();
+    this.urlFriendlyName = campaignDto.getUrlFriendlyName();
+  }
 }

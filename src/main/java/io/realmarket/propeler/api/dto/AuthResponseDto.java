@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AuthResponseDto {
-  @ApiModelProperty(value = "Status of authentification.")
+  @ApiModelProperty(value = "Status of authentication.")
   private E2FAStatus twoFAStatus;
 
   @ApiModelProperty(value = "Token needed for next action. Usage depends on twoFA status")

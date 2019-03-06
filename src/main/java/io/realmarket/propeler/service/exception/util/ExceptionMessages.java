@@ -33,4 +33,8 @@ public interface ExceptionMessages {
   String FORBIDDEN_OPERATION_EXCEPTION = "Not allowed operation";
 
   String AUTHORIZATION_ACTION_NOT_FOUND = "Authorization action not found";
+
+  String CAMPAIGN_NOT_FOUND = "Campaign with the provided name not found!";
+
+  String CAMPAIGN_NAME_ALREADY_EXISTS = "Campaign with the provided name already exists!";
 }
