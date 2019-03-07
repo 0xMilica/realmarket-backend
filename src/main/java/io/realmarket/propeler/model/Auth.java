@@ -48,9 +48,4 @@ public class Auth {
   public Auth(Long id) {
     this.id = id;
   }
-
-  @Override
-  public boolean equals(Object obj) {
-    return (obj instanceof Auth && ((Auth) obj).getId().equals(id));
-  }
 }

@@ -50,15 +50,15 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Transactional
   public void createCampaign(CampaignDto campaignDto) {
-    Company company = companyService.findByIdOrThrowException(campaignDto.getCompanyId());
-
-    if (!company.getAuth().equals(AuthenticationUtil.getAuthentication().getAuth())) {
-      throw new AccessDeniedException(ExceptionMessages.NOT_COMPANY_OWNER);
-    }
-
     if (campaignRepository.findByUrlFriendlyName(campaignDto.getUrlFriendlyName()).isPresent()) {
       log.error("Campaign with the provided name '{}' already exists!", campaignDto.getName());
       throw new CampaignNameAlreadyExistsException(ExceptionMessages.CAMPAIGN_NAME_ALREADY_EXISTS);
+    }
+
+    Company company = companyService.findByIdOrThrowException(campaignDto.getCompanyId());
+
+    if (!AuthenticationUtil.isAuthenticatedUserId(company.getAuth().getId())) {
+      throw new AccessDeniedException(ExceptionMessages.NOT_COMPANY_OWNER);
     }
 
     Campaign campaign = new Campaign(campaignDto);

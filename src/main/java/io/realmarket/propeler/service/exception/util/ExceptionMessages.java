@@ -41,4 +41,6 @@ public interface ExceptionMessages {
   String NOT_COMPANY_OWNER = "User is not an owner of a company!";
 
   String NOT_CAMPAIGN_COMPANY_OWNER = "User is not an owner of a campaign's company!";
+
+  String FILE_NOT_EXISTS = "File with provided URL does not exist!";
 }

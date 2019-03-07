@@ -102,13 +102,20 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
   }
 
   @Override
+  public boolean doesFileExist(String fileName) {
+    AmazonS3 cloudClient =
+        createCloudClient(cosApiKeyId, cosServiceCrn, cosEndpoint, cosBucketLocation);
+    return cloudClient.doesObjectExist(cosBucketName, fileName);
+  }
+
+  @Override
   public FileDto downloadFileDto(String fileName) {
     if (StringUtils.isEmpty(fileName)) {
       throw new EntityNotFoundException(ExceptionMessages.IMAGE_DOES_NOT_EXIST);
     }
     return new FileDto(
-            FilenameUtils.getExtension(fileName),
-            Base64.getEncoder().encodeToString(download(fileName)));
+        FilenameUtils.getExtension(fileName),
+        Base64.getEncoder().encodeToString(download(fileName)));
   }
 
   public void upload(String name, MultipartFile file) {

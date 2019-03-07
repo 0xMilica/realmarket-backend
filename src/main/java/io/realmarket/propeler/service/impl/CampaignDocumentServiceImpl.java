@@ -39,8 +39,12 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     Campaign campaign =
         campaignService.findByUrlFriendlyNameOrThrowException(campaignUrlFriendlyName);
 
-    if (!campaign.getCompany().getAuth().equals(AuthenticationUtil.getAuthentication().getAuth())) {
+    if (!AuthenticationUtil.isAuthenticatedUserId(campaign.getCompany().getAuth().getId())) {
       throw new AccessDeniedException(ExceptionMessages.NOT_CAMPAIGN_COMPANY_OWNER);
+    }
+
+    if (!cloudObjectStorageService.doesFileExist(campaignDocument.getUrl())) {
+      throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
     }
 
     campaignDocument.setCampaign(campaign);
@@ -53,7 +57,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     Campaign campaign =
         campaignService.findByUrlFriendlyNameOrThrowException(campaignUrlFriendlyName);
 
-    if (!campaign.getCompany().getAuth().equals(AuthenticationUtil.getAuthentication().getAuth())) {
+    if (!AuthenticationUtil.isAuthenticatedUserId(campaign.getCompany().getAuth().getId())) {
       throw new AccessDeniedException(ExceptionMessages.NOT_CAMPAIGN_COMPANY_OWNER);
     }
 
