@@ -1,6 +1,5 @@
 package io.realmarket.propeler.model;
 
-import com.google.common.primitives.UnsignedInteger;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +30,7 @@ public class CampaignTeamMember {
   private String twitterUrl;
   private String facebookUrl;
   private String customProfileUrl;
-  private UnsignedInteger orderNumber;
+  private Integer orderNumber;
 
   @JoinColumn(
       name = "campaignId",

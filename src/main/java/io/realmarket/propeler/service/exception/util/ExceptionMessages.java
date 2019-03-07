@@ -36,9 +36,13 @@ public interface ExceptionMessages {
 
   String CAMPAIGN_NOT_FOUND = "Campaign with the provided name not found!";
 
+<<<<<<< HEAD
   String CAMPAIGN_INVESTOR_NOT_FOUND = "Campaign investor with the provided id not found!";
 
   String USER_IS_NOT_OWNER_OF_CAMPAIGN = "Caller is not owner of campaign.";
+=======
+  String TEAM_MEMBER_NOT_FOUND = "Campaign teem member with the provided id not found!";
+>>>>>>> team members managing
 
   String CAMPAIGN_NAME_ALREADY_EXISTS = "Campaign with the provided name already exists!";
 

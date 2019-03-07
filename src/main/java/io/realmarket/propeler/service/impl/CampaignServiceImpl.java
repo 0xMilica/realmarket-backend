@@ -17,12 +17,11 @@ import io.realmarket.propeler.service.util.FileUtils;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -93,17 +92,12 @@ public class CampaignServiceImpl implements CampaignService {
             () -> new EntityNotFoundException("Campaign with provided id does not exist."));
   }
 
-  public void throwIfNoAccess(String campaignName) {
-    throwIfNoAccess(findByUrlFriendlyNameOrThrowException(campaignName), campaignName);
-  }
-
-  public void throwIfNoAccess(Campaign campaign, String campaignName) {
+  public void throwIfNoAccess(Campaign campaign) {
     if (!campaign
-            .getCompany()
-            .getAuth()
-            .getId()
-            .equals(AuthenticationUtil.getAuthentication().getAuth().getId())
-        || !campaign.getUrlFriendlyName().equals(campaignName)) {
+        .getCompany()
+        .getAuth()
+        .getId()
+        .equals(AuthenticationUtil.getAuthentication().getAuth().getId())) {
       throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_CAMPAIGN);
     }
   }
@@ -114,7 +108,7 @@ public class CampaignServiceImpl implements CampaignService {
     log.info("Market image upload requested");
     String extension = FileUtils.getExtensionOrThrowException(logo);
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
-    throwIfNoAccess(campaign, campaignName);
+    throwIfNoAccess(campaign);
     String url = companyFeaturedImage + campaign.getUrlFriendlyName() + "." + extension;
     cloudObjectStorageService.uploadAndReplace(campaign.getMarketImageUrl(), url, logo);
     campaign.setMarketImageUrl(url);
@@ -132,7 +126,7 @@ public class CampaignServiceImpl implements CampaignService {
   public void deleteMarketImage(String campaignName) {
     log.info("Delete campaign[{}] market image requested", campaignName);
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
-    throwIfNoAccess(campaign, campaignName);
+    throwIfNoAccess(campaign);
     cloudObjectStorageService.delete(campaign.getMarketImageUrl());
     campaign.setMarketImageUrl(null);
     campaignRepository.save(campaign);

@@ -19,6 +19,5 @@ public interface CampaignService {
 
   void deleteMarketImage(String campaignName);
 
-  void throwIfNoAccess(Campaign campaign, String campaignName);
-  void throwIfNoAccess(String campaignName);
+  void throwIfNoAccess(Campaign campaign);
 }

@@ -18,7 +18,7 @@
             facebook_url varchar(255),
             linkedin_url varchar(255),
             name varchar(255),
-            order_number bytea,
+            order_number smallint,
             photo_url varchar(255),
             title varchar(255),
             twitter_url varchar(255),
