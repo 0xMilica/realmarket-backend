@@ -75,7 +75,7 @@ public interface CampaignController {
       consumes = APPLICATION_JSON_VALUE)
   @ApiImplicitParam(
       name = "campaignDocumentDto",
-      value = "Dto that contains information about user and submitted document",
+      value = "Dto that contains information about submitted document",
       required = true,
       dataType = "CampaignDocumentDto",
       paramType = "body")
@@ -88,4 +88,11 @@ public interface CampaignController {
   })
   ResponseEntity<CampaignDocumentDto> submitCampaignDocument(
       CampaignDocumentDto campaignDocumentDto, String campaignName);
+
+  @ApiOperation(value = "Delete campaign document", httpMethod = "DELETE")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully deleted campaign document."),
+    @ApiResponse(code = 404, message = "Campaign document does not exist.")
+  })
+  ResponseEntity deleteCampaignDocument(String campaignName, Long documentId);
 }
