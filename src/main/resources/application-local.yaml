@@ -47,6 +47,7 @@ app:
     wildcard:
       size: 12
       batch_size: 10
+  filename-length: 32
 
 cos:
   file_prefix:
