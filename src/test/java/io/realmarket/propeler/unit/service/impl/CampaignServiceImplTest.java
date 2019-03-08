@@ -13,6 +13,7 @@ import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.unit.util.CampaignUtils;
 import io.realmarket.propeler.unit.util.CompanyUtils;
 import io.realmarket.propeler.unit.util.FileUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,10 +22,13 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
+import static io.realmarket.propeler.unit.util.AuthUtils.TEST_USER_AUTH;
 import static io.realmarket.propeler.unit.util.CampaignUtils.*;
 import static io.realmarket.propeler.unit.util.CompanyUtils.TEST_FEATURED_IMAGE_URL;
 import static org.junit.Assert.assertEquals;
@@ -43,6 +47,13 @@ public class CampaignServiceImplTest {
   @Mock private CloudObjectStorageService cloudObjectStorageService;
 
   @InjectMocks private CampaignServiceImpl campaignServiceImpl;
+
+    @Before
+  public void createAuthContext() {
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
+        SecurityContextHolder.setContext(securityContext);
+    }
 
   @Test
   public void findByUrlFriendlyNameOrThrowException_Should_ReturnCampaign_IfUserExists() {

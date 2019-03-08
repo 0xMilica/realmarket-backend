@@ -18,4 +18,7 @@ public interface CampaignService {
   FileDto downloadMarketImage(String campaignName);
 
   void deleteMarketImage(String campaignName);
+
+  void throwIfNoAccess(Campaign campaign, String campaignName);
+  void throwIfNoAccess(String campaignName);
 }

@@ -53,6 +53,7 @@ public class CampaignControllerImpl implements CampaignController {
   }
 
   @PostMapping("/{campaignName}/market_image")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity uploadMarketImage(
       @PathVariable String campaignName, @RequestParam("picture") MultipartFile picture) {
     campaignService.uploadMarketImage(campaignName, picture);
@@ -65,6 +66,7 @@ public class CampaignControllerImpl implements CampaignController {
   }
 
   @DeleteMapping("/{campaignName}/market_image")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity deleteMarketImage(@PathVariable String campaignName) {
     campaignService.deleteMarketImage(campaignName);
     return ResponseEntity.noContent().build();

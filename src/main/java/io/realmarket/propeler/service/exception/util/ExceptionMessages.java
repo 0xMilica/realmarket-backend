@@ -37,4 +37,6 @@ public interface ExceptionMessages {
   String CAMPAIGN_NOT_FOUND = "Campaign with the provided name not found!";
 
   String CAMPAIGN_NAME_ALREADY_EXISTS = "Campaign with the provided name already exists!";
+
+  String USER_IS_NOT_OWNER_OF_CAMPAIGN = "Caller is not owner of campaign.";
 }
