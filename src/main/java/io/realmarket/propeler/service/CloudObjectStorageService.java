@@ -15,6 +15,12 @@ public interface CloudObjectStorageService {
 
   /**
    * @param fileName name of the file to be retrieved
+   * @return true if file exists
+   */
+  boolean doesFileExist(String fileName);
+
+  /**
+   * @param fileName name of the file to be retrieved
    * @return Byte array of the retrieved file
    */
   FileDto downloadFileDto(String fileName);

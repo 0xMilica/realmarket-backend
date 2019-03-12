@@ -37,4 +37,10 @@ public interface ExceptionMessages {
   String CAMPAIGN_NOT_FOUND = "Campaign with the provided name not found!";
 
   String CAMPAIGN_NAME_ALREADY_EXISTS = "Campaign with the provided name already exists!";
+
+  String NOT_COMPANY_OWNER = "User is not an owner of a company!";
+
+  String NOT_CAMPAIGN_COMPANY_OWNER = "User is not an owner of a campaign's company!";
+
+  String FILE_NOT_EXISTS = "File with provided URL does not exist!";
 }

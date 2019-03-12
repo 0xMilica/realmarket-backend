@@ -90,6 +90,17 @@ public class AuthUtils {
           .person(getMockedPerson(TEST_REGISTRATION_DTO))
           .build();
 
+  public static final Auth TEST_AUTH2 =
+      Auth.builder()
+          .id(TEST_AUTH_ID + 1)
+          .username(TEST_USERNAME)
+          .state(EAuthState.ACTIVE)
+          .userRole(TEST_ROLE)
+          .password(TEST_PASSWORD)
+          .totpSecret(TEST_ENCODED_SECRET)
+          .person(getMockedPerson(TEST_REGISTRATION_DTO))
+          .build();
+
   public static final Auth TEST_AUTH_OLD_SECRET =
       Auth.builder()
           .username(TEST_USERNAME)
@@ -115,6 +126,9 @@ public class AuthUtils {
 
   public static final UserAuthentication TEST_USER_AUTH =
       new UserAuthentication(TEST_AUTH, TEST_TEMPORARY_TOKEN_VALUE);
+
+  public static final UserAuthentication TEST_USER_AUTH2 =
+      new UserAuthentication(TEST_AUTH2, TEST_TEMPORARY_TOKEN_VALUE);
 
   public static final MockHttpServletRequest TEST_REQUEST = new MockHttpServletRequest();
 

@@ -18,10 +18,13 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
+import static io.realmarket.propeler.unit.util.AuthUtils.TEST_USER_AUTH;
 import static io.realmarket.propeler.unit.util.CampaignUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -85,6 +88,10 @@ public class CampaignServiceImplTest {
     when(companyService.findByIdOrThrowException(anyLong()))
         .thenReturn(CompanyUtils.getCompanyMocked());
 
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
+    SecurityContextHolder.setContext(securityContext);
+
     campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
 
     verify(companyService, Mockito.times(1)).findByIdOrThrowException(anyLong());
@@ -97,6 +104,10 @@ public class CampaignServiceImplTest {
       CreateCampaign_Should_Throw_CampaignNameAlreadyExistsException_WhenCampaignNameExists() {
     when(campaignRepository.findByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.of(TEST_CAMPAIGN.toBuilder().build()));
+
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
+    SecurityContextHolder.setContext(securityContext);
 
     campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
   }
