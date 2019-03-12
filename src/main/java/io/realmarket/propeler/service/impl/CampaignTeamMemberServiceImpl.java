@@ -8,6 +8,7 @@ import io.realmarket.propeler.model.CampaignTeamMember;
 import io.realmarket.propeler.repository.CampaignTeamMemberRepository;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignTeamMemberService;
+import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.TypeToken;
@@ -19,6 +20,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.TEAM_MEMBER_NOT_FOUND;
 
 @Slf4j
@@ -43,7 +45,7 @@ public class CampaignTeamMemberServiceImpl implements CampaignTeamMemberService 
   public NewTeamMemberIdDto createTeamMember(
       String campaignName, TeamMemberPatchDto teamMemberPatchDto) {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
-    campaignService.throwIfNoAccess(campaign, campaignName);
+    campaignService.throwIfNoAccess(campaign);
 
     CampaignTeamMember teamMember = new CampaignTeamMember();
     modelMapperBlankString.map(teamMemberPatchDto, teamMember);
@@ -117,7 +119,7 @@ public class CampaignTeamMemberServiceImpl implements CampaignTeamMemberService 
 
   private void checkCampaignMembersAccess(String campaignName) {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
-    campaignService.throwIfNoAccess(campaign, campaignName);
+    campaignService.throwIfNoAccess(campaign);
   }
 
   private void verifyMemberIdsList(String campaignName, List<Long> membersIds) {
@@ -130,6 +132,8 @@ public class CampaignTeamMemberServiceImpl implements CampaignTeamMemberService 
             .stream()
             .map(CampaignTeamMember::getId)
             .collect(Collectors.toList())
-            .containsAll(membersIds))) {}
+            .containsAll(membersIds))) {
+      throw new ForbiddenOperationException(INVALID_REQUEST);
+    }
   }
 }
