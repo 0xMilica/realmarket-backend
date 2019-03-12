@@ -38,6 +38,8 @@ public interface ExceptionMessages {
 
   String CAMPAIGN_NAME_ALREADY_EXISTS = "Campaign with the provided name already exists!";
 
+  String USER_IS_NOT_OWNER_OF_CAMPAIGN = "Caller is not owner of campaign.";
+
   String NOT_COMPANY_OWNER = "User is not an owner of a company!";
 
   String NOT_CAMPAIGN_COMPANY_OWNER = "User is not an owner of a campaign's company!";

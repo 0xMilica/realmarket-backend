@@ -64,6 +64,7 @@ public class CompanyServiceImpl implements CompanyService {
   }
 
   @Override
+  @Transactional
   public void deleteLogo(Long companyId) {
     log.info("Delete company[{}] logo requested",companyId);
     Company company = findByIdOrThrowException(companyId);
@@ -92,6 +93,7 @@ public class CompanyServiceImpl implements CompanyService {
   }
 
   @Override
+  @Transactional
   public void deleteFeaturedImage(Long companyId) {
     log.info("Delete company[{}] featured image requested",companyId);
     Company company = findByIdOrThrowException(companyId);

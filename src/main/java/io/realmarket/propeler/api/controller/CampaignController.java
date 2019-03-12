@@ -4,8 +4,10 @@ import io.realmarket.propeler.api.dto.CampaignDocumentDto;
 import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
+import io.realmarket.propeler.api.dto.FileDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -69,6 +71,46 @@ public interface CampaignController {
     @ApiResponse(code = 400, message = "Invalid request."),
   })
   ResponseEntity<CampaignDto> patchCampaign(String campaignName, CampaignPatchDto campaignPatchDto);
+
+  @ApiOperation(
+      value = "Upload campaign featured image",
+      httpMethod = "POST",
+      consumes = "multipart/form-data",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams(
+      @ApiImplicitParam(
+          name = "market image",
+          dataType = "file",
+          value = "Market image to be uploaded",
+          paramType = "form",
+          required = true))
+  @ApiResponses({
+    @ApiResponse(code = 201, message = "Market image successfully uploaded."),
+    @ApiResponse(code = 400, message = "Market image cannot be saved.")
+  })
+  ResponseEntity uploadMarketImage(String campaignName, MultipartFile picture);
+
+  @ApiOperation(
+      value = "Download campaign market image",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Market image retrieved successfully."),
+    @ApiResponse(code = 400, message = "Market image cannot be found.")
+  })
+  ResponseEntity<FileDto> downloadMarketImage(String campaignName);
+
+  @ApiOperation(
+      value = "Delete campaign market image",
+      httpMethod = "DELETE",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Market image successfully deleted."),
+    @ApiResponse(code = 500, message = "Internal server error.")
+  })
+  ResponseEntity deleteMarketImage(String campaignName);
 
   @ApiOperation(
       value = "Submit campaign document",
