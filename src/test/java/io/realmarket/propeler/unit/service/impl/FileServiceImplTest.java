@@ -22,13 +22,13 @@ public class FileServiceImplTest {
 
   @Test
   public void GetFile_Should_Return_FileDto() {
-    when(cloudService.download(FileUtils.TEST_FILE_NAME)).thenReturn(FileUtils.TEST_FILE_BYTES);
+    when(cloudService.downloadFileDto(FileUtils.TEST_FILE_NAME))
+        .thenReturn(FileUtils.TEST_FILE_DTO);
 
     FileDto fileDto = fileService.getFile(FileUtils.TEST_FILE_NAME);
 
-    verify(cloudService, times(1)).download(FileUtils.TEST_FILE_NAME);
-    assertEquals(FileUtils.TEST_FILE_BASE64_ENCODED, fileDto.getFile());
-    assertEquals(FileUtils.TEST_FILE_TYPE, fileDto.getType());
+    verify(cloudService, times(1)).downloadFileDto(FileUtils.TEST_FILE_NAME);
+    assertEquals(FileUtils.TEST_FILE_DTO, fileDto);
   }
 
   @Test

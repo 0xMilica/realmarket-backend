@@ -1,9 +1,12 @@
 package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.CampaignController;
+import io.realmarket.propeler.api.dto.CampaignDocumentDto;
+import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
+import io.realmarket.propeler.service.CampaignDocumentService;
 import io.realmarket.propeler.service.CampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +22,13 @@ import javax.validation.Valid;
 public class CampaignControllerImpl implements CampaignController {
 
   private final CampaignService campaignService;
+  private final CampaignDocumentService campaignDocumentService;
 
   @Autowired
-  public CampaignControllerImpl(CampaignService campaignService) {
+  public CampaignControllerImpl(
+      CampaignService campaignService, CampaignDocumentService campaignDocumentService) {
     this.campaignService = campaignService;
+    this.campaignDocumentService = campaignDocumentService;
   }
 
   @RequestMapping(value = "/{campaignName}", method = RequestMethod.HEAD)
@@ -70,5 +76,23 @@ public class CampaignControllerImpl implements CampaignController {
   public ResponseEntity deleteMarketImage(@PathVariable String campaignName) {
     campaignService.deleteMarketImage(campaignName);
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping(value = "/{campaignName}/documents")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<CampaignDocumentResponseDto> submitCampaignDocument(
+      @RequestBody @Valid CampaignDocumentDto campaignDocumentDto,
+      @PathVariable String campaignName) {
+    return ResponseEntity.ok(
+        new CampaignDocumentResponseDto(
+            campaignDocumentService.submitDocument(
+                campaignDocumentDto.buildCampaignDocument(), campaignName)));
+  }
+
+  @DeleteMapping(value = "/{campaignName}/documents/{documentId}")
+  public ResponseEntity<Void> deleteCampaignDocument(
+      @PathVariable String campaignName, @PathVariable Long documentId) {
+    campaignDocumentService.deleteDocument(campaignName, documentId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

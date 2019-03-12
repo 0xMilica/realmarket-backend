@@ -103,6 +103,10 @@ public class CampaignServiceImplTest {
     when(companyService.findByIdOrThrowException(anyLong()))
         .thenReturn(CompanyUtils.getCompanyMocked());
 
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
+    SecurityContextHolder.setContext(securityContext);
+
     campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
 
     verify(companyService, Mockito.times(1)).findByIdOrThrowException(anyLong());
@@ -115,6 +119,10 @@ public class CampaignServiceImplTest {
       CreateCampaign_Should_Throw_CampaignNameAlreadyExistsException_WhenCampaignNameExists() {
     when(campaignRepository.findByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.of(TEST_CAMPAIGN.toBuilder().build()));
+
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
+    SecurityContextHolder.setContext(securityContext);
 
     campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
   }

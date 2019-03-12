@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-@Builder(toBuilder=true)
+@Builder(toBuilder = true)
 @Entity
 @Table(
     name = "campaign",

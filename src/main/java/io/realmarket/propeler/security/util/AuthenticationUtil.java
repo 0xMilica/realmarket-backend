@@ -9,4 +9,8 @@ public class AuthenticationUtil {
   public static UserAuthentication getAuthentication() {
     return (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
   }
+
+  public static boolean isAuthenticatedUserId(Long id) {
+    return id.equals(getAuthentication().getAuth().getId());
+  }
 }

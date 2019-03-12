@@ -17,10 +17,12 @@ import io.realmarket.propeler.service.util.FileUtils;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -58,11 +60,17 @@ public class CampaignServiceImpl implements CampaignService {
         .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_NOT_FOUND));
   }
 
+  @Transactional
   public void createCampaign(CampaignDto campaignDto) {
-    Company company = companyService.findByIdOrThrowException(campaignDto.getCompanyId());
     if (campaignRepository.findByUrlFriendlyName(campaignDto.getUrlFriendlyName()).isPresent()) {
       log.error("Campaign with the provided name '{}' already exists!", campaignDto.getName());
       throw new CampaignNameAlreadyExistsException(ExceptionMessages.CAMPAIGN_NAME_ALREADY_EXISTS);
+    }
+
+    Company company = companyService.findByIdOrThrowException(campaignDto.getCompanyId());
+
+    if (!AuthenticationUtil.isAuthenticatedUserId(company.getAuth().getId())) {
+      throw new AccessDeniedException(ExceptionMessages.NOT_COMPANY_OWNER);
     }
 
     Campaign campaign = new Campaign(campaignDto);
