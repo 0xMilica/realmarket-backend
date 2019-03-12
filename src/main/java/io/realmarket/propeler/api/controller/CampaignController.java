@@ -1,6 +1,7 @@
 package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.CampaignDocumentDto;
+import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.swagger.annotations.*;
@@ -86,7 +87,7 @@ public interface CampaignController {
         message =
             "Campaign documents not saved. Check request body -  probably missing document type in request, or title and user id are blank.")
   })
-  ResponseEntity<CampaignDocumentDto> submitCampaignDocument(
+  ResponseEntity<CampaignDocumentResponseDto> submitCampaignDocument(
       CampaignDocumentDto campaignDocumentDto, String campaignName);
 
   @ApiOperation(value = "Delete campaign document", httpMethod = "DELETE")

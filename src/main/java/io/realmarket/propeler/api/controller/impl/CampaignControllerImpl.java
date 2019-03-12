@@ -2,6 +2,7 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.CampaignController;
 import io.realmarket.propeler.api.dto.CampaignDocumentDto;
+import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.service.CampaignDocumentService;
@@ -57,11 +58,11 @@ public class CampaignControllerImpl implements CampaignController {
 
   @PostMapping(value = "/{campaignName}/documents")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
-  public ResponseEntity<CampaignDocumentDto> submitCampaignDocument(
+  public ResponseEntity<CampaignDocumentResponseDto> submitCampaignDocument(
       @RequestBody @Valid CampaignDocumentDto campaignDocumentDto,
       @PathVariable String campaignName) {
     return ResponseEntity.ok(
-        new CampaignDocumentDto(
+        new CampaignDocumentResponseDto(
             campaignDocumentService.submitDocument(
                 campaignDocumentDto.buildCampaignDocument(), campaignName)));
   }
