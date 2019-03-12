@@ -34,7 +34,7 @@ public class CampaignInvestor {
   private String twitterUrl;
   private String facebookUrl;
   private String customProfileUrl;
-  private UnsignedInteger orderNumber;
+  private Integer orderNumber;
 
   @JoinColumn(
       name = "campaignId",
