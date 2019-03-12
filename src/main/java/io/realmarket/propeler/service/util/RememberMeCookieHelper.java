@@ -31,6 +31,9 @@ public class RememberMeCookieHelper {
 
   public static void setRememberMeCookie(
       RememberMeCookie rememberMeCookie, HttpServletResponse response) {
-    response.addCookie(new Cookie(COOKIE_NAME, rememberMeCookie.getValue()));
+    Cookie cookie = new Cookie(COOKIE_NAME, rememberMeCookie.getValue());
+    cookie.setMaxAge(2000000);
+    cookie.setPath("/api/auth");
+    response.addCookie(cookie);
   }
 }
