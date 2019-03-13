@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.*;
@@ -73,8 +74,9 @@ public class AuthControllerImpl implements AuthController {
   }
 
   @DeleteMapping()
-  public ResponseEntity logout(HttpServletRequest request) {
-    authService.logout(request);
+  @Override
+  public ResponseEntity logout(HttpServletRequest request, HttpServletResponse response) {
+    authService.logout(request,response);
     return new ResponseEntity(NO_CONTENT);
   }
 }

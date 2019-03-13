@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -215,9 +216,9 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Transactional
-  public void logout(HttpServletRequest request) {
+  public void logout(HttpServletRequest request, HttpServletResponse response) {
     jwtService.deleteByValue(AuthenticationUtil.getAuthentication().getToken());
-    rememberMeCookieService.deleteCurrentCookie(request);
+    rememberMeCookieService.deleteCurrentCookie(request,response);
   }
 
   @Transactional
@@ -381,7 +382,7 @@ public class AuthServiceImpl implements AuthService {
       AuthResponseDto authResponseDto, HttpServletRequest request) {
     if (E2FAStatus.VALIDATE == authResponseDto.getTwoFAStatus()
         && rememberMeCookieService
-            .findByValueAndNotExpired(RememberMeCookieHelper.getCookie(request))
+            .findByValueAndNotExpired(RememberMeCookieHelper.getCookieValue(request))
             .isPresent()) {
       authResponseDto.setTwoFAStatus(E2FAStatus.REMEMBER_ME);
     }

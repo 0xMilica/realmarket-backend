@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -83,7 +84,7 @@ public interface AuthController {
     @ApiResponse(code = 204, message = "Successfully logged out"),
     @ApiResponse(code = 400, message = "Invalid attempt to logout\n")
   })
-  ResponseEntity logout(HttpServletRequest request);
+  ResponseEntity logout(HttpServletRequest request, HttpServletResponse response);
 
   @ApiOperation(
       value = "Recovering username",

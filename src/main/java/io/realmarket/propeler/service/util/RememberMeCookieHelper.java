@@ -10,30 +10,43 @@ import javax.servlet.http.HttpServletResponse;
 public class RememberMeCookieHelper {
 
   public static final String COOKIE_NAME = "remember-me";
+  public static final String COOKIE_PATH = "/api/auth";
+
+  public static final Integer MAX_AGE = 2592000;
 
   private RememberMeCookieHelper() {}
 
-  public static String getCookie(HttpServletRequest request) {
+  public static Cookie getCookie(HttpServletRequest request) {
     Cookie[] cookies = request.getCookies();
 
     if (ArrayUtils.isEmpty(cookies)) {
       return null;
     }
-
     for (Cookie cookie : cookies) {
       if (COOKIE_NAME.equals(cookie.getName())) {
-        return cookie.getValue();
+        return cookie;
       }
     }
-
     return null;
   }
+
+  public static String getCookieValue(HttpServletRequest request) {
+    Cookie cookie = getCookie(request);
+    return cookie == null ? null : cookie.getValue();
+  }
+
+  public static void deleteRememberMeCookie(Cookie cookie, HttpServletResponse response) {
+    cookie.setMaxAge(0);
+    cookie.setPath(COOKIE_PATH);
+    response.addCookie(cookie);
+  }
+
 
   public static void setRememberMeCookie(
       RememberMeCookie rememberMeCookie, HttpServletResponse response) {
     Cookie cookie = new Cookie(COOKIE_NAME, rememberMeCookie.getValue());
-    cookie.setMaxAge(2000000);
-    cookie.setPath("/api/auth");
+    cookie.setMaxAge(MAX_AGE);
+    cookie.setPath(COOKIE_PATH);
     response.addCookie(cookie);
   }
 }

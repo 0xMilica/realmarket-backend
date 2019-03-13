@@ -13,7 +13,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -52,10 +54,11 @@ public class RememberMeCookieServiceImpl implements RememberMeCookieService {
   }
 
   @Transactional
-  public void deleteCurrentCookie(HttpServletRequest request) {
-    String cookieToken = RememberMeCookieHelper.getCookie(request);
-    if (cookieToken != null) {
-      findByValueAndNotExpired(cookieToken).ifPresent(this::deleteCookie);
+  public void deleteCurrentCookie(HttpServletRequest request, HttpServletResponse response) {
+    Cookie  cookie = RememberMeCookieHelper.getCookie(request);
+    if (cookie != null) {
+      findByValueAndNotExpired(cookie.getValue()).ifPresent(this::deleteCookie);
+      RememberMeCookieHelper.deleteRememberMeCookie(cookie,response);
     }
   }
 

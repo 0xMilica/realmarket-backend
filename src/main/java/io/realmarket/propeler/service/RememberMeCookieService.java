@@ -4,6 +4,7 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.RememberMeCookie;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 public interface RememberMeCookieService {
@@ -14,5 +15,5 @@ public interface RememberMeCookieService {
 
   void deleteCookie(RememberMeCookie rememberMeCookie);
 
-  void deleteCurrentCookie(HttpServletRequest request);
+  void deleteCurrentCookie(HttpServletRequest request, HttpServletResponse response);
 }

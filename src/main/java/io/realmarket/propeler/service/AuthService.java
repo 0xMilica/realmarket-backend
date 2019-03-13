@@ -4,6 +4,7 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Auth;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 public interface AuthService {
@@ -37,7 +38,7 @@ public interface AuthService {
 
   void finalizeEmailChange(final ConfirmEmailChangeDto confirmEmailChangeDto);
 
-  void logout(HttpServletRequest request);
+  void logout(HttpServletRequest request, HttpServletResponse response);
 
   void updateSecretById(Long id, String secret);
 
