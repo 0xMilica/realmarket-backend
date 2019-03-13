@@ -18,6 +18,7 @@ import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.LoginAttemptsService;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
   private final TemporaryTokenService temporaryTokenService;
   private final JWTService jwtService;
   private final AuthorizedActionService authorizedActionService;
-
+  private final LoginAttemptsService loginAttemptsService;
   private final PasswordEncoder passwordEncoder;
 
   private final RememberMeCookieService rememberMeCookieService;
@@ -71,7 +72,8 @@ public class AuthServiceImpl implements AuthService {
       TemporaryTokenService temporaryTokenService,
       RememberMeCookieService rememberMeCookieService,
       JWTService jwtService,
-      AuthorizedActionService authorizedActionService) {
+      AuthorizedActionService authorizedActionService,
+      LoginAttemptsService loginAttemptsService) {
     this.passwordEncoder = passwordEncoder;
     this.personService = personService;
     this.emailService = emailService;
@@ -80,6 +82,7 @@ public class AuthServiceImpl implements AuthService {
     this.jwtService = jwtService;
     this.rememberMeCookieService = rememberMeCookieService;
     this.authorizedActionService = authorizedActionService;
+    this.loginAttemptsService = loginAttemptsService;
   }
 
   public static Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
@@ -89,12 +92,12 @@ public class AuthServiceImpl implements AuthService {
   }
 
   public AuthResponseDto login(LoginDto loginDto, HttpServletRequest request) {
-    Auth auth =
-        authRepository
-            .findByUsername(loginDto.getUsername())
-            .orElseThrow(
-                () -> new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE));
-    return checkIfRemembered(validateLogin(auth, loginDto.getPassword()), request);
+    Optional<Auth> authOptional = authRepository.findByUsername(loginDto.getUsername());
+    if (!authOptional.isPresent()) {
+      loginAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
+      throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
+    }
+    return checkIfRemembered(validateLogin(authOptional.get(), loginDto.getPassword()), request);
   }
 
   @Transactional
@@ -333,6 +336,7 @@ public class AuthServiceImpl implements AuthService {
 
   private AuthResponseDto validateLogin(Auth auth, String password) {
     checkLoginCredentials(auth, password);
+    loginAttemptsService.loginSucceeded(AuthenticationUtil.getClientIp());
     if (auth.getState().equals(EAuthState.INITIALIZE_2FA)) {
       return new AuthResponseDto(
           E2FAStatus.INITIALIZE,
@@ -346,6 +350,7 @@ public class AuthServiceImpl implements AuthService {
   public void checkLoginCredentials(Auth auth, String password) {
     if (auth.getState().equals(EAuthState.CONFIRM_REGISTRATION)) {
       log.error("User with auth id '{}' is not active ", auth.getId());
+      loginAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
     checkPasswordOrThrow(auth, password);
@@ -354,6 +359,7 @@ public class AuthServiceImpl implements AuthService {
   private void checkPasswordOrThrow(Auth auth, String password) {
     if (!passwordEncoder.matches(password, auth.getPassword())) {
       log.error("User with auth id '{}' provided passwords which do not match ", auth.getId());
+      loginAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
   }
@@ -379,7 +385,6 @@ public class AuthServiceImpl implements AuthService {
             .isPresent()) {
       authResponseDto.setTwoFAStatus(E2FAStatus.REMEMBER_ME);
     }
-
     return authResponseDto;
   }
 }

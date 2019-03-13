@@ -48,6 +48,15 @@ app:
       size: 12
       batch_size: 10
   filename-length: 32
+  login:
+    ban:
+      attempts: 3
+      time-banned: 5
+  registration-captcha:
+    ban:
+      time-banned: 5
+      attempts: 5
+
 
 cos:
   file_prefix:
@@ -62,4 +71,8 @@ cos:
   bucket:
     location: eu-de
     name: mvp-bucket
+google:
+  recaptcha:
+    secret: 6LetzZYUAAAAANmFZmVB_xoFxeCr7JipkaB9PEcA
+
 

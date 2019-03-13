@@ -44,6 +44,10 @@ public interface ExceptionMessages {
 
   String CAMPAIGN_NAME_ALREADY_EXISTS = "Campaign with the provided name already exists!";
 
+  String INVALID_CAPTCHA = "Captcha did not validate successfully!";
+
+  String BLOCKED_CLIENT = "Maximum number of failed attempts exceeded, try again in half an hour";
+
   String NOT_COMPANY_OWNER = "User is not an owner of a company!";
 
   String NOT_CAMPAIGN_COMPANY_OWNER = "User is not an owner of a campaign's company!";

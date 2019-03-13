@@ -92,14 +92,14 @@ public class AuthServiceImplTest {
 
   @Test
   public void VerifyPasswordAndReturnToken_Should_CreateToken() {
-    when(temporaryTokenService.createToken(any(),any())).thenReturn(TEST_TEMPORARY_TOKEN);
+    when(temporaryTokenService.createToken(any(), any())).thenReturn(TEST_TEMPORARY_TOKEN);
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.of(TEST_AUTH));
-    when(passwordEncoder.matches(TEST_AUTH.getPassword(), TEST_PASSWORD_DTO.getPassword())).thenReturn(true);
+    when(passwordEncoder.matches(TEST_AUTH.getPassword(), TEST_PASSWORD_DTO.getPassword()))
+        .thenReturn(true);
 
-    authServiceImpl.verifyPasswordAndReturnToken(TEST_AUTH_ID,TEST_PASSWORD_DTO);
+    authServiceImpl.verifyPasswordAndReturnToken(TEST_AUTH_ID, TEST_PASSWORD_DTO);
 
-    verify(temporaryTokenService,times(1)).createToken(any(),any());
-
+    verify(temporaryTokenService, times(1)).createToken(any(), any());
   }
 
   @Test(expected = UsernameAlreadyExistsException.class)
@@ -135,13 +135,19 @@ public class AuthServiceImplTest {
     doNothing()
         .when(authorizedActionService)
         .storeAuthorizationAction(
-            TEST_AUTH_ID, EAuthorizationActionType.NEW_PASSWORD, TEST_PASSWORD, PASSWORD_CHANGE_ACTION_MILLISECONDS);
+            TEST_AUTH_ID,
+            EAuthorizationActionType.NEW_PASSWORD,
+            TEST_PASSWORD,
+            PASSWORD_CHANGE_ACTION_MILLISECONDS);
 
     authServiceImpl.initializeChangePassword(TEST_AUTH_ID, TEST_CHANGE_PASSWORD_DTO);
 
     verify(authorizedActionService, Mockito.times(1))
         .storeAuthorizationAction(
-            TEST_AUTH_ID, EAuthorizationActionType.NEW_PASSWORD, TEST_PASSWORD, PASSWORD_CHANGE_ACTION_MILLISECONDS);
+            TEST_AUTH_ID,
+            EAuthorizationActionType.NEW_PASSWORD,
+            TEST_PASSWORD,
+            PASSWORD_CHANGE_ACTION_MILLISECONDS);
   }
 
   @Test

@@ -3,6 +3,7 @@ package io.realmarket.propeler.api.controller.handler;
 import io.realmarket.propeler.service.exception.COSException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.InternalServerErrorException;
+import io.realmarket.propeler.service.exception.InvalidCaptchaException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     } else if (ex instanceof InternalServerErrorException || ex instanceof COSException) {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
     } else if (ex instanceof ForbiddenOperationException) {
+      status = HttpStatus.FORBIDDEN;
+    } else if (ex instanceof InvalidCaptchaException) {
       status = HttpStatus.FORBIDDEN;
     }
 

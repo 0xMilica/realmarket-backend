@@ -67,3 +67,14 @@ app:
       size: 12
       batch_size: 10
   filename-length: 32
+  login:
+    ban:
+      attempts: 10
+      time-banned: 30 #minutes
+  registration-captcha:
+    ban:
+      attempts: 5
+      time-banned: 240
+google:
+  recaptcha:
+    secret: 6LetzZYUAAAAANmFZmVB_xoFxeCr7JipkaB9PEcA #change this secret when real app si registered on google

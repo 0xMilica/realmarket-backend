@@ -1,5 +1,6 @@
 package io.realmarket.propeler.api.controller.impl;
 
+import io.realmarket.propeler.api.annotations.RequireCaptcha;
 import io.realmarket.propeler.api.controller.AuthController;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.AuthService;
@@ -26,6 +27,7 @@ public class AuthControllerImpl implements AuthController {
   }
 
   @PostMapping(value = "/register")
+  @RequireCaptcha
   public ResponseEntity register(@RequestBody @Valid RegistrationDto registrationDto) {
     authService.register(registrationDto);
     return new ResponseEntity(CREATED);
