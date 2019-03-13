@@ -93,6 +93,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration config = new CorsConfiguration();
     config.addExposedHeader("Authorization");
+    config.addExposedHeader("Set-Cookie");
     config.setAllowCredentials(true);
     config.addAllowedOrigin("*");
     config.addAllowedMethod("*");
