@@ -11,6 +11,7 @@ buildscript {
         commonsIOVersion = '2.6'
         modelMapperVersion = '2.3.2'
         aerogearOTPVersion = '1.0.0'
+        xhtmlRendererVersion = '9.0.6'
     }
     repositories {
         mavenCentral()
@@ -47,6 +48,7 @@ dependencies {
     implementation "com.auth0:java-jwt:$auth0Version"
     implementation "org.liquibase:liquibase-core:$liquibaseVersion"
     implementation "org.jboss.aerogear:aerogear-otp-java:$aerogearOTPVersion"
+    implementation "org.xhtmlrenderer:flying-saucer-pdf:$xhtmlRendererVersion"
 
     implementation "com.ibm.cos:ibm-cos-java-sdk:$ibmCosVersion"
     implementation "org.modelmapper:modelmapper:$modelMapperVersion"

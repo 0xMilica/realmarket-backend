@@ -13,4 +13,6 @@ public interface OTPWildcardRepository extends JpaRepository<OTPWildcard, Long> 
   void deleteAllByAuth(Auth auth);
 
   List<OTPWildcard> findAllByAuth(Auth auth);
+
+  List<OTPWildcard> findAllByAuthId(final Long authId);
 }

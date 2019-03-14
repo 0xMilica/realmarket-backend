@@ -2,6 +2,7 @@ package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Auth;
+import io.realmarket.propeler.model.OTPWildcard;
 
 import java.util.List;
 
@@ -40,4 +41,11 @@ public interface OTPService {
    * @return true if code is valid or false if not.
    */
   Boolean validate(Auth auth, TwoFADto twoFADto);
+
+  /**
+   * Get wildcards for a user
+   *
+   * @param auth Id of an auth that requestd codes
+   */
+  List<OTPWildcard> getWildcardsByAuthId(final Long authId);
 }
