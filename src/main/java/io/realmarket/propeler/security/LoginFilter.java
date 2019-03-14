@@ -5,25 +5,24 @@ import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.LoginAttemptsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-public final class LoginFilter implements Filter {
+public final class LoginFilter extends GenericFilterBean {
 
   private final LoginAttemptsService loginAttemptsService;
 
   @Autowired
   public LoginFilter(LoginAttemptsService loginAttemptsService) {
     this.loginAttemptsService = loginAttemptsService;
-  }
-
-  @Override
-  public void init(FilterConfig filterConfig) {
-    log.info("Initiating LoginFilter");
   }
 
   @Override
@@ -42,10 +41,5 @@ public final class LoginFilter implements Filter {
     } catch (ServletException | IOException e) {
       log.error("Error in filtering");
     }
-  }
-
-  @Override
-  public void destroy() {
-    log.info("Destroying LoginFilter");
   }
 }

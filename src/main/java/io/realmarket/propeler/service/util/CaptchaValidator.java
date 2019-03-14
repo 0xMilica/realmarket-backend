@@ -21,10 +21,10 @@ public class CaptchaValidator {
   private static final String GOOGLE_RECAPTCHA_ENDPOINT =
       "https://www.google.com/recaptcha/api/siteverify";
 
+  private static final Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
+
   @Value("${google.recaptcha.secret}")
   private String recaptchaSecret;
-
-  private static final Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
 
   @Value("${app.registration-captcha.ban.attempts}")
   private int maxAttempts;
