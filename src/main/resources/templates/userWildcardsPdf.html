@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        body {
+            color: #1C2542;
+            font-family: arial, helvetica, sans-serif;
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        @page {
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: arial, helvetica, sans-serif;
+                font-size: 12px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+<header>
+   <h2>
+       Wildcards
+    </h2>
+
+    <br/>
+</header>
+<table>
+    <tr th:each="element : ${wildcards}">
+        <td th:text="${element}"></td>
+
+    </tr>
+</table>
+
+</body>
+</html>

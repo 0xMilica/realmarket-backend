@@ -123,6 +123,10 @@ public class OTPServiceImpl implements OTPService {
     return false;
   }
 
+  public List<OTPWildcard> getWildcardsByAuthId(final Long authId) {
+    return otpWildcardRepository.findAllByAuthId(authId);
+  }
+
   // Decript/Encript secret Take salt from property and use it as key for encription
   private String decryptSecret(String encriptedSecret) {
     return encriptedSecret;
