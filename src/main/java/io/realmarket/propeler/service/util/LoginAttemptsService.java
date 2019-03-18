@@ -39,7 +39,7 @@ public class LoginAttemptsService {
   }
 
   public void loginFailed(String key) {
-    int attempts = 0;
+    int attempts;
     try {
       attempts = attemptsCache.get(key);
     } catch (ExecutionException e) {
