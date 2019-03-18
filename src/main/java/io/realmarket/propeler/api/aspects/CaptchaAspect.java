@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class CaptchaAspect {
 
-  private static final String CAPTCHA_HEADER_NAME = "captcha-response";
+  private static final String CAPTCHA_HEADER_NAME = "captcha_response";
 
   private final CaptchaValidator captchaValidator;
 
