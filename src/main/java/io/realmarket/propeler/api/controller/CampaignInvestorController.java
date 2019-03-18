@@ -1,11 +1,10 @@
 package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.CampaignInvestorDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.realmarket.propeler.api.dto.FileDto;
+import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -36,8 +35,7 @@ public interface CampaignInvestorController {
     @ApiResponse(code = 200, message = "Order of campaign investors changed."),
     @ApiResponse(code = 400, message = "Invalid request."),
   })
-  ResponseEntity patchCampaignInvestorOrder(
-      String campaignName, List<Long> investorOrder);
+  ResponseEntity patchCampaignInvestorOrder(String campaignName, List<Long> investorOrder);
 
   @ApiOperation(
       value = "Get all campaign investors",
@@ -73,4 +71,44 @@ public interface CampaignInvestorController {
     @ApiResponse(code = 400, message = "Invalid request."),
   })
   ResponseEntity deleteCampaignInvestor(String campaignName, Long investorId);
+
+  @ApiOperation(
+      value = "Upload investor picture",
+      httpMethod = "POST",
+      consumes = "multipart/form-data",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams(
+      @ApiImplicitParam(
+          name = "Investor picture",
+          dataType = "file",
+          value = "Investor to be uploaded",
+          paramType = "form",
+          required = true))
+  @ApiResponses({
+    @ApiResponse(code = 201, message = "Picture successfully uploaded."),
+    @ApiResponse(code = 400, message = "Picture cannot be saved.")
+  })
+  ResponseEntity uploadPicture(String campaignName, Long investorId, MultipartFile picture);
+
+  @ApiOperation(
+      value = "Download investor picture",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Picture retrieved successfully."),
+    @ApiResponse(code = 400, message = "Picture cannot be found.")
+  })
+  ResponseEntity<FileDto> downloadPicture(String campaignName, Long investorId);
+
+  @ApiOperation(
+      value = "Delete investor picture",
+      httpMethod = "DELETE",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Picture successfully deleted."),
+    @ApiResponse(code = 500, message = "Internal server error.")
+  })
+  ResponseEntity deletePicture(String campaignName, Long investorId);
 }

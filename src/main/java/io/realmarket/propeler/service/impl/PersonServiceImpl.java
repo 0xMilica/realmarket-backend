@@ -11,7 +11,6 @@ import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.FileUtils;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -76,8 +74,8 @@ public class PersonServiceImpl implements PersonService {
     log.info("Picture upload requested");
     String extension = FileUtils.getExtensionOrThrowException(picture);
     Person person = findByIdOrThrowException(id);
-    String url = userPicturePrefix + person.getAuth().getUsername() + "." + extension;
-    cloudObjectStorageService.uploadAndReplace(person.getProfilePictureUrl(),url, picture);
+    String url = String.join("", userPicturePrefix, person.getAuth().getUsername(), ".", extension);
+    cloudObjectStorageService.uploadAndReplace(person.getProfilePictureUrl(), url, picture);
     person.setProfilePictureUrl(url);
 
     personRepository.save(person);
@@ -85,7 +83,7 @@ public class PersonServiceImpl implements PersonService {
 
   public FileDto getProfilePicture(Long personId) {
     return cloudObjectStorageService.downloadFileDto(
-            findByIdOrThrowException(personId).getProfilePictureUrl());
+        findByIdOrThrowException(personId).getProfilePictureUrl());
   }
 
   public void deleteProfilePicture(Long personId) {

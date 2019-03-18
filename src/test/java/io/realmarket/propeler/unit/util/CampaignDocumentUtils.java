@@ -31,13 +31,11 @@ public class CampaignDocumentUtils {
 
   public static CampaignDocumentDto getCampaignDocumentDtoMocked() {
     return CampaignDocumentDto.builder()
-        .id(TEST_ID)
         .title(TEST_TITLE)
         .accessLevel(TEST_ACCESS_LEVEL)
         .type(TEST_TYPE)
         .url(TEST_URL)
         .uploadDate(TEST_UPLOAD_DATE)
-        .campaign(CampaignUtils.TEST_CAMPAIGN_DTO)
         .build();
   }
 }

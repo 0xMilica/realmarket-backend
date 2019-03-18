@@ -51,7 +51,7 @@ public class CompanyServiceImpl implements CompanyService {
     log.info("Logo upload requested");
     String extension = FileUtils.getExtensionOrThrowException(logo);
     Company company = findByIdOrThrowException(companyId);
-    String url = companyLogoPrefix + company.getId() + "." + extension;
+    String url = String.join("",companyLogoPrefix, company.getId().toString(), ".", extension);
     cloudObjectStorageService.uploadAndReplace(company.getLogoUrl(), url, logo);
     company.setLogoUrl(url);
     companyRepository.save(company);
@@ -66,7 +66,7 @@ public class CompanyServiceImpl implements CompanyService {
   @Override
   @Transactional
   public void deleteLogo(Long companyId) {
-    log.info("Delete company[{}] logo requested",companyId);
+    log.info("Delete company[{}] logo requested", companyId);
     Company company = findByIdOrThrowException(companyId);
     cloudObjectStorageService.delete(company.getLogoUrl());
 
@@ -80,7 +80,7 @@ public class CompanyServiceImpl implements CompanyService {
     log.info("Featured image upload requested");
     String extension = FileUtils.getExtensionOrThrowException(logo);
     Company company = findByIdOrThrowException(companyId);
-    String url = companyFeaturedImage + company.getId() + "." + extension;
+    String url = String.join("", companyFeaturedImage, company.getId().toString(), ".", extension);
     cloudObjectStorageService.uploadAndReplace(company.getFeaturedImageUrl(), url, logo);
     company.setFeaturedImageUrl(url);
     companyRepository.save(company);
@@ -95,7 +95,7 @@ public class CompanyServiceImpl implements CompanyService {
   @Override
   @Transactional
   public void deleteFeaturedImage(Long companyId) {
-    log.info("Delete company[{}] featured image requested",companyId);
+    log.info("Delete company[{}] featured image requested", companyId);
     Company company = findByIdOrThrowException(companyId);
     cloudObjectStorageService.delete(company.getFeaturedImageUrl());
     company.setFeaturedImageUrl(null);

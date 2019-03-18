@@ -1,9 +1,7 @@
 package io.realmarket.propeler.repository;
 
-import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignInvestor;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +16,7 @@ public interface CampaignInvestorRepository extends JpaRepository<CampaignInvest
 
   Integer countByCampaignUrlFriendlyName(String campaignName);
 
+  @Query(
+      "Select MAX(ci.orderNumber) FROM CampaignInvestor ci WHERE ci.campaign.urlFriendlyName = ?1")
+  Integer getMaxOrder(String urlFriendlyName);
 }

@@ -21,20 +21,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_USER_AUTH;
-import static io.realmarket.propeler.unit.util.CampaignInvestorTestUtils.TEST_CAMPAIGN_INVESTOR_NAME_2;
-import static io.realmarket.propeler.unit.util.CampaignInvestorTestUtils.createMockCampaignInvestorDto;
-import static io.realmarket.propeler.unit.util.CampaignInvestorTestUtils.mockInvestorList;
+import static io.realmarket.propeler.unit.util.CampaignInvestorTestUtils.*;
 import static io.realmarket.propeler.unit.util.CampaignUtils.TEST_CAMPAIGN;
 import static io.realmarket.propeler.unit.util.CampaignUtils.TEST_URL_FRIENDLY_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -82,6 +78,7 @@ public class CampaignInvestorServiceImplTest {
   @Test(expected = ForbiddenOperationException.class)
   public void DeleteCampaignInvestor_Should_ThrowException() {
     CampaignInvestor campaignInvestor = CampaignInvestorTestUtils.createMockCampaignInvestor();
+    doThrow(ForbiddenOperationException.class).when(campaignService).throwIfNoAccess(any());
     when(campaignInvestorRepository.findById(campaignInvestor.getId()))
             .thenReturn(Optional.of(campaignInvestor));
     campaignInvestorService.deleteCampaignInvestor(

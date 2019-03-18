@@ -31,8 +31,8 @@ public final class AuthorizationFilter extends GenericFilterBean {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
     HttpServletRequest httpRequest = (HttpServletRequest) request;
-    logger.info(
-        "Request - " + httpRequest.getMethod() + " " + httpRequest.getRequestURL().toString());
+    log.info(
+        "Request - {} {}",httpRequest.getMethod(),httpRequest.getRequestURL().toString());
     String requestToken = httpRequest.getHeader(AUTH_HEADER_NAME);
 
     try {

@@ -86,7 +86,7 @@ public class PersonServiceImplTest {
     //verify(cloudObjectStorageService, times(0)).delete(any());
     verify(cloudObjectStorageService, times(1))
         .uploadAndReplace(null,
-            userPicturePrefix + AuthUtils.TEST_USERNAME + "." + FileUtils.TEST_FILE_TYPE,
+            String.join("",userPicturePrefix, AuthUtils.TEST_USERNAME, ".",FileUtils.TEST_FILE_TYPE),
             FileUtils.MOCK_FILE_VALID);
     verify(personRepository, times(1)).save(testPerson);
   }

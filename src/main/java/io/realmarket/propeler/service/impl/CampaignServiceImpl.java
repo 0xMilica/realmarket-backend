@@ -109,7 +109,7 @@ public class CampaignServiceImpl implements CampaignService {
     String extension = FileUtils.getExtensionOrThrowException(logo);
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
     throwIfNoAccess(campaign);
-    String url = companyFeaturedImage + campaign.getUrlFriendlyName() + "." + extension;
+    String url = String.join("",companyFeaturedImage, campaign.getUrlFriendlyName(),".",extension);
     cloudObjectStorageService.uploadAndReplace(campaign.getMarketImageUrl(), url, logo);
     campaign.setMarketImageUrl(url);
     campaignRepository.save(campaign);
