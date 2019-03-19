@@ -16,6 +16,7 @@ import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.impl.AuthServiceImpl;
 import io.realmarket.propeler.service.impl.JWTServiceImpl;
+import io.realmarket.propeler.service.util.LoginAttemptsService;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.unit.util.AuthUtils;
 import io.realmarket.propeler.unit.util.OTPUtils;
@@ -29,10 +30,13 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
@@ -61,6 +65,7 @@ public class AuthServiceImplTest {
   @Mock private PersonService personService;
   @Mock private TemporaryTokenService temporaryTokenService;
   @Mock private AuthorizedActionService authorizedActionService;
+  @Mock private LoginAttemptsService loginAttemptsService;
   @InjectMocks private AuthServiceImpl authServiceImpl;
 
   @Before
@@ -294,7 +299,9 @@ public class AuthServiceImplTest {
 
   @Test
   public void Login_Should_Return_Valid_JWT_Token() {
-
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addHeader("X-Forwarded-For", "localhost,test");
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     Auth auth = TEST_AUTH.toBuilder().build();
     auth.setState(EAuthState.ACTIVE);
@@ -342,14 +349,14 @@ public class AuthServiceImplTest {
 
   @Test
   public void Logout_Should_Remove_JWT_Token() {
-    authServiceImpl.logout(TEST_REQUEST);
+    authServiceImpl.logout(TEST_REQUEST, TEST_RESPONSE);
     verify(jwtService, times(1)).deleteByValue(TEST_USER_AUTH.getToken());
   }
 
   @Test(expected = ForbiddenOperationException.class)
   public void InitializeEmailChange_Should_Throw_Exception_When_Not_Allowed() {
 
-    Auth auth = TEST_AUTH;
+    Auth auth = TEST_AUTH.toBuilder().build();
     auth.setId(1000L);
     final EmailDto emailDto = EmailDto.builder().email(TEST_EMAIL).build();
     authServiceImpl.initializeEmailChange(TEST_AUTH_ID, emailDto);
@@ -358,7 +365,7 @@ public class AuthServiceImplTest {
   @Test
   public void InitializeEmailChange_Should_StoreAuthorizedAction() {
 
-    Auth auth = TEST_AUTH;
+    Auth auth = TEST_AUTH.toBuilder().build();
     final EmailDto emailDto = EmailDto.builder().email(TEST_EMAIL).build();
     authServiceImpl.initializeEmailChange(TEST_AUTH_ID, emailDto);
     verify(authorizedActionService, times(1))
@@ -372,7 +379,7 @@ public class AuthServiceImplTest {
   @Test(expected = ForbiddenOperationException.class)
   public void VerifyChangeEmailRequest_Should_Throw_Exception_When_Not_Allowed() {
 
-    Auth auth = TEST_AUTH;
+    Auth auth = TEST_AUTH.toBuilder().build();
     auth.setId(1000L);
     authServiceImpl.verifyEmailChangeRequest(TEST_AUTH_ID, TwoFactorAuthUtils.TEST_2FA_DTO);
   }

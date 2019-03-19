@@ -13,9 +13,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.time.Instant;
 import java.util.Optional;
 
-import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH;
-import static io.realmarket.propeler.unit.util.AuthUtils.TEST_COOKIE;
-import static io.realmarket.propeler.unit.util.AuthUtils.TEST_REQUEST;
+import static io.realmarket.propeler.unit.util.AuthUtils.*;
 import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_RM_COOKIE;
 import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_VALUE;
 import static org.junit.Assert.assertEquals;
@@ -68,7 +66,7 @@ public class RememberMeCookieServiceImplTest {
             anyString(), any(Instant.class)))
             .thenReturn(Optional.of(TEST_RM_COOKIE));
 
-    rememberMeCookieService.deleteCurrentCookie(TEST_REQUEST);
+    rememberMeCookieService.deleteCurrentCookie(TEST_REQUEST,TEST_RESPONSE);
 
     verify(rememberMeCookieRepository, times(1)).delete(TEST_RM_COOKIE);
   }
