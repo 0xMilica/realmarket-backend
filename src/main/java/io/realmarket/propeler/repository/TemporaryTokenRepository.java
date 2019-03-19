@@ -13,10 +13,10 @@ public interface TemporaryTokenRepository extends JpaRepository<TemporaryToken, 
 
   Optional<TemporaryToken> findByValueAndExpirationTimeGreaterThanEqual(String value, Instant date);
 
-  Optional<TemporaryToken> findByValueAndTemporaryTokenTypeAndExpirationTimeGreaterThanEqual(String value, ETemporaryTokenType type, Instant date);
+  Optional<TemporaryToken> findByValueAndTemporaryTokenTypeAndExpirationTimeGreaterThanEqual(
+      String value, ETemporaryTokenType type, Instant date);
 
   void deleteAllByExpirationTimeLessThan(Instant date);
 
   void deleteByTemporaryTokenTypeAndAuthId(final ETemporaryTokenType type, final Long authId);
-
 }

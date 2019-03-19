@@ -25,18 +25,16 @@ import java.util.Optional;
 public class RememberMeCookieServiceImpl implements RememberMeCookieService {
 
   private static final int COOKIE_LENGTH = 54;
-
+  private final RememberMeCookieRepository rememberMeCookieRepository;
   @Value("${app.remember_me.expiration}")
   private long expirationPeriod;
-
-  private final RememberMeCookieRepository rememberMeCookieRepository;
 
   @Autowired
   public RememberMeCookieServiceImpl(RememberMeCookieRepository rememberMeCookieRepository) {
     this.rememberMeCookieRepository = rememberMeCookieRepository;
   }
 
-  public Optional<RememberMeCookie> findByValueAndAuthAndNotExpired(String value,Auth auth) {
+  public Optional<RememberMeCookie> findByValueAndAuthAndNotExpired(String value, Auth auth) {
     return rememberMeCookieRepository.findByValueAndAuthAndExpirationTimeGreaterThanEqual(
         value, auth, Instant.now());
   }
@@ -56,10 +54,12 @@ public class RememberMeCookieServiceImpl implements RememberMeCookieService {
 
   @Transactional
   public void deleteCurrentCookie(HttpServletRequest request, HttpServletResponse response) {
-    Cookie  cookie = RememberMeCookieHelper.getCookie(request);
+    Cookie cookie = RememberMeCookieHelper.getCookie(request);
     if (cookie != null) {
-      findByValueAndAuthAndNotExpired(cookie.getValue(), AuthenticationUtil.getAuthentication().getAuth()).ifPresent(this::deleteCookie);
-      RememberMeCookieHelper.deleteRememberMeCookie(cookie,response);
+      findByValueAndAuthAndNotExpired(
+              cookie.getValue(), AuthenticationUtil.getAuthentication().getAuth())
+          .ifPresent(this::deleteCookie);
+      RememberMeCookieHelper.deleteRememberMeCookie(cookie, response);
     }
   }
 

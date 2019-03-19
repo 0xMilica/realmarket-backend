@@ -15,5 +15,4 @@ public enum EAuthorizationActionType {
   public String toString() {
     return text;
   }
-
 }

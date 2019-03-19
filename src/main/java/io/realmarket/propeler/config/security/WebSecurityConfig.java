@@ -3,7 +3,6 @@ package io.realmarket.propeler.config.security;
 import io.realmarket.propeler.security.AuthorizationFilter;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.JWTService;
-import io.realmarket.propeler.service.util.LoginAttemptsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

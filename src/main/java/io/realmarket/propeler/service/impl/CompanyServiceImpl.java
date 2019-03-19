@@ -51,7 +51,7 @@ public class CompanyServiceImpl implements CompanyService {
     log.info("Logo upload requested");
     String extension = FileUtils.getExtensionOrThrowException(logo);
     Company company = findByIdOrThrowException(companyId);
-    String url = String.join("",companyLogoPrefix, company.getId().toString(), ".", extension);
+    String url = String.join("", companyLogoPrefix, company.getId().toString(), ".", extension);
     cloudObjectStorageService.uploadAndReplace(company.getLogoUrl(), url, logo);
     company.setLogoUrl(url);
     companyRepository.save(company);

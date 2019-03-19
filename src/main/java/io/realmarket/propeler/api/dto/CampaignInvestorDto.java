@@ -1,7 +1,6 @@
 package io.realmarket.propeler.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.primitives.UnsignedInteger;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignInvestor;
 import io.swagger.annotations.ApiModel;
@@ -95,6 +94,4 @@ public class CampaignInvestorDto {
         .orderNumber(orderNumber)
         .build();
   }
-
-
 }

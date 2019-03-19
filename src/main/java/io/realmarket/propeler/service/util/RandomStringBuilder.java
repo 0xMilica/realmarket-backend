@@ -11,6 +11,8 @@ public class RandomStringBuilder {
 
   private static final SecureRandom numberGenerator = new SecureRandom();
 
+  private RandomStringBuilder() {}
+
   public static String generateBase32String(int length) {
     /*try {
       random = SecureRandom.getInstanceStrong();
@@ -22,6 +24,4 @@ public class RandomStringBuilder {
     numberGenerator.nextBytes(values);
     return Base32.encode(values);
   }
-
-  private RandomStringBuilder(){}
 }

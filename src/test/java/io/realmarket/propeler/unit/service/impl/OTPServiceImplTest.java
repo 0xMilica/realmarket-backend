@@ -21,7 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH;
 import static io.realmarket.propeler.unit.util.AuthorizedActionUtils.TEST_AUTHORIZED_ACTION;
-import static io.realmarket.propeler.unit.util.OTPUtils.*;
+import static io.realmarket.propeler.unit.util.OTPUtils.TEST_OTP_WILDCARD_1;
+import static io.realmarket.propeler.unit.util.OTPUtils.TEST_TOTP_CODE_1;
 import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_SECRET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

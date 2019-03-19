@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface RememberMeCookieRepository extends JpaRepository<RememberMeCookie, Long> {
 
   Optional<RememberMeCookie> findByValueAndAuthAndExpirationTimeGreaterThanEqual(
-          String value, Auth auth, Instant date);
+      String value, Auth auth, Instant date);
 
   void deleteAllByExpirationTimeLessThan(Instant date);
 }

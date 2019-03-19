@@ -15,11 +15,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Builder
 public class LoginDto {
-    @NotNull(message = "Please provide username")
-    private String username;
+  @NotNull(message = "Please provide username")
+  private String username;
 
-    @NotNull(message = "Please provide password")
-    @Size(min = 8, message = "Password must be at least 8 characters long.")
-    private String password;
-
+  @NotNull(message = "Please provide password")
+  @Size(min = 8, message = "Password must be at least 8 characters long.")
+  private String password;
 }

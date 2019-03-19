@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
-
 @ApiModel("Fields needed to verify two fa secret")
 @Data
 @Builder

@@ -41,7 +41,6 @@ public class RememberMeCookieHelper {
     response.addCookie(cookie);
   }
 
-
   public static void setRememberMeCookie(
       RememberMeCookie rememberMeCookie, HttpServletResponse response) {
     Cookie cookie = new Cookie(COOKIE_NAME, rememberMeCookie.getValue());

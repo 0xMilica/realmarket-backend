@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
-@Builder(toBuilder=true)
+@Builder(toBuilder = true)
 @Entity(name = "Person")
 @Table(indexes = @Index(columnList = "email", name = "person_uk_on_email"))
 public class Person {

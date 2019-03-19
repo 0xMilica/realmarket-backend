@@ -27,12 +27,12 @@ public class PersonUtils {
           .build();
 
   public static final Person TEST_PERSON_NO_PROFILE_PICTURE =
-          Person.builder()
-                  .id(TEST_PERSON_ID)
-                  .email(TEST_EMAIL)
-                  .profilePictureUrl(null)
-                  .auth(Auth.builder().username(TEST_USERNAME).build())
-                  .build();
+      Person.builder()
+          .id(TEST_PERSON_ID)
+          .email(TEST_EMAIL)
+          .profilePictureUrl(null)
+          .auth(Auth.builder().username(TEST_USERNAME).build())
+          .build();
 
   public static final List<Person> TEST_PERSON_LIST =
       Arrays.asList(TEST_PERSON, TEST_PERSON, TEST_PERSON);

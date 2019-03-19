@@ -20,12 +20,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ReportServiceImpl implements ReportService {
 
+  private static final String PDF_TYPE = "pdf";
+  private static final String WILDCARDS_OBJECT_NAME = "wildcards";
   private final PdfService pdfService;
   private final OTPService otpService;
-
-  private static final String PDF_TYPE = "pdf";
-
-  private static final String WILDCARDS_OBJECT_NAME = "wildcards";
 
   @Autowired
   public ReportServiceImpl(PdfService pdfService, OTPService otpService) {

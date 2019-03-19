@@ -4,7 +4,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FileUtils {
-  private FileUtils(){}
+  private FileUtils() {}
 
   public static String getExtensionOrThrowException(MultipartFile file) {
     if (file.isEmpty()) {

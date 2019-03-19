@@ -4,7 +4,6 @@ import io.realmarket.propeler.model.RememberMeCookie;
 import io.realmarket.propeler.repository.RememberMeCookieRepository;
 import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.RememberMeCookieServiceImpl;
-import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,11 +47,11 @@ public class RememberMeCookieServiceImplTest {
   @Test
   public void findByValueAndNotExpired_Should_Return_OptionalOfCookie() {
     when(rememberMeCookieRepository.findByValueAndAuthAndExpirationTimeGreaterThanEqual(
-            anyString(), any(),any(Instant.class)))
+            anyString(), any(), any(Instant.class)))
         .thenReturn(Optional.of(TEST_RM_COOKIE));
 
     Optional<RememberMeCookie> retVal =
-        rememberMeCookieService.findByValueAndAuthAndNotExpired(TEST_VALUE,TEST_AUTH);
+        rememberMeCookieService.findByValueAndAuthAndNotExpired(TEST_VALUE, TEST_AUTH);
 
     assertTrue(retVal.isPresent());
     assertEquals(TEST_VALUE, retVal.get().getValue());
@@ -78,9 +77,9 @@ public class RememberMeCookieServiceImplTest {
   public void deleteCurrentCookie_Should_DeleteCookie() {
     when(rememberMeCookieRepository.findByValueAndAuthAndExpirationTimeGreaterThanEqual(
             anyString(), any(), any(Instant.class)))
-            .thenReturn(Optional.of(TEST_RM_COOKIE));
+        .thenReturn(Optional.of(TEST_RM_COOKIE));
 
-    rememberMeCookieService.deleteCurrentCookie(TEST_REQUEST,TEST_RESPONSE);
+    rememberMeCookieService.deleteCurrentCookie(TEST_REQUEST, TEST_RESPONSE);
 
     verify(rememberMeCookieRepository, times(1)).delete(TEST_RM_COOKIE);
   }

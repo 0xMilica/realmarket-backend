@@ -144,7 +144,7 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
   @Override
   @Async
   public void upload(String name, InputStream inputStream, int fileSize) {
-    log.info("Uploading file[{}]:{}",fileSize, name);
+    log.info("Uploading file[{}]:{}", fileSize, name);
     ObjectMetadata metadata = new ObjectMetadata();
     metadata.setContentLength(fileSize);
 
@@ -168,7 +168,7 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
     if (StringUtils.isEmpty(fileName)) {
       return;
     }
-    log.info("Delete file:{}",fileName);
+    log.info("Delete file:{}", fileName);
     AmazonS3 cloudClient =
         createCloudClient(cosApiKeyId, cosServiceCrn, cosEndpoint, cosBucketLocation);
     try {

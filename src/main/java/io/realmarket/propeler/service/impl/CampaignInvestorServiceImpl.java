@@ -22,9 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_INVESTOR_NOT_FOUND;
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.USER_IS_NOT_OWNER_OF_CAMPAIGN;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
 @Service
 @Slf4j
@@ -70,7 +68,8 @@ public class CampaignInvestorServiceImpl implements CampaignInvestorService {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
     campaignService.throwIfNoAccess(campaign);
     CampaignInvestor campaignInvestor = campaignInvestorDto.createInvestor(campaign);
-    Integer order = MoreObjects.firstNonNull(campaignInvestorRepository.getMaxOrder(campaignName), 0);
+    Integer order =
+        MoreObjects.firstNonNull(campaignInvestorRepository.getMaxOrder(campaignName), 0);
     campaignInvestor.setOrderNumber(++order);
     return campaignInvestorRepository.save(campaignInvestor);
   }
@@ -121,7 +120,9 @@ public class CampaignInvestorServiceImpl implements CampaignInvestorService {
     CampaignInvestor campaignInvestor = findByIdOrThrowException(investorId);
     throwIfNoAccess(campaignInvestor, campaignName);
     String extension = FileUtils.getExtensionOrThrowException(picture);
-    String url = String.join("",campaignInvestorPicturePrefix, campaignInvestor.getId().toString(), ".", extension);
+    String url =
+        String.join(
+            "", campaignInvestorPicturePrefix, campaignInvestor.getId().toString(), ".", extension);
     cloudObjectStorageService.uploadAndReplace(campaignInvestor.getPhotoUrl(), url, picture);
     campaignInvestor.setPhotoUrl(url);
     campaignInvestorRepository.save(campaignInvestor);

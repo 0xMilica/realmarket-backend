@@ -17,10 +17,9 @@ import java.util.Map;
 @Service
 public class PdfService {
 
+  private final TemplateEngine templateEngine;
   @Value("${reports.template-names.user-wildcards-pdf}")
   private String userWildcardsTemplate;
-
-  private final TemplateEngine templateEngine;
 
   @Autowired
   public PdfService(TemplateEngine templateEngine) {

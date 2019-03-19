@@ -21,6 +21,5 @@ public class LoginTwoFADto {
 
   private String wildcard;
 
-  @Builder.Default
-  private Boolean rememberMe = false;
+  @Builder.Default private Boolean rememberMe = false;
 }

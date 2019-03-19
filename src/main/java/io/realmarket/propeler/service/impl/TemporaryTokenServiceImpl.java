@@ -36,11 +36,11 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
         return 1800000L;
       case EMAIL_TOKEN:
       case PASSWORD_VERIFIED_TOKEN:
-        return 300000L; //5min
+        return 300000L; // 5min
       case LOGIN_TOKEN:
       case REGISTRATION_TOKEN:
       case RESET_PASSWORD_TOKEN:
-        return 86400000L; //24h
+        return 86400000L; // 24h
       default:
         throw new EntityNotFoundException(ExceptionMessages.INVALID_TOKEN_TYPE);
     }
@@ -89,10 +89,10 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   @Override
   public TemporaryToken findByValueAndTypeOrThrowException(String value, ETemporaryTokenType type) {
     return temporaryTokenRepository
-            .findByValueAndTemporaryTokenTypeAndExpirationTimeGreaterThanEqual(value, type, Instant.now())
-            .orElseThrow(() -> new InvalidTokenException(ExceptionMessages.INVALID_TOKEN_PROVIDED));
+        .findByValueAndTemporaryTokenTypeAndExpirationTimeGreaterThanEqual(
+            value, type, Instant.now())
+        .orElseThrow(() -> new InvalidTokenException(ExceptionMessages.INVALID_TOKEN_PROVIDED));
   }
-
 
   @Transactional
   @Scheduled(

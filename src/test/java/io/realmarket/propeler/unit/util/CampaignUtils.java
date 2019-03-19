@@ -15,6 +15,7 @@ public class CampaignUtils {
           .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
           .fundingGoals(0L)
           .build();
+  public static final CampaignDto TEST_CAMPAIGN_DTO = new CampaignDto(TEST_CAMPAIGN);
 
   public static Campaign getCampaignMocked() {
     return Campaign.builder()
@@ -24,8 +25,6 @@ public class CampaignUtils {
         .marketImageUrl(TEST_MARKET_IMAGE_UTL)
         .build();
   }
-
-  public static final CampaignDto TEST_CAMPAIGN_DTO = new CampaignDto(TEST_CAMPAIGN);
 
   public static CampaignPatchDto TEST_CAMPAIGN_PATCH_DTO_FUNDING_GOALS() {
     return CampaignPatchDto.builder().fundingGoals(TEST_FUNDING_GOALS).build();

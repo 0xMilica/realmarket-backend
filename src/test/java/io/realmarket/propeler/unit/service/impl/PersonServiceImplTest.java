@@ -25,7 +25,6 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_AUTH_ID;
-import static io.realmarket.propeler.unit.util.FileUtils.TEST_FILE_BYTES;
 import static io.realmarket.propeler.unit.util.FileUtils.TEST_FILE_NAME_2;
 import static io.realmarket.propeler.unit.util.PersonUtils.*;
 import static org.junit.Assert.assertEquals;
@@ -83,10 +82,12 @@ public class PersonServiceImplTest {
     when(personRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.of(testPerson));
     personServiceImpl.uploadProfilePicture(TEST_AUTH_ID, FileUtils.MOCK_FILE_VALID);
 
-    //verify(cloudObjectStorageService, times(0)).delete(any());
+    // verify(cloudObjectStorageService, times(0)).delete(any());
     verify(cloudObjectStorageService, times(1))
-        .uploadAndReplace(null,
-            String.join("",userPicturePrefix, AuthUtils.TEST_USERNAME, ".",FileUtils.TEST_FILE_TYPE),
+        .uploadAndReplace(
+            null,
+            String.join(
+                "", userPicturePrefix, AuthUtils.TEST_USERNAME, ".", FileUtils.TEST_FILE_TYPE),
             FileUtils.MOCK_FILE_VALID);
     verify(personRepository, times(1)).save(testPerson);
   }
@@ -100,7 +101,8 @@ public class PersonServiceImplTest {
     personServiceImpl.uploadProfilePicture(TEST_AUTH_ID, FileUtils.MOCK_FILE_VALID);
 
     verify(cloudObjectStorageService, times(1))
-        .uploadAndReplace(TEST_FILE_NAME_2,testPerson.getProfilePictureUrl(), FileUtils.MOCK_FILE_VALID);
+        .uploadAndReplace(
+            TEST_FILE_NAME_2, testPerson.getProfilePictureUrl(), FileUtils.MOCK_FILE_VALID);
     verify(personRepository, times(1)).save(testPerson);
   }
 
@@ -137,7 +139,8 @@ public class PersonServiceImplTest {
   public void GetProfilePicture_Should_ReturnProfilePicture() {
     when(personRepository.findById(TEST_PERSON_ID))
         .thenReturn(Optional.of(TEST_PERSON.toBuilder().build()));
-    when(cloudObjectStorageService.downloadFileDto(TEST_PROFILE_PICTURE_URL)).thenReturn(FileUtils.TEST_FILE_DTO);
+    when(cloudObjectStorageService.downloadFileDto(TEST_PROFILE_PICTURE_URL))
+        .thenReturn(FileUtils.TEST_FILE_DTO);
 
     FileDto returnFileDto = personServiceImpl.getProfilePicture(TEST_PERSON_ID);
 

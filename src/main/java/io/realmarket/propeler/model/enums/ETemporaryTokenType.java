@@ -9,7 +9,6 @@ public enum ETemporaryTokenType {
   EMAIL_CHANGE_TOKEN("EMAIL_CHANGE_TOKEN"),
   PASSWORD_VERIFIED_TOKEN("PASSWORD_VERIFIED_TOKEN");
 
-
   private final String text;
 
   ETemporaryTokenType(final String text) {

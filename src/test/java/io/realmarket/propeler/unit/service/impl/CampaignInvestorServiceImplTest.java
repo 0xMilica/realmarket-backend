@@ -80,9 +80,8 @@ public class CampaignInvestorServiceImplTest {
     CampaignInvestor campaignInvestor = CampaignInvestorTestUtils.createMockCampaignInvestor();
     doThrow(ForbiddenOperationException.class).when(campaignService).throwIfNoAccess(any());
     when(campaignInvestorRepository.findById(campaignInvestor.getId()))
-            .thenReturn(Optional.of(campaignInvestor));
-    campaignInvestorService.deleteCampaignInvestor(
-            "TEST", campaignInvestor.getId());
+        .thenReturn(Optional.of(campaignInvestor));
+    campaignInvestorService.deleteCampaignInvestor("TEST", campaignInvestor.getId());
   }
 
   @Test
@@ -107,20 +106,22 @@ public class CampaignInvestorServiceImplTest {
         campaignInvestor.getId(),
         campaignInvestorDto);
 
-    assertEquals(TEST_CAMPAIGN_INVESTOR_NAME_2,campaignInvestor.getName());
-    verify(modelMapperBlankString,times(1)).map(campaignInvestorDto,campaignInvestor);
-    verify(campaignInvestorRepository,times(1)).save(campaignInvestor);
+    assertEquals(TEST_CAMPAIGN_INVESTOR_NAME_2, campaignInvestor.getName());
+    verify(modelMapperBlankString, times(1)).map(campaignInvestorDto, campaignInvestor);
+    verify(campaignInvestorRepository, times(1)).save(campaignInvestor);
   }
 
   @Test
   public void GetCampaignInvestors_Should_ReturnListOfInvestors() {
     List<CampaignInvestor> campaignInvestorsList = mockInvestorList();
-    when(campaignService.findByUrlFriendlyNameOrThrowException(TEST_URL_FRIENDLY_NAME)).thenReturn(TEST_CAMPAIGN);
-    when(campaignInvestorRepository.findAllByCampaignUrlFriendlyNameOrderByOrderNumberAsc(TEST_URL_FRIENDLY_NAME)).thenReturn(campaignInvestorsList);
+    when(campaignService.findByUrlFriendlyNameOrThrowException(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(TEST_CAMPAIGN);
+    when(campaignInvestorRepository.findAllByCampaignUrlFriendlyNameOrderByOrderNumberAsc(
+            TEST_URL_FRIENDLY_NAME))
+        .thenReturn(campaignInvestorsList);
 
-    List<CampaignInvestor> ret = campaignInvestorService.getCampaignInvestors(TEST_URL_FRIENDLY_NAME);
+    List<CampaignInvestor> ret =
+        campaignInvestorService.getCampaignInvestors(TEST_URL_FRIENDLY_NAME);
     assertEquals(campaignInvestorsList, ret);
-
   }
-
 }

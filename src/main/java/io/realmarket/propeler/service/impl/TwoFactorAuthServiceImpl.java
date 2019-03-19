@@ -73,7 +73,8 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     TemporaryToken temporaryToken = findTemporaryLoginToken(loginTwoFADto.getToken());
 
     if (rememberMeCookieService
-        .findByValueAndAuthAndNotExpired(RememberMeCookieHelper.getCookieValue(request),temporaryToken.getAuth())
+        .findByValueAndAuthAndNotExpired(
+            RememberMeCookieHelper.getCookieValue(request), temporaryToken.getAuth())
         .isPresent()) {
       temporaryTokenService.deleteToken(temporaryToken);
 

@@ -208,7 +208,7 @@ public class TwoFactorAuthServiceImplTest {
 
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(LOGIN_2F_DTO_RM.getToken()))
         .thenReturn(temporaryTokenMocked);
-    when(rememberMeCookieService.findByValueAndAuthAndNotExpired(TEST_VALUE,TEST_AUTH))
+    when(rememberMeCookieService.findByValueAndAuthAndNotExpired(TEST_VALUE, TEST_AUTH))
         .thenReturn(Optional.of(TEST_RM_COOKIE));
     when(jwtService.createToken(TEST_AUTH)).thenReturn(TEST_JWT);
 
@@ -245,7 +245,8 @@ public class TwoFactorAuthServiceImplTest {
 
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(LOGIN_2F_DTO_RM.getToken()))
         .thenReturn(temporaryTokenMocked);
-    when(rememberMeCookieService.findByValueAndAuthAndNotExpired(TEST_VALUE,TEST_AUTH)).thenReturn(Optional.empty());
+    when(rememberMeCookieService.findByValueAndAuthAndNotExpired(TEST_VALUE, TEST_AUTH))
+        .thenReturn(Optional.empty());
 
     twoFactorAuthService.loginRememberMe(LOGIN_2F_DTO_RM, TEST_REQUEST);
   }
@@ -254,8 +255,8 @@ public class TwoFactorAuthServiceImplTest {
   public void generateNewSecret_Should_Return_Codes() {
     Auth testAuth = AuthUtils.TEST_AUTH_OLD_SECRET;
     when(authService.findByUserIdrThrowException(PersonUtils.TEST_PERSON_ID)).thenReturn(testAuth);
-    when(temporaryTokenService.findByValueAndTypeOrThrowException(any(),any()))
-            .thenReturn(TEST_TEMPORARY_TOKEN);
+    when(temporaryTokenService.findByValueAndTypeOrThrowException(any(), any()))
+        .thenReturn(TEST_TEMPORARY_TOKEN);
     when(otpService.validate(any(), any())).thenReturn(true);
     when(otpService.generateTOTPSecret(testAuth)).thenReturn(OTPUtils.TEST_SECRET_2);
     when(otpService.generateRecoveryCodes(testAuth))
@@ -265,7 +266,7 @@ public class TwoFactorAuthServiceImplTest {
         twoFactorAuthService.generateNewSecret(
             TwoFactorAuthUtils.TEST_TWO_FA_TOKEN_1, PersonUtils.TEST_PERSON_ID);
     assertNotNull(secretDto.getSecret());
-    verify(temporaryTokenService,times(1)).deleteToken(TEST_TEMPORARY_TOKEN);
+    verify(temporaryTokenService, times(1)).deleteToken(TEST_TEMPORARY_TOKEN);
   }
 
   @Test(expected = BadCredentialsException.class)

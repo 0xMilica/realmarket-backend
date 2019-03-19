@@ -83,7 +83,7 @@ app:
       time-banned: 240
 google:
   recaptcha:
-    secret: 6LetzZYUAAAAANmFZmVB_xoFxeCr7JipkaB9PEcA #change this secret when real app si registered on google
+    secret: ${GOOGLE_RECAPTCHA_SECRET}
 reports:
   template-names:
     user-wildcards-pdf: userWildcardsPdf

@@ -48,12 +48,12 @@ public class CampaignServiceImplTest {
 
   @InjectMocks private CampaignServiceImpl campaignServiceImpl;
 
-    @Before
+  @Before
   public void createAuthContext() {
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
-        SecurityContextHolder.setContext(securityContext);
-    }
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
+    SecurityContextHolder.setContext(securityContext);
+  }
 
   @Test
   public void findByUrlFriendlyNameOrThrowException_Should_ReturnCampaign_IfUserExists() {

@@ -98,7 +98,8 @@ public class AuthServiceImpl implements AuthService {
       loginAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
-    return checkIfRemembered(validateLogin(authOptional.get(), loginDto.getPassword()),authOptional.get(), request);
+    return checkIfRemembered(
+        validateLogin(authOptional.get(), loginDto.getPassword()), authOptional.get(), request);
   }
 
   @Transactional
@@ -218,7 +219,7 @@ public class AuthServiceImpl implements AuthService {
   @Transactional
   public void logout(HttpServletRequest request, HttpServletResponse response) {
     jwtService.deleteByValue(AuthenticationUtil.getAuthentication().getToken());
-    rememberMeCookieService.deleteCurrentCookie(request,response);
+    rememberMeCookieService.deleteCurrentCookie(request, response);
   }
 
   @Transactional
@@ -379,10 +380,10 @@ public class AuthServiceImpl implements AuthService {
   }
 
   private AuthResponseDto checkIfRemembered(
-      AuthResponseDto authResponseDto,Auth auth, HttpServletRequest request) {
+      AuthResponseDto authResponseDto, Auth auth, HttpServletRequest request) {
     if (E2FAStatus.VALIDATE == authResponseDto.getTwoFAStatus()
         && rememberMeCookieService
-            .findByValueAndAuthAndNotExpired(RememberMeCookieHelper.getCookieValue(request),auth)
+            .findByValueAndAuthAndNotExpired(RememberMeCookieHelper.getCookieValue(request), auth)
             .isPresent()) {
       authResponseDto.setTwoFAStatus(E2FAStatus.REMEMBER_ME);
     }

@@ -31,10 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(CompanyServiceImpl.class)
-@TestPropertySource(
-    properties = {
-      "cos.file_prefix.company_logo=company_logo/"
-    })
+@TestPropertySource(properties = {"cos.file_prefix.company_logo=company_logo/"})
 public class CompanyServiceImplTest {
 
   @Mock private CompanyRepository companyRepository;
@@ -144,7 +141,8 @@ public class CompanyServiceImplTest {
     companyService.uploadFeaturedImage(TEST_ID, FileUtils.MOCK_FILE_VALID);
 
     verify(cloudObjectStorageService, times(1))
-            .uploadAndReplace(TEST_FEATURED_IMAGE_URL, company.getFeaturedImageUrl(), FileUtils.MOCK_FILE_VALID);
+        .uploadAndReplace(
+            TEST_FEATURED_IMAGE_URL, company.getFeaturedImageUrl(), FileUtils.MOCK_FILE_VALID);
     verify(companyRepository, times(1)).save(company);
   }
 
@@ -152,7 +150,7 @@ public class CompanyServiceImplTest {
   public void GetCompanyFeaturedImage_Should_ReturnFeaturedImage() {
     when(companyRepository.findById(TEST_ID)).thenReturn(Optional.of(getCompanyMocked()));
     when(cloudObjectStorageService.downloadFileDto(TEST_FEATURED_IMAGE_URL))
-            .thenReturn(FileUtils.TEST_FILE_DTO);
+        .thenReturn(FileUtils.TEST_FILE_DTO);
 
     FileDto returnFileDto = companyService.downloadFeaturedImage(TEST_ID);
 

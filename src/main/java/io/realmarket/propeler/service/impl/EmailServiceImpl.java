@@ -107,7 +107,7 @@ public class EmailServiceImpl implements EmailService {
         data = new HashMap<>();
         break;
     }
-    data.put(CONTACT_US_EMAIL,"mailto:"+contactMeEmail+"?subject="+CONTACT_US_SUBJECT);
+    data.put(CONTACT_US_EMAIL, "mailto:" + contactMeEmail + "?subject=" + CONTACT_US_SUBJECT);
 
     emailMessageDto.setSubject(subject);
     emailMessageDto.setText(mailContentBuilder.build(data, templateName));

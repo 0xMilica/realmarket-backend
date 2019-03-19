@@ -18,10 +18,9 @@ import java.io.IOException;
 @Slf4j
 public class FileServiceImpl implements FileService {
 
+  private final CloudObjectStorageService cloudObjectStorageService;
   @Value("${app.filename-length}")
   private int filenameLength;
-
-  private final CloudObjectStorageService cloudObjectStorageService;
 
   @Autowired
   public FileServiceImpl(CloudObjectStorageService cloudObjectStorageService) {
