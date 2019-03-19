@@ -98,7 +98,7 @@ public class AuthServiceImpl implements AuthService {
       loginAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
-    return checkIfRemembered(validateLogin(authOptional.get(), loginDto.getPassword()), request);
+    return checkIfRemembered(validateLogin(authOptional.get(), loginDto.getPassword()),authOptional.get(), request);
   }
 
   @Transactional
@@ -379,10 +379,10 @@ public class AuthServiceImpl implements AuthService {
   }
 
   private AuthResponseDto checkIfRemembered(
-      AuthResponseDto authResponseDto, HttpServletRequest request) {
+      AuthResponseDto authResponseDto,Auth auth, HttpServletRequest request) {
     if (E2FAStatus.VALIDATE == authResponseDto.getTwoFAStatus()
         && rememberMeCookieService
-            .findByValueAndNotExpired(RememberMeCookieHelper.getCookieValue(request))
+            .findByValueAndAuthAndNotExpired(RememberMeCookieHelper.getCookieValue(request),auth)
             .isPresent()) {
       authResponseDto.setTwoFAStatus(E2FAStatus.REMEMBER_ME);
     }

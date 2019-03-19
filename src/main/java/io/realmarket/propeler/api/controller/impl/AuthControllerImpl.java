@@ -76,7 +76,7 @@ public class AuthControllerImpl implements AuthController {
   @DeleteMapping()
   @Override
   public ResponseEntity logout(HttpServletRequest request, HttpServletResponse response) {
-    authService.logout(request,response);
+    authService.logout(request, response);
     return new ResponseEntity(NO_CONTENT);
   }
 }

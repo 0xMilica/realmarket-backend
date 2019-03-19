@@ -208,7 +208,7 @@ public class TwoFactorAuthServiceImplTest {
 
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(LOGIN_2F_DTO_RM.getToken()))
         .thenReturn(temporaryTokenMocked);
-    when(rememberMeCookieService.findByValueAndNotExpired(TEST_VALUE))
+    when(rememberMeCookieService.findByValueAndAuthAndNotExpired(TEST_VALUE,TEST_AUTH))
         .thenReturn(Optional.of(TEST_RM_COOKIE));
     when(jwtService.createToken(TEST_AUTH)).thenReturn(TEST_JWT);
 
@@ -245,7 +245,7 @@ public class TwoFactorAuthServiceImplTest {
 
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(LOGIN_2F_DTO_RM.getToken()))
         .thenReturn(temporaryTokenMocked);
-    when(rememberMeCookieService.findByValueAndNotExpired(TEST_VALUE)).thenReturn(Optional.empty());
+    when(rememberMeCookieService.findByValueAndAuthAndNotExpired(TEST_VALUE,TEST_AUTH)).thenReturn(Optional.empty());
 
     twoFactorAuthService.loginRememberMe(LOGIN_2F_DTO_RM, TEST_REQUEST);
   }

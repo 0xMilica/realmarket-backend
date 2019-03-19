@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.RememberMeCookie;
 import io.realmarket.propeler.repository.RememberMeCookieRepository;
+import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.RememberMeCookieService;
 import io.realmarket.propeler.service.util.RandomStringBuilder;
 import io.realmarket.propeler.service.util.RememberMeCookieHelper;
@@ -35,9 +36,9 @@ public class RememberMeCookieServiceImpl implements RememberMeCookieService {
     this.rememberMeCookieRepository = rememberMeCookieRepository;
   }
 
-  public Optional<RememberMeCookie> findByValueAndNotExpired(String value) {
-    return rememberMeCookieRepository.findByValueAndExpirationTimeGreaterThanEqual(
-        value, Instant.now());
+  public Optional<RememberMeCookie> findByValueAndAuthAndNotExpired(String value,Auth auth) {
+    return rememberMeCookieRepository.findByValueAndAuthAndExpirationTimeGreaterThanEqual(
+        value, auth, Instant.now());
   }
 
   public RememberMeCookie createCookie(Auth auth) {
@@ -57,7 +58,7 @@ public class RememberMeCookieServiceImpl implements RememberMeCookieService {
   public void deleteCurrentCookie(HttpServletRequest request, HttpServletResponse response) {
     Cookie  cookie = RememberMeCookieHelper.getCookie(request);
     if (cookie != null) {
-      findByValueAndNotExpired(cookie.getValue()).ifPresent(this::deleteCookie);
+      findByValueAndAuthAndNotExpired(cookie.getValue(), AuthenticationUtil.getAuthentication().getAuth()).ifPresent(this::deleteCookie);
       RememberMeCookieHelper.deleteRememberMeCookie(cookie,response);
     }
   }

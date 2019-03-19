@@ -2,13 +2,18 @@ package io.realmarket.propeler.unit.service.impl;
 
 import io.realmarket.propeler.model.RememberMeCookie;
 import io.realmarket.propeler.repository.RememberMeCookieRepository;
+import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.RememberMeCookieServiceImpl;
 import io.realmarket.propeler.service.util.RememberMeCookieHelper;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -31,14 +36,23 @@ public class RememberMeCookieServiceImplTest {
 
   @InjectMocks private RememberMeCookieServiceImpl rememberMeCookieService;
 
+  @Before
+  public void setUpAuthContext() {
+    UserAuthentication auth = TEST_USER_AUTH;
+    auth.getAuth().setId(TEST_AUTH_ID);
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(auth);
+    SecurityContextHolder.setContext(securityContext);
+  }
+
   @Test
   public void findByValueAndNotExpired_Should_Return_OptionalOfCookie() {
-    when(rememberMeCookieRepository.findByValueAndExpirationTimeGreaterThanEqual(
-            anyString(), any(Instant.class)))
+    when(rememberMeCookieRepository.findByValueAndAuthAndExpirationTimeGreaterThanEqual(
+            anyString(), any(),any(Instant.class)))
         .thenReturn(Optional.of(TEST_RM_COOKIE));
 
     Optional<RememberMeCookie> retVal =
-        rememberMeCookieService.findByValueAndNotExpired(TEST_VALUE);
+        rememberMeCookieService.findByValueAndAuthAndNotExpired(TEST_VALUE,TEST_AUTH);
 
     assertTrue(retVal.isPresent());
     assertEquals(TEST_VALUE, retVal.get().getValue());
@@ -62,8 +76,8 @@ public class RememberMeCookieServiceImplTest {
 
   @Test
   public void deleteCurrentCookie_Should_DeleteCookie() {
-    when(rememberMeCookieRepository.findByValueAndExpirationTimeGreaterThanEqual(
-            anyString(), any(Instant.class)))
+    when(rememberMeCookieRepository.findByValueAndAuthAndExpirationTimeGreaterThanEqual(
+            anyString(), any(), any(Instant.class)))
             .thenReturn(Optional.of(TEST_RM_COOKIE));
 
     rememberMeCookieService.deleteCurrentCookie(TEST_REQUEST,TEST_RESPONSE);

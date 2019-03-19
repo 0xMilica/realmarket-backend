@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface RememberMeCookieService {
 
-  Optional<RememberMeCookie> findByValueAndNotExpired(String value);
+  Optional<RememberMeCookie> findByValueAndAuthAndNotExpired(String value, Auth auth);
 
   RememberMeCookie createCookie(Auth auth);
 

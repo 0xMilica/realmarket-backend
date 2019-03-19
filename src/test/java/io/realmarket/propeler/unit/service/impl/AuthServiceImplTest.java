@@ -300,7 +300,7 @@ public class AuthServiceImplTest {
   @Test
   public void Login_Should_Return_Valid_JWT_Token() {
     MockHttpServletRequest request = new MockHttpServletRequest();
-    request.addHeader("X-Forwarded-For", "localhost,test");
+    request.addHeader("X-Forwarded-For", "localhost");
     RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     Auth auth = TEST_AUTH.toBuilder().build();
@@ -335,6 +335,9 @@ public class AuthServiceImplTest {
 
   @Test(expected = BadCredentialsException.class)
   public void Login_Should_Throw_Exception_When_Bad_Password() {
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addHeader("X-Forwarded-For", "localhost");
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
 
