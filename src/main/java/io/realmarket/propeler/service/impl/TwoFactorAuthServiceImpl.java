@@ -5,9 +5,11 @@ import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
+import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.LoginAttemptsService;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
@@ -31,6 +33,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
   private final TemporaryTokenService temporaryTokenService;
   private final EmailService emailService;
   private final RememberMeCookieService rememberMeCookieService;
+  private final LoginAttemptsService loginAttemptsService;
 
   @Autowired
   TwoFactorAuthServiceImpl(
@@ -39,13 +42,15 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
       AuthService authService,
       TemporaryTokenService temporaryTokenService,
       RememberMeCookieService rememberMeCookieService,
-      EmailService emailService) {
+      EmailService emailService,
+      LoginAttemptsService loginAttemptsService) {
     this.otpService = otpService;
     this.jwtService = jwtService;
     this.authService = authService;
     this.temporaryTokenService = temporaryTokenService;
     this.rememberMeCookieService = rememberMeCookieService;
     this.emailService = emailService;
+    this.loginAttemptsService = loginAttemptsService;
   }
 
   @Transactional
@@ -55,6 +60,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     if (!otpService.validate(
         temporaryToken.getAuth(),
         new TwoFADto(loginTwoFADto.getCode(), loginTwoFADto.getWildcard()))) {
+      loginAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
       throw new ForbiddenOperationException("Provided code not valid!");
     }
 
