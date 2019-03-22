@@ -77,7 +77,7 @@ cos:
     name: mvp-bucket
 google:
   recaptcha:
-    secret: 6LetzZYUAAAAANmFZmVB_xoFxeCr7JipkaB9PEcA
+    secret: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
 
 reports:
   template-names:
