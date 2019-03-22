@@ -9,7 +9,6 @@ import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.EAuthorizationActionType;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.repository.AuthRepository;
-import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
@@ -69,12 +68,14 @@ public class AuthServiceImplTest {
   @InjectMocks private AuthServiceImpl authServiceImpl;
 
   @Before
-  public void setUpAuthContext() {
-    UserAuthentication auth = TEST_USER_AUTH;
-    auth.getAuth().setId(TEST_AUTH_ID);
+  public void createAuthContext() {
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(auth);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
     SecurityContextHolder.setContext(securityContext);
+
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addHeader("X-Forwarded-For", "localhost");
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
   }
 
   @Test
@@ -299,9 +300,6 @@ public class AuthServiceImplTest {
 
   @Test
   public void Login_Should_Return_Valid_JWT_Token() {
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    request.addHeader("X-Forwarded-For", "localhost");
-    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     Auth auth = TEST_AUTH.toBuilder().build();
     auth.setState(EAuthState.ACTIVE);
@@ -319,9 +317,8 @@ public class AuthServiceImplTest {
 
   @Test(expected = BadCredentialsException.class)
   public void Login_Should_Throw_Exception_When_Not_Existing_Username() {
-
-    AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
-    authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
+    //AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
+    authServiceImpl.login(TEST_LOGIN_DTO, TEST_REQUEST);
   }
 
   @Test(expected = BadCredentialsException.class)
@@ -335,9 +332,6 @@ public class AuthServiceImplTest {
 
   @Test(expected = BadCredentialsException.class)
   public void Login_Should_Throw_Exception_When_Bad_Password() {
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    request.addHeader("X-Forwarded-For", "localhost");
-    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
 
@@ -358,11 +352,12 @@ public class AuthServiceImplTest {
 
   @Test(expected = ForbiddenOperationException.class)
   public void InitializeEmailChange_Should_Throw_Exception_When_Not_Allowed() {
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
+    SecurityContextHolder.setContext(securityContext);
 
-    Auth auth = TEST_AUTH.toBuilder().build();
-    auth.setId(1000L);
     final EmailDto emailDto = EmailDto.builder().email(TEST_EMAIL).build();
-    authServiceImpl.initializeEmailChange(TEST_AUTH_ID, emailDto);
+    authServiceImpl.initializeEmailChange(1000L, emailDto);
   }
 
   @Test
@@ -381,10 +376,11 @@ public class AuthServiceImplTest {
 
   @Test(expected = ForbiddenOperationException.class)
   public void VerifyChangeEmailRequest_Should_Throw_Exception_When_Not_Allowed() {
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
+    SecurityContextHolder.setContext(securityContext);
 
-    Auth auth = TEST_AUTH.toBuilder().build();
-    auth.setId(1000L);
-    authServiceImpl.verifyEmailChangeRequest(TEST_AUTH_ID, TwoFactorAuthUtils.TEST_2FA_DTO);
+    authServiceImpl.verifyEmailChangeRequest(1000L, TwoFactorAuthUtils.TEST_2FA_DTO);
   }
 
   @Test(expected = EntityNotFoundException.class)

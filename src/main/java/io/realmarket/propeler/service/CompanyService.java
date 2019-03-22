@@ -8,6 +8,8 @@ public interface CompanyService {
 
   Company save(Company company);
 
+  Company patch(Long companyId, Company companyPatch);
+
   Company findByIdOrThrowException(Long id);
 
   void uploadLogo(Long companyId, MultipartFile logo);

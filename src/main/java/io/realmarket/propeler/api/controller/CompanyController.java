@@ -1,6 +1,7 @@
 package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.CompanyDto;
+import io.realmarket.propeler.api.dto.CompanyPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,17 @@ public interface CompanyController {
     @ApiResponse(code = 404, message = "Company does not exists.")
   })
   ResponseEntity getCompany(Long companyId);
+
+  @ApiOperation(
+      value = "Modify company's basic info",
+      httpMethod = "PATCH",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParam(name = "id", value = "Company's id", required = true, dataType = "Long")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Company successfully modified."),
+    @ApiResponse(code = 404, message = "Company does not exists.")
+  })
+  ResponseEntity<CompanyDto> patchCompany(Long companyId, CompanyPatchDto companyPatchDto);
 
   @ApiOperation(
       value = "Upload company logo",

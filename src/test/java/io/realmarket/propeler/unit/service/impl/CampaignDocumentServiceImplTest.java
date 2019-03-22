@@ -8,6 +8,7 @@ import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.impl.CampaignDocumentServiceImpl;
 import io.realmarket.propeler.unit.util.CampaignDocumentUtils;
 import io.realmarket.propeler.unit.util.CampaignUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,6 +35,8 @@ public class CampaignDocumentServiceImplTest {
   @Mock private CloudObjectStorageService cloudObjectStorageService;
 
   @InjectMocks private CampaignDocumentServiceImpl campaignDocumentService;
+
+
 
   @Test
   public void submitDocument_Should_CreateNewDocument() {

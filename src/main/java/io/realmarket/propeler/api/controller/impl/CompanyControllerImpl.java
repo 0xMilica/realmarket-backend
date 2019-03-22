@@ -2,6 +2,7 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.CompanyController;
 import io.realmarket.propeler.api.dto.CompanyDto;
+import io.realmarket.propeler.api.dto.CompanyPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,14 @@ public class CompanyControllerImpl implements CompanyController {
   public ResponseEntity<CompanyDto> getCompany(@PathVariable Long companyId) {
     return new ResponseEntity<>(
         new CompanyDto(companyService.findByIdOrThrowException(companyId)), HttpStatus.OK);
+  }
+
+  @PatchMapping("/{companyId}")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<CompanyDto> patchCompany(
+      @PathVariable Long companyId, @RequestBody CompanyPatchDto companyPatchDto) {
+    return ResponseEntity.ok(
+        new CompanyDto(companyService.patch(companyId, companyPatchDto.buildCompany())));
   }
 
   @PostMapping(value = "/{companyId}/featured_image")

@@ -19,6 +19,7 @@ import java.io.IOException;
 public class FileServiceImpl implements FileService {
 
   private final CloudObjectStorageService cloudObjectStorageService;
+
   @Value("${app.filename-length}")
   private int filenameLength;
 

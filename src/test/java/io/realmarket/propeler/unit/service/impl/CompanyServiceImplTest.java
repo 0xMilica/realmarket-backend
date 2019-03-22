@@ -7,6 +7,7 @@ import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.impl.CompanyServiceImpl;
 import io.realmarket.propeler.unit.util.CompanyUtils;
 import io.realmarket.propeler.unit.util.FileUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,13 +41,16 @@ public class CompanyServiceImplTest {
 
   @InjectMocks private CompanyServiceImpl companyService;
 
-  @Test
-  public void Save_Should_CreateNewCompany() {
-    Company companyMocked = CompanyUtils.getCompanyMocked();
-
+  @Before
+  public void createAuthContext() {
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
     SecurityContextHolder.setContext(securityContext);
+  }
+
+  @Test
+  public void Save_Should_CreateNewCompany() {
+    Company companyMocked = CompanyUtils.getCompanyMocked();
 
     when(companyRepository.save(any(Company.class))).thenReturn(companyMocked);
 
@@ -58,10 +62,6 @@ public class CompanyServiceImplTest {
   @Test(expected = DataIntegrityViolationException.class)
   public void Save_Should_Throw_DataIntegrityViolationException() {
     Company companyMocked = CompanyUtils.getCompanyMocked();
-
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
-    SecurityContextHolder.setContext(securityContext);
 
     when(companyRepository.save(any(Company.class)))
         .thenThrow(DataIntegrityViolationException.class);
@@ -89,6 +89,7 @@ public class CompanyServiceImplTest {
 
   @Test
   public void UploadLogo_Should_DeleteOldLogo_And_SaveToRepository() {
+
     Company company = getCompanyMocked();
     company.setLogoUrl(TEST_LOGO_URL);
     when(companyRepository.findById(TEST_ID)).thenReturn(Optional.of(company));
@@ -169,6 +170,7 @@ public class CompanyServiceImplTest {
 
   @Test
   public void DeleteCompanyFeaturedImage_Should_DeleteProfilePicture() {
+
     when(companyRepository.findById(TEST_ID)).thenReturn(Optional.of(getCompanyMocked()));
     doNothing().when(cloudObjectStorageService).delete(TEST_FEATURED_IMAGE_URL);
 

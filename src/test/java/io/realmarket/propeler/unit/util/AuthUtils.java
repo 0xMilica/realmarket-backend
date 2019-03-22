@@ -48,6 +48,20 @@ public class AuthUtils {
       LoginDto.builder().password(TEST_PASSWORD).username(TEST_USERNAME).build();
   public static final ResetPasswordDto TEST_RESET_PASSWORD_DTO =
       new ResetPasswordDto(TEST_TEMPORARY_TOKEN_VALUE, TEST_PASSWORD_NEW);
+  private static final String TEST_FIRST_NAME = "TEST_FIRST_NAME";
+  private static final String TEST_LAST_NAME = "TEST_LAST_NAME";
+  public static final RegistrationDto TEST_REGISTRATION_DTO =
+      RegistrationDto.builder()
+          .email(TEST_EMAIL)
+          .username(TEST_USERNAME)
+          .password(TEST_PASSWORD)
+          .userRole(TEST_ROLE)
+          .firstName(TEST_FIRST_NAME)
+          .lastName(TEST_LAST_NAME)
+          .countryOfResidence("TEST_COUNTRY_OF_RESIDENCE")
+          .city("TEST_CITY")
+          .address("TEST_ADDRESS")
+          .build();
   public static final Auth TEST_AUTH =
       Auth.builder()
           .id(TEST_AUTH_ID)
@@ -89,26 +103,13 @@ public class AuthUtils {
   public static final ConfirmEmailChangeDto TEST_CONFIRM_EMAIL_CHANGE_DTO =
       ConfirmEmailChangeDto.builder().token(TEST_TEMPORARY_TOKEN_VALUE).build();
   public static final UserAuthentication TEST_USER_AUTH =
-      new UserAuthentication(TEST_AUTH, TEST_TEMPORARY_TOKEN_VALUE);
+      new UserAuthentication(TEST_AUTH.toBuilder().build(), TEST_TEMPORARY_TOKEN_VALUE);
   public static final UserAuthentication TEST_USER_AUTH2 =
-      new UserAuthentication(TEST_AUTH2, TEST_TEMPORARY_TOKEN_VALUE);
+      new UserAuthentication(TEST_AUTH2.toBuilder().build(), TEST_TEMPORARY_TOKEN_VALUE);
   public static final MockHttpServletRequest TEST_REQUEST = new MockHttpServletRequest();
   public static final MockHttpServletResponse TEST_RESPONSE = new MockHttpServletResponse();
   public static final Cookie TEST_COOKIE = new Cookie(COOKIE_NAME, TEST_VALUE);
-  private static final String TEST_FIRST_NAME = "TEST_FIRST_NAME";
-  private static final String TEST_LAST_NAME = "TEST_LAST_NAME";
-  public static final RegistrationDto TEST_REGISTRATION_DTO =
-      RegistrationDto.builder()
-          .email(TEST_EMAIL)
-          .username(TEST_USERNAME)
-          .password(TEST_PASSWORD)
-          .userRole(TEST_ROLE)
-          .firstName(TEST_FIRST_NAME)
-          .lastName(TEST_LAST_NAME)
-          .countryOfResidence("TEST_COUNTRY_OF_RESIDENCE")
-          .city("TEST_CITY")
-          .address("TEST_ADDRESS")
-          .build();
+
   public static final RegistrationDto TEST_REGISTRATION_DTO_ROLE_NOT_ALLOWED =
       RegistrationDto.builder()
           .email(TEST_EMAIL)

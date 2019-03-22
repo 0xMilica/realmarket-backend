@@ -26,6 +26,7 @@ public class RememberMeCookieServiceImpl implements RememberMeCookieService {
 
   private static final int COOKIE_LENGTH = 54;
   private final RememberMeCookieRepository rememberMeCookieRepository;
+
   @Value("${app.remember_me.expiration}")
   private long expirationPeriod;
 

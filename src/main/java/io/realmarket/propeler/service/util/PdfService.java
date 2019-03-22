@@ -18,6 +18,7 @@ import java.util.Map;
 public class PdfService {
 
   private final TemplateEngine templateEngine;
+
   @Value("${reports.template-names.user-wildcards-pdf}")
   private String userWildcardsTemplate;
 

@@ -81,6 +81,7 @@ public class CampaignServiceImpl implements CampaignService {
 
   public CampaignDto patchCampaign(String campaignName, CampaignPatchDto campaignPatchDto) {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
+    throwIfNoAccess(campaign);
     modelMapperBlankString.map(campaignPatchDto, campaign);
     return new CampaignDto(campaignRepository.save(campaign));
   }

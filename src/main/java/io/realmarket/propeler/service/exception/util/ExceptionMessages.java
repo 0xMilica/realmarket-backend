@@ -36,6 +36,8 @@ public interface ExceptionMessages {
 
   String USER_IS_NOT_OWNER_OF_CAMPAIGN = "Caller is not owner of campaign.";
 
+  String USER_IS_NOT_OWNER_OF_COMPANY = "Caller is not owner of company.";
+
   String TEAM_MEMBER_NOT_FOUND = "Campaign teem member with the provided id not found!";
 
   String CAMPAIGN_NAME_ALREADY_EXISTS = "Campaign with the provided name already exists!";
