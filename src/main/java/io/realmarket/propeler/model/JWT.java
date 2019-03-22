@@ -20,6 +20,7 @@ public class JWT {
   @SequenceGenerator(name = "JWT_SEQ", sequenceName = "JWT_SEQ", allocationSize = 1)
   private Long id;
 
+  @Column(length = 2048)
   private String value;
 
   private Instant expirationTime;
