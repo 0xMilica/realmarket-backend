@@ -3,10 +3,7 @@ package io.realmarket.propeler.model;
 import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.model.enums.PostgreSQLEnumType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -39,6 +36,7 @@ public class Auth {
   @Enumerated(EnumType.STRING)
   private EAuthState state;
 
+  @ToString.Exclude
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "auth_fk1_on_person"))
   private Person person;

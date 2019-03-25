@@ -84,3 +84,9 @@ reports:
     user-wildcards-pdf: userWildcardsPdf
 
 
+logging:
+  level:
+    liquibase: info
+    org.springframework.*: info
+    io.realmarket.propeler.*: trace
+    org.hibernate.SQL: debug

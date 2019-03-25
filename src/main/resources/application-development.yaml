@@ -54,9 +54,14 @@ cos:
 frontend.service.url: ${FRONTEND_URL_PATH}
 hmac.secret: ${HMAC_SECRET}
 access-token.expiration-time: 3600000
+
+
 logging:
   level:
-    liquibase: INFO
+    liquibase: info
+    org.springframework.*: info
+    io.realmarket.propeler.*: trace
+    org.hibernate.SQL: debug
 
 app:
   email:
