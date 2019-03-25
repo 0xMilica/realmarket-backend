@@ -3,22 +3,28 @@ package io.realmarket.propeler.unit.util;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
+import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.EmailServiceImpl;
 import io.realmarket.propeler.service.util.MailContentHolder;
+import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
 import java.util.HashMap;
 
 import static io.realmarket.propeler.service.util.RememberMeCookieHelper.COOKIE_NAME;
-import static io.realmarket.propeler.unit.util.PersonUtils.getMockedPerson;
 import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_VALUE;
 
 public class AuthUtils {
+
   public static final String TEST_USERNAME = "TEST_USERNAME";
   public static final String TEST_EMAIL = "TEST_EMAIL";
   public static final String TEST_PASSWORD = "TEST_PASSWORD";
@@ -70,7 +76,7 @@ public class AuthUtils {
           .userRole(TEST_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
-          .person(getMockedPerson(TEST_REGISTRATION_DTO))
+          .person(new Person(TEST_REGISTRATION_DTO))
           .build();
   public static final Auth TEST_AUTH2 =
       Auth.builder()
@@ -80,7 +86,7 @@ public class AuthUtils {
           .userRole(TEST_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
-          .person(getMockedPerson(TEST_REGISTRATION_DTO))
+          .person(new Person(TEST_REGISTRATION_DTO))
           .build();
   public static final Auth TEST_AUTH_OLD_SECRET =
       Auth.builder()
@@ -89,17 +95,9 @@ public class AuthUtils {
           .userRole(TEST_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(OTPUtils.TEST_SECRET_1)
-          .person(getMockedPerson(TEST_REGISTRATION_DTO))
+          .person(new Person(TEST_REGISTRATION_DTO))
           .build();
-  public static final Auth TEST_AUTH_NEW_SECRET =
-      Auth.builder()
-          .username(TEST_USERNAME)
-          .state(EAuthState.ACTIVE)
-          .userRole(TEST_ROLE)
-          .password(TEST_PASSWORD)
-          .totpSecret(OTPUtils.TEST_SECRET_2)
-          .person(getMockedPerson(TEST_REGISTRATION_DTO))
-          .build();
+
   public static final ConfirmEmailChangeDto TEST_CONFIRM_EMAIL_CHANGE_DTO =
       ConfirmEmailChangeDto.builder().token(TEST_TEMPORARY_TOKEN_VALUE).build();
   public static final UserAuthentication TEST_USER_AUTH =
@@ -125,5 +123,19 @@ public class AuthUtils {
 
   static {
     TEST_REQUEST.setCookies(TEST_COOKIE);
+  }
+
+  public static void mockSecurityContext(UserAuthentication userAuthentication) {
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    Mockito.when(securityContext.getAuthentication()).thenReturn(userAuthentication);
+    SecurityContextHolder.setContext(securityContext);
+  }
+
+  public static void mockRequestAndContext() {
+    mockSecurityContext(TEST_USER_AUTH);
+
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addHeader("X-Forwarded-For", "localhost");
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
   }
 }

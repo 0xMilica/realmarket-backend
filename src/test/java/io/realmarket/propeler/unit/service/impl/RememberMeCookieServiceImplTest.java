@@ -2,17 +2,14 @@ package io.realmarket.propeler.unit.service.impl;
 
 import io.realmarket.propeler.model.RememberMeCookie;
 import io.realmarket.propeler.repository.RememberMeCookieRepository;
-import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.RememberMeCookieServiceImpl;
+import io.realmarket.propeler.unit.util.AuthUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -37,11 +34,7 @@ public class RememberMeCookieServiceImplTest {
 
   @Before
   public void setUpAuthContext() {
-    UserAuthentication auth = TEST_USER_AUTH;
-    auth.getAuth().setId(TEST_AUTH_ID);
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(auth);
-    SecurityContextHolder.setContext(securityContext);
+    AuthUtils.mockRequestAndContext();
   }
 
   @Test
