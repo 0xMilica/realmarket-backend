@@ -35,7 +35,7 @@ public final class AuthorizationFilter extends GenericFilterBean {
     String requestToken = httpRequest.getHeader(AUTH_HEADER_NAME);
 
     try {
-      JWT jwt = jwtService.findByValueAndNotExpiredOrThrowException(requestToken);
+      JWT jwt = jwtService.validateJWTOrThrowException(requestToken);
       Auth auth = authService.findByIdOrThrowException(jwt.getAuth().getId());
       UserAuthentication userAuth = new UserAuthentication(auth, jwt.getValue());
       SecurityContextHolder.getContext().setAuthentication(userAuth);

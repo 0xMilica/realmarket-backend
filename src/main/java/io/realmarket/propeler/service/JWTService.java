@@ -4,9 +4,9 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.JWT;
 
 public interface JWTService {
-  JWT createToken(Auth auth);
+  String createToken(Auth auth);
 
-  JWT findByValueAndNotExpiredOrThrowException(String value);
+  JWT validateJWTOrThrowException(String jti);
 
   void deleteExpiredTokens();
 

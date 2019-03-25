@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.*;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
+import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT_VALUE;
 import static io.realmarket.propeler.unit.util.OTPUtils.TEST_SECRET_1;
 import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_RM_COOKIE;
 import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_VALUE;
@@ -157,7 +158,7 @@ public class TwoFactorAuthServiceImplTest {
     when(otpService.validate(
             TEST_AUTH, new TwoFADto(TEST_TWO_FA_TOKEN.getCode(), TEST_TWO_FA_TOKEN.getWildcard())))
         .thenReturn(true);
-    when(jwtService.createToken(TEST_AUTH)).thenReturn(TEST_JWT);
+    when(jwtService.createToken(TEST_AUTH)).thenReturn(TEST_JWT_VALUE);
     when(rememberMeCookieService.createCookie(TEST_AUTH)).thenReturn(TEST_RM_COOKIE);
 
     LoginResponseDto retVal = twoFactorAuthService.login2FA(LOGIN_2F_DTO_RM, TEST_RESPONSE);
@@ -218,7 +219,7 @@ public class TwoFactorAuthServiceImplTest {
         .thenReturn(temporaryTokenMocked);
     when(rememberMeCookieService.findByValueAndAuthAndNotExpired(TEST_VALUE, TEST_AUTH))
         .thenReturn(Optional.of(TEST_RM_COOKIE));
-    when(jwtService.createToken(TEST_AUTH)).thenReturn(TEST_JWT);
+    when(jwtService.createToken(TEST_AUTH)).thenReturn(TEST_JWT_VALUE);
 
     LoginResponseDto retVal = twoFactorAuthService.loginRememberMe(LOGIN_2F_DTO_RM, TEST_REQUEST);
 

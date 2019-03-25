@@ -288,7 +288,7 @@ public class AuthServiceImplTest {
         .thenReturn(true);
     when(temporaryTokenService.createToken(any(), any())).thenReturn(TEST_TEMPORARY_TOKEN);
 
-    when(jwtService.createToken(auth)).thenReturn(TEST_JWT);
+    when(jwtService.createToken(auth)).thenReturn(TEST_JWT_VALUE);
 
     AuthResponseDto login = authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
 

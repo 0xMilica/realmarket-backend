@@ -71,7 +71,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
 
     temporaryTokenService.deleteToken(temporaryToken);
 
-    return new LoginResponseDto(jwtService.createToken(temporaryToken.getAuth()).getValue());
+    return new LoginResponseDto(jwtService.createToken(temporaryToken.getAuth()));
   }
 
   @Transactional
@@ -84,7 +84,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
         .isPresent()) {
       temporaryTokenService.deleteToken(temporaryToken);
 
-      return new LoginResponseDto(jwtService.createToken(temporaryToken.getAuth()).getValue());
+      return new LoginResponseDto(jwtService.createToken(temporaryToken.getAuth()));
     } else {
       throw new ForbiddenOperationException("Invalid remember me cookie");
     }
@@ -97,7 +97,6 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     if (temporaryToken.getTemporaryTokenType() != ETemporaryTokenType.LOGIN_TOKEN) {
       throw new ForbiddenOperationException(ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION);
     }
-
     return temporaryToken;
   }
 
