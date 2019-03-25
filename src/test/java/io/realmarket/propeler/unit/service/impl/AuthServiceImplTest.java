@@ -29,13 +29,8 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
@@ -69,13 +64,7 @@ public class AuthServiceImplTest {
 
   @Before
   public void createAuthContext() {
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
-    SecurityContextHolder.setContext(securityContext);
-
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    request.addHeader("X-Forwarded-For", "localhost");
-    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+    AuthUtils.mockRequestAndContext();
   }
 
   @Test
@@ -135,9 +124,6 @@ public class AuthServiceImplTest {
     when(passwordEncoder.matches(TEST_PASSWORD, TEST_PASSWORD)).thenReturn(true);
     when(passwordEncoder.encode(TEST_PASSWORD_NEW)).thenReturn(TEST_PASSWORD);
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
-    SecurityContextHolder.setContext(securityContext);
     doNothing()
         .when(authorizedActionService)
         .storeAuthorizationAction(
@@ -158,9 +144,6 @@ public class AuthServiceImplTest {
 
   @Test
   public void FinalizeChangePassword_Should_UpdateUserPassword() {
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
-    SecurityContextHolder.setContext(securityContext);
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
     when(authorizedActionService.validateAuthorizationAction(
             TEST_AUTH, EAuthorizationActionType.NEW_PASSWORD, TEST_2FA_DTO))
@@ -181,9 +164,6 @@ public class AuthServiceImplTest {
 
   @Test(expected = ForbiddenOperationException.class)
   public void FinalizeChangePassword_Should_Throw_ForbiddenOperationException() {
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
-    SecurityContextHolder.setContext(securityContext);
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
     when(authorizedActionService.validateAuthorizationAction(
             TEST_AUTH, EAuthorizationActionType.NEW_PASSWORD, TEST_2FA_DTO))
@@ -317,7 +297,7 @@ public class AuthServiceImplTest {
 
   @Test(expected = BadCredentialsException.class)
   public void Login_Should_Throw_Exception_When_Not_Existing_Username() {
-    //AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
+    // AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     authServiceImpl.login(TEST_LOGIN_DTO, TEST_REQUEST);
   }
 
@@ -352,10 +332,6 @@ public class AuthServiceImplTest {
 
   @Test(expected = ForbiddenOperationException.class)
   public void InitializeEmailChange_Should_Throw_Exception_When_Not_Allowed() {
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
-    SecurityContextHolder.setContext(securityContext);
-
     final EmailDto emailDto = EmailDto.builder().email(TEST_EMAIL).build();
     authServiceImpl.initializeEmailChange(1000L, emailDto);
   }
@@ -376,10 +352,6 @@ public class AuthServiceImplTest {
 
   @Test(expected = ForbiddenOperationException.class)
   public void VerifyChangeEmailRequest_Should_Throw_Exception_When_Not_Allowed() {
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
-    SecurityContextHolder.setContext(securityContext);
-
     authServiceImpl.verifyEmailChangeRequest(1000L, TwoFactorAuthUtils.TEST_2FA_DTO);
   }
 

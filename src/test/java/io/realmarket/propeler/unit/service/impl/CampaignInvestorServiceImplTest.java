@@ -8,6 +8,7 @@ import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.impl.CampaignInvestorServiceImpl;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
+import io.realmarket.propeler.unit.util.AuthUtils;
 import io.realmarket.propeler.unit.util.CampaignInvestorTestUtils;
 import io.realmarket.propeler.unit.util.CampaignUtils;
 import org.junit.Before;
@@ -15,16 +16,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.Optional;
 
-import static io.realmarket.propeler.unit.util.AuthUtils.TEST_USER_AUTH;
 import static io.realmarket.propeler.unit.util.CampaignInvestorTestUtils.*;
 import static io.realmarket.propeler.unit.util.CampaignUtils.TEST_CAMPAIGN;
 import static io.realmarket.propeler.unit.util.CampaignUtils.TEST_URL_FRIENDLY_NAME;
@@ -48,9 +45,7 @@ public class CampaignInvestorServiceImplTest {
 
   @Before
   public void createAuthContext() {
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
-    SecurityContextHolder.setContext(securityContext);
+    AuthUtils.mockRequestAndContext();
   }
 
   @Test

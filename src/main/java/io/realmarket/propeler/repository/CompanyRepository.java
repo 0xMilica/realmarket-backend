@@ -1,6 +1,11 @@
 package io.realmarket.propeler.repository;
 
+import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CompanyRepository extends JpaRepository<Company, Long> {}
+public interface CompanyRepository extends JpaRepository<Company, Long> {
+
+  public boolean existsCompanyByAuth(Auth owner);
+
+}

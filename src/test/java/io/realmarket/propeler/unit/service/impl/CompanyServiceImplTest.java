@@ -5,6 +5,7 @@ import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.repository.CompanyRepository;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.impl.CompanyServiceImpl;
+import io.realmarket.propeler.unit.util.AuthUtils;
 import io.realmarket.propeler.unit.util.CompanyUtils;
 import io.realmarket.propeler.unit.util.FileUtils;
 import org.junit.Before;
@@ -16,14 +17,11 @@ import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
-import static io.realmarket.propeler.unit.util.AuthUtils.TEST_USER_AUTH;
 import static io.realmarket.propeler.unit.util.CompanyUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,9 +41,7 @@ public class CompanyServiceImplTest {
 
   @Before
   public void createAuthContext() {
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(TEST_USER_AUTH);
-    SecurityContextHolder.setContext(securityContext);
+    AuthUtils.mockRequestAndContext();
   }
 
   @Test

@@ -2,10 +2,10 @@ package io.realmarket.propeler.unit.service.impl;
 
 import io.realmarket.propeler.model.CampaignDocument;
 import io.realmarket.propeler.repository.CampaignDocumentRepository;
-import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.impl.CampaignDocumentServiceImpl;
+import io.realmarket.propeler.unit.util.AuthUtils;
 import io.realmarket.propeler.unit.util.CampaignDocumentUtils;
 import io.realmarket.propeler.unit.util.CampaignUtils;
 import org.junit.Before;
@@ -13,17 +13,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
-import static io.realmarket.propeler.unit.util.AuthUtils.TEST_USER_AUTH;
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_USER_AUTH2;
+import static io.realmarket.propeler.unit.util.AuthUtils.mockSecurityContext;
 import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -36,7 +33,10 @@ public class CampaignDocumentServiceImplTest {
 
   @InjectMocks private CampaignDocumentServiceImpl campaignDocumentService;
 
-
+  @Before
+  public void createAuthContext() {
+    AuthUtils.mockRequestAndContext();
+  }
 
   @Test
   public void submitDocument_Should_CreateNewDocument() {
@@ -48,8 +48,6 @@ public class CampaignDocumentServiceImplTest {
     when(cloudObjectStorageService.doesFileExist(campaignDocumentMocked.getUrl())).thenReturn(true);
     when(campaignDocumentRepository.save(campaignDocumentMocked))
         .thenReturn(campaignDocumentMocked);
-
-    mockSecurityContext(TEST_USER_AUTH);
 
     CampaignDocument retVal =
         campaignDocumentService.submitDocument(
@@ -102,8 +100,6 @@ public class CampaignDocumentServiceImplTest {
     when(campaignDocumentRepository.save(campaignDocumentMocked))
         .thenReturn(campaignDocumentMocked);
 
-    mockSecurityContext(TEST_USER_AUTH);
-
     campaignDocumentService.submitDocument(
         campaignDocumentMocked, CampaignUtils.TEST_URL_FRIENDLY_NAME);
   }
@@ -117,8 +113,6 @@ public class CampaignDocumentServiceImplTest {
         .thenReturn(CampaignUtils.TEST_CAMPAIGN);
     when(campaignDocumentRepository.findById(CampaignDocumentUtils.TEST_ID))
         .thenReturn(Optional.of(campaignDocumentMocked));
-
-    mockSecurityContext(TEST_USER_AUTH);
 
     campaignDocumentService.deleteDocument(
         CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID);
@@ -154,8 +148,6 @@ public class CampaignDocumentServiceImplTest {
     when(campaignDocumentRepository.findById(CampaignDocumentUtils.TEST_ID))
         .thenThrow(EntityNotFoundException.class);
 
-    mockSecurityContext(TEST_USER_AUTH);
-
     campaignDocumentService.deleteDocument(
         CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID);
   }
@@ -179,11 +171,5 @@ public class CampaignDocumentServiceImplTest {
         .thenReturn(Optional.empty());
 
     campaignDocumentService.findByIdOrThrowException(CampaignDocumentUtils.TEST_ID);
-  }
-
-  private void mockSecurityContext(UserAuthentication userAuthentication) {
-    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(userAuthentication);
-    SecurityContextHolder.setContext(securityContext);
   }
 }

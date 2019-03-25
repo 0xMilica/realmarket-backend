@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.COMPANY_ALREADY_EXIST;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.USER_IS_NOT_OWNER_OF_COMPANY;
 
 @Service
@@ -54,6 +55,9 @@ public class CompanyServiceImpl implements CompanyService {
   }
 
   public Company save(Company company) {
+    if (companyRepository.existsCompanyByAuth(AuthenticationUtil.getAuthentication().getAuth())) {
+      throw new ForbiddenOperationException(COMPANY_ALREADY_EXIST);
+    }
     return companyRepository.save(company);
   }
 
