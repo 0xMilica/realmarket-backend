@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class AuthorizationFilter extends GenericFilterBean {
 
   private static final String AUTH_HEADER_NAME = "Authorization";
+  private static final String AUTH_SCHEME = "Bearer";
 
   private final JWTService jwtService;
   private final AuthService authService;
@@ -32,10 +33,11 @@ public final class AuthorizationFilter extends GenericFilterBean {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     log.info("Request - {} {}", httpRequest.getMethod(), httpRequest.getRequestURL().toString());
-    String requestToken = httpRequest.getHeader(AUTH_HEADER_NAME);
-
+    final String authHeader = httpRequest.getHeader(AUTH_HEADER_NAME);
+    final String jwtToken = extractJwtFromAuthorizationHeader(authHeader);
+    log.info("Jwt from request is {}", jwtToken);
     try {
-      JWT jwt = jwtService.validateJWTOrThrowException(requestToken);
+      JWT jwt = jwtService.validateJWTOrThrowException(jwtToken);
       Auth auth = authService.findByIdOrThrowException(jwt.getAuth().getId());
       UserAuthentication userAuth = new UserAuthentication(auth, jwt.getValue());
       SecurityContextHolder.getContext().setAuthentication(userAuth);
@@ -46,5 +48,10 @@ public final class AuthorizationFilter extends GenericFilterBean {
       logger.error(ExceptionMessages.INVALID_TOKEN_PROVIDED);
       ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
+  }
+
+  private String extractJwtFromAuthorizationHeader(final String authHeader) {
+    final String[] authHeaderParts = authHeader.split(" ");
+    return AUTH_SCHEME.equals(authHeaderParts[0]) ? authHeaderParts[1] : null;
   }
 }
