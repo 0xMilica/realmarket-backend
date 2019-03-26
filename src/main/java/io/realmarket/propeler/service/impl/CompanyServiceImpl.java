@@ -1,6 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.FileDto;
+import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.repository.CompanyRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -18,8 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.COMPANY_ALREADY_EXIST;
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.USER_IS_NOT_OWNER_OF_COMPANY;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
 @Service
 @Slf4j
@@ -71,7 +71,14 @@ public class CompanyServiceImpl implements CompanyService {
   public Company findByIdOrThrowException(Long id) {
     return companyRepository
         .findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Company with provided id does not exist."));
+        .orElseThrow(() -> new EntityNotFoundException(COMPANY_DOES_NOT_EXIST));
+  }
+
+  @Override
+  public Company findByAuthOrThrowException(Auth owner) {
+    return companyRepository
+        .findByAuth(owner)
+        .orElseThrow(() -> new EntityNotFoundException(ENTREPRENUER_MISSING_COMPANY));
   }
 
   @Override
@@ -85,6 +92,11 @@ public class CompanyServiceImpl implements CompanyService {
     cloudObjectStorageService.uploadAndReplace(company.getLogoUrl(), url, logo);
     company.setLogoUrl(url);
     companyRepository.save(company);
+  }
+
+  @Override
+  public Company findMyCompany() {
+    return findByAuthOrThrowException(AuthenticationUtil.getAuthentication().getAuth());
   }
 
   @Override

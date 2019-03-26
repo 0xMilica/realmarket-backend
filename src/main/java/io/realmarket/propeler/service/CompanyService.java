@@ -1,6 +1,7 @@
 package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.FileDto;
+import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +12,10 @@ public interface CompanyService {
   Company patch(Long companyId, Company companyPatch);
 
   Company findByIdOrThrowException(Long id);
+
+  Company findByAuthOrThrowException(Auth owner);
+
+  Company findMyCompany();
 
   void uploadLogo(Long companyId, MultipartFile logo);
 

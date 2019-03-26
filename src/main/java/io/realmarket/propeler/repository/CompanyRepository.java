@@ -4,8 +4,12 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
   public boolean existsCompanyByAuth(Auth owner);
+
+  public Optional<Company> findByAuth(Auth owner);
 
 }

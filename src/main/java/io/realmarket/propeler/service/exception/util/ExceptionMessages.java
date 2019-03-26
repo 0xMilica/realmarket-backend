@@ -50,6 +50,10 @@ public interface ExceptionMessages {
 
   String COMPANY_ALREADY_EXIST = "Company already exists!";
 
+  String COMPANY_DOES_NOT_EXIST = "Company with provided id does not exist.";
+
+  String ENTREPRENUER_MISSING_COMPANY = "Entrepreneur does not have company.";
+
   String NOT_CAMPAIGN_COMPANY_OWNER = "User is not an owner of a campaign's company!";
 
   String FILE_NOT_EXISTS = "File with provided URL does not exist!";
