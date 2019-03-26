@@ -236,4 +236,15 @@ public interface CampaignController {
   })
   ResponseEntity<List<CampaignTeamMemberDto>> updateAllTeamMembers(
       String campaignName, List<Long> membersIds);
+
+  @ApiOperation(
+      value = "Get active campaign",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Succesfully retrieved active campaign"),
+    @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve campaign.")
+  })
+  ResponseEntity<CampaignDto> getActiveCampaign();
 }

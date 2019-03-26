@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -136,10 +135,15 @@ public class CampaignControllerImpl implements CampaignController {
 
   @PatchMapping(value = "/{campaignName}/team")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
-  @Transactional
   public ResponseEntity<List<CampaignTeamMemberDto>> updateAllTeamMembers(
       @PathVariable String campaignName, @RequestBody @Valid List<Long> membersIds) {
     return ResponseEntity.ok(
         campaignTeamMemberService.updateMembersOrder(campaignName, membersIds));
+  }
+
+  @GetMapping(value = "/active")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<CampaignDto> getActiveCampaign() {
+    return ResponseEntity.ok(campaignService.getActiveCampaignForCompany());
   }
 }

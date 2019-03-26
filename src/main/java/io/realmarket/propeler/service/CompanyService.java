@@ -28,4 +28,6 @@ public interface CompanyService {
   FileDto downloadFeaturedImage(Long companyId);
 
   void deleteFeaturedImage(Long companyId);
+
+  Company findByAuthIdOrThrowException(final Long authId);
 }

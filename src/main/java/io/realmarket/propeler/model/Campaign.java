@@ -33,6 +33,7 @@ public class Campaign {
   private BigDecimal minEquityOffered;
   private BigDecimal maxEquityOffered;
   private String marketImageUrl;
+  private Boolean active;
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "companyId", foreignKey = @ForeignKey(name = "campaign_fk_on_company"))

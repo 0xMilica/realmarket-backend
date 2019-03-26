@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.CampaignUtils.*;
 import static io.realmarket.propeler.unit.util.CompanyUtils.TEST_FEATURED_IMAGE_URL;
+import static io.realmarket.propeler.unit.util.CompanyUtils.getCompanyMocked;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -163,5 +164,37 @@ public class CampaignServiceImplTest {
 
     verify(campaignRepository, Mockito.times(1)).findByUrlFriendlyName(TEST_URL_FRIENDLY_NAME);
     verify(cloudObjectStorageService, Mockito.times(1)).delete(TEST_MARKET_IMAGE_UTL);
+  }
+
+  @Test
+  public void GetActiveCampaignForCompany_Should_Return_Campaign() {
+    when(companyService.findByAuthIdOrThrowException(TEST_USER_AUTH.getAuth().getId()))
+        .thenReturn(getCompanyMocked());
+    when(campaignRepository.findByCompanyIdAndActiveTrue(getCompanyMocked().getId()))
+        .thenReturn(Optional.of(getCampaignMocked()));
+
+    campaignServiceImpl.getActiveCampaignForCompany();
+
+    verify(companyService, Mockito.times(1))
+        .findByAuthIdOrThrowException(TEST_USER_AUTH.getAuth().getId());
+    verify(campaignRepository, Mockito.times(1))
+        .findByCompanyIdAndActiveTrue(getCompanyMocked().getId());
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void
+      GetActiveCampaignForCompany_Should_Throw_EntityNotFoundException_When_No_Active_Campaign() {
+    when(companyService.findByAuthIdOrThrowException(TEST_USER_AUTH.getAuth().getId()))
+        .thenReturn(getCompanyMocked());
+
+    campaignServiceImpl.getActiveCampaignForCompany();
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void
+      GetActiveCampaignForCompany_Should_Throw_EntityNotFoundException_When_No_Company_Of_Auth_User() {
+    when(companyService.findByAuthIdOrThrowException(TEST_USER_AUTH.getAuth().getId()))
+        .thenThrow(new EntityNotFoundException());
+    campaignServiceImpl.getActiveCampaignForCompany();
   }
 }

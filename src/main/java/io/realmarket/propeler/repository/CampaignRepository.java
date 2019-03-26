@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface CampaignRepository extends JpaRepository<Campaign, Long> {
   Optional<Campaign> findByUrlFriendlyName(String urlFriendlyName);
+  Optional<Campaign> findByCompanyIdAndActiveTrue(final Long companyId);
 }

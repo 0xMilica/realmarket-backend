@@ -146,4 +146,11 @@ public class CompanyServiceImpl implements CompanyService {
     company.setFeaturedImageUrl(null);
     companyRepository.save(company);
   }
+
+  @Override
+  public Company findByAuthIdOrThrowException(final Long authId) {
+    return companyRepository
+        .findByAuthId(authId)
+        .orElseThrow(() -> new EntityNotFoundException(NOT_COMPANY_OWNER));
+  }
 }

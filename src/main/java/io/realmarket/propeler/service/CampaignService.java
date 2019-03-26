@@ -20,4 +20,6 @@ public interface CampaignService {
   void deleteMarketImage(String campaignName);
 
   void throwIfNoAccess(Campaign campaign);
+
+  CampaignDto getActiveCampaignForCompany();
 }

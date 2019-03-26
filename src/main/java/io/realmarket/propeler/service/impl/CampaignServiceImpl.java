@@ -25,8 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_NOT_FOUND;
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.USER_IS_NOT_OWNER_OF_CAMPAIGN;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
 @Slf4j
 @Service
@@ -84,6 +83,19 @@ public class CampaignServiceImpl implements CampaignService {
     throwIfNoAccess(campaign);
     modelMapperBlankString.map(campaignPatchDto, campaign);
     return new CampaignDto(campaignRepository.save(campaign));
+  }
+
+  public CampaignDto getActiveCampaignForCompany() {
+    final Company company =
+        companyService.findByAuthIdOrThrowException(
+            AuthenticationUtil.getAuthentication().getAuth().getId());
+    final CampaignDto campaignDto = new CampaignDto();
+    final Campaign campaign =
+        campaignRepository
+            .findByCompanyIdAndActiveTrue(company.getId())
+            .orElseThrow(() -> new EntityNotFoundException(NO_ACTIVE_CAMPAIGN));
+    modelMapperBlankString.map(campaign, campaignDto);
+    return campaignDto;
   }
 
   public Campaign findByIdOrThrowException(Long id) {

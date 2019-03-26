@@ -8,8 +8,9 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
-  public boolean existsCompanyByAuth(Auth owner);
+  Optional<Company> findByAuthId(final Long authId);
 
-  public Optional<Company> findByAuth(Auth owner);
+  boolean existsCompanyByAuth(Auth owner);
 
+  Optional<Company> findByAuth(Auth owner);
 }
