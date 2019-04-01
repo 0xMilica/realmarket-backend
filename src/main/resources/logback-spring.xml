@@ -1,5 +1,5 @@
 <configuration>
-    <springProfile name="local">
+    <springProfile name="local, development">
 
         <property name="LOG_PATH" value="log_data"/>
         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -24,45 +24,6 @@
         <root level="info">
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="SAVE-TO-FILE" />
-        </root>
-    </springProfile>
-    <springProfile name="development">
-        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder>
-                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - call_signature: %X{callSignature} - return_value: %X{returnValue} - user_id: %X{userId} - correlation_id: %X{correlationId} - %msg%n
-                </pattern>
-            </encoder>
-        </appender>
-        <appender name="asyncLogStash"
-                  class="net.logstash.logback.appender.LoggingEventAsyncDisruptorAppender">
-            <appender name="stash" class="net.logstash.logback.appender.LogstashAccessTcpSocketAppender">
-                <destination>logstash:5000</destination>
-                <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-                    <providers>
-                        <pattern>
-                            <pattern>
-                                {
-                                "timestamp": "%d{yyyy-MM-dd HH:mm:ss.SSS}",
-                                "level": "%-5level",
-                                "correlation_id": "%X{correlationId}",
-                                "user_id": "%X{userId}",
-                                "service": "propeler-backend",
-                                "call_signature": "%X{callSignature}",
-                                "logger": "%logger{36}",
-                                "thread": "%thread",
-                                "message": "%msg",
-                                "return_value": "%X{returnValue}",
-                                "http_header": "%X{httpHeaders}"
-                                }
-                            </pattern>
-                        </pattern>
-                    </providers>
-                </encoder>
-            </appender>
-            <appender-ref ref="STDOUT"/>
-        </appender>
-        <root level="info">
-            <appender-ref ref="asyncLogStash"/>
         </root>
     </springProfile>
 </configuration>
