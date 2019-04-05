@@ -10,6 +10,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
@@ -60,6 +61,13 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Transactional
   public void createCampaign(CampaignDto campaignDto) {
+    campaignRepository
+        .findByCompanyIdAndActiveTrue(campaignDto.getCompanyId())
+        .ifPresent(
+            c -> {
+              throw new ActiveCampaignAlreadyExistsException();
+            });
+
     if (campaignRepository.findByUrlFriendlyName(campaignDto.getUrlFriendlyName()).isPresent()) {
       log.error("Campaign with the provided name '{}' already exists!", campaignDto.getName());
       throw new CampaignNameAlreadyExistsException(ExceptionMessages.CAMPAIGN_NAME_ALREADY_EXISTS);
@@ -72,6 +80,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     Campaign campaign = new Campaign(campaignDto);
+    campaign.setActive(true);
     campaign.setCompany(company);
     campaignRepository.save(campaign);
 

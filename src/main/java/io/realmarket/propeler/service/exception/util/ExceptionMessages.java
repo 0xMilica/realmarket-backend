@@ -52,7 +52,7 @@ public interface ExceptionMessages {
 
   String COMPANY_DOES_NOT_EXIST = "Company with provided id does not exist.";
 
-  String ENTREPRENUER_MISSING_COMPANY = "Entrepreneur does not have company.";
+  String ENTREPRENEUR_MISSING_COMPANY = "Entrepreneur does not have company.";
 
   String NOT_CAMPAIGN_COMPANY_OWNER = "User is not an owner of a campaign's company!";
 
@@ -60,5 +60,5 @@ public interface ExceptionMessages {
 
   String NO_ACTIVE_CAMPAIGN = "No active campaign";
 
-
+  String ACTIVE_CAMPAIGN_EXISTS = "Active campaign already exists for given company";
 }

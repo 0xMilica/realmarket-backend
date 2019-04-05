@@ -7,6 +7,7 @@ import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
 import io.realmarket.propeler.service.impl.CampaignServiceImpl;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
@@ -27,6 +28,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
+import static io.realmarket.propeler.unit.util.AuthUtils.TEST_USER_AUTH;
 import static io.realmarket.propeler.unit.util.CampaignUtils.*;
 import static io.realmarket.propeler.unit.util.CompanyUtils.TEST_FEATURED_IMAGE_URL;
 import static io.realmarket.propeler.unit.util.CompanyUtils.getCompanyMocked;
@@ -94,6 +96,8 @@ public class CampaignServiceImplTest {
 
   @Test
   public void CreateCampaign_Should_CreateCampaign() {
+    when(campaignRepository.findByCompanyIdAndActiveTrue(TEST_CAMPAIGN_DTO.getCompanyId()))
+        .thenReturn(Optional.empty());
     when(campaignRepository.findByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.empty());
     when(campaignRepository.save(TEST_CAMPAIGN)).thenReturn(TEST_CAMPAIGN);
@@ -104,7 +108,16 @@ public class CampaignServiceImplTest {
 
     verify(companyService, Mockito.times(1)).findByIdOrThrowException(anyLong());
     verify(campaignRepository, Mockito.times(1)).findByUrlFriendlyName(TEST_URL_FRIENDLY_NAME);
-    verify(campaignRepository, Mockito.times(1)).save(TEST_CAMPAIGN);
+    verify(campaignRepository, Mockito.times(1)).save(any(Campaign.class));
+  }
+
+  @Test(expected = ActiveCampaignAlreadyExistsException.class)
+  public void
+      CreateCampaign_Should_Throw_ActiveCampaignAlreadyExistsException_WhenCampaignNameExists() {
+    when(campaignRepository.findByCompanyIdAndActiveTrue(TEST_CAMPAIGN_DTO.getCompanyId()))
+        .thenReturn(Optional.of(TEST_CAMPAIGN));
+
+    campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
   }
 
   @Test(expected = CampaignNameAlreadyExistsException.class)

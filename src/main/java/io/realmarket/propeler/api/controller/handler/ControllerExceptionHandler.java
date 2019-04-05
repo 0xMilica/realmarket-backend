@@ -1,9 +1,7 @@
 package io.realmarket.propeler.api.controller.handler;
 
-import io.realmarket.propeler.service.exception.COSException;
-import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.service.exception.InternalServerErrorException;
-import io.realmarket.propeler.service.exception.InvalidCaptchaException;
+import io.realmarket.propeler.service.exception.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.persistence.EntityNotFoundException;
 
 @ControllerAdvice
+@Slf4j
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = {Throwable.class})
   protected @ResponseBody ResponseEntity<Object> handleInternalException(
@@ -33,9 +32,12 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
       status = HttpStatus.FORBIDDEN;
     } else if (ex instanceof InvalidCaptchaException) {
       status = HttpStatus.FORBIDDEN;
+    } else if (ex instanceof ActiveCampaignAlreadyExistsException) {
+      status = HttpStatus.CONFLICT;
     }
 
-    ex.printStackTrace();
+    log.error(
+        "exception: {}, cause: {}, message: {}", ex.toString(), ex.getCause(), ex.getMessage());
 
     return handleExceptionInternal(
         ex,

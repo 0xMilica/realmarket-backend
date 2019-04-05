@@ -103,7 +103,7 @@ public class CampaignControllerImpl implements CampaignController {
   public ResponseEntity<NewTeamMemberIdDto> addTeamMember(
       @PathVariable String campaignName,
       @RequestBody @Valid TeamMemberPatchDto teamMemberPatchDto) {
-    return new ResponseEntity(
+    return new ResponseEntity<>(
         campaignTeamMemberService.createTeamMember(campaignName, teamMemberPatchDto),
         HttpStatus.CREATED);
   }

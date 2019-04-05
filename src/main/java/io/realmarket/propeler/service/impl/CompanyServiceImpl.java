@@ -78,7 +78,7 @@ public class CompanyServiceImpl implements CompanyService {
   public Company findByAuthOrThrowException(Auth owner) {
     return companyRepository
         .findByAuth(owner)
-        .orElseThrow(() -> new EntityNotFoundException(ENTREPRENUER_MISSING_COMPANY));
+        .orElseThrow(() -> new EntityNotFoundException(ENTREPRENEUR_MISSING_COMPANY));
   }
 
   @Override
