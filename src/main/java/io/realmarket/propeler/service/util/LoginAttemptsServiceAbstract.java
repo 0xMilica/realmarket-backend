@@ -4,24 +4,18 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-@Service
 @Slf4j
-public class LoginAttemptsService {
+public abstract class LoginAttemptsServiceAbstract {
 
-  @Value("${app.login.ban.attempts}")
-  private int maxAttempts;
+  protected int maxAttempts;
 
-  private LoadingCache<String, Integer> attemptsCache;
+  protected LoadingCache<String, Integer> attemptsCache;
 
-  public LoginAttemptsService(
-      @Value("${app.login.ban.time-banned}") final int banExpirationPeriod) {
-    super();
+  protected LoginAttemptsServiceAbstract(final int banExpirationPeriod, final int maxAttempts) {
     attemptsCache =
         CacheBuilder.newBuilder()
             .expireAfterWrite(banExpirationPeriod, TimeUnit.MINUTES)
@@ -31,10 +25,11 @@ public class LoginAttemptsService {
                     return 0;
                   }
                 });
+    this.maxAttempts = maxAttempts;
   }
 
   public void loginSucceeded(String key) {
-    log.info("Login success : ip to invalidate {}", key);
+    log.info("Login success : key to invalidate {}", key);
     attemptsCache.invalidate(key);
   }
 
@@ -46,7 +41,7 @@ public class LoginAttemptsService {
       attempts = 0;
     }
     attemptsCache.put(key, ++attempts);
-    log.info("Login failure : ip {}  wrong attempts {}", key, attempts);
+    log.info("Login failure : key {}  wrong attempts {}", key, attempts);
   }
 
   public boolean isBlocked(String key) {

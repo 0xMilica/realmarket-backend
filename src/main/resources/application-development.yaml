@@ -79,13 +79,20 @@ app:
   filename-length: 32
 
   login:
-    ban:
-      attempts: 10
-      time-banned: 30 #minutes
+    ip:
+      ban:
+        attempts: 5
+        time-banned: 5
+    username:
+      ban:
+        attempts: 3
+        time-banned: 3
+        
   registration-captcha:
     ban:
       attempts: 5
       time-banned: 240
+
 google:
   recaptcha:
     secret: ${GOOGLE_RECAPTCHA_SECRET}

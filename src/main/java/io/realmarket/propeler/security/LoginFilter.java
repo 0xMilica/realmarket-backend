@@ -2,7 +2,7 @@ package io.realmarket.propeler.security;
 
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
-import io.realmarket.propeler.service.util.LoginAttemptsService;
+import io.realmarket.propeler.service.util.LoginIPAttemptsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.GenericFilterBean;
@@ -18,10 +18,10 @@ import java.io.IOException;
 @Slf4j
 public final class LoginFilter extends GenericFilterBean {
 
-  private final LoginAttemptsService loginAttemptsService;
+  private final LoginIPAttemptsService loginAttemptsService;
 
   @Autowired
-  public LoginFilter(LoginAttemptsService loginAttemptsService) {
+  public LoginFilter(LoginIPAttemptsService loginAttemptsService) {
     this.loginAttemptsService = loginAttemptsService;
   }
 

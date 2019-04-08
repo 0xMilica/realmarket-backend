@@ -53,9 +53,15 @@ app:
       batch_size: 10
   filename-length: 32
   login:
-    ban:
-      attempts: 3
-      time-banned: 5
+    ip:
+      ban:
+        attempts: 5
+        time-banned: 5
+    username:
+      ban:
+        attempts: 3
+        time-banned: 3
+
   registration-captcha:
     ban:
       time-banned: 5

@@ -15,7 +15,7 @@ import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.impl.AuthServiceImpl;
 import io.realmarket.propeler.service.impl.JWTServiceImpl;
-import io.realmarket.propeler.service.util.LoginAttemptsService;
+import io.realmarket.propeler.service.util.LoginIPAttemptsService;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.unit.util.AuthUtils;
 import io.realmarket.propeler.unit.util.OTPUtils;
@@ -39,7 +39,6 @@ import java.util.Optional;
 import static io.realmarket.propeler.service.impl.AuthServiceImpl.EMAIL_CHANGE_ACTION_MILLISECONDS;
 import static io.realmarket.propeler.service.impl.AuthServiceImpl.PASSWORD_CHANGE_ACTION_MILLISECONDS;
 import static io.realmarket.propeler.unit.util.AuthUtils.*;
-import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT;
 import static io.realmarket.propeler.unit.util.JWTUtils.TEST_JWT_VALUE;
 import static io.realmarket.propeler.unit.util.PersonUtils.*;
 import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN;
@@ -59,7 +58,7 @@ public class AuthServiceImplTest {
   @Mock private PersonService personService;
   @Mock private TemporaryTokenService temporaryTokenService;
   @Mock private AuthorizedActionService authorizedActionService;
-  @Mock private LoginAttemptsService loginAttemptsService;
+  @Mock private LoginIPAttemptsService loginAttemptsService;
   @InjectMocks private AuthServiceImpl authServiceImpl;
 
   @Before

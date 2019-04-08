@@ -8,7 +8,7 @@ import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.impl.OTPServiceImpl;
 import io.realmarket.propeler.service.impl.TwoFactorAuthServiceImpl;
-import io.realmarket.propeler.service.util.LoginAttemptsService;
+import io.realmarket.propeler.service.util.LoginIPAttemptsService;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import io.realmarket.propeler.unit.util.*;
 import org.junit.Before;
@@ -46,7 +46,7 @@ public class TwoFactorAuthServiceImplTest {
   @Mock private JWTService jwtService;
   @Mock private AuthService authService;
   @Mock private RememberMeCookieService rememberMeCookieService;
-  @Mock private LoginAttemptsService loginAttemptsService;
+  @Mock private LoginIPAttemptsService loginAttemptsService;
   @Mock private TemporaryTokenService temporaryTokenService;
 
   @InjectMocks private TwoFactorAuthServiceImpl twoFactorAuthService;

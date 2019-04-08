@@ -18,11 +18,13 @@ import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
-import io.realmarket.propeler.service.util.LoginAttemptsService;
+import io.realmarket.propeler.service.util.LoginIPAttemptsService;
+import io.realmarket.propeler.service.util.LoginUsernameAttemptsService;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -59,7 +61,8 @@ public class AuthServiceImpl implements AuthService {
   private final TemporaryTokenService temporaryTokenService;
   private final JWTService jwtService;
   private final AuthorizedActionService authorizedActionService;
-  private final LoginAttemptsService loginAttemptsService;
+  private final LoginIPAttemptsService loginIPAttemptsService;
+  private final LoginUsernameAttemptsService loginUsernameAttemptsService;
   private final PasswordEncoder passwordEncoder;
 
   private final RememberMeCookieService rememberMeCookieService;
@@ -74,7 +77,8 @@ public class AuthServiceImpl implements AuthService {
       RememberMeCookieService rememberMeCookieService,
       JWTService jwtService,
       AuthorizedActionService authorizedActionService,
-      LoginAttemptsService loginAttemptsService) {
+      LoginIPAttemptsService loginAttemptsService,
+      LoginUsernameAttemptsService loginUsernameAttemptsService) {
     this.passwordEncoder = passwordEncoder;
     this.personService = personService;
     this.emailService = emailService;
@@ -83,7 +87,8 @@ public class AuthServiceImpl implements AuthService {
     this.jwtService = jwtService;
     this.rememberMeCookieService = rememberMeCookieService;
     this.authorizedActionService = authorizedActionService;
-    this.loginAttemptsService = loginAttemptsService;
+    this.loginIPAttemptsService = loginAttemptsService;
+    this.loginUsernameAttemptsService = loginUsernameAttemptsService;
   }
 
   public static Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
@@ -95,8 +100,12 @@ public class AuthServiceImpl implements AuthService {
   public AuthResponseDto login(LoginDto loginDto, HttpServletRequest request) {
     Optional<Auth> authOptional = authRepository.findByUsername(loginDto.getUsername());
     if (!authOptional.isPresent()) {
-      loginAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
+      loginIPAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
+    }
+    if (authOptional.get().getBlocked()) {
+      log.info("Username blocked");
+      throw new ForbiddenOperationException(ExceptionMessages.BLOCKED_CLIENT);
     }
     return checkIfRemembered(
         validateLogin(authOptional.get(), loginDto.getPassword()), authOptional.get(), request);
@@ -124,6 +133,7 @@ public class AuthServiceImpl implements AuthService {
                 .userRole(registrationDto.getUserRole())
                 .password(passwordEncoder.encode(registrationDto.getPassword()))
                 .person(person)
+                .blocked(false)
                 .build());
 
     TemporaryToken temporaryToken =
@@ -338,7 +348,8 @@ public class AuthServiceImpl implements AuthService {
 
   private AuthResponseDto validateLogin(Auth auth, String password) {
     checkLoginCredentials(auth, password);
-    loginAttemptsService.loginSucceeded(AuthenticationUtil.getClientIp());
+    loginIPAttemptsService.loginSucceeded(AuthenticationUtil.getClientIp());
+    loginUsernameAttemptsService.loginSucceeded(auth.getUsername());
     if (auth.getState().equals(EAuthState.INITIALIZE_2FA)) {
       return new AuthResponseDto(
           E2FAStatus.INITIALIZE,
@@ -352,7 +363,8 @@ public class AuthServiceImpl implements AuthService {
   public void checkLoginCredentials(Auth auth, String password) {
     if (auth.getState().equals(EAuthState.CONFIRM_REGISTRATION)) {
       log.error("User with auth id '{}' is not active ", auth.getId());
-      loginAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
+      loginIPAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
+      blockByUsernameIfNotBlocked(auth);
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
     checkPasswordOrThrow(auth, password);
@@ -361,7 +373,8 @@ public class AuthServiceImpl implements AuthService {
   private void checkPasswordOrThrow(Auth auth, String password) {
     if (!passwordEncoder.matches(password, auth.getPassword())) {
       log.error("User with auth id '{}' provided passwords which do not match ", auth.getId());
-      loginAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
+      loginIPAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
+      blockByUsernameIfNotBlocked(auth);
       throw new BadCredentialsException(ExceptionMessages.INVALID_CREDENTIALS_MESSAGE);
     }
   }
@@ -388,5 +401,21 @@ public class AuthServiceImpl implements AuthService {
       authResponseDto.setTwoFAStatus(E2FAStatus.REMEMBER_ME);
     }
     return authResponseDto;
+  }
+
+  @Async
+  protected void blockByUsernameIfNotBlocked(Auth auth) {
+    if (!auth.getBlocked()) {
+      loginUsernameAttemptsService.loginFailed(auth.getUsername());
+      if (loginUsernameAttemptsService.isBlocked(auth.getUsername())) {
+        auth.setBlocked(true);
+        authRepository.save(auth);
+        emailService.sendMailToUser(
+            new MailContentHolder(
+                auth.getPerson().getEmail(),
+                EEmailType.ACCOUNT_BLOCKED,
+                Collections.singletonMap(EmailServiceImpl.USERNAME, auth.getUsername())));
+      }
+    }
   }
 }

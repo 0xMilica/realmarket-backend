@@ -43,6 +43,8 @@ public class Auth {
 
   private String totpSecret;
 
+  private Boolean blocked;
+
   public Auth(Long id) {
     this.id = id;
   }

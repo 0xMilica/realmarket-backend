@@ -103,6 +103,12 @@ public class EmailServiceImpl implements EmailService {
         data = getBasicEmailData();
         templateName = "secretCHangeMailTemplate";
         break;
+      case ACCOUNT_BLOCKED:
+        subject = "Propeler - Account blocked";
+        data = getBlockedAccountData(mailContentHolder);
+        templateName = "accountBlockedEmailTemplate";
+        break;
+
       default:
         data = new HashMap<>();
         break;
@@ -173,6 +179,12 @@ public class EmailServiceImpl implements EmailService {
   private Map<String, Object> getBasicEmailData() {
     Map<String, Object> data = new HashMap<>();
     data.put(LOGO, LOGO);
+    return data;
+  }
+
+  private Map<String, Object> getBlockedAccountData(MailContentHolder mailContentHolder) {
+    Map<String, Object> data = getBasicEmailData();
+    data.put(USERNAME, mailContentHolder.getContent().get(USERNAME));
     return data;
   }
 

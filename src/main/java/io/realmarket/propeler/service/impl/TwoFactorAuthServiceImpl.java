@@ -9,7 +9,8 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
-import io.realmarket.propeler.service.util.LoginAttemptsService;
+import io.realmarket.propeler.service.util.LoginIPAttemptsService;
+import io.realmarket.propeler.service.util.LoginUsernameAttemptsService;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
@@ -33,24 +34,27 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
   private final TemporaryTokenService temporaryTokenService;
   private final EmailService emailService;
   private final RememberMeCookieService rememberMeCookieService;
-  private final LoginAttemptsService loginAttemptsService;
+  private final LoginIPAttemptsService loginIPAttemptsService;
+  private final LoginUsernameAttemptsService loginUsernameAttemptsService;
 
   @Autowired
   TwoFactorAuthServiceImpl(
-      OTPService otpService,
-      JWTService jwtService,
-      AuthService authService,
-      TemporaryTokenService temporaryTokenService,
-      RememberMeCookieService rememberMeCookieService,
-      EmailService emailService,
-      LoginAttemptsService loginAttemptsService) {
+          OTPService otpService,
+          JWTService jwtService,
+          AuthService authService,
+          TemporaryTokenService temporaryTokenService,
+          RememberMeCookieService rememberMeCookieService,
+          EmailService emailService,
+          LoginIPAttemptsService loginIPAttemptsService,
+          LoginUsernameAttemptsService loginUsernameAttemptsService) {
     this.otpService = otpService;
     this.jwtService = jwtService;
     this.authService = authService;
     this.temporaryTokenService = temporaryTokenService;
     this.rememberMeCookieService = rememberMeCookieService;
     this.emailService = emailService;
-    this.loginAttemptsService = loginAttemptsService;
+    this.loginIPAttemptsService = loginIPAttemptsService;
+    this.loginUsernameAttemptsService = loginUsernameAttemptsService;
   }
 
   @Transactional
@@ -60,7 +64,8 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     if (!otpService.validate(
         temporaryToken.getAuth(),
         new TwoFADto(loginTwoFADto.getCode(), loginTwoFADto.getWildcard()))) {
-      loginAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
+      loginIPAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
+      loginUsernameAttemptsService.loginFailed(temporaryToken.getAuth().getUsername());
       throw new ForbiddenOperationException("Provided code not valid!");
     }
 
