@@ -43,6 +43,7 @@ cos:
     company_logo: company_logo/
     campaign_market_image: campaign_market_image/
     campaign_investor_picture: campaign_investor_picture/
+    campaign_topic_image: local/campaign_topic_image/
   api.key.id: ${COS_API_KEY}
   service.crn: ${COS_SERVICE_CRN}
   endpoint: ${COS_ENDPOINT}

@@ -7,21 +7,18 @@
                 endDelimiter=";"
                 splitStatements="true"
                 stripComments="true">
-            create sequence campaign_topic_seq;
-            create table if not exists campaign_topic
+            create sequence campaign_topic_image_seq;
+            create table if not exists campaign_topic_image
             (
             id bigint not null
-            constraint campaign_topic_pkey
+            constraint campaign_topic_image_pkey
             primary key,
-            content varchar(3000),
-            campaign_id bigint
-            constraint campaign_topic_fk_on_campaign
-            references campaign,
-            campaign_topic_type_id bigint
-            constraint campaign_topic_fk_on_campaign_topic_type
-            references campaign_topic_type,
-            constraint campaign_topic_uk_on_type_and_campaign_id
-            unique (campaign_topic_type_id, campaign_id)
+            url varchar(255)
+            constraint campaign_topic_image_uk
+            unique,
+            campaign_topic_id bigint
+            constraint campaign_topic_image_fk_on_campaign_topic
+            references campaign_topic
             );
         </sql>
     </changeSet>

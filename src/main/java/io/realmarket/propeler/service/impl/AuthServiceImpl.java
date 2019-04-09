@@ -8,7 +8,7 @@ import io.realmarket.propeler.model.AuthorizedAction;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.EAuthState;
-import io.realmarket.propeler.model.enums.EAuthorizationActionType;
+import io.realmarket.propeler.model.enums.EAuthorizedActionType;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.AuthRepository;
@@ -244,7 +244,7 @@ public class AuthServiceImpl implements AuthService {
 
     authorizedActionService.storeAuthorizationAction(
         auth.getId(),
-        EAuthorizationActionType.NEW_PASSWORD,
+        EAuthorizedActionType.NEW_PASSWORD,
         passwordEncoder.encode(changePasswordDto.getNewPassword()),
         PASSWORD_CHANGE_ACTION_MILLISECONDS);
   }
@@ -256,13 +256,13 @@ public class AuthServiceImpl implements AuthService {
 
     final String newPassword =
         authorizedActionService
-            .validateAuthorizationAction(auth, EAuthorizationActionType.NEW_PASSWORD, twoFACodeDto)
+            .validateAuthorizationAction(auth, EAuthorizedActionType.NEW_PASSWORD, twoFACodeDto)
             .orElseThrow(() -> new ForbiddenOperationException(INVALID_REQUEST));
 
     auth.setPassword(newPassword);
     auth = authRepository.save(auth);
 
-    authorizedActionService.deleteByAuthAndType(auth, EAuthorizationActionType.NEW_PASSWORD);
+    authorizedActionService.deleteByAuthAndType(auth, EAuthorizedActionType.NEW_PASSWORD);
     jwtService.deleteAllByAuthAndValueNot(auth, AuthenticationUtil.getAuthentication().getToken());
   }
 
@@ -302,7 +302,7 @@ public class AuthServiceImpl implements AuthService {
     checkIfAllowed(authId);
     authorizedActionService.storeAuthorizationAction(
         authId,
-        EAuthorizationActionType.NEW_EMAIL,
+        EAuthorizedActionType.NEW_EMAIL,
         emaildto.getEmail(),
         EMAIL_CHANGE_ACTION_MILLISECONDS);
   }
@@ -313,7 +313,7 @@ public class AuthServiceImpl implements AuthService {
     final Auth auth = findByIdOrThrowException(authId);
     final String newEmail =
         authorizedActionService
-            .validateAuthorizationAction(auth, EAuthorizationActionType.NEW_EMAIL, twoFACodeDto)
+            .validateAuthorizationAction(auth, EAuthorizedActionType.NEW_EMAIL, twoFACodeDto)
             .orElseThrow(() -> new ForbiddenOperationException(ExceptionMessages.INVALID_REQUEST));
     final TemporaryToken token =
         temporaryTokenService.createToken(auth, ETemporaryTokenType.EMAIL_CHANGE_TOKEN);
@@ -335,7 +335,7 @@ public class AuthServiceImpl implements AuthService {
     final Auth currentAuth = token.getAuth();
     final AuthorizedAction authorizedAction =
         authorizedActionService.findAuthorizedActionOrThrowException(
-            currentAuth, EAuthorizationActionType.NEW_EMAIL);
+            currentAuth, EAuthorizedActionType.NEW_EMAIL);
     changePersonEmail(token, authorizedAction);
     temporaryTokenService.deleteToken(token);
     authorizedActionService.deleteByAuthAndType(

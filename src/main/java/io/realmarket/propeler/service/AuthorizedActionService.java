@@ -3,7 +3,7 @@ package io.realmarket.propeler.service;
 import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.AuthorizedAction;
-import io.realmarket.propeler.model.enums.EAuthorizationActionType;
+import io.realmarket.propeler.model.enums.EAuthorizedActionType;
 
 import java.util.Optional;
 
@@ -17,11 +17,11 @@ public interface AuthorizedActionService {
    * @param mmTimeout Timeout in milliseconds
    */
   void storeAuthorizationAction(
-      Long authId, EAuthorizationActionType type, String data, Long mmTimeout);
+          Long authId, EAuthorizedActionType type, String data, Long mmTimeout);
 
-  AuthorizedAction findAuthorizedActionOrThrowException(Auth auth, EAuthorizationActionType type);
+  AuthorizedAction findAuthorizedActionOrThrowException(Auth auth, EAuthorizedActionType type);
 
-  void deleteByAuthAndType(Auth authId, EAuthorizationActionType type);
+  void deleteByAuthAndType(Auth authId, EAuthorizedActionType type);
 
   /**
    * Validate code and return data if code is valid.
@@ -32,5 +32,5 @@ public interface AuthorizedActionService {
    * @return Optional data or empty if code is not valid.
    */
   Optional<String> validateAuthorizationAction(
-      Auth auth, EAuthorizationActionType type, TwoFADto twoFADto);
+          Auth auth, EAuthorizedActionType type, TwoFADto twoFADto);
 }

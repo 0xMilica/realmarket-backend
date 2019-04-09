@@ -1,0 +1,16 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="ntodorovic" id="1">
+        <loadData catalogName="cat"
+                  file="../data/campaign_topic_type.csv"
+                  quotchar="'"
+                  schemaName="public"
+                  tableName="campaign_topic_type"
+                  relativeToChangelogFile="true">
+            <column name="id" type="numeric"/>
+            <column name="name" type="string"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

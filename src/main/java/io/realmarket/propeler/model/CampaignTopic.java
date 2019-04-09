@@ -1,13 +1,9 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.ECampaignTopicType;
-import io.realmarket.propeler.model.enums.PostgreSQLEnumType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
@@ -20,10 +16,9 @@ import javax.persistence.*;
     name = "campaign_topic",
     uniqueConstraints = {
       @UniqueConstraint(
-          columnNames = {"type", "campaignId"},
-          name = "campaign_topic_uk_on_type_and_campaignId")
+          columnNames = {"campaignTopicTypeId", "campaignId"},
+          name = "campaign_topic_uk_on_type_and_campaign_id")
     })
-@TypeDef(name = "ecampaigntopictype", typeClass = PostgreSQLEnumType.class)
 public class CampaignTopic {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CAMPAIGN_TOPIC_SEQ")
@@ -33,12 +28,14 @@ public class CampaignTopic {
       allocationSize = 1)
   private Long id;
 
+  @Column(length = 3000)
   private String content;
 
-  @Column(columnDefinition = "ecampaigntopictype")
-  @Type(type = "ecampaigntopictype")
-  @Enumerated(EnumType.STRING)
-  private ECampaignTopicType type;
+  @JoinColumn(
+      name = "campaignTopicTypeId",
+      foreignKey = @ForeignKey(name = "campaign_topic_fk_on_campaign_topic_type"))
+  @ManyToOne
+  private CampaignTopicType campaignTopicType;
 
   @JoinColumn(name = "campaignId", foreignKey = @ForeignKey(name = "campaign_topic_fk_on_campaign"))
   @ManyToOne

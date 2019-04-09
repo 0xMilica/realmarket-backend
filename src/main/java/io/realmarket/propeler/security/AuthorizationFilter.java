@@ -33,10 +33,13 @@ public final class AuthorizationFilter extends GenericFilterBean {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     log.info("Request - {} {}", httpRequest.getMethod(), httpRequest.getRequestURL().toString());
-    final String authHeader = httpRequest.getHeader(AUTH_HEADER_NAME);
-    final String jwtToken = extractJwtFromAuthorizationHeader(authHeader);
-    log.info("Jwt from request is {}", jwtToken);
+
     try {
+      final String authHeader = httpRequest.getHeader(AUTH_HEADER_NAME);
+      final String jwtToken = extractJwtFromAuthorizationHeader(authHeader);
+
+      log.info("Jwt from request is {}", jwtToken);
+
       JWT jwt = jwtService.validateJWTOrThrowException(jwtToken);
       Auth auth = authService.findByIdOrThrowException(jwt.getAuth().getId());
       UserAuthentication userAuth = new UserAuthentication(auth, jwt.getValue());

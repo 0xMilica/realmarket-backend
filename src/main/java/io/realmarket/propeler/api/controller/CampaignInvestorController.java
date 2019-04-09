@@ -88,7 +88,7 @@ public interface CampaignInvestorController {
     @ApiResponse(code = 201, message = "Picture successfully uploaded."),
     @ApiResponse(code = 400, message = "Picture cannot be saved.")
   })
-  ResponseEntity uploadPicture(String campaignName, Long investorId, MultipartFile picture);
+  ResponseEntity uploadInvestorPicture(String campaignName, Long investorId, MultipartFile picture);
 
   @ApiOperation(
       value = "Download investor picture",
@@ -99,7 +99,7 @@ public interface CampaignInvestorController {
     @ApiResponse(code = 200, message = "Picture retrieved successfully."),
     @ApiResponse(code = 400, message = "Picture cannot be found.")
   })
-  ResponseEntity<FileDto> downloadPicture(String campaignName, Long investorId);
+  ResponseEntity<FileDto> downloadInvestorPicture(String campaignName, Long investorId);
 
   @ApiOperation(
       value = "Delete investor picture",
@@ -110,5 +110,5 @@ public interface CampaignInvestorController {
     @ApiResponse(code = 200, message = "Picture successfully deleted."),
     @ApiResponse(code = 500, message = "Internal server error.")
   })
-  ResponseEntity deletePicture(String campaignName, Long investorId);
+  ResponseEntity deleteInvestorPicture(String campaignName, Long investorId);
 }

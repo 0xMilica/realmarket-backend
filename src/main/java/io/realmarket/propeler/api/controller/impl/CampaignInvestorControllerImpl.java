@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/campaigns")
+@RequestMapping(value = "/campaigns/{campaignName}/investors")
 @Slf4j
 public class CampaignInvestorControllerImpl implements CampaignInvestorController {
 
@@ -27,7 +27,7 @@ public class CampaignInvestorControllerImpl implements CampaignInvestorControlle
   }
 
   @Override
-  @PostMapping("{campaignName}/investors")
+  @PostMapping
   public ResponseEntity<CampaignInvestorDto> createCampaignInvestor(
       @PathVariable String campaignName, @RequestBody CampaignInvestorDto campaignInvestorDto) {
     return new ResponseEntity<>(
@@ -37,31 +37,27 @@ public class CampaignInvestorControllerImpl implements CampaignInvestorControlle
   }
 
   @Override
-  @PatchMapping("{campaignName}/investors")
+  @PatchMapping
   public ResponseEntity<List<CampaignInvestorDto>> patchCampaignInvestorOrder(
       @PathVariable String campaignName, @RequestBody List<Long> investorOrder) {
     return ResponseEntity.ok(
-        campaignInvestorService
-            .patchCampaignInvestorOrder(campaignName, investorOrder)
-            .stream()
+        campaignInvestorService.patchCampaignInvestorOrder(campaignName, investorOrder).stream()
             .map(CampaignInvestorDto::new)
             .collect(Collectors.toList()));
   }
 
   @Override
-  @GetMapping("{campaignName}/investors")
+  @GetMapping
   public ResponseEntity<List<CampaignInvestorDto>> getCampaignInvestors(
       @PathVariable String campaignName) {
     return ResponseEntity.ok(
-        campaignInvestorService
-            .getCampaignInvestors(campaignName)
-            .stream()
+        campaignInvestorService.getCampaignInvestors(campaignName).stream()
             .map(CampaignInvestorDto::new)
             .collect(Collectors.toList()));
   }
 
   @Override
-  @PatchMapping("{campaignName}/investors/{investorId}")
+  @PatchMapping("/{investorId}")
   public ResponseEntity<CampaignInvestorDto> patchCampaignInvestor(
       @PathVariable String campaignName,
       @PathVariable Long investorId,
@@ -73,15 +69,15 @@ public class CampaignInvestorControllerImpl implements CampaignInvestorControlle
   }
 
   @Override
-  @DeleteMapping("{campaignName}/investors/{investorId}")
+  @DeleteMapping("/{investorId}")
   public ResponseEntity deleteCampaignInvestor(
       @PathVariable String campaignName, @PathVariable Long investorId) {
     campaignInvestorService.deleteCampaignInvestor(campaignName, investorId);
     return ResponseEntity.noContent().build();
   }
 
-  @PostMapping("/{campaignName}/investors/{investorId}/picture")
-  public ResponseEntity uploadPicture(
+  @PostMapping("/{investorId}/picture")
+  public ResponseEntity uploadInvestorPicture(
       @PathVariable String campaignName,
       @PathVariable Long investorId,
       @RequestParam("picture") MultipartFile picture) {
@@ -89,14 +85,14 @@ public class CampaignInvestorControllerImpl implements CampaignInvestorControlle
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping("/{campaignName}/investors/{investorId}/picture")
-  public ResponseEntity<FileDto> downloadPicture(
+  @GetMapping("/{investorId}/picture")
+  public ResponseEntity<FileDto> downloadInvestorPicture(
       @PathVariable String campaignName, @PathVariable Long investorId) {
     return ResponseEntity.ok(campaignInvestorService.downloadPicture(campaignName, investorId));
   }
 
-  @DeleteMapping("/{campaignName}/investors/{investorId}/picture")
-  public ResponseEntity deletePicture(
+  @DeleteMapping("/{investorId}/picture")
+  public ResponseEntity deleteInvestorPicture(
       @PathVariable String campaignName, @PathVariable Long investorId) {
     campaignInvestorService.deletePicture(campaignName, investorId);
     return ResponseEntity.noContent().build();

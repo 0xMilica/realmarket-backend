@@ -1,6 +1,6 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.EAuthorizationActionType;
+import io.realmarket.propeler.model.enums.EAuthorizedActionType;
 import io.realmarket.propeler.model.enums.PostgreSQLEnumType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,5 +44,5 @@ public class AuthorizedAction {
   @Column(columnDefinition = "eauthorizedactiontype")
   @Type(type = "eauthorizedactiontype")
   @Enumerated(EnumType.STRING)
-  private EAuthorizationActionType type;
+  private EAuthorizedActionType type;
 }

@@ -22,7 +22,7 @@ import org.springframework.util.StringUtils;
 import java.util.LinkedList;
 import java.util.List;
 
-import static io.realmarket.propeler.model.enums.EAuthorizationActionType.NEW_TOTP_SECRET;
+import static io.realmarket.propeler.model.enums.EAuthorizedActionType.NEW_TOTP_SECRET;
 
 @Service
 @Slf4j
