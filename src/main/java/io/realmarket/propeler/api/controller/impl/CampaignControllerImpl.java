@@ -4,6 +4,7 @@ import io.realmarket.propeler.api.controller.CampaignController;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.CampaignDocumentService;
 import io.realmarket.propeler.service.CampaignService;
+import io.realmarket.propeler.service.CampaignTeamMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +20,16 @@ public class CampaignControllerImpl implements CampaignController {
 
   private final CampaignService campaignService;
   private final CampaignDocumentService campaignDocumentService;
+  private final CampaignTeamMemberService campaignTeamMemberService;
 
   @Autowired
   public CampaignControllerImpl(
-      CampaignService campaignService, CampaignDocumentService campaignDocumentService) {
+      CampaignService campaignService,
+      CampaignDocumentService campaignDocumentService,
+      CampaignTeamMemberService campaignTeamMemberService) {
     this.campaignService = campaignService;
     this.campaignDocumentService = campaignDocumentService;
+    this.campaignTeamMemberService = campaignTeamMemberService;
   }
 
   @RequestMapping(value = "/{campaignName}", method = RequestMethod.HEAD)
@@ -92,10 +97,31 @@ public class CampaignControllerImpl implements CampaignController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-
   @GetMapping(value = "/active")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity<CampaignDto> getActiveCampaign() {
     return ResponseEntity.ok(campaignService.getActiveCampaignForCompany());
+  }
+
+  @PostMapping("/{campaignName}/team/{teamMemberId}/picture")
+  public ResponseEntity uploadPicture(
+      @PathVariable String campaignName,
+      @PathVariable Long teamMemberId,
+      @RequestParam("picture") MultipartFile picture) {
+    campaignTeamMemberService.uploadPicture(campaignName, teamMemberId, picture);
+    return new ResponseEntity<>(HttpStatus.CREATED);
+  }
+
+  @GetMapping("/{campaignName}/team/{teamMemberId}/picture")
+  public ResponseEntity<FileDto> downloadPicture(
+      @PathVariable String campaignName, @PathVariable Long teamMemberId) {
+    return ResponseEntity.ok(campaignTeamMemberService.downloadPicture(campaignName, teamMemberId));
+  }
+
+  @DeleteMapping("/{campaignName}/team/{teamMemberId}/picture")
+  public ResponseEntity deletePicture(
+      @PathVariable String campaignName, @PathVariable Long teamMemberId) {
+    campaignTeamMemberService.deletePicture(campaignName, teamMemberId);
+    return ResponseEntity.noContent().build();
   }
 }
