@@ -63,4 +63,7 @@ public interface ExceptionMessages {
   String CAMPAIGN_TOPIC_TYPE_NOT_EXISTS = "Campaign topic type with the provided name does not exist!";
 
   String ACTIVE_CAMPAIGN_EXISTS = "Active campaign already exists for given company";
+
+  String CAMPAIGN_TOPIC_NOT_EXISTS =
+      "Campaign topic for the provided campaign name and campaign topic type not found!";
 }

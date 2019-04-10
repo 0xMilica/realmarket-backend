@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_TOPIC_NOT_EXISTS;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_TOPIC_TYPE_NOT_EXISTS;
 
 @Service
@@ -75,7 +76,7 @@ public class CampaignTopicServiceImpl implements CampaignTopicService {
         .orElseThrow(
             () ->
                 new EntityNotFoundException(
-                    "Campaign topic for the provided campaign name and campaign topic type not found!"));
+                        CAMPAIGN_TOPIC_NOT_EXISTS));
   }
 
   public void updateCampaignTopic(

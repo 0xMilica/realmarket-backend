@@ -77,7 +77,9 @@ public class AuthUtils {
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
           .person(new Person(TEST_REGISTRATION_DTO))
+          .blocked(false)
           .build();
+
   public static final Auth TEST_AUTH2 =
       Auth.builder()
           .id(TEST_AUTH_ID + 1)

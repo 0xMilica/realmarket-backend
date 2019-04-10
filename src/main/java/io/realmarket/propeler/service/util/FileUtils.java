@@ -10,7 +10,9 @@ public class FileUtils {
     if (file.isEmpty()) {
       throw new IllegalArgumentException("File is empty!");
     }
-    String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+
+    String originalFileName = file.getOriginalFilename();
+    String extension = FilenameUtils.getExtension(originalFileName);
     if (extension == null || extension.isEmpty()) {
       throw new IllegalArgumentException("File name not valid!.");
     }
