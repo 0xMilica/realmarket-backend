@@ -292,7 +292,8 @@ public class AuthServiceImplTest {
     when(jwtService.createToken(auth)).thenReturn(TEST_JWT_VALUE);
 
     AuthResponseDto login = authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
-
+    verify(loginIPAttemptsService, (times(1))).loginSucceeded(any());
+    verify(loginUsernameAttemptsService, (times(1))).loginSucceeded(any());
     assertEquals(TEST_TEMPORARY_TOKEN.getValue(), login.getToken());
   }
 
@@ -300,6 +301,7 @@ public class AuthServiceImplTest {
   public void Login_Should_Throw_Exception_When_Not_Existing_Username() {
     // AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     authServiceImpl.login(TEST_LOGIN_DTO, TEST_REQUEST);
+    verify(loginIPAttemptsService, times(1)).loginFailed(any());
   }
 
   @Test(expected = BadCredentialsException.class)
@@ -331,7 +333,6 @@ public class AuthServiceImplTest {
     auth.setBlocked(true);
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
     authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
-
   }
   // TODO : login with remember me cookie returns 2fa status REMEMBER_ME
 

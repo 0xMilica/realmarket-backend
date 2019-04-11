@@ -4,6 +4,7 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
+import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.impl.OTPServiceImpl;
@@ -207,6 +208,8 @@ public class TwoFactorAuthServiceImplTest {
         .thenReturn(false);
 
     twoFactorAuthService.login2FA(LOGIN_2F_DTO_RM, TEST_RESPONSE);
+    verify(loginIPAttemptsService,times(1)).loginFailed(any());
+    verify(loginUsernameAttemptsService,times(1)).loginFailed(any());
   }
 
   @Test
