@@ -323,6 +323,16 @@ public class AuthServiceImplTest {
     authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
   }
 
+  @Test(expected = ForbiddenOperationException.class)
+  public void Login_Should_Return_ForbiddenOperationException_Exception_When_Account_Blocked() {
+    AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
+    Auth auth = TEST_AUTH.toBuilder().build();
+    auth.setState(EAuthState.ACTIVE);
+    auth.setBlocked(true);
+    when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
+    authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
+
+  }
   // TODO : login with remember me cookie returns 2fa status REMEMBER_ME
 
   @Test
