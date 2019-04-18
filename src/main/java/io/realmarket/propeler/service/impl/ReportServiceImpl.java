@@ -36,9 +36,7 @@ public class ReportServiceImpl implements ReportService {
     Map<String, Object> data =
         Collections.singletonMap(
             WILDCARDS_OBJECT_NAME,
-            otpService
-                .getWildcardsByAuthId(authId)
-                .stream()
+            otpService.getWildcardsByAuthId(authId).stream()
                 .map(OTPWildcard::getWildcard)
                 .collect(Collectors.toList()));
 

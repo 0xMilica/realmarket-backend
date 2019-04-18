@@ -39,14 +39,14 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
 
   @Autowired
   TwoFactorAuthServiceImpl(
-          OTPService otpService,
-          JWTService jwtService,
-          AuthService authService,
-          TemporaryTokenService temporaryTokenService,
-          RememberMeCookieService rememberMeCookieService,
-          EmailService emailService,
-          LoginIPAttemptsService loginIPAttemptsService,
-          LoginUsernameAttemptsService loginUsernameAttemptsService) {
+      OTPService otpService,
+      JWTService jwtService,
+      AuthService authService,
+      TemporaryTokenService temporaryTokenService,
+      RememberMeCookieService rememberMeCookieService,
+      EmailService emailService,
+      LoginIPAttemptsService loginIPAttemptsService,
+      LoginUsernameAttemptsService loginUsernameAttemptsService) {
     this.otpService = otpService;
     this.jwtService = jwtService;
     this.authService = authService;

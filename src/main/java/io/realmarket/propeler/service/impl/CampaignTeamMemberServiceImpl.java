@@ -172,8 +172,7 @@ public class CampaignTeamMemberServiceImpl implements CampaignTeamMemberService 
             campaignName);
 
     if (!(membersIds.size() == campaignMembers.size()
-        && campaignMembers
-            .stream()
+        && campaignMembers.stream()
             .map(CampaignTeamMember::getId)
             .collect(Collectors.toList())
             .containsAll(membersIds))) {

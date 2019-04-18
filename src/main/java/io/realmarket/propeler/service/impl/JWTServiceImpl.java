@@ -38,7 +38,7 @@ public class JWTServiceImpl implements JWTService {
     this.jwtRepository = jwtRepository;
     Algorithm algorithm = Algorithm.HMAC512(hmacSecret);
     verifier = com.auth0.jwt.JWT.require(algorithm).withIssuer(ISSUER).build();
-    this.hmacSecret=hmacSecret;
+    this.hmacSecret = hmacSecret;
   }
 
   @Override

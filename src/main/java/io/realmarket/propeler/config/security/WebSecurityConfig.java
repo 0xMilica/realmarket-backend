@@ -65,6 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/error")
         .antMatchers(HttpMethod.HEAD, "/users/**")
         .antMatchers(HttpMethod.PATCH, "/auth/reset_password")
+        .antMatchers(HttpMethod.GET, "/files/public/**")
         .antMatchers(
             HttpMethod.POST,
             "/auth",

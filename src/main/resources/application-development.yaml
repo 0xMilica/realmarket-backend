@@ -37,6 +37,7 @@ spring:
     password: ${POSTGRESQL_PASSWORD}
 
 cos:
+  public_prefix: public
   file_prefix:
     user_picture: user_picture/
     company_featured_image: company_featured_image/

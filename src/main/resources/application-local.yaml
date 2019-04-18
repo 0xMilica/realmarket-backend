@@ -68,6 +68,7 @@ app:
       attempts: 5
 
 cos:
+  public_prefix: local_public
   file_prefix:
     user_picture: local/user_picture/
     company_featured_image: local/company_featured_image/

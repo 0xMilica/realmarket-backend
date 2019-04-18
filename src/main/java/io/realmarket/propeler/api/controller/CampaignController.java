@@ -147,42 +147,42 @@ public interface CampaignController {
   ResponseEntity<CampaignDto> getActiveCampaign();
 
   @ApiOperation(
-          value = "Upload team member picture",
-          httpMethod = "POST",
-          consumes = "multipart/form-data",
-          produces = APPLICATION_JSON_VALUE)
+      value = "Upload team member picture",
+      httpMethod = "POST",
+      consumes = "multipart/form-data",
+      produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams(
-          @ApiImplicitParam(
-                  name = "Team member picture",
-                  dataType = "file",
-                  value = "Team member photo to be uploaded",
-                  paramType = "form",
-                  required = true))
+      @ApiImplicitParam(
+          name = "Team member picture",
+          dataType = "file",
+          value = "Team member photo to be uploaded",
+          paramType = "form",
+          required = true))
   @ApiResponses({
-          @ApiResponse(code = 201, message = "Picture successfully uploaded."),
-          @ApiResponse(code = 400, message = "Picture cannot be saved.")
+    @ApiResponse(code = 201, message = "Picture successfully uploaded."),
+    @ApiResponse(code = 400, message = "Picture cannot be saved.")
   })
   ResponseEntity uploadPicture(String campaignName, Long teamMemberId, MultipartFile picture);
 
   @ApiOperation(
-          value = "Download team member picture",
-          httpMethod = "GET",
-          consumes = APPLICATION_JSON_VALUE,
-          produces = APPLICATION_JSON_VALUE)
+      value = "Download team member picture",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-          @ApiResponse(code = 200, message = "Picture retrieved successfully."),
-          @ApiResponse(code = 400, message = "Picture cannot be found.")
+    @ApiResponse(code = 200, message = "Picture retrieved successfully."),
+    @ApiResponse(code = 400, message = "Picture cannot be found.")
   })
   ResponseEntity<FileDto> downloadPicture(String campaignName, Long teamMemberId);
 
   @ApiOperation(
-          value = "Delete team member picture",
-          httpMethod = "DELETE",
-          consumes = APPLICATION_JSON_VALUE,
-          produces = APPLICATION_JSON_VALUE)
+      value = "Delete team member picture",
+      httpMethod = "DELETE",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-          @ApiResponse(code = 200, message = "Picture successfully deleted."),
-          @ApiResponse(code = 500, message = "Internal server error.")
+    @ApiResponse(code = 200, message = "Picture successfully deleted."),
+    @ApiResponse(code = 500, message = "Internal server error.")
   })
   ResponseEntity deletePicture(String campaignName, Long teamMemberId);
 }

@@ -17,7 +17,7 @@ public interface AuthorizedActionService {
    * @param mmTimeout Timeout in milliseconds
    */
   void storeAuthorizationAction(
-          Long authId, EAuthorizedActionType type, String data, Long mmTimeout);
+      Long authId, EAuthorizedActionType type, String data, Long mmTimeout);
 
   AuthorizedAction findAuthorizedActionOrThrowException(Auth auth, EAuthorizedActionType type);
 
@@ -32,5 +32,5 @@ public interface AuthorizedActionService {
    * @return Optional data or empty if code is not valid.
    */
   Optional<String> validateAuthorizationAction(
-          Auth auth, EAuthorizedActionType type, TwoFADto twoFADto);
+      Auth auth, EAuthorizedActionType type, TwoFADto twoFADto);
 }

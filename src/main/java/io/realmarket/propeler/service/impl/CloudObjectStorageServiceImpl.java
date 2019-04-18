@@ -15,6 +15,8 @@ import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.exception.COSException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.FileUtils;
+import io.realmarket.propeler.service.util.RandomStringBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +52,11 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
 
   @Value(value = "${cos.bucket.name}")
   private String cosBucketName;
+
+  @Value(value = "${cos.public_prefix}")
+  private String cosPublicPrefix;
+
+  private static Integer SIZE_OF_PUBLIC_NAME = 32;
 
   /**
    * @param apiKey api-key used for authentication on Cloud Object Storage (COS)
@@ -116,6 +123,26 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
     return new FileDto(
         FilenameUtils.getExtension(fileName),
         Base64.getEncoder().encodeToString(download(fileName)));
+  }
+
+  @Override
+  public byte[] downloadPublic(String fileName) {
+    if (StringUtils.isEmpty(fileName)) {
+      throw new EntityNotFoundException(ExceptionMessages.IMAGE_DOES_NOT_EXIST);
+    }
+    return download(String.join("", cosPublicPrefix, fileName));
+  }
+
+  @Override
+  public String uploadPublic(MultipartFile file) {
+    String name =
+        String.join(
+            "",
+            RandomStringBuilder.generateBase32String(SIZE_OF_PUBLIC_NAME),
+            ".",
+            FileUtils.getExtensionOrThrowException(file));
+    upload(String.join("", cosPublicPrefix, name), file);
+    return name;
   }
 
   public void upload(String name, MultipartFile file) {

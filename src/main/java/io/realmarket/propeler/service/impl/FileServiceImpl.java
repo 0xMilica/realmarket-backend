@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Service
@@ -28,8 +29,17 @@ public class FileServiceImpl implements FileService {
     this.cloudObjectStorageService = cloudObjectStorageService;
   }
 
+  public static String getURLWithFilePublicPath(HttpServletRequest request) {
+    return String.format("%s://%s:%d/api/files/public/", request.getScheme(), request.getServerName(),request.getServerPort());
+  }
+
   public FileDto getFile(String fileName) {
     return cloudObjectStorageService.downloadFileDto(fileName);
+  }
+
+  @Override
+  public byte[] getPublicFile(String fileName) {
+    return cloudObjectStorageService.downloadPublic(fileName);
   }
 
   public String uploadFile(MultipartFile file) {

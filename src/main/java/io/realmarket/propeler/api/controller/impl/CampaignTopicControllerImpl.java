@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -53,10 +54,11 @@ public class CampaignTopicControllerImpl implements CampaignTopicController {
   public ResponseEntity<FilenameDto> uploadCampaignTopicImage(
       @PathVariable String campaignName,
       @PathVariable String topicType,
-      @RequestParam("picture") MultipartFile picture) {
+      @RequestParam("picture") MultipartFile picture,
+      HttpServletRequest request) {
 
     return new ResponseEntity<>(
-        campaignTopicImageService.uploadImage(campaignName, topicType, picture),
+        campaignTopicImageService.uploadImage(request, campaignName, topicType, picture),
         HttpStatus.CREATED);
   }
 

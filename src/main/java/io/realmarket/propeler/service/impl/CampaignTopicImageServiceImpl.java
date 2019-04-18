@@ -10,7 +10,6 @@ import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignTopicImageService;
 import io.realmarket.propeler.service.CampaignTopicService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
-import io.realmarket.propeler.service.util.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class CampaignTopicImageServiceImpl implements CampaignTopicImageService {
@@ -54,7 +53,9 @@ public class CampaignTopicImageServiceImpl implements CampaignTopicImageService 
             });
   }
 
-  public FilenameDto uploadImage(String campaignName, String topicType, MultipartFile image) {
+  @Transactional
+  public FilenameDto uploadImage(
+      HttpServletRequest request, String campaignName, String topicType, MultipartFile image) {
     CampaignTopicType campaignTopicType =
         campaignTopicService.findByTopicTypeOrThrowException(topicType);
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
@@ -64,14 +65,10 @@ public class CampaignTopicImageServiceImpl implements CampaignTopicImageService 
         campaignTopicService.findByCampaignAndCampaignTopicTypeOrThrowException(
             campaign, campaignTopicType);
 
-    String url =
-        String.join(
-            "", UUID.randomUUID().toString(), ".", FileUtils.getExtensionOrThrowException(image));
-
+    String url = cloudObjectStorageService.uploadPublic(image);
     campaignTopicImageRepository.save(
         CampaignTopicImage.builder().url(url).campaignTopic(campaignTopic).build());
-    cloudObjectStorageService.upload(url, image);
 
-    return new FilenameDto(url);
+    return new FilenameDto(String.join("", FileServiceImpl.getURLWithFilePublicPath(request), url));
   }
 }

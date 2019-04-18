@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import java.net.URLConnection;
 
 @RestController
 @RequestMapping(value = "/files")
@@ -29,6 +30,14 @@ public class FileControllerImpl implements FileController {
   @GetMapping(value = "/{fileName:.+}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<FileDto> getFile(@PathVariable String fileName) {
     return ResponseEntity.ok(fileService.getFile(fileName));
+  }
+
+  @GetMapping(value = "/public/{fileName:.+}")
+  public ResponseEntity<byte[]> getPublicFile(@PathVariable String fileName) {
+    String mimeType = URLConnection.guessContentTypeFromName(fileName);
+    return ResponseEntity.ok()
+        .contentType(MediaType.valueOf(mimeType))
+        .body(fileService.getPublicFile(fileName));
   }
 
   @PostMapping(consumes = "multipart/form-data", produces = MediaType.TEXT_PLAIN_VALUE)

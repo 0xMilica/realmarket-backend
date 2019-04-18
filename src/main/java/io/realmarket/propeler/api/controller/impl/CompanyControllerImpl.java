@@ -57,7 +57,7 @@ public class CompanyControllerImpl implements CompanyController {
   @GetMapping(value = "/mine")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity<CompanyDto> getMyCompany() {
-    return new ResponseEntity<>(new CompanyDto(companyService.findMyCompany()),HttpStatus.OK);
+    return new ResponseEntity<>(new CompanyDto(companyService.findMyCompany()), HttpStatus.OK);
   }
 
   @PatchMapping("/{companyId}")

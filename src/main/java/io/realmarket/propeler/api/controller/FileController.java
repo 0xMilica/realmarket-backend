@@ -26,6 +26,23 @@ public interface FileController {
   ResponseEntity<FileDto> getFile(String fileName);
 
   @ApiOperation(
+      value = "Get publicly accessible file with provided file name",
+      httpMethod = "GET",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @ApiImplicitParams(
+      @ApiImplicitParam(
+          name = "fileName",
+          value = "Name of the file",
+          required = true,
+          paramType = "path"))
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "File with the provided name successfully retrieved."),
+    @ApiResponse(code = 400, message = "File with the provided name could not be retrieved."),
+    @ApiResponse(code = 404, message = "File with the provided name does not exist.")
+  })
+  ResponseEntity<byte[]> getPublicFile(String fileName);
+
+  @ApiOperation(
       value = "Upload file",
       httpMethod = "POST",
       consumes = "multipart/form-data",

@@ -35,12 +35,12 @@ public interface CompanyController {
   ResponseEntity getCompany(Long companyId);
 
   @ApiOperation(
-          value = "Get info about my company",
-          httpMethod = "GET",
-          produces = APPLICATION_JSON_VALUE)
+      value = "Get info about my company",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-          @ApiResponse(code = 200, message = "Company successfully retrieved."),
-          @ApiResponse(code = 404, message = "Company does not exists.")
+    @ApiResponse(code = 200, message = "Company successfully retrieved."),
+    @ApiResponse(code = 404, message = "Company does not exists.")
   })
   ResponseEntity<CompanyDto> getMyCompany();
 

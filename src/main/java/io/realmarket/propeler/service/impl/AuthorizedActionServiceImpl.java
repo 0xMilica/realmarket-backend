@@ -35,7 +35,7 @@ public class AuthorizedActionServiceImpl implements AuthorizedActionService {
 
   @Transactional
   public void storeAuthorizationAction(
-          Long authId, EAuthorizedActionType type, String data, Long mmTimeout) {
+      Long authId, EAuthorizedActionType type, String data, Long mmTimeout) {
     Auth auth = new Auth(authId);
     deleteByAuthAndType(auth, type);
     log.info("Store authorization action.");
@@ -66,7 +66,7 @@ public class AuthorizedActionServiceImpl implements AuthorizedActionService {
 
   @Transactional
   public Optional<String> validateAuthorizationAction(
-          Auth auth, EAuthorizedActionType type, TwoFADto twoFADto) {
+      Auth auth, EAuthorizedActionType type, TwoFADto twoFADto) {
     if (type == NEW_TOTP_SECRET) {
       return Optional.empty();
     }

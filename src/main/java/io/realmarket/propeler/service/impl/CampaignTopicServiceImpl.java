@@ -73,10 +73,7 @@ public class CampaignTopicServiceImpl implements CampaignTopicService {
       Campaign campaign, CampaignTopicType campaignTopicType) {
     return campaignTopicRepository
         .findByCampaignAndCampaignTopicType(campaign, campaignTopicType)
-        .orElseThrow(
-            () ->
-                new EntityNotFoundException(
-                        CAMPAIGN_TOPIC_NOT_EXISTS));
+        .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_TOPIC_NOT_EXISTS));
   }
 
   public void updateCampaignTopic(

@@ -14,6 +14,15 @@ public interface FileService {
   FileDto getFile(String fileName);
 
   /**
+   * Retrieve file with provided file name from the IBM cloud service. Check if file contains prefix
+   * that marks it public
+   *
+   * @param fileName name of the file to be retrieved
+   * @return Multipart file
+   */
+  byte[] getPublicFile(String fileName);
+
+  /**
    * Stores file on the IBM cloud service and in the local storage.
    *
    * @param file file to be stored

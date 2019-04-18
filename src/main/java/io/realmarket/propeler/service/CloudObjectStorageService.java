@@ -15,6 +15,12 @@ public interface CloudObjectStorageService {
 
   /**
    * @param fileName name of the file to be retrieved
+   * @return Byte array of the retrieved file
+   */
+  byte[] downloadPublic(String fileName);
+
+  /**
+   * @param fileName name of the file to be retrieved
    * @return true if file exists
    */
   boolean doesFileExist(String fileName);
@@ -37,6 +43,15 @@ public interface CloudObjectStorageService {
    * @param file multipart file to upload
    */
   void upload(String name, MultipartFile file);
+
+  /**
+   * Upload file to COS with prefix that mart this file as public and it will be accessible with
+   * publicly open endpoint
+   *
+   * @param file file that we want to upload
+   * @return name of file
+   */
+  String uploadPublic(MultipartFile file);
 
   /**
    * @param oldName old name of file. Delete old name if it differs from current name.
