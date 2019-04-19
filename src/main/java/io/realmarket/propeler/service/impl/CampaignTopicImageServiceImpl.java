@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Service
 public class CampaignTopicImageServiceImpl implements CampaignTopicImageService {
 
@@ -54,8 +52,7 @@ public class CampaignTopicImageServiceImpl implements CampaignTopicImageService 
   }
 
   @Transactional
-  public FilenameDto uploadImage(
-      HttpServletRequest request, String campaignName, String topicType, MultipartFile image) {
+  public FilenameDto uploadImage(String campaignName, String topicType, MultipartFile image) {
     CampaignTopicType campaignTopicType =
         campaignTopicService.findByTopicTypeOrThrowException(topicType);
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
@@ -69,6 +66,6 @@ public class CampaignTopicImageServiceImpl implements CampaignTopicImageService 
     campaignTopicImageRepository.save(
         CampaignTopicImage.builder().url(url).campaignTopic(campaignTopic).build());
 
-    return new FilenameDto(String.join("", FileServiceImpl.getURLWithFilePublicPath(request), url));
+    return new FilenameDto(String.join("", FileServiceImpl.PUBLIC_FILE_ENDPOING, url));
   }
 }

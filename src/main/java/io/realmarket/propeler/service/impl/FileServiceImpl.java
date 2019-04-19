@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Service
 @Slf4j
 public class FileServiceImpl implements FileService {
 
+  public static final String PUBLIC_FILE_ENDPOING = "/api/files/public/";
   private final CloudObjectStorageService cloudObjectStorageService;
 
   @Value("${app.filename-length}")
@@ -27,10 +27,6 @@ public class FileServiceImpl implements FileService {
   @Autowired
   public FileServiceImpl(CloudObjectStorageService cloudObjectStorageService) {
     this.cloudObjectStorageService = cloudObjectStorageService;
-  }
-
-  public static String getURLWithFilePublicPath(HttpServletRequest request) {
-    return String.format("%s://%s:%d/api/files/public/", request.getScheme(), request.getServerName(),request.getServerPort());
   }
 
   public FileDto getFile(String fileName) {

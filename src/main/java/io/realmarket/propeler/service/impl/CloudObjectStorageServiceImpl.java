@@ -35,6 +35,8 @@ import java.util.Base64;
 @Slf4j
 public class CloudObjectStorageServiceImpl implements CloudObjectStorageService {
 
+  private static final Integer SIZE_OF_PUBLIC_NAME = 32;
+
   @Value(value = "${cos.api.key.id}")
   private String cosApiKeyId;
 
@@ -55,8 +57,6 @@ public class CloudObjectStorageServiceImpl implements CloudObjectStorageService 
 
   @Value(value = "${cos.public_prefix}")
   private String cosPublicPrefix;
-
-  private static Integer SIZE_OF_PUBLIC_NAME = 32;
 
   /**
    * @param apiKey api-key used for authentication on Cloud Object Storage (COS)

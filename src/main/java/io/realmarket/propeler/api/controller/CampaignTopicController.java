@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -42,7 +41,7 @@ public interface CampaignTopicController {
     @ApiResponse(code = 400, message = "Invalid request.")
   })
   ResponseEntity<FilenameDto> uploadCampaignTopicImage(
-      String campaignName, String topicType, MultipartFile picture, HttpServletRequest request);
+      String campaignName, String topicType, MultipartFile picture);
 
   @ApiOperation(
       value = "Get campaign topic content",
