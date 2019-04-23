@@ -34,6 +34,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
       status = HttpStatus.FORBIDDEN;
     } else if (ex instanceof ActiveCampaignAlreadyExistsException) {
       status = HttpStatus.CONFLICT;
+    } else if (ex instanceof CampaignTopicTypeNotExistException) {
+      status = HttpStatus.NO_CONTENT;
     }
 
     log.error(

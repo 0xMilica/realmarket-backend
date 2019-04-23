@@ -4,6 +4,7 @@ import io.realmarket.propeler.repository.CampaignTopicRepository;
 import io.realmarket.propeler.repository.CampaignTopicTypeRepository;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignTopicImageService;
+import io.realmarket.propeler.service.exception.CampaignTopicTypeNotExistException;
 import io.realmarket.propeler.service.impl.CampaignTopicServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,6 +82,16 @@ public class CampaignTopicServiceImplTest {
     doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
     when(campaignTopicRepository.findByCampaignAndCampaignTopicType(any(), any()))
         .thenReturn(Optional.empty());
+
+    campaignTopicService.getCampaignTopic(TEST_URL_FRIENDLY_NAME, TEST_CAMPAIGN_TOPIC_TYPE_NAME);
+  }
+
+  @Test(expected = CampaignTopicTypeNotExistException.class)
+  public void GetCampaignTopic_Throw_CampaignTopicTypeNotExistException() {
+    when(campaignService.findByUrlFriendlyNameOrThrowException(any())).thenReturn(TEST_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
+    when(campaignTopicRepository.findByCampaignAndCampaignTopicType(any(), any()))
+            .thenReturn(Optional.empty());
 
     campaignTopicService.getCampaignTopic(TEST_URL_FRIENDLY_NAME, TEST_CAMPAIGN_TOPIC_TYPE_NAME);
   }

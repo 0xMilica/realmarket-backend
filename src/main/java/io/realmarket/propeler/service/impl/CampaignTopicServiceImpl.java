@@ -9,6 +9,7 @@ import io.realmarket.propeler.repository.CampaignTopicTypeRepository;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignTopicImageService;
 import io.realmarket.propeler.service.CampaignTopicService;
+import io.realmarket.propeler.service.exception.CampaignTopicTypeNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,8 +55,10 @@ public class CampaignTopicServiceImpl implements CampaignTopicService {
   }
 
   public CampaignTopicDto getCampaignTopic(String campaignName, String topicType) {
-    CampaignTopicType campaignTopicType = findByTopicTypeOrThrowException(topicType);
-    Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
+    final CampaignTopicType campaignTopicType = campaignTopicTypeRepository
+            .findByNameIgnoreCase(topicType)
+            .orElseThrow(() -> new CampaignTopicTypeNotExistException(CAMPAIGN_TOPIC_TYPE_NOT_EXISTS));
+    final Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
     campaignService.throwIfNoAccess(campaign);
 
     return new CampaignTopicDto(

@@ -14,7 +14,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.mock.web.MockMultipartFile;
 
-import static io.realmarket.propeler.unit.util.AuthUtils.TEST_REQUEST;
 import static io.realmarket.propeler.unit.util.CampaignTopicImageUtil.*;
 import static io.realmarket.propeler.unit.util.CampaignTopicUtil.*;
 import static io.realmarket.propeler.unit.util.CampaignUtils.TEST_CAMPAIGN;
@@ -61,8 +60,8 @@ public class CampaignTopicImageServiceImplTest {
     when(campaignTopicImageRepository.save(any())).thenReturn(TEST_CAMPAIGN_TOPIC_IMAGE_EXISTING);
     doNothing().when(cloudObjectStorageService).upload(any(), any());
 
+
     campaignTopicImageService.uploadImage(
-        TEST_REQUEST,
         TEST_URL_FRIENDLY_NAME,
         TEST_CAMPAIGN_TOPIC_TYPE_NAME,
         new MockMultipartFile(
