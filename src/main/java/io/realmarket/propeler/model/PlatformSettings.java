@@ -26,7 +26,7 @@ public class PlatformSettings {
 
   private Instant validFrom;
 
-  private Instant validTo;
+  private Instant validUntil;
 
   @UpdateTimestamp
   private Instant lastUpdated;
