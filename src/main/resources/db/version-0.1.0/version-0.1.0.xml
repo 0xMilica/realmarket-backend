@@ -14,4 +14,7 @@
     <include file="migrations/authorized_action_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/remember_me_cookie.xml" relativeToChangelogFile="true"/>
 
+
+    <include file="migrations/person_table_init.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/auth_table_init.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
