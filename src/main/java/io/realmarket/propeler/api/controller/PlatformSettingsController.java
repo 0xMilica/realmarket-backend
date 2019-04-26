@@ -1,5 +1,6 @@
 package io.realmarket.propeler.api.controller;
 
+import io.realmarket.propeler.api.dto.PlatformSettingsDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -20,5 +21,5 @@ public interface PlatformSettingsController {
     @ApiResponse(code = 200, message = "Settings successfully retrieved."),
     @ApiResponse(code = 404, message = "No current platform settings"),
   })
-  ResponseEntity getCurrentPlatformSettings();
+  ResponseEntity<PlatformSettingsDto> getCurrentPlatformSettings();
 }

@@ -1,6 +1,7 @@
 package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.PlatformSettingsController;
+import io.realmarket.propeler.api.dto.PlatformSettingsDto;
 import io.realmarket.propeler.model.PlatformSettings;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.PersonService;
@@ -32,7 +33,7 @@ public class PlatformSettingsControllerImpl implements PlatformSettingsControlle
   }
 
   @GetMapping()
-  public ResponseEntity<PlatformSettings> getCurrentPlatformSettings() {
+  public ResponseEntity<PlatformSettingsDto> getCurrentPlatformSettings() {
     return ResponseEntity.ok(platformSettingsService.getCurrentPlatformSettings());
   }
 }

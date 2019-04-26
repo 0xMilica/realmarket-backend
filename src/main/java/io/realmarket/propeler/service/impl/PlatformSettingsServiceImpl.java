@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.PlatformSettingsDto;
 import io.realmarket.propeler.model.PlatformSettings;
 import io.realmarket.propeler.repository.PlatformSettingsRepository;
 import io.realmarket.propeler.service.PlatformSettingsService;
@@ -22,10 +23,12 @@ public class PlatformSettingsServiceImpl implements PlatformSettingsService {
   }
 
   @Override
-  public PlatformSettings getCurrentPlatformSettings() {
-    return platformSettingsRepository
-        .findTopById()
-        .orElseThrow(
-            () -> new EntityNotFoundException(ExceptionMessages.PLATFORM_SETTINGS_NOT_FOUND));
+  public PlatformSettingsDto getCurrentPlatformSettings() {
+    PlatformSettings settings =
+        platformSettingsRepository
+            .findFirstByOrderById()
+            .orElseThrow(
+                () -> new EntityNotFoundException(ExceptionMessages.PLATFORM_SETTINGS_NOT_FOUND));
+    return new PlatformSettingsDto(settings);
   }
 }

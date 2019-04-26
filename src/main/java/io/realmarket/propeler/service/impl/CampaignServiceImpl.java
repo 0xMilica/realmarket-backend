@@ -11,7 +11,9 @@ import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignTopicService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.PlatformSettingsService;
 import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
+import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
@@ -39,6 +41,7 @@ public class CampaignServiceImpl implements CampaignService {
   private final CompanyService companyService;
   private final CampaignTopicService campaignTopicService;
   private final ModelMapperBlankString modelMapperBlankString;
+  private final PlatformSettingsService platformSettingsService;
 
   @Value(value = "${cos.file_prefix.campaign_market_image}")
   private String companyFeaturedImage;
@@ -49,12 +52,14 @@ public class CampaignServiceImpl implements CampaignService {
       CompanyService companyService,
       @Lazy CampaignTopicService campaignTopicService,
       ModelMapperBlankString modelMapperBlankString,
-      CloudObjectStorageService cloudObjectStorageService) {
+      CloudObjectStorageService cloudObjectStorageService,
+      PlatformSettingsService platformSettingsService) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
     this.campaignTopicService = campaignTopicService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.cloudObjectStorageService = cloudObjectStorageService;
+    this.platformSettingsService = platformSettingsService;
   }
 
   @Override
@@ -87,6 +92,7 @@ public class CampaignServiceImpl implements CampaignService {
     Campaign campaign = new Campaign(campaignDto);
     campaign.setActive(true);
     campaign.setCompany(company);
+    validateCampaign(campaign);
     campaignRepository.save(campaign);
 
     log.info("Campaign with name '{}' saved successfully.", campaignDto.getUrlFriendlyName());
@@ -96,6 +102,7 @@ public class CampaignServiceImpl implements CampaignService {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
     throwIfNoAccess(campaign);
     modelMapperBlankString.map(campaignPatchDto, campaign);
+    validateCampaign(campaign);
     return new CampaignDto(campaignRepository.save(campaign));
   }
 
@@ -161,5 +168,14 @@ public class CampaignServiceImpl implements CampaignService {
     cloudObjectStorageService.delete(campaign.getMarketImageUrl());
     campaign.setMarketImageUrl(null);
     campaignRepository.save(campaign);
+  }
+
+  private void validateCampaign(Campaign campaign) {
+    if (campaign
+            .getMinInvestment()
+            .compareTo(platformSettingsService.getCurrentPlatformSettings().getMinInvestment())
+        == 1) {
+      throw new BadRequestException(INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN);
+    }
   }
 }

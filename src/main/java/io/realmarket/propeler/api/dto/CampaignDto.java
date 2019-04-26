@@ -66,6 +66,9 @@ public class CampaignDto {
           "Max equity offered must be in range of 0.00 to 100.00 with max of 2 values behind decimal point")
   private BigDecimal maxEquityOffered;
 
+  @ApiModelProperty(value = "Campaign minimal investment")
+  private BigDecimal minInvestment;
+
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String marketImageUrl;
 
@@ -81,5 +84,6 @@ public class CampaignDto {
     this.minEquityOffered = campaign.getMinEquityOffered();
     this.maxEquityOffered = campaign.getMaxEquityOffered();
     this.marketImageUrl = campaign.getMarketImageUrl();
+    this.minInvestment = campaign.getMinInvestment();
   }
 }

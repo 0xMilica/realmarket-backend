@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @NoArgsConstructor
@@ -19,18 +20,19 @@ public class PlatformSettings {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PLATFORM_SETTINGS_SEQ")
-  @SequenceGenerator(name = "PLATFORM_SETTINGS_SEQ", sequenceName = "PLATFORM_SETTINGS_SEQ", allocationSize = 1)
+  @SequenceGenerator(
+      name = "PLATFORM_SETTINGS_SEQ",
+      sequenceName = "PLATFORM_SETTINGS_SEQ",
+      allocationSize = 1)
   private Long id;
 
-  private Long platformMinimalInvestment;
+  private BigDecimal platformMinimalInvestment;
 
   private Instant validFrom;
 
   private Instant validUntil;
 
-  @UpdateTimestamp
-  private Instant lastUpdated;
+  @UpdateTimestamp private Instant lastUpdated;
 
-  @CreationTimestamp
-  private Instant created;
+  @CreationTimestamp private Instant created;
 }

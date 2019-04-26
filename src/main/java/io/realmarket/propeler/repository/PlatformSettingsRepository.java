@@ -13,5 +13,5 @@ import java.util.Optional;
 
 @Repository
 public interface PlatformSettingsRepository extends JpaRepository<PlatformSettings, Long> {
-    Optional<PlatformSettings> findTopById();
+    Optional<PlatformSettings> findFirstByOrderById();
 }
