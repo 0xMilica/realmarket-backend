@@ -89,10 +89,15 @@ public class CampaignServiceImplTest {
             invocation -> {
               Object[] args = invocation.getArguments();
               ((Campaign) args[1]).setFundingGoals(CampaignUtils.TEST_FUNDING_GOALS);
+              ((Campaign) args[1]).setMinInvestment(PlatformSettingsUtils.TEST_PLATFORM_MINIMUMIM_INVESTMENT);
               return null;
             })
         .when(modelMapperBlankString)
         .map(campaignPatchDto, testCampaign);
+
+    campaignPatchDto.setMinInvestment(new BigDecimal("1000"));
+    when(platformSettingsService.getCurrentPlatformSettings())
+            .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_SETTINGS_DTO);
 
     CampaignDto campaignDto =
         campaignServiceImpl.patchCampaign(TEST_URL_FRIENDLY_NAME, campaignPatchDto);
