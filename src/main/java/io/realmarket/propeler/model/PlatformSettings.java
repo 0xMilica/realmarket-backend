@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -31,8 +29,4 @@ public class PlatformSettings {
   private Instant validFrom;
 
   private Instant validUntil;
-
-  @UpdateTimestamp private Instant lastUpdated;
-
-  @CreationTimestamp private Instant created;
 }

@@ -13,5 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface PlatformSettingsRepository extends JpaRepository<PlatformSettings, Long> {
-    Optional<PlatformSettings> findFirstByOrderById();
+    @Query(
+            "Select platformSettings FROM PlatformSettings platformSettings WHERE platformSettings.validFrom < CURRENT_TIMESTAMP  and platformSettings.validUntil> CURRENT_TIMESTAMP ")
+    Optional<PlatformSettings> findCurrentSettings();
 }
