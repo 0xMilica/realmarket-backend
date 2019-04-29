@@ -17,5 +17,6 @@
     <include file="migrations/campaign_topic_type_init.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_topic_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_topic_image_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/platform_settings_table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

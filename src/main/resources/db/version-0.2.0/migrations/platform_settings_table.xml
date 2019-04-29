@@ -1,0 +1,22 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="amirkovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence platform_settings_seq;
+            create table platform_settings
+            (
+                id bigint not null
+                constraint platform_settings_pkey
+                primary key,
+                platform_minimal_investment numeric(19,2),
+                valid_from timestamp,
+                valid_until timestamp
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
