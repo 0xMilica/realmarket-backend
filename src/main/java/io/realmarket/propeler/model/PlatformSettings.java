@@ -24,7 +24,7 @@ public class PlatformSettings {
       allocationSize = 1)
   private Long id;
 
-  private BigDecimal platformMinimalInvestment;
+  private BigDecimal platformMinInvestment;
 
   private Instant validFrom;
 

@@ -171,10 +171,11 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   private void validateCampaign(Campaign campaign) {
-    if (campaign
-            .getMinInvestment()
-            .compareTo(platformSettingsService.getCurrentPlatformSettings().getMinInvestment())
-        == 1) {
+    if (campaign.getMinInvestment() == null
+        || campaign
+                .getMinInvestment()
+                .compareTo(platformSettingsService.getCurrentPlatformSettings().getPlatformMinInvestment())
+            < 0) {
       throw new BadRequestException(INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN);
     }
   }

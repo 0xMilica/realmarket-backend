@@ -8,14 +8,13 @@ import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.service.CampaignTopicService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.PlatformSettingsService;
 import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
+import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
 import io.realmarket.propeler.service.impl.CampaignServiceImpl;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
-import io.realmarket.propeler.unit.util.AuthUtils;
-import io.realmarket.propeler.unit.util.CampaignUtils;
-import io.realmarket.propeler.unit.util.CompanyUtils;
-import io.realmarket.propeler.unit.util.FileUtils;
+import io.realmarket.propeler.unit.util.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +26,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_USER_AUTH;
@@ -49,6 +49,8 @@ public class CampaignServiceImplTest {
   @Mock private CloudObjectStorageService cloudObjectStorageService;
 
   @Mock private CampaignTopicService campaignTopicService;
+
+  @Mock private PlatformSettingsService platformSettingsService;
 
   @InjectMocks private CampaignServiceImpl campaignServiceImpl;
 
@@ -98,7 +100,7 @@ public class CampaignServiceImplTest {
   }
 
   @Test
-  public void CreateCampaign_Should_CreateCampaign() {
+  public void CreateCampaign_Should_CreateCampaign() throws Exception {
     when(campaignRepository.findByCompanyIdAndActiveTrue(TEST_CAMPAIGN_DTO.getCompanyId()))
         .thenReturn(Optional.empty());
     when(campaignRepository.findByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
@@ -106,6 +108,33 @@ public class CampaignServiceImplTest {
     when(campaignRepository.save(TEST_CAMPAIGN)).thenReturn(TEST_CAMPAIGN);
     when(companyService.findByIdOrThrowException(anyLong()))
         .thenReturn(CompanyUtils.getCompanyMocked());
+
+    TEST_CAMPAIGN_DTO.setMinInvestment(new BigDecimal("1000"));
+    when(platformSettingsService.getCurrentPlatformSettings())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_SETTINGS_DTO);
+
+    campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
+
+    verify(companyService, Mockito.times(1)).findByIdOrThrowException(anyLong());
+    verify(campaignRepository, Mockito.times(1)).findByUrlFriendlyName(TEST_URL_FRIENDLY_NAME);
+    verify(campaignRepository, Mockito.times(1)).save(any(Campaign.class));
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void
+      CreateCampaign_Should_ThrowException_When_Min_Investment_Smaller_Than_PlatformMinimum()
+          throws Exception {
+    when(campaignRepository.findByCompanyIdAndActiveTrue(TEST_CAMPAIGN_DTO.getCompanyId()))
+        .thenReturn(Optional.empty());
+    when(campaignRepository.findByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(Optional.empty());
+    when(campaignRepository.save(TEST_CAMPAIGN)).thenReturn(TEST_CAMPAIGN);
+    when(companyService.findByIdOrThrowException(anyLong()))
+        .thenReturn(CompanyUtils.getCompanyMocked());
+
+    TEST_CAMPAIGN_DTO.setMinInvestment(new BigDecimal("400"));
+    when(platformSettingsService.getCurrentPlatformSettings())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_SETTINGS_DTO);
 
     campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
 
