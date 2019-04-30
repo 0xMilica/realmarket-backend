@@ -14,7 +14,7 @@ public interface PlatformSettingsController {
 
   @ApiOperation(
       value = "Gets current settings",
-      httpMethod = "POST",
+      httpMethod = "GET",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiResponses({

@@ -13,10 +13,9 @@
                 id bigint not null
                 constraint platform_settings_pkey
                 primary key,
-                platform_minimal_investment numeric(19,2),
-                valid_from timestamp,
-                valid_until timestamp
+                platform_min_investment numeric(19,2)
             );
+
         </sql>
     </changeSet>
 </databaseChangeLog>

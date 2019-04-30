@@ -26,7 +26,7 @@ public class PlatformSettingsServiceImpl implements PlatformSettingsService {
   public PlatformSettingsDto getCurrentPlatformSettings() {
     final PlatformSettings settings =
         platformSettingsRepository
-            .findCurrentSettings()
+            .findTopBy()
             .orElseThrow(
                 () -> new EntityNotFoundException(ExceptionMessages.PLATFORM_SETTINGS_NOT_FOUND));
     return new PlatformSettingsDto(settings);

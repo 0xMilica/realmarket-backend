@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.Instant;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,8 +24,4 @@ public class PlatformSettings {
   private Long id;
 
   private BigDecimal platformMinInvestment;
-
-  private Instant validFrom;
-
-  private Instant validUntil;
 }
