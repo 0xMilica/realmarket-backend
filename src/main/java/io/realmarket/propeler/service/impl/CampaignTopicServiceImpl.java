@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_TOPIC_NOT_EXISTS;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_TOPIC_TYPE_NOT_EXISTS;
@@ -55,9 +58,11 @@ public class CampaignTopicServiceImpl implements CampaignTopicService {
   }
 
   public CampaignTopicDto getCampaignTopic(String campaignName, String topicType) {
-    final CampaignTopicType campaignTopicType = campaignTopicTypeRepository
+    final CampaignTopicType campaignTopicType =
+        campaignTopicTypeRepository
             .findByNameIgnoreCase(topicType)
-            .orElseThrow(() -> new CampaignTopicTypeNotExistException(CAMPAIGN_TOPIC_TYPE_NOT_EXISTS));
+            .orElseThrow(
+                () -> new CampaignTopicTypeNotExistException(CAMPAIGN_TOPIC_TYPE_NOT_EXISTS));
     final Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
     campaignService.throwIfNoAccess(campaign);
 
@@ -77,6 +82,20 @@ public class CampaignTopicServiceImpl implements CampaignTopicService {
     return campaignTopicRepository
         .findByCampaignAndCampaignTopicType(campaign, campaignTopicType)
         .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_TOPIC_NOT_EXISTS));
+  }
+
+  @Override
+  public Map<String, Boolean> getTopicStatus(Campaign campaign) {
+    Map<String, Boolean> topicStatus = new HashMap<>();
+
+    Map<Long, CampaignTopicType> allTopicTypes =
+        campaignTopicTypeRepository.findAll().stream()
+            .collect(Collectors.toMap(CampaignTopicType::getId, item -> item));
+    allTopicTypes.forEach((k, v) -> topicStatus.put(v.getName().toLowerCase(), false));
+    campaignTopicRepository
+        .selectAllTopicsByCampaign(campaign)
+        .forEach(topicType -> topicStatus.replace(topicType.getName().toLowerCase(), true));
+    return topicStatus;
   }
 
   public void updateCampaignTopic(

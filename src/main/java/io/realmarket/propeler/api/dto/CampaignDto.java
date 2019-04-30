@@ -1,5 +1,6 @@
 package io.realmarket.propeler.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.primitives.UnsignedInteger;
 import io.realmarket.propeler.api.annotations.UrlFriendly;
@@ -16,6 +17,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @ApiModel(description = "Dto used for transfer of campaign data")
 @Data
@@ -66,6 +68,9 @@ public class CampaignDto {
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String marketImageUrl;
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Map<String, Boolean> topicStatus;
 
   public CampaignDto(Campaign campaign) {
     this.companyId = campaign.getCompany().getId();

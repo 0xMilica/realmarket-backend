@@ -1,5 +1,6 @@
 package io.realmarket.propeler.unit.service.impl;
 
+import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.repository.CampaignTopicRepository;
 import io.realmarket.propeler.repository.CampaignTopicTypeRepository;
 import io.realmarket.propeler.service.CampaignService;
@@ -14,11 +15,13 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Map;
 import java.util.Optional;
 
 import static io.realmarket.propeler.unit.util.CampaignTopicUtil.*;
-import static io.realmarket.propeler.unit.util.CampaignUtils.TEST_CAMPAIGN;
-import static io.realmarket.propeler.unit.util.CampaignUtils.TEST_URL_FRIENDLY_NAME;
+import static io.realmarket.propeler.unit.util.CampaignUtils.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -91,7 +94,7 @@ public class CampaignTopicServiceImplTest {
     when(campaignService.findByUrlFriendlyNameOrThrowException(any())).thenReturn(TEST_CAMPAIGN);
     doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
     when(campaignTopicRepository.findByCampaignAndCampaignTopicType(any(), any()))
-            .thenReturn(Optional.empty());
+        .thenReturn(Optional.empty());
 
     campaignTopicService.getCampaignTopic(TEST_URL_FRIENDLY_NAME, TEST_CAMPAIGN_TOPIC_TYPE_NAME);
   }
@@ -114,5 +117,18 @@ public class CampaignTopicServiceImplTest {
     verify(campaignService, times(1)).findByUrlFriendlyNameOrThrowException(any());
     verify(campaignTopicRepository, times(1)).save(any());
     verify(campaignTopicRepository, times(1)).findByCampaignAndCampaignTopicType(any(), any());
+  }
+
+  @Test
+  public void GetTopicStatus_Should_ReturnStatuses() {
+    Campaign campaign = getCampaignMocked();
+    when(campaignTopicTypeRepository.findAll()).thenReturn(TEST_CAMPAIGN_TOPIC_TYPE_LIST_1);
+    when(campaignTopicRepository.selectAllTopicsByCampaign(campaign))
+        .thenReturn(TEST_CAMPAIGN_TOPIC_TYPE_LIST_2);
+
+    Map<String, Boolean> topicStatus = campaignTopicService.getTopicStatus(campaign);
+
+    assertTrue(topicStatus.get(TEST_CAMPAIGN_TOPIC_TYPE_NAME.toLowerCase()));
+    assertFalse(topicStatus.get(TEST_CAMPAIGN_TOPIC_TYPE_NAME_2.toLowerCase()));
   }
 }

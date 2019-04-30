@@ -5,6 +5,7 @@ import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.repository.CampaignRepository;
+import io.realmarket.propeler.service.CampaignTopicService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
@@ -46,6 +47,8 @@ public class CampaignServiceImplTest {
   @Mock private ModelMapperBlankString modelMapperBlankString;
 
   @Mock private CloudObjectStorageService cloudObjectStorageService;
+
+  @Mock private CampaignTopicService campaignTopicService;
 
   @InjectMocks private CampaignServiceImpl campaignServiceImpl;
 
@@ -180,16 +183,18 @@ public class CampaignServiceImplTest {
   }
 
   @Test
-  public void GetActiveCampaignForCompany_Should_Return_Campaign() {
+  public void GetActiveCampaignDto_Should_Return_Campaign() {
     when(companyService.findByAuthIdOrThrowException(TEST_USER_AUTH.getAuth().getId()))
         .thenReturn(getCompanyMocked());
+    Campaign campaign = getCampaignMocked();
     when(campaignRepository.findByCompanyIdAndActiveTrue(getCompanyMocked().getId()))
-        .thenReturn(Optional.of(getCampaignMocked()));
+        .thenReturn(Optional.of(campaign));
 
-    campaignServiceImpl.getActiveCampaignForCompany();
+    campaignServiceImpl.getActiveCampaignDto();
 
     verify(companyService, Mockito.times(1))
         .findByAuthIdOrThrowException(TEST_USER_AUTH.getAuth().getId());
+    verify(campaignTopicService, times(1)).getTopicStatus(campaign);
     verify(campaignRepository, Mockito.times(1))
         .findByCompanyIdAndActiveTrue(getCompanyMocked().getId());
   }

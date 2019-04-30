@@ -6,13 +6,11 @@ import io.realmarket.propeler.service.impl.JWTServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Instant;
@@ -36,7 +34,7 @@ public class JWTServiceImplTest {
 
   @Before
   public void initVerifier() {
-    jwtService = new JWTServiceImpl(jwtRepository,TEST_HMAC_SECRET);
+    jwtService = new JWTServiceImpl(jwtRepository, TEST_HMAC_SECRET);
   }
 
   @Test

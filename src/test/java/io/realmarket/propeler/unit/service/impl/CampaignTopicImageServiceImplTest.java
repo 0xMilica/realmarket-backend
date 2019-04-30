@@ -60,7 +60,6 @@ public class CampaignTopicImageServiceImplTest {
     when(campaignTopicImageRepository.save(any())).thenReturn(TEST_CAMPAIGN_TOPIC_IMAGE_EXISTING);
     doNothing().when(cloudObjectStorageService).upload(any(), any());
 
-
     campaignTopicImageService.uploadImage(
         TEST_URL_FRIENDLY_NAME,
         TEST_CAMPAIGN_TOPIC_TYPE_NAME,

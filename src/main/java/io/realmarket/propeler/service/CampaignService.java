@@ -21,5 +21,7 @@ public interface CampaignService {
 
   void throwIfNoAccess(Campaign campaign);
 
-  CampaignDto getActiveCampaignForCompany();
+  Campaign getActiveCampaignForCompany();
+
+  CampaignDto getActiveCampaignDto();
 }

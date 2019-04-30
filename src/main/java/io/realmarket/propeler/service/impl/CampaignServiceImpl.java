@@ -8,6 +8,7 @@ import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignService;
+import io.realmarket.propeler.service.CampaignTopicService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
@@ -19,6 +20,7 @@ import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,7 @@ public class CampaignServiceImpl implements CampaignService {
   private final CampaignRepository campaignRepository;
   private final CloudObjectStorageService cloudObjectStorageService;
   private final CompanyService companyService;
+  private final CampaignTopicService campaignTopicService;
   private final ModelMapperBlankString modelMapperBlankString;
 
   @Value(value = "${cos.file_prefix.campaign_market_image}")
@@ -44,10 +47,12 @@ public class CampaignServiceImpl implements CampaignService {
   public CampaignServiceImpl(
       CampaignRepository campaignRepository,
       CompanyService companyService,
+      @Lazy CampaignTopicService campaignTopicService,
       ModelMapperBlankString modelMapperBlankString,
       CloudObjectStorageService cloudObjectStorageService) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
+    this.campaignTopicService = campaignTopicService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.cloudObjectStorageService = cloudObjectStorageService;
   }
@@ -94,16 +99,19 @@ public class CampaignServiceImpl implements CampaignService {
     return new CampaignDto(campaignRepository.save(campaign));
   }
 
-  public CampaignDto getActiveCampaignForCompany() {
+  public Campaign getActiveCampaignForCompany() {
     final Company company =
         companyService.findByAuthIdOrThrowException(
             AuthenticationUtil.getAuthentication().getAuth().getId());
-    final CampaignDto campaignDto = new CampaignDto();
-    final Campaign campaign =
-        campaignRepository
-            .findByCompanyIdAndActiveTrue(company.getId())
-            .orElseThrow(() -> new EntityNotFoundException(NO_ACTIVE_CAMPAIGN));
-    modelMapperBlankString.map(campaign, campaignDto);
+    return campaignRepository
+        .findByCompanyIdAndActiveTrue(company.getId())
+        .orElseThrow(() -> new EntityNotFoundException(NO_ACTIVE_CAMPAIGN));
+  }
+
+  public CampaignDto getActiveCampaignDto() {
+    Campaign campaign = getActiveCampaignForCompany();
+    CampaignDto campaignDto = new CampaignDto(campaign);
+    campaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
     return campaignDto;
   }
 

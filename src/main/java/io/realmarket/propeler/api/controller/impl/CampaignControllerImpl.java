@@ -5,6 +5,7 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.CampaignDocumentService;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignTeamMemberService;
+import io.realmarket.propeler.service.CampaignTopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +20,18 @@ import javax.validation.Valid;
 public class CampaignControllerImpl implements CampaignController {
 
   private final CampaignService campaignService;
+  private final CampaignTopicService campaignTopicService;
   private final CampaignDocumentService campaignDocumentService;
   private final CampaignTeamMemberService campaignTeamMemberService;
 
   @Autowired
   public CampaignControllerImpl(
       CampaignService campaignService,
+      CampaignTopicService campaignTopicService,
       CampaignDocumentService campaignDocumentService,
       CampaignTeamMemberService campaignTeamMemberService) {
     this.campaignService = campaignService;
+    this.campaignTopicService = campaignTopicService;
     this.campaignDocumentService = campaignDocumentService;
     this.campaignTeamMemberService = campaignTeamMemberService;
   }
@@ -100,7 +104,7 @@ public class CampaignControllerImpl implements CampaignController {
   @GetMapping(value = "/active")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity<CampaignDto> getActiveCampaign() {
-    return ResponseEntity.ok(campaignService.getActiveCampaignForCompany());
+    return ResponseEntity.ok(campaignService.getActiveCampaignDto());
   }
 
   @PostMapping("/{campaignName}/team/{teamMemberId}/picture")
