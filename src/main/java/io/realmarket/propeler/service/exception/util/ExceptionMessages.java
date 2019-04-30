@@ -67,4 +67,9 @@ public interface ExceptionMessages {
 
   String CAMPAIGN_TOPIC_NOT_EXISTS =
       "Campaign topic for the provided campaign name and campaign topic type not found!";
+
+  String PLATFORM_SETTINGS_NOT_FOUND =
+          "Platform settings couldn't be found!";
+
+  String INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN = "Campaign investment must be greater thant platform minimum!";
 }

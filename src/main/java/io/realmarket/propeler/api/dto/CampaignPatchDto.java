@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @ApiModel(description = "Dto used to patch campaign data")
@@ -40,4 +41,8 @@ public class CampaignPatchDto {
       message =
           "Max equity offered must be in range of 0.00 to 100.00 with max of 2 values behind decimal point")
   private BigDecimal maxEquityOffered;
+
+  @ApiModelProperty(value = "Campaign min equity offered")
+  @NotNull
+  private BigDecimal minInvestment;
 }
