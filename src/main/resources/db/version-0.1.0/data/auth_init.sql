@@ -2,3 +2,7 @@ INSERT INTO public.auth (id, state, password, user_role, blocked, totp_secret, u
 INSERT INTO public.auth (id, state, password, user_role, blocked, totp_secret, username, person_id) VALUES (nextval('auth_seq'), 'ACTIVE', '$2a$10$Nd8uSgyw8fYxUqMNET.TruoaYI.te6D3f5YPVVIm0QqRhzJVCGgma', 'ROLE_ENTREPRENEUR', false, '7O2LOBXXCYHK4GJ4', 'angelina', 2);
 INSERT INTO public.auth (id, state, password, user_role, blocked, totp_secret, username, person_id) VALUES (nextval('auth_seq'), 'ACTIVE', '$2a$10$Nd8uSgyw8fYxUqMNET.TruoaYI.te6D3f5YPVVIm0QqRhzJVCGgma', 'ROLE_ENTREPRENEUR', false, '7O2LOBXXCYHK4GJ4', 'nikola', 3);
 INSERT INTO public.auth (id, state, password, user_role, blocked, totp_secret, username, person_id) VALUES (nextval('auth_seq'), 'ACTIVE', '$2a$10$E6Pwa0HnLWOoZIBBuZVyV.TodJ88sb.iBin.U2e9YSp7Z0ZaPXck2', 'ROLE_ENTREPRENEUR', false, 'CYFMMB56QFIVKUFG', 'vladimir', 4);
+/*password is testPASS123 */
+
+INSERT INTO public.auth (id, state, password, user_role, blocked, totp_secret, username, person_id) VALUES (nextval('auth_seq'), 'ACTIVE', '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 'ROLE_ENTREPRENEUR', false, 'secret', 'entreprenuer', 5);
+INSERT INTO public.auth (id, state, password, user_role, blocked, totp_secret, username, person_id) VALUES (nextval('auth_seq'), 'ACTIVE', '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 'ROLE_ENTREPRENEUR', false, 'secret', 'investor', 6);
