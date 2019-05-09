@@ -25,6 +25,7 @@
             constraint campaign_uk_on_name
             unique,
             time_to_raise_funds bytea,
+			min_investment numeric(19,2),
             company_id bigint
             constraint campaign_fk_on_company
             references company
