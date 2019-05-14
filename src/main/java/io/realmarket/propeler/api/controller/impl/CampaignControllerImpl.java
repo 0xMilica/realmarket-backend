@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/campaigns")
@@ -99,6 +101,13 @@ public class CampaignControllerImpl implements CampaignController {
       @PathVariable String campaignName, @PathVariable Long documentId) {
     campaignDocumentService.deleteDocument(campaignName, documentId);
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @GetMapping(value = "/{campaignName}/documents")
+  public ResponseEntity<Map<String, List<CampaignDocumentDto>>> getCampaignDocuments(
+      @PathVariable String campaignName) {
+    return ResponseEntity.ok(
+        campaignDocumentService.getAllCampaignDocumentDtoGropedByType(campaignName));
   }
 
   @GetMapping(value = "/active")

@@ -19,6 +19,8 @@ public interface CampaignService {
 
   void deleteMarketImage(String campaignName);
 
+  boolean isOwner(Campaign campaign);
+
   void throwIfNoAccess(Campaign campaign);
 
   Campaign getActiveCampaignForCompany();

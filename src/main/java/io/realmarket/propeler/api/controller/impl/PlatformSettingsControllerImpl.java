@@ -2,7 +2,6 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.PlatformSettingsController;
 import io.realmarket.propeler.api.dto.PlatformSettingsDto;
-import io.realmarket.propeler.model.PlatformSettings;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.PlatformSettingsService;

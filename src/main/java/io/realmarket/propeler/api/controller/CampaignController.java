@@ -5,6 +5,9 @@ import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Api(value = "/campaigns")
@@ -134,6 +137,17 @@ public interface CampaignController {
     @ApiResponse(code = 404, message = "Campaign document does not exist.")
   })
   ResponseEntity deleteCampaignDocument(String campaignName, Long documentId);
+
+  @ApiOperation(
+      value = "Get all campaign documents groped by document type.",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully retrieved all documents"),
+    @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve campaign documents.")
+  })
+  ResponseEntity<Map<String, List<CampaignDocumentDto>>> getCampaignDocuments(String campaignName);
 
   @ApiOperation(
       value = "Get active campaign",

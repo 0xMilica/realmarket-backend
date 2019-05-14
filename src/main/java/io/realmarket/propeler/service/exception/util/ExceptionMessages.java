@@ -54,8 +54,6 @@ public interface ExceptionMessages {
 
   String ENTREPRENEUR_MISSING_COMPANY = "Entrepreneur does not have company.";
 
-  String NOT_CAMPAIGN_COMPANY_OWNER = "User is not an owner of a campaign's company!";
-
   String FILE_NOT_EXISTS = "File with provided URL does not exist!";
 
   String NO_ACTIVE_CAMPAIGN = "No active campaign";
@@ -68,8 +66,8 @@ public interface ExceptionMessages {
   String CAMPAIGN_TOPIC_NOT_EXISTS =
       "Campaign topic for the provided campaign name and campaign topic type not found!";
 
-  String PLATFORM_SETTINGS_NOT_FOUND =
-          "Platform settings couldn't be found!";
+  String PLATFORM_SETTINGS_NOT_FOUND = "Platform settings couldn't be found!";
 
-  String INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN = "Campaign investment must be greater thant platform minimum!";
+  String INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN =
+      "Campaign investment must be greater thant platform minimum!";
 }

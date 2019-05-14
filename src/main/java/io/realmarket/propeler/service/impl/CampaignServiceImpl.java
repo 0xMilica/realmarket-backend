@@ -7,11 +7,7 @@ import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
-import io.realmarket.propeler.service.CampaignService;
-import io.realmarket.propeler.service.CampaignTopicService;
-import io.realmarket.propeler.service.CloudObjectStorageService;
-import io.realmarket.propeler.service.CompanyService;
-import io.realmarket.propeler.service.PlatformSettingsService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
@@ -129,12 +125,16 @@ public class CampaignServiceImpl implements CampaignService {
             () -> new EntityNotFoundException("Campaign with provided id does not exist."));
   }
 
-  public void throwIfNoAccess(Campaign campaign) {
-    if (!campaign
+  public boolean isOwner(Campaign campaign) {
+    return campaign
         .getCompany()
         .getAuth()
         .getId()
-        .equals(AuthenticationUtil.getAuthentication().getAuth().getId())) {
+        .equals(AuthenticationUtil.getAuthentication().getAuth().getId());
+  }
+
+  public void throwIfNoAccess(Campaign campaign) {
+    if (!isOwner(campaign)) {
       throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_CAMPAIGN);
     }
   }
@@ -174,7 +174,8 @@ public class CampaignServiceImpl implements CampaignService {
     if (campaign.getMinInvestment() == null
         || campaign
                 .getMinInvestment()
-                .compareTo(platformSettingsService.getCurrentPlatformSettings().getPlatformMinInvestment())
+                .compareTo(
+                    platformSettingsService.getCurrentPlatformSettings().getPlatformMinInvestment())
             < 0) {
       throw new BadRequestException(INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN);
     }
