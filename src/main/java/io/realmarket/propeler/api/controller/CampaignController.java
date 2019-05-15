@@ -147,7 +147,8 @@ public interface CampaignController {
     @ApiResponse(code = 200, message = "Successfully retrieved all documents"),
     @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve campaign documents.")
   })
-  ResponseEntity<Map<String, List<CampaignDocumentDto>>> getCampaignDocuments(String campaignName);
+  ResponseEntity<Map<String, List<CampaignDocumentResponseDto>>> getCampaignDocuments(
+      String campaignName);
 
   @ApiOperation(
       value = "Get active campaign",

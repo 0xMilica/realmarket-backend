@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 @ApiModel(value = "CampaignDocumentResponseDto")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,13 +18,13 @@ public class CampaignDocumentResponseDto extends CampaignDocumentDto {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long id;
 
-  @ApiModelProperty(value = "Campaign document's campaign")
+  @ApiModelProperty(value = "Campaign document's upload date")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private CampaignDto campaign;
+  private Instant uploadDate;
 
   public CampaignDocumentResponseDto(CampaignDocument campaignDocument) {
     super(campaignDocument);
+    this.uploadDate = campaignDocument.getUploadDate();
     this.id = campaignDocument.getId();
-    this.campaign = new CampaignDto(campaignDocument.getCampaign());
   }
 }

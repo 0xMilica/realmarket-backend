@@ -50,7 +50,6 @@ public class CampaignDocumentUtils {
         .accessLevel(TEST_ACCESS_LEVEL)
         .type(TEST_TYPE)
         .url(TEST_URL)
-        .uploadDate(TEST_UPLOAD_DATE)
         .build();
   }
 

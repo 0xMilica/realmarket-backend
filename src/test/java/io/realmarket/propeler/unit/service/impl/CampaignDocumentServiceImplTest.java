@@ -1,9 +1,8 @@
 package io.realmarket.propeler.unit.service.impl;
 
-import io.realmarket.propeler.api.dto.CampaignDocumentDto;
+import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
 import io.realmarket.propeler.model.CampaignDocument;
 import io.realmarket.propeler.repository.CampaignDocumentRepository;
-import io.realmarket.propeler.service.CampaignDocumentService;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.exception.util.ForbiddenOperationException;
@@ -18,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.security.access.AccessDeniedException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -28,7 +26,6 @@ import java.util.Optional;
 import static io.realmarket.propeler.unit.util.AuthUtils.TEST_USER_AUTH2;
 import static io.realmarket.propeler.unit.util.AuthUtils.mockSecurityContext;
 import static org.junit.Assert.assertEquals;
-import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -83,7 +80,9 @@ public class CampaignDocumentServiceImplTest {
             CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenReturn(CampaignUtils.TEST_CAMPAIGN);
 
-    Mockito.doThrow(ForbiddenOperationException.class).when(campaignService).throwIfNoAccess(CampaignUtils.TEST_CAMPAIGN);
+    Mockito.doThrow(ForbiddenOperationException.class)
+        .when(campaignService)
+        .throwIfNoAccess(CampaignUtils.TEST_CAMPAIGN);
 
     when(cloudObjectStorageService.doesFileExist(campaignDocumentMocked.getUrl())).thenReturn(true);
     when(campaignDocumentRepository.save(campaignDocumentMocked))
@@ -177,12 +176,14 @@ public class CampaignDocumentServiceImplTest {
   public void getAllCampaignDocumentDtoGropedByType() {
     when(campaignService.findByUrlFriendlyNameOrThrowException(
             CampaignUtils.TEST_URL_FRIENDLY_NAME))
-            .thenReturn(CampaignUtils.TEST_CAMPAIGN);
+        .thenReturn(CampaignUtils.TEST_CAMPAIGN);
 
-    when(campaignDocumentRepository
-            .findAllByCampaign(CampaignUtils.TEST_CAMPAIGN)).thenReturn(CampaignDocumentUtils.TEST_CAMPAIGN_DOCUMENT_LIST);
+    when(campaignDocumentRepository.findAllByCampaign(CampaignUtils.TEST_CAMPAIGN))
+        .thenReturn(CampaignDocumentUtils.TEST_CAMPAIGN_DOCUMENT_LIST);
 
-    Map<String, List<CampaignDocumentDto>> gropedDocs = campaignDocumentService.getAllCampaignDocumentDtoGropedByType(CampaignUtils.TEST_URL_FRIENDLY_NAME);
+    Map<String, List<CampaignDocumentResponseDto>> gropedDocs =
+        campaignDocumentService.getAllCampaignDocumentDtoGropedByType(
+            CampaignUtils.TEST_URL_FRIENDLY_NAME);
 
     assertEquals(3, gropedDocs.get(CampaignDocumentUtils.TEST_TYPE.toString()).size());
   }

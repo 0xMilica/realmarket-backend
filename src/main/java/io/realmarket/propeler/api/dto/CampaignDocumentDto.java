@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 
 @ApiModel(value = "CampaignDocumentDto")
 @Data
@@ -37,15 +36,11 @@ public class CampaignDocumentDto {
   @NotBlank
   private String url;
 
-  @ApiModelProperty(value = "Campaign document's upload date")
-  private Instant uploadDate;
-
   public CampaignDocumentDto(CampaignDocument campaignDocument) {
     this.title = campaignDocument.getTitle();
     this.accessLevel = campaignDocument.getAccessLevel();
     this.type = campaignDocument.getType();
     this.url = campaignDocument.getUrl();
-    this.uploadDate = campaignDocument.getUploadDate();
   }
 
   public CampaignDocument buildCampaignDocument() {
@@ -54,7 +49,6 @@ public class CampaignDocumentDto {
         .accessLevel(this.accessLevel)
         .type(this.type)
         .url(this.url)
-        .uploadDate(this.uploadDate)
         .build();
   }
 }

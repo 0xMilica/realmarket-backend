@@ -1,6 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.CampaignDocumentDto;
+import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignDocument;
 import io.realmarket.propeler.model.enums.EUserRole;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     }
 
     campaignDocument.setCampaign(campaign);
-
+    campaignDocument.setUploadDate(Instant.now());
     return campaignDocumentRepository.save(campaignDocument);
   }
 
@@ -86,14 +87,14 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     }
   }
 
-  public Map<String, List<CampaignDocumentDto>> getAllCampaignDocumentDtoGropedByType(
+  public Map<String, List<CampaignDocumentResponseDto>> getAllCampaignDocumentDtoGropedByType(
       String campaignName) {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
     campaignService.throwIfNoAccess(campaign);
 
     return campaignDocumentRepository.findAllByCampaign(campaign).stream()
         .filter(this::hasReadAccess)
-        .map(CampaignDocumentDto::new)
+        .map(CampaignDocumentResponseDto::new)
         .collect(
             groupingBy(
                 campaignDocumentDto -> {

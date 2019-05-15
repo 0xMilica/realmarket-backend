@@ -104,7 +104,7 @@ public class CampaignControllerImpl implements CampaignController {
   }
 
   @GetMapping(value = "/{campaignName}/documents")
-  public ResponseEntity<Map<String, List<CampaignDocumentDto>>> getCampaignDocuments(
+  public ResponseEntity<Map<String, List<CampaignDocumentResponseDto>>> getCampaignDocuments(
       @PathVariable String campaignName) {
     return ResponseEntity.ok(
         campaignDocumentService.getAllCampaignDocumentDtoGropedByType(campaignName));
