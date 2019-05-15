@@ -58,7 +58,6 @@ public class CampaignServiceImpl implements CampaignService {
     this.platformSettingsService = platformSettingsService;
   }
 
-  @Override
   public Campaign findByUrlFriendlyNameOrThrowException(String urlFriendlyName) {
     return campaignRepository
         .findByUrlFriendlyName(urlFriendlyName)
@@ -113,6 +112,13 @@ public class CampaignServiceImpl implements CampaignService {
 
   public CampaignDto getActiveCampaignDto() {
     Campaign campaign = getActiveCampaignForCompany();
+    CampaignDto campaignDto = new CampaignDto(campaign);
+    campaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
+    return campaignDto;
+  }
+
+  public CampaignDto getCampaignByUrlFriendlyName(String name) {
+    Campaign campaign = findByUrlFriendlyNameOrThrowException(name);
     CampaignDto campaignDto = new CampaignDto(campaign);
     campaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
     return campaignDto;

@@ -54,8 +54,7 @@ public class CampaignControllerImpl implements CampaignController {
 
   @GetMapping(value = "/{campaignName}")
   public ResponseEntity<CampaignDto> getCampaign(@PathVariable String campaignName) {
-    return ResponseEntity.ok(
-        new CampaignDto(campaignService.findByUrlFriendlyNameOrThrowException(campaignName)));
+    return ResponseEntity.ok(campaignService.getCampaignByUrlFriendlyName(campaignName));
   }
 
   @PatchMapping(value = "/{campaignName}")
