@@ -40,6 +40,12 @@ public class Campaign {
   @JoinColumn(name = "companyId", foreignKey = @ForeignKey(name = "campaign_fk_on_company"))
   private Company company;
 
+  @JoinColumn(
+      name = "campaignStateId",
+      foreignKey = @ForeignKey(name = "campaign_fk_on_campaign_state"))
+  @ManyToOne
+  private CampaignState campaignState;
+
   public Campaign() {}
 
   public Campaign(CampaignDto campaignDto) {
