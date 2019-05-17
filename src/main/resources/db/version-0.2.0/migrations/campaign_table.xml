@@ -28,7 +28,10 @@
 			min_investment numeric(19,2),
             company_id bigint
             constraint campaign_fk_on_company
-            references company
+            references company,
+            campaign_state_id bigint
+            constraint campaign_fk_on_campaign_state
+            references campaign_state
             );
         </sql>
     </changeSet>
