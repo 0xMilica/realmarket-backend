@@ -46,7 +46,7 @@ public class CampaignDto {
   @ApiModelProperty(value = "Campaign time to raise funds")
   @NotNull(message = "Please provide time to raise funds")
   @Max(value = 90, message = "Please provide time to raise funds that is between 1 and 90 days")
-  private UnsignedInteger timeToRaiseFunds;
+  private Integer timeToRaiseFunds;
 
   @ApiModelProperty(value = "Campaign min equity offered")
   @NotNull(message = "Please provide min equity offered")

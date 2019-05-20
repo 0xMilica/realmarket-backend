@@ -29,7 +29,7 @@ public class Campaign {
   private String name;
   private String urlFriendlyName;
   private Long fundingGoals;
-  private UnsignedInteger timeToRaiseFunds;
+  private Integer timeToRaiseFunds;
   private BigDecimal minEquityOffered;
   private BigDecimal maxEquityOffered;
   private String marketImageUrl;

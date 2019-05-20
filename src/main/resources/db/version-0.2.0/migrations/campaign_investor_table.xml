@@ -21,7 +21,7 @@
             linkedin_url varchar(255),
             location varchar(255),
             name varchar(255),
-            order_number int,
+            order_number smallint,
             photo_url varchar(255),
             twitter_url varchar(255),
             campaign_id bigint
