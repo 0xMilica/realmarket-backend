@@ -34,6 +34,7 @@ public class Campaign {
   private BigDecimal maxEquityOffered;
   private String marketImageUrl;
   private Boolean active;
+  @Builder.Default private Boolean deleted = false;
   private BigDecimal minInvestment;
 
   @OneToOne(fetch = FetchType.LAZY)
@@ -56,5 +57,6 @@ public class Campaign {
     this.maxEquityOffered = campaignDto.getMaxEquityOffered();
     this.urlFriendlyName = campaignDto.getUrlFriendlyName();
     this.minInvestment = campaignDto.getMinInvestment();
+    this.deleted = false;
   }
 }

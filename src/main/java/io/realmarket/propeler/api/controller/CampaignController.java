@@ -53,6 +53,18 @@ public interface CampaignController {
   })
   ResponseEntity<CampaignDto> getCampaign(String campaignName);
 
+  @ApiOperation(value = "Delete campaign", httpMethod = "DELETE", produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParam(
+      name = "campaignName",
+      value = "Campaign's name",
+      required = true,
+      dataType = "String")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaign successfully deleted."),
+    @ApiResponse(code = 404, message = "Campaign does not exists.")
+  })
+  ResponseEntity<Void> deleteCampaign(String campaignName);
+
   @ApiOperation(
       value = "Patch campaign fields",
       httpMethod = "PATCH",

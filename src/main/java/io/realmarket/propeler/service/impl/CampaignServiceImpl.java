@@ -60,20 +60,22 @@ public class CampaignServiceImpl implements CampaignService {
 
   public Campaign findByUrlFriendlyNameOrThrowException(String urlFriendlyName) {
     return campaignRepository
-        .findByUrlFriendlyName(urlFriendlyName)
+        .findByUrlFriendlyNameAndDeletedFalse(urlFriendlyName)
         .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_NOT_FOUND));
   }
 
   @Transactional
   public void createCampaign(CampaignDto campaignDto) {
     campaignRepository
-        .findByCompanyIdAndActiveTrue(campaignDto.getCompanyId())
+        .findByCompanyIdAndActiveTrueAndDeletedFalse(campaignDto.getCompanyId())
         .ifPresent(
             c -> {
               throw new ActiveCampaignAlreadyExistsException();
             });
 
-    if (campaignRepository.findByUrlFriendlyName(campaignDto.getUrlFriendlyName()).isPresent()) {
+    if (campaignRepository
+        .findByUrlFriendlyNameAndDeletedFalse(campaignDto.getUrlFriendlyName())
+        .isPresent()) {
       log.error("Campaign with the provided name '{}' already exists!", campaignDto.getName());
       throw new CampaignNameAlreadyExistsException(ExceptionMessages.CAMPAIGN_NAME_ALREADY_EXISTS);
     }
@@ -106,7 +108,7 @@ public class CampaignServiceImpl implements CampaignService {
         companyService.findByAuthIdOrThrowException(
             AuthenticationUtil.getAuthentication().getAuth().getId());
     return campaignRepository
-        .findByCompanyIdAndActiveTrue(company.getId())
+        .findByCompanyIdAndActiveTrueAndDeletedFalse(company.getId())
         .orElseThrow(() -> new EntityNotFoundException(NO_ACTIVE_CAMPAIGN));
   }
 
@@ -122,6 +124,14 @@ public class CampaignServiceImpl implements CampaignService {
     CampaignDto campaignDto = new CampaignDto(campaign);
     campaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
     return campaignDto;
+  }
+
+  @Transactional
+  public void delete(String campaignName) {
+    Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
+    throwIfNoAccess(campaign);
+    campaign.setDeleted(true);
+    campaignRepository.save(campaign);
   }
 
   public Campaign findByIdOrThrowException(Long id) {

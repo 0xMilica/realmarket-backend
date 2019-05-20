@@ -8,7 +8,10 @@ import java.util.Optional;
 
 @Repository
 public interface CampaignRepository extends JpaRepository<Campaign, Long> {
-  Optional<Campaign> findByUrlFriendlyName(String urlFriendlyName);
 
-  Optional<Campaign> findByCompanyIdAndActiveTrue(final Long companyId);
+  Optional<Campaign> findByIdAndDeletedFalse(String id);
+
+  Optional<Campaign> findByUrlFriendlyNameAndDeletedFalse(String urlFriendlyName);
+
+  Optional<Campaign> findByCompanyIdAndActiveTrueAndDeletedFalse(final Long companyId);
 }

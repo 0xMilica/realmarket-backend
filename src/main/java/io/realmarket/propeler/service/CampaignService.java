@@ -28,4 +28,6 @@ public interface CampaignService {
   CampaignDto getActiveCampaignDto();
 
   CampaignDto getCampaignByUrlFriendlyName(String name);
+
+  void delete(String campaignName);
 }
