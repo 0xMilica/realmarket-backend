@@ -50,7 +50,7 @@ public class CampaignControllerImpl implements CampaignController {
 
   @GetMapping(value = "/{campaignName}")
   public ResponseEntity<CampaignDto> getCampaign(@PathVariable String campaignName) {
-    return ResponseEntity.ok(campaignService.getCampaignByUrlFriendlyName(campaignName));
+    return ResponseEntity.ok(campaignService.getCampaignDtoByUrlFriendlyName(campaignName));
   }
 
   @DeleteMapping(value = "/{campaignName}")
