@@ -28,7 +28,7 @@ public class CampaignStateServiceImpl implements CampaignStateService {
   public void changeState(String campaignUrlFriendlyName, CampaignState followingCampaignState) {
     Campaign campaign = campaignService.getCampaignByUrlFriendlyName(campaignUrlFriendlyName);
     CampaignState currentCampaignState = campaign.getCampaignState();
-    EUserRole eUserRole = AuthenticationUtil.getAuthentication().getAuth().getUserRole();
+    EUserRole eUserRole = AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
 
     if (stateTransitFlow
             .get(CampaignStateName.fromString(currentCampaignState.getName()))
