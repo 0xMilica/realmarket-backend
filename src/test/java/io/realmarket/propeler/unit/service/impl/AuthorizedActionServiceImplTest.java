@@ -44,7 +44,7 @@ public class AuthorizedActionServiceImplTest {
 
   @Test
   public void ValidateAuthorizationAction_Should_ValidateAndReturnSafeData() throws Exception {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any()))
+    when(authorizedActionRepository.findByAuthAndTypeNameAndExpirationIsAfter(any(), any(), any()))
         .thenReturn(Optional.of(OTPUtils.TEST_AUTH_ACTION_NEWEMAIL()));
 
     when(otpService.validate(TEST_AUTH, TEST_2FA_DTO)).thenReturn(true);
@@ -56,7 +56,7 @@ public class AuthorizedActionServiceImplTest {
 
   @Test
   public void ValidateAuthorizationAction_Should_ValidateAndReturnEmpty() throws Exception {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any()))
+    when(authorizedActionRepository.findByAuthAndTypeNameAndExpirationIsAfter(any(), any(), any()))
         .thenReturn(Optional.of(OTPUtils.TEST_AUTH_ACTION_NEWEMAIL()));
     when(otpService.validate(TEST_AUTH, TEST_2FA_DTO)).thenReturn(false);
 
@@ -68,7 +68,7 @@ public class AuthorizedActionServiceImplTest {
   @Test(expected = EntityNotFoundException.class)
   public void
       findAuthorizedActionOrThrowException_Should_ThrowException_OnNoOrExpiredAuthorizationAction() {
-    when(authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(any(), any(), any()))
+    when(authorizedActionRepository.findByAuthAndTypeNameAndExpirationIsAfter(any(), any(), any()))
         .thenReturn(Optional.empty());
 
     authorizedActionService.findAuthorizedActionOrThrowException(TEST_AUTH, NEW_TOTP_SECRET);

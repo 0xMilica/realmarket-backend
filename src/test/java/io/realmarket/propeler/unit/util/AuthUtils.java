@@ -3,7 +3,9 @@ package io.realmarket.propeler.unit.util;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
+import io.realmarket.propeler.model.AuthState;
 import io.realmarket.propeler.model.Person;
+import io.realmarket.propeler.model.UserRole;
 import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.security.UserAuthentication;
@@ -56,6 +58,11 @@ public class AuthUtils {
       new ResetPasswordDto(TEST_TEMPORARY_TOKEN_VALUE, TEST_PASSWORD_NEW);
   private static final String TEST_FIRST_NAME = "TEST_FIRST_NAME";
   private static final String TEST_LAST_NAME = "TEST_LAST_NAME";
+
+  public static final UserRole TEST_USER_ROLE = UserRole.builder().name(TEST_ROLE).id(100L).build();
+  public static final AuthState TEST_AUTH_STATE =
+      AuthState.builder().name(EAuthState.ACTIVE).id(100L).build();
+
   public static final RegistrationDto TEST_REGISTRATION_DTO =
       RegistrationDto.builder()
           .email(TEST_EMAIL)
@@ -72,8 +79,8 @@ public class AuthUtils {
       Auth.builder()
           .id(TEST_AUTH_ID)
           .username(TEST_USERNAME)
-          .state(EAuthState.ACTIVE)
-          .userRole(TEST_ROLE)
+          .state(TEST_AUTH_STATE)
+          .userRole(TEST_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
           .person(new Person(TEST_REGISTRATION_DTO))
@@ -84,8 +91,8 @@ public class AuthUtils {
       Auth.builder()
           .id(TEST_AUTH_ID + 1)
           .username(TEST_USERNAME)
-          .state(EAuthState.ACTIVE)
-          .userRole(TEST_ROLE)
+          .state(TEST_AUTH_STATE)
+          .userRole(TEST_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
           .person(new Person(TEST_REGISTRATION_DTO))
@@ -93,8 +100,8 @@ public class AuthUtils {
   public static final Auth TEST_AUTH_OLD_SECRET =
       Auth.builder()
           .username(TEST_USERNAME)
-          .state(EAuthState.ACTIVE)
-          .userRole(TEST_ROLE)
+          .state(TEST_AUTH_STATE)
+          .userRole(TEST_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(OTPUtils.TEST_SECRET_1)
           .person(new Person(TEST_REGISTRATION_DTO))

@@ -3,6 +3,7 @@ package io.realmarket.propeler.unit.service.impl;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
+import io.realmarket.propeler.model.TemporaryTokenType;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
@@ -32,6 +33,7 @@ import static io.realmarket.propeler.unit.util.OTPUtils.TEST_SECRET_1;
 import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_RM_COOKIE;
 import static io.realmarket.propeler.unit.util.RememberMeCookieUtils.TEST_VALUE;
 import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN;
+import static io.realmarket.propeler.unit.util.TemporaryTokenUtils.TEST_TEMPORARY_TOKEN_TYPE;
 import static io.realmarket.propeler.unit.util.TwoFactorAuthUtils.LOGIN_2F_DTO_RM;
 import static io.realmarket.propeler.unit.util.TwoFactorAuthUtils.TEST_TWO_FA_TOKEN;
 import static org.junit.Assert.assertEquals;
@@ -149,7 +151,8 @@ public class TwoFactorAuthServiceImplTest {
   public void login2FA_Should_Return_LoginResponseDto() {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
-            .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
+            .temporaryTokenType(
+                TemporaryTokenType.builder().name(ETemporaryTokenType.LOGIN_TOKEN).id(100L).build())
             .auth(TEST_AUTH)
             .value("TEST_VALUE")
             .build();
@@ -180,7 +183,11 @@ public class TwoFactorAuthServiceImplTest {
 
   @Test(expected = ForbiddenOperationException.class)
   public void login2FA_Should_Return_ForbiddenOperationException_IfTokenNotValid() {
-    TemporaryToken temporaryTokenMocked = TemporaryToken.builder().auth(TEST_AUTH).build();
+    TemporaryToken temporaryTokenMocked =
+        TemporaryToken.builder()
+            .auth(TEST_AUTH)
+            .temporaryTokenType(TEST_TEMPORARY_TOKEN_TYPE)
+            .build();
 
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             TEST_TWO_FA_TOKEN.getToken()))
@@ -196,7 +203,8 @@ public class TwoFactorAuthServiceImplTest {
   public void login2FA_Should_Return_ForbiddenOperationException_IfCodeNotValid() {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
-            .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
+            .temporaryTokenType(
+                TemporaryTokenType.builder().name(ETemporaryTokenType.LOGIN_TOKEN).id(101L).build())
             .auth(TEST_AUTH)
             .build();
 
@@ -215,7 +223,8 @@ public class TwoFactorAuthServiceImplTest {
   public void loginRememberMe_Return_LoginResponseDto() {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
-            .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
+            .temporaryTokenType(
+                TemporaryTokenType.builder().name(ETemporaryTokenType.LOGIN_TOKEN).id(102L).build())
             .auth(TEST_AUTH)
             .build();
 
@@ -239,7 +248,11 @@ public class TwoFactorAuthServiceImplTest {
 
   @Test(expected = ForbiddenOperationException.class)
   public void loginRememberMe_Should_Return_ForbiddenOperationException_IfTokenNotValid() {
-    TemporaryToken temporaryTokenMocked = TemporaryToken.builder().auth(TEST_AUTH).build();
+    TemporaryToken temporaryTokenMocked =
+        TemporaryToken.builder()
+            .auth(TEST_AUTH)
+            .temporaryTokenType(TEST_TEMPORARY_TOKEN_TYPE)
+            .build();
 
     when(temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             TEST_TWO_FA_TOKEN.getToken()))
@@ -252,7 +265,8 @@ public class TwoFactorAuthServiceImplTest {
   public void loginRememberMe_Should_Return_ForbiddenOperationException_IfCookieNotValid() {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
-            .temporaryTokenType(ETemporaryTokenType.LOGIN_TOKEN)
+            .temporaryTokenType(
+                TemporaryTokenType.builder().name(ETemporaryTokenType.LOGIN_TOKEN).id(103L).build())
             .auth(TEST_AUTH)
             .build();
 

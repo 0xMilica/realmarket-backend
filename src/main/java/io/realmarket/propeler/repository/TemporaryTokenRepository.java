@@ -18,5 +18,5 @@ public interface TemporaryTokenRepository extends JpaRepository<TemporaryToken, 
 
   void deleteAllByExpirationTimeLessThan(Instant date);
 
-  void deleteByTemporaryTokenTypeAndAuthId(final ETemporaryTokenType type, final Long authId);
+  void deleteByTemporaryTokenTypeNameAndAuthId(final ETemporaryTokenType type, final Long authId);
 }

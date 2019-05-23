@@ -25,7 +25,7 @@ public class JWT {
 
   private Instant expirationTime;
 
-  @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "token_fk1_on_auth"))
+  @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "token_fk_on_auth"))
   @ManyToOne
   private Auth auth;
 }

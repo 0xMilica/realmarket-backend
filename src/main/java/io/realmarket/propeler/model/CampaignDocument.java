@@ -1,14 +1,9 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.ECampaignDocumentAccessLevel;
-import io.realmarket.propeler.model.enums.ECampaignDocumentType;
-import io.realmarket.propeler.model.enums.PostgreSQLEnumType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -19,8 +14,6 @@ import java.time.Instant;
 @Builder
 @Entity
 @Table(name = "campaign_document")
-@TypeDef(name = "ecampaigndocumentaccesslevel", typeClass = PostgreSQLEnumType.class)
-@TypeDef(name = "ecampaigndocumenttype", typeClass = PostgreSQLEnumType.class)
 public class CampaignDocument {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CAMPAIGN_DOCUMENT_SEQ")
@@ -32,15 +25,15 @@ public class CampaignDocument {
 
   private String title;
 
-  @Column(columnDefinition = "ecampaigndocumentaccesslevel")
-  @Type(type = "ecampaigndocumentaccesslevel")
-  @Enumerated(EnumType.STRING)
-  private ECampaignDocumentAccessLevel accessLevel;
+  @JoinColumn(
+      name = "accessLevelId",
+      foreignKey = @ForeignKey(name = "campaign_document_fk_on_access_level"))
+  @ManyToOne
+  private CampaignDocumentAccessLevel accessLevel;
 
-  @Column(columnDefinition = "ecampaigndocumenttype")
-  @Type(type = "ecampaigndocumenttype")
-  @Enumerated(EnumType.STRING)
-  private ECampaignDocumentType type;
+  @JoinColumn(name = "typeId", foreignKey = @ForeignKey(name = "campaign_document_fk_on_type"))
+  @ManyToOne
+  private CampaignDocumentType type;
 
   private String url;
   private Instant uploadDate;

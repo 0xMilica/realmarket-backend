@@ -15,7 +15,7 @@
             expiration_time timestamp,
             value varchar(255),
             auth_id bigint
-            constraint remember_me_cookie_fk1_on_auth
+            constraint remember_me_cookie_fk_on_auth
             references auth
             );
         </sql>

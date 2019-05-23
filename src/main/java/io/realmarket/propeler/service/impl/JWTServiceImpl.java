@@ -59,7 +59,7 @@ public class JWTServiceImpl implements JWTService {
             .withIssuer(ISSUER)
             .withSubject(String.valueOf(auth.getId()))
             .withClaim("username", auth.getUsername())
-            .withClaim("role", auth.getUserRole().toString())
+            .withClaim("role", auth.getUserRole().getName().toString())
             .withIssuedAt(Date.from(Instant.now()))
             .withJWTId(jti)
             .sign(Algorithm.HMAC512(hmacSecret));

@@ -1,13 +1,9 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.EAuthorizedActionType;
-import io.realmarket.propeler.model.enums.PostgreSQLEnumType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -20,10 +16,9 @@ import java.time.Instant;
 @Table(
     uniqueConstraints = {
       @UniqueConstraint(
-          columnNames = {"type", "authId"},
-          name = "authorized_action_uk_on_type_and_authId")
+          columnNames = {"typeId", "authId"},
+          name = "authorized_action_uk_on_type_and_auth")
     })
-@TypeDef(name = "eauthorizedactiontype", typeClass = PostgreSQLEnumType.class)
 public class AuthorizedAction {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AUTHORIZED_ACTION_SEQ")
@@ -41,8 +36,7 @@ public class AuthorizedAction {
 
   private Instant expiration;
 
-  @Column(columnDefinition = "eauthorizedactiontype")
-  @Type(type = "eauthorizedactiontype")
-  @Enumerated(EnumType.STRING)
-  private EAuthorizedActionType type;
+  @JoinColumn(name = "typeId", foreignKey = @ForeignKey(name = "authorized_action_on_type"))
+  @ManyToOne
+  private AuthorizedActionType type;
 }

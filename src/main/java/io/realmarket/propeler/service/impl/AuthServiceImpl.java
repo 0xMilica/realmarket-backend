@@ -3,15 +3,14 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.E2FAStatus;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
-import io.realmarket.propeler.model.Auth;
-import io.realmarket.propeler.model.AuthorizedAction;
-import io.realmarket.propeler.model.Person;
-import io.realmarket.propeler.model.TemporaryToken;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.EAuthorizedActionType;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.AuthRepository;
+import io.realmarket.propeler.repository.AuthStateRepository;
+import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
@@ -55,6 +54,8 @@ public class AuthServiceImpl implements AuthService {
       Arrays.asList(EUserRole.ROLE_ENTREPRENEUR, EUserRole.ROLE_INVESTOR);
 
   private final AuthRepository authRepository;
+  private final UserRoleRepository userRoleRepository;
+  private final AuthStateRepository authStateRepository;
 
   private final PersonService personService;
   private final EmailService emailService;
@@ -73,6 +74,8 @@ public class AuthServiceImpl implements AuthService {
       PersonService personService,
       EmailService emailService,
       AuthRepository authRepository,
+      UserRoleRepository userRoleRepository,
+      AuthStateRepository authStateRepository,
       TemporaryTokenService temporaryTokenService,
       RememberMeCookieService rememberMeCookieService,
       JWTService jwtService,
@@ -83,6 +86,8 @@ public class AuthServiceImpl implements AuthService {
     this.personService = personService;
     this.emailService = emailService;
     this.authRepository = authRepository;
+    this.userRoleRepository = userRoleRepository;
+    this.authStateRepository = authStateRepository;
     this.temporaryTokenService = temporaryTokenService;
     this.jwtService = jwtService;
     this.rememberMeCookieService = rememberMeCookieService;
@@ -123,14 +128,18 @@ public class AuthServiceImpl implements AuthService {
       throw new ForbiddenRoleException(INVALID_REQUEST);
     }
 
+    Optional<UserRole> userRole = userRoleRepository.findByName(registrationDto.getUserRole());
+    Optional<AuthState> authState =
+        this.authStateRepository.findByName(EAuthState.CONFIRM_REGISTRATION);
+
     Person person = this.personService.save(new Person(registrationDto));
 
     Auth auth =
         this.authRepository.save(
             Auth.builder()
                 .username(registrationDto.getUsername())
-                .state(EAuthState.CONFIRM_REGISTRATION)
-                .userRole(registrationDto.getUserRole())
+                .state(authState.get())
+                .userRole(userRole.get())
                 .password(passwordEncoder.encode(registrationDto.getPassword()))
                 .person(person)
                 .blocked(false)
@@ -162,7 +171,9 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public void finalize2faInitialization(Auth auth) {
-    auth.setState(EAuthState.ACTIVE);
+    Optional<AuthState> authState = this.authStateRepository.findByName(EAuthState.ACTIVE);
+
+    auth.setState(authState.get());
     authRepository.save(auth);
   }
 
@@ -175,8 +186,10 @@ public class AuthServiceImpl implements AuthService {
         temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             confirmRegistrationDto.getToken());
 
+    Optional<AuthState> authState = this.authStateRepository.findByName(EAuthState.INITIALIZE_2FA);
+
     Auth auth = temporaryToken.getAuth();
-    auth.setState(EAuthState.INITIALIZE_2FA);
+    auth.setState(authState.get());
     authRepository.save(auth);
 
     temporaryTokenService.deleteToken(temporaryToken);
@@ -339,7 +352,7 @@ public class AuthServiceImpl implements AuthService {
     changePersonEmail(token, authorizedAction);
     temporaryTokenService.deleteToken(token);
     authorizedActionService.deleteByAuthAndType(
-        authorizedAction.getAuth(), authorizedAction.getType());
+        authorizedAction.getAuth(), authorizedAction.getType().getName());
   }
 
   private Boolean isRoleAllowed(EUserRole role) {
@@ -350,7 +363,7 @@ public class AuthServiceImpl implements AuthService {
     checkLoginCredentials(auth, password);
     loginIPAttemptsService.loginSucceeded(AuthenticationUtil.getClientIp());
     loginUsernameAttemptsService.loginSucceeded(auth.getUsername());
-    if (auth.getState().equals(EAuthState.INITIALIZE_2FA)) {
+    if (auth.getState().getName().equals(EAuthState.INITIALIZE_2FA)) {
       return new AuthResponseDto(
           E2FAStatus.INITIALIZE,
           temporaryTokenService.createToken(auth, ETemporaryTokenType.SETUP_2FA_TOKEN).getValue());
@@ -361,7 +374,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   public void checkLoginCredentials(Auth auth, String password) {
-    if (auth.getState().equals(EAuthState.CONFIRM_REGISTRATION)) {
+    if (auth.getState().getName().equals(EAuthState.CONFIRM_REGISTRATION)) {
       log.error("User with auth id '{}' is not active ", auth.getId());
       loginIPAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
       blockByUsernameIfNotBlocked(auth);

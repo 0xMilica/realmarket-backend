@@ -2,24 +2,20 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
-    <changeSet author="ntodorovic" id="1">
+    <changeSet author="ovlajic" id="1">
         <sql
                 endDelimiter=";"
                 splitStatements="true"
                 stripComments="true">
-            create sequence jwt_seq;
-            create table if not exists jwt
+            create sequence temporary_token_type_seq;
+            create table if not exists temporary_token_type
             (
             id bigint not null
-            constraint jwt_pkey
+            constraint temporary_token_type_pkey
             primary key,
-            expiration_time timestamp,
-            value varchar(2048)
-            constraint jwt_uk_on_value
-            unique,
-            auth_id bigint
-            constraint jwt_fk_on_auth
-            references auth
+            name varchar(255)
+            constraint temporary_token_type_uk_on_name
+            unique
             );
         </sql>
     </changeSet>

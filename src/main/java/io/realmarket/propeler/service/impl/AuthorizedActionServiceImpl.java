@@ -3,8 +3,10 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.AuthorizedAction;
+import io.realmarket.propeler.model.AuthorizedActionType;
 import io.realmarket.propeler.model.enums.EAuthorizedActionType;
 import io.realmarket.propeler.repository.AuthorizedActionRepository;
+import io.realmarket.propeler.repository.AuthorizedActionTypeRepository;
 import io.realmarket.propeler.service.AuthorizedActionService;
 import io.realmarket.propeler.service.OTPService;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
@@ -24,12 +26,16 @@ import static io.realmarket.propeler.model.enums.EAuthorizedActionType.NEW_TOTP_
 @Slf4j
 public class AuthorizedActionServiceImpl implements AuthorizedActionService {
   private final AuthorizedActionRepository authorizedActionRepository;
+  private final AuthorizedActionTypeRepository authorizedActionTypeRepository;
   private final OTPService otpService;
 
   @Autowired
   public AuthorizedActionServiceImpl(
-      AuthorizedActionRepository authorizedActionRepository, @Lazy OTPService otpService) {
+      AuthorizedActionRepository authorizedActionRepository,
+      AuthorizedActionTypeRepository authorizedActionTypeRepository,
+      @Lazy OTPService otpService) {
     this.authorizedActionRepository = authorizedActionRepository;
+    this.authorizedActionTypeRepository = authorizedActionTypeRepository;
     this.otpService = otpService;
   }
 
@@ -39,10 +45,14 @@ public class AuthorizedActionServiceImpl implements AuthorizedActionService {
     Auth auth = new Auth(authId);
     deleteByAuthAndType(auth, type);
     log.info("Store authorization action.");
+
+    Optional<AuthorizedActionType> authorizedActionType =
+        this.authorizedActionTypeRepository.findByName(type);
+
     AuthorizedAction authorizedAction =
         AuthorizedAction.builder()
             .auth(auth)
-            .type(type)
+            .type(authorizedActionType.get())
             .data(data)
             .expiration(Instant.now().plusMillis(mmTimeout))
             .build();
@@ -50,14 +60,15 @@ public class AuthorizedActionServiceImpl implements AuthorizedActionService {
   }
 
   public void deleteByAuthAndType(Auth authId, EAuthorizedActionType type) {
-    authorizedActionRepository.deleteAllByAuthAndType(authId, type);
+    authorizedActionRepository.deleteAllByAuthAndTypeName(authId, type);
     authorizedActionRepository.flush();
   }
 
   public AuthorizedAction findAuthorizedActionOrThrowException(
       Auth auth, EAuthorizedActionType type) {
     Optional<AuthorizedAction> authorizedAction =
-        authorizedActionRepository.findByAuthAndTypeAndExpirationIsAfter(auth, type, Instant.now());
+        authorizedActionRepository.findByAuthAndTypeNameAndExpirationIsAfter(
+            auth, type, Instant.now());
     if (!authorizedAction.isPresent()) {
       throw new EntityNotFoundException(ExceptionMessages.AUTHORIZATION_ACTION_NOT_FOUND);
     }

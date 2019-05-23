@@ -27,7 +27,7 @@ public class RememberMeCookie {
 
   private Instant expirationTime;
 
-  @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "remember_me_cookie_fk1_on_auth"))
+  @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "remember_me_cookie_fk_on_auth"))
   @ManyToOne
   private Auth auth;
 }

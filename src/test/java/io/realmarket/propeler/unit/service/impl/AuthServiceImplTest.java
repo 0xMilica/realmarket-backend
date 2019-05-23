@@ -3,12 +3,15 @@ package io.realmarket.propeler.unit.service.impl;
 import io.realmarket.propeler.api.dto.AuthResponseDto;
 import io.realmarket.propeler.api.dto.EmailDto;
 import io.realmarket.propeler.model.Auth;
+import io.realmarket.propeler.model.AuthState;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.EAuthorizedActionType;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.repository.AuthRepository;
+import io.realmarket.propeler.repository.AuthStateRepository;
+import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
@@ -61,6 +64,8 @@ public class AuthServiceImplTest {
   @Mock private AuthorizedActionService authorizedActionService;
   @Mock private LoginIPAttemptsService loginIPAttemptsService;
   @Mock private LoginUsernameAttemptsService loginUsernameAttemptsService;
+  @Mock private UserRoleRepository userRoleRepository;
+  @Mock private AuthStateRepository authStateRepository;
   @InjectMocks private AuthServiceImpl authServiceImpl;
 
   @Before
@@ -76,6 +81,8 @@ public class AuthServiceImplTest {
     when(temporaryTokenService.createToken(TEST_AUTH, ETemporaryTokenType.REGISTRATION_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
     when(passwordEncoder.encode(TEST_PASSWORD)).thenReturn(TEST_PASSWORD);
+    when(userRoleRepository.findByName(any())).thenReturn(Optional.of(AuthUtils.TEST_USER_ROLE));
+    when(authStateRepository.findByName(any())).thenReturn(Optional.of(TEST_AUTH_STATE));
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
     authServiceImpl.register(AuthUtils.TEST_REGISTRATION_DTO);
@@ -213,6 +220,7 @@ public class AuthServiceImplTest {
     final TemporaryToken mock = PowerMockito.spy(TEST_TEMPORARY_TOKEN);
     PowerMockito.when(mock, "getAuth").thenReturn(TEST_AUTH);
     when(authRepository.save(TEST_AUTH)).thenReturn(TEST_AUTH);
+    when(authStateRepository.findByName(any())).thenReturn(Optional.of(TEST_AUTH_STATE));
     doNothing().when(temporaryTokenService).deleteToken(TEST_TEMPORARY_TOKEN);
 
     authServiceImpl.confirmRegistration(AuthUtils.TEST_CONFIRM_REGISTRATION_DTO);
@@ -220,7 +228,7 @@ public class AuthServiceImplTest {
     verify(temporaryTokenService, Mockito.times(1))
         .findByValueAndNotExpiredOrThrowException(TEST_TEMPORARY_TOKEN_VALUE);
     verify(authRepository, Mockito.times(1)).save(any(Auth.class));
-    assertEquals(EAuthState.INITIALIZE_2FA, TEST_AUTH.getState());
+    assertEquals(EAuthState.ACTIVE, TEST_AUTH.getState().getName());
   }
 
   @Test
@@ -283,7 +291,7 @@ public class AuthServiceImplTest {
   public void Login_Should_Return_Valid_JWT_Token() {
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     Auth auth = TEST_AUTH.toBuilder().build();
-    auth.setState(EAuthState.ACTIVE);
+    auth.setState(AuthState.builder().name(EAuthState.ACTIVE).id(100L).build());
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
     when(passwordEncoder.matches(TEST_LOGIN_DTO.getPassword(), auth.getPassword()))
         .thenReturn(true);
@@ -319,7 +327,7 @@ public class AuthServiceImplTest {
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
 
     Auth auth = TEST_AUTH;
-    auth.setState(EAuthState.ACTIVE);
+    auth.setState(AuthState.builder().name(EAuthState.ACTIVE).id(101L).build());
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
 
     authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
@@ -329,7 +337,7 @@ public class AuthServiceImplTest {
   public void Login_Should_Return_ForbiddenOperationException_Exception_When_Account_Blocked() {
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     Auth auth = TEST_AUTH.toBuilder().build();
-    auth.setState(EAuthState.ACTIVE);
+    auth.setState(AuthState.builder().name(EAuthState.ACTIVE).id(102L).build());
     auth.setBlocked(true);
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
     authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
@@ -407,7 +415,7 @@ public class AuthServiceImplTest {
     verify(authorizedActionService, times(1))
         .deleteByAuthAndType(
             OTPUtils.TEST_AUTH_ACTION_NEWEMAIL().getAuth(),
-            OTPUtils.TEST_AUTH_ACTION_NEWEMAIL().getType());
+            OTPUtils.TEST_AUTH_ACTION_NEWEMAIL().getType().getName());
   }
 
   @Test(expected = EntityNotFoundException.class)

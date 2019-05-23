@@ -2,6 +2,7 @@ package io.realmarket.propeler.unit.service.impl;
 
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.repository.TemporaryTokenRepository;
+import io.realmarket.propeler.repository.TemporaryTokenTypeRepository;
 import io.realmarket.propeler.service.exception.InvalidTokenException;
 import io.realmarket.propeler.service.impl.TemporaryTokenServiceImpl;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class TemporaryTokenServiceImplTest {
 
   @Mock private TemporaryTokenRepository temporaryTokenRepository;
+  @Mock private TemporaryTokenTypeRepository temporaryTokenTypeRepository;
 
   @InjectMocks private TemporaryTokenServiceImpl temporaryTokenService;
 
@@ -53,8 +55,11 @@ public class TemporaryTokenServiceImplTest {
   @Test
   public void CreateToken_Should_ReturnToken() {
     when(temporaryTokenRepository.save(any(TemporaryToken.class))).thenReturn(TEST_TEMPORARY_TOKEN);
+    when(temporaryTokenTypeRepository.findByName(any()))
+        .thenReturn(Optional.of(TEST_TEMPORARY_TOKEN_TYPE));
 
-    TemporaryToken retVal = temporaryTokenService.createToken(TEST_AUTH, TEST_TEMPORARY_TOKEN_TYPE);
+    TemporaryToken retVal =
+        temporaryTokenService.createToken(TEST_AUTH, TEST_TEMPORARY_TOKEN_ENUM_TYPE);
 
     assertEquals(TEST_TEMPORARY_TOKEN, retVal);
   }

@@ -7,10 +7,14 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <include file="migrations/person_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/auth_state_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/user_role_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/auth_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/temporary_token_type_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/temporary_token_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/jwt_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/otp_wildcard_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/authorized_action_type_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/authorized_action_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/remember_me_cookie.xml" relativeToChangelogFile="true"/>
 
