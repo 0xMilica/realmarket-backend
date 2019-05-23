@@ -99,7 +99,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     TemporaryToken temporaryToken =
         temporaryTokenService.findByValueAndNotExpiredOrThrowException(token);
 
-    if (temporaryToken.getTemporaryTokenType() != ETemporaryTokenType.LOGIN_TOKEN) {
+    if (temporaryToken.getTemporaryTokenType().getName() != ETemporaryTokenType.LOGIN_TOKEN) {
       throw new ForbiddenOperationException(ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION);
     }
     return temporaryToken;
@@ -111,7 +111,10 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     TemporaryToken temporaryToken =
         temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             twoFASecretRequestDto.getSetupToken());
-    if (!temporaryToken.getTemporaryTokenType().equals(ETemporaryTokenType.SETUP_2FA_TOKEN)) {
+    if (!temporaryToken
+        .getTemporaryTokenType()
+        .getName()
+        .equals(ETemporaryTokenType.SETUP_2FA_TOKEN)) {
       throw new ForbiddenOperationException(ExceptionMessages.INVALID_TOKEN_TYPE);
     }
     String secret = otpService.generateTOTPSecret(temporaryToken.getAuth());
@@ -124,7 +127,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     TemporaryToken temporaryToken =
         temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             twoFASecretVerifyDto.getToken());
-    if (temporaryToken.getTemporaryTokenType() != ETemporaryTokenType.SETUP_2FA_TOKEN) {
+    if (temporaryToken.getTemporaryTokenType().getName() != ETemporaryTokenType.SETUP_2FA_TOKEN) {
       throw new ForbiddenOperationException(ExceptionMessages.INVALID_TOKEN_TYPE);
     }
     Auth auth = temporaryToken.getAuth();

@@ -21,7 +21,7 @@ public class UserAuthentication implements Authentication {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return AuthServiceImpl.getAuthorities(auth.getUserRole());
+    return AuthServiceImpl.getAuthorities(auth.getUserRole().getName());
   }
 
   @Override

@@ -1,6 +1,5 @@
 package io.realmarket.propeler.model;
 
-import com.google.common.primitives.UnsignedInteger;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

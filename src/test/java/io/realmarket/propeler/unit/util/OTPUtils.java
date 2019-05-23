@@ -1,6 +1,7 @@
 package io.realmarket.propeler.unit.util;
 
 import io.realmarket.propeler.model.AuthorizedAction;
+import io.realmarket.propeler.model.AuthorizedActionType;
 import io.realmarket.propeler.model.OTPWildcard;
 
 import java.time.Instant;
@@ -37,7 +38,7 @@ public class OTPUtils {
         .auth(TEST_AUTH)
         .data(TEST_SECRET_1)
         .expiration(Instant.now().plusMillis(1000000L))
-        .type(NEW_TOTP_SECRET)
+        .type(AuthorizedActionType.builder().name(NEW_TOTP_SECRET).id(100L).build())
         .build();
   }
 
@@ -46,7 +47,7 @@ public class OTPUtils {
         .auth(TEST_AUTH)
         .data(TEST_EMAIL)
         .expiration(Instant.now().plusMillis(1000000L))
-        .type(NEW_EMAIL)
+        .type(AuthorizedActionType.builder().name(NEW_EMAIL).id(100L).build())
         .build();
   }
 
@@ -55,7 +56,7 @@ public class OTPUtils {
         .auth(TEST_AUTH)
         .data(TEST_SECRET_1)
         .expiration(Instant.now().minusMillis(1000000L))
-        .type(NEW_TOTP_SECRET)
+        .type(AuthorizedActionType.builder().name(NEW_TOTP_SECRET).id(100L).build())
         .build();
   }
 

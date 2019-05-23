@@ -2,7 +2,6 @@ package io.realmarket.propeler.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.primitives.UnsignedInteger;
 import io.realmarket.propeler.api.annotations.UrlFriendly;
 import io.realmarket.propeler.model.Campaign;
 import io.swagger.annotations.ApiModel;

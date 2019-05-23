@@ -1,13 +1,9 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.ETemporaryTokenType;
-import io.realmarket.propeler.model.enums.PostgreSQLEnumType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -20,10 +16,9 @@ import java.time.Instant;
 @Table(
     uniqueConstraints = {
       @UniqueConstraint(
-          columnNames = {"temporaryTokenType", "authId"},
-          name = "token_uk_on_temporaryTokenType_and_authId")
+          columnNames = {"temporaryTokenTypeId", "authId"},
+          name = "temporary_token_uk_on_temporary_token_type_and_auth")
     })
-@TypeDef(name = "etemporarytokentype", typeClass = PostgreSQLEnumType.class)
 public class TemporaryToken {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TEMPORARY_TOKEN_SEQ")
@@ -35,14 +30,15 @@ public class TemporaryToken {
 
   private String value;
 
-  @Column(columnDefinition = "etemporarytokentype")
-  @Type(type = "etemporarytokentype")
-  @Enumerated(EnumType.STRING)
-  private ETemporaryTokenType temporaryTokenType;
+  @JoinColumn(
+      name = "temporaryTokenTypeId",
+      foreignKey = @ForeignKey(name = "temporary_token_fk_on_temporary_token_type"))
+  @ManyToOne
+  private TemporaryTokenType temporaryTokenType;
 
   private Instant expirationTime;
 
-  @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "token_fk1_on_auth"))
+  @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "temporary_token_fk_on_auth"))
   @ManyToOne
   private Auth auth;
 }

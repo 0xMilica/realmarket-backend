@@ -94,8 +94,7 @@ public class CampaignControllerImpl implements CampaignController {
       @PathVariable String campaignName) {
     return ResponseEntity.ok(
         new CampaignDocumentResponseDto(
-            campaignDocumentService.submitDocument(
-                campaignDocumentDto.buildCampaignDocument(), campaignName)));
+            campaignDocumentService.submitDocument(campaignDocumentDto, campaignName)));
   }
 
   @DeleteMapping(value = "/{campaignName}/documents/{documentId}")

@@ -2,9 +2,12 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
+import io.realmarket.propeler.model.TemporaryTokenType;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.repository.TemporaryTokenRepository;
+import io.realmarket.propeler.repository.TemporaryTokenTypeRepository;
 import io.realmarket.propeler.service.TemporaryTokenService;
+import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.InvalidTokenException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.RandomStringBuilder;
@@ -23,10 +26,14 @@ import java.util.Optional;
 public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   private static final int TOKEN_LENGTH = 36;
   private final TemporaryTokenRepository temporaryTokenRepository;
+  private final TemporaryTokenTypeRepository temporaryTokenTypeRepository;
 
   @Autowired
-  public TemporaryTokenServiceImpl(TemporaryTokenRepository temporaryTokenRepository) {
+  public TemporaryTokenServiceImpl(
+      TemporaryTokenRepository temporaryTokenRepository,
+      TemporaryTokenTypeRepository temporaryTokenTypeRepository) {
     this.temporaryTokenRepository = temporaryTokenRepository;
+    this.temporaryTokenTypeRepository = temporaryTokenTypeRepository;
   }
 
   private static Long getExpirationTime(ETemporaryTokenType tokenType) {
@@ -61,18 +68,22 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   public TemporaryToken createToken(Auth auth, ETemporaryTokenType type) {
 
     deleteByTemporaryTokenTypeAndAuthId(auth.getId(), type);
+    Optional<TemporaryTokenType> tokenType = this.temporaryTokenTypeRepository.findByName(type);
+    if (!tokenType.isPresent()) {
+      throw new BadRequestException(ExceptionMessages.INVALID_TOKEN_TYPE);
+    }
 
     return temporaryTokenRepository.save(
         TemporaryToken.builder()
             .value(RandomStringBuilder.generateBase32String(TOKEN_LENGTH))
             .auth(auth)
-            .temporaryTokenType(type)
+            .temporaryTokenType(tokenType.get())
             .expirationTime(Instant.now().plusMillis(getExpirationTime(type)))
             .build());
   }
 
   private void deleteByTemporaryTokenTypeAndAuthId(Long authId, ETemporaryTokenType type) {
-    temporaryTokenRepository.deleteByTemporaryTokenTypeAndAuthId(type, authId);
+    temporaryTokenRepository.deleteByTemporaryTokenTypeNameAndAuthId(type, authId);
     temporaryTokenRepository.flush();
   }
 

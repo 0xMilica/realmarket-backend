@@ -8,16 +8,18 @@
                 splitStatements="true"
                 stripComments="true">
             create sequence campaign_document_seq;
-            create type ecampaigndocumentaccesslevel as enum ('PLATFORM_ADMINS', 'INVESTORS', 'PUBLIC');
-            create type ecampaigndocumenttype as enum ('DOCTYPE_APR_PAPER', 'DOCTYPE_BUSINESS_PLAN', 'DOCTYPE_PITCH_DECK', 'DOCTYPE_DUE_DILIGENCE_OTHER');
             create table if not exists campaign_document
             (
             id bigint not null
             constraint campaign_document_pkey
             primary key,
-            access_level ecampaigndocumentaccesslevel,
+            access_level_id bigint
+            constraint campaign_document_fk_on_access_level
+            references campaign_document_access_level,
             title varchar(255),
-            type ecampaigndocumenttype,
+            type_id bigint
+            constraint campaign_document_fk_on_type
+            references campaign_document_type,
             upload_date timestamp,
             url varchar(255),
             campaign_id bigint

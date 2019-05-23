@@ -8,23 +8,25 @@
                 splitStatements="true"
                 stripComments="true">
             create sequence auth_seq;
-            create type euserrole as enum ('ROLE_ADMIN', 'ROLE_INVESTOR', 'ROLE_ENTREPRENEUR');
-            create type eauthstate as enum ('CONFIRM_REGISTRATION', 'INITIALIZE_2FA', 'ACTIVE');
             create table if not exists auth
             (
             id bigint not null
             constraint auth_pkey
             primary key,
-            state eauthstate,
+            state_id bigint
+            constraint auth_fk_on_state
+            references auth_state,
             password varchar(255),
-            user_role euserrole,
+            user_role_id bigint
+            constraint auth_fk_on_user_role
+            references user_role,
             blocked boolean,
             totp_secret varchar(255),
             username varchar(255)
             constraint auth_uk_on_username
             unique,
             person_id bigint
-            constraint auth_fk1_on_person
+            constraint auth_fk_on_person
             references person
             );
         </sql>

@@ -38,17 +38,8 @@ public class CampaignDocumentDto {
 
   public CampaignDocumentDto(CampaignDocument campaignDocument) {
     this.title = campaignDocument.getTitle();
-    this.accessLevel = campaignDocument.getAccessLevel();
-    this.type = campaignDocument.getType();
+    this.accessLevel = campaignDocument.getAccessLevel().getName();
+    this.type = campaignDocument.getType().getName();
     this.url = campaignDocument.getUrl();
-  }
-
-  public CampaignDocument buildCampaignDocument() {
-    return CampaignDocument.builder()
-        .title(this.title)
-        .accessLevel(this.accessLevel)
-        .type(this.type)
-        .url(this.url)
-        .build();
   }
 }

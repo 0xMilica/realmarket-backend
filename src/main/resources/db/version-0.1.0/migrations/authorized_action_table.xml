@@ -8,7 +8,6 @@
                 splitStatements="true"
                 stripComments="true">
             create sequence authorized_action_seq;
-            create type eauthorizedactiontype as enum ('NEW_TOTP_SECRET', 'NEW_PASSWORD', 'NEW_EMAIL');
             create table if not exists authorized_action
             (
             id bigint not null
@@ -19,8 +18,11 @@
             references auth,
             data varchar(255),
             expiration timestamp,
-            type eauthorizedactiontype,
-            unique (type, auth_id)
+            type_id bigint
+            constraint authorized_action_fk_on_type
+            references authorized_action_type,
+            constraint authorized_action_uk_on_type_and_auth
+            unique (type_id, auth_id)
             );
         </sql>
     </changeSet>

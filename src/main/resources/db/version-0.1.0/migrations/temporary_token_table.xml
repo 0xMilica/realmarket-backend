@@ -8,22 +8,21 @@
                 splitStatements="true"
                 stripComments="true">
             create sequence temporary_token_seq;
-            create type etemporarytokentype as enum ('SETUP_2FA_TOKEN', 'LOGIN_TOKEN', 'REGISTRATION_TOKEN',
-            'EMAIL_TOKEN', 'RESET_PASSWORD_TOKEN','EMAIL_CHANGE_TOKEN', 'PASSWORD_VERIFIED_TOKEN');
-
             create table if not exists temporary_token
             (
             id bigint not null
             constraint temporary_token_pkey
             primary key,
             expiration_time timestamp,
-            temporary_token_type etemporarytokentype,
+            temporary_token_type_id bigint
+            constraint temporary_token_fk_on_temporary_token_type
+            references temporary_token_type,
             value varchar(255),
             auth_id bigint
-            constraint temporary_token_fk1_on_auth
+            constraint temporary_token_fk_on_auth
             references auth,
-            constraint temporary_token_uk_on_temporaryTokenType_and_authId
-            unique (temporary_token_type, auth_id)
+            constraint temporary_token_uk_on_temporary_token_type_and_auth
+            unique (temporary_token_type_id, auth_id)
             );
         </sql>
     </changeSet>

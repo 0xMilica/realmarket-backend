@@ -79,6 +79,8 @@ public class LoggingAspect {
             Arrays.toString(joinPoint.getArgs())));
 
     log.warn("Exception: {}, message: {}", error.getCause(), error.getMessage());
+    error.printStackTrace();
+    System.out.println("Exception: " + error.getCause() + " error msg:" + error.getMessage());
 
     MDC.remove(CALL_SIGNATURE);
   }

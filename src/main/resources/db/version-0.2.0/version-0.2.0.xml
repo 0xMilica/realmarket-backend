@@ -10,6 +10,8 @@
     <include file="migrations/company_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_state_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/campaign_document_access_level_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/campaign_document_type_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_document_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_investor_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_team_member_table.xml" relativeToChangelogFile="true"/>
@@ -18,6 +20,6 @@
     <include file="migrations/campaign_topic_image_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/platform_settings_table.xml" relativeToChangelogFile="true"/>
 
-    <!--include file="migrations/tables_init.xml" relativeToChangelogFile="true"/-->
+    <include file="migrations/tables_init.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
