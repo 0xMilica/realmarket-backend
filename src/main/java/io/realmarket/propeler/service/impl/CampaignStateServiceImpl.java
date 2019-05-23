@@ -7,6 +7,7 @@ import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignStateService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,13 +17,14 @@ public class CampaignStateServiceImpl implements CampaignStateService {
 
   private final CampaignService campaignService;
 
+  @Autowired
   public CampaignStateServiceImpl(CampaignService campaignService) {
     this.campaignService = campaignService;
   }
 
   private Map<CampaignStateName, List<CampaignStateName>> stateTransitFlow =
       createAndInitStateChangeFlow();
-  private Map<CampaignState, List<EUserRole>> rolesPerState = createAndInitRolesPerState();
+  private Map<CampaignStateName, List<EUserRole>> rolesPerState = createAndInitRolesPerState();
 
   @Override
   public void changeState(String campaignUrlFriendlyName, CampaignState followingCampaignState) {
@@ -34,7 +36,9 @@ public class CampaignStateServiceImpl implements CampaignStateService {
             .get(CampaignStateName.fromString(currentCampaignState.getName()))
             .toString()
             .equals(followingCampaignState.getName())
-        && rolesPerState.get(currentCampaignState).contains(eUserRole)) {
+        && rolesPerState
+            .get(CampaignStateName.fromString(currentCampaignState.getName()))
+            .contains(eUserRole)) {
       campaign.setCampaignState(followingCampaignState);
     }
   }
