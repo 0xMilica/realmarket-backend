@@ -23,10 +23,10 @@ public class CampaignStateServiceImpl implements CampaignStateService {
     EUserRole eUserRole = AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
 
     if (stateTransitFlow
-            .get(CampaignStateName.fromString(currentCampaignState.getName()))
-            .contains(CampaignStateName.fromString(followingCampaignState.getName()))
+            .get(currentCampaignState)
+            .contains(currentCampaignState)
         && rolesPerState
-            .get(CampaignStateName.fromString(currentCampaignState.getName()))
+            .get(currentCampaignState)
             .contains(eUserRole)) {
       campaign.setCampaignState(followingCampaignState);
       return true;

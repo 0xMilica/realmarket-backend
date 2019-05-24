@@ -33,7 +33,7 @@ public class CampaignStateServiceImplTest {
 
     Boolean isValid =
         campaignStateServiceImpl.changeState(
-            testCampaign, new CampaignState(100L, CampaignStateName.REVIEW_READY.toString()));
+            testCampaign, new CampaignState(100L, CampaignStateName.REVIEW_READY));
 
     assertEquals(true, isValid);
   }
@@ -43,7 +43,7 @@ public class CampaignStateServiceImplTest {
     Campaign testCampaign = TEST_CAMPAIGN.toBuilder().build();
     Boolean isValid =
         campaignStateServiceImpl.changeState(
-            testCampaign, new CampaignState(100L, CampaignStateName.ACTIVE.toString()));
+            testCampaign, new CampaignState(100L, CampaignStateName.ACTIVE));
 
     assertEquals(false, isValid);
   }
@@ -58,7 +58,7 @@ public class CampaignStateServiceImplTest {
     Campaign testCampaign = TEST_CAMPAIGN.toBuilder().build();
     Boolean isValid =
         campaignStateServiceImpl.changeState(
-            testCampaign, new CampaignState(100L, CampaignStateName.REVIEW_READY.toString()));
+            testCampaign, new CampaignState(100L, CampaignStateName.REVIEW_READY));
 
     assertEquals(false, isValid);
   }
@@ -70,7 +70,7 @@ public class CampaignStateServiceImplTest {
 
     Boolean isValid =
         campaignStateServiceImpl.changeState(
-            testCampaign, new CampaignState(100L, CampaignStateName.ACTIVE.toString()));
+            testCampaign, new CampaignState(100L, CampaignStateName.ACTIVE));
 
     assertEquals(false, isValid);
   }
