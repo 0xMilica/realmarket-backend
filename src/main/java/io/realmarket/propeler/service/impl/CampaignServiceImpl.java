@@ -119,11 +119,15 @@ public class CampaignServiceImpl implements CampaignService {
     return campaignDto;
   }
 
-  public CampaignDto getCampaignByUrlFriendlyName(String name) {
+  public CampaignDto getCampaignDtoByUrlFriendlyName(String name) {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(name);
     CampaignDto campaignDto = new CampaignDto(campaign);
     campaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
     return campaignDto;
+  }
+
+  public Campaign getCampaignByUrlFriendlyName(String name) {
+    return findByUrlFriendlyNameOrThrowException(name);
   }
 
   @Transactional
