@@ -5,9 +5,9 @@ import io.realmarket.propeler.model.CampaignState;
 
 public interface CampaignStateService {
 
-    void changeState(String campaignUrlFriendlyName, CampaignState followingCampaignState);
+  boolean changeState(Campaign campaign, CampaignState followingCampaignState);
 
-    boolean hasReadAccess();
+  boolean hasReadAccess();
 
-    boolean hasWriteAccess();
+  boolean hasWriteAccess();
 }

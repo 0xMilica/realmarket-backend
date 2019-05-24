@@ -5,9 +5,7 @@ import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
-import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignStateService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,32 +13,25 @@ import java.util.*;
 @Service
 public class CampaignStateServiceImpl implements CampaignStateService {
 
-  private final CampaignService campaignService;
-
-  @Autowired
-  public CampaignStateServiceImpl(CampaignService campaignService) {
-    this.campaignService = campaignService;
-  }
-
   private Map<CampaignStateName, List<CampaignStateName>> stateTransitFlow =
       createAndInitStateChangeFlow();
   private Map<CampaignStateName, List<EUserRole>> rolesPerState = createAndInitRolesPerState();
 
   @Override
-  public void changeState(String campaignUrlFriendlyName, CampaignState followingCampaignState) {
-    Campaign campaign = campaignService.getCampaignByUrlFriendlyName(campaignUrlFriendlyName);
+  public boolean changeState(Campaign campaign, CampaignState followingCampaignState) {
     CampaignState currentCampaignState = campaign.getCampaignState();
     EUserRole eUserRole = AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
 
     if (stateTransitFlow
             .get(CampaignStateName.fromString(currentCampaignState.getName()))
-            .toString()
-            .equals(followingCampaignState.getName())
+            .contains(CampaignStateName.fromString(followingCampaignState.getName()))
         && rolesPerState
             .get(CampaignStateName.fromString(currentCampaignState.getName()))
             .contains(eUserRole)) {
       campaign.setCampaignState(followingCampaignState);
+      return true;
     }
+    return false;
   }
 
   @Override
@@ -53,7 +44,7 @@ public class CampaignStateServiceImpl implements CampaignStateService {
     return false;
   }
 
-  private Map createAndInitStateChangeFlow() {
+  private Map<CampaignStateName, List<CampaignStateName>> createAndInitStateChangeFlow() {
     Map<CampaignStateName, List<CampaignStateName>> campaignStateTransitFlow =
         new EnumMap<>(CampaignStateName.class);
     campaignStateTransitFlow.put(
@@ -75,7 +66,7 @@ public class CampaignStateServiceImpl implements CampaignStateService {
     return campaignStateTransitFlow;
   }
 
-  private Map createAndInitRolesPerState() {
+  private Map<CampaignStateName, List<EUserRole>> createAndInitRolesPerState() {
     Map<CampaignStateName, List<EUserRole>> rolesPerCampaignState =
         new EnumMap<>(CampaignStateName.class);
     rolesPerCampaignState.put(

@@ -33,6 +33,7 @@ public class AuthUtils {
   public static final String TEST_PASSWORD_NEW = "TEST_PASSWORD_NEW";
   public static final String TEST_ENCODED_SECRET = "enc_secret";
   public static final EUserRole TEST_ROLE = EUserRole.ROLE_INVESTOR;
+  public static final EUserRole TEST_ROLE_ENTREPRENEUR = EUserRole.ROLE_ENTREPRENEUR;
   public static final EUserRole TEST_ROLE_FORBIDDEN = EUserRole.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
@@ -60,6 +61,8 @@ public class AuthUtils {
   private static final String TEST_LAST_NAME = "TEST_LAST_NAME";
 
   public static final UserRole TEST_USER_ROLE = UserRole.builder().name(TEST_ROLE).id(100L).build();
+  public static final UserRole TEST_ENTREPRENEUR_USER_ROLE =
+      UserRole.builder().name(TEST_ROLE_ENTREPRENEUR).id(101L).build();
   public static final AuthState TEST_AUTH_STATE =
       AuthState.builder().name(EAuthState.ACTIVE).id(100L).build();
 
@@ -97,6 +100,17 @@ public class AuthUtils {
           .totpSecret(TEST_ENCODED_SECRET)
           .person(new Person(TEST_REGISTRATION_DTO))
           .build();
+
+  public static final Auth TEST_AUTH_ENTREPRENEUR =
+      Auth.builder()
+          .id(TEST_AUTH_ID + 1)
+          .username(TEST_USERNAME)
+          .state(TEST_AUTH_STATE)
+          .userRole(TEST_ENTREPRENEUR_USER_ROLE)
+          .password(TEST_PASSWORD)
+          .totpSecret(TEST_ENCODED_SECRET)
+          .person(new Person(TEST_REGISTRATION_DTO))
+          .build();
   public static final Auth TEST_AUTH_OLD_SECRET =
       Auth.builder()
           .username(TEST_USERNAME)
@@ -113,6 +127,9 @@ public class AuthUtils {
       new UserAuthentication(TEST_AUTH.toBuilder().build(), TEST_TEMPORARY_TOKEN_VALUE);
   public static final UserAuthentication TEST_USER_AUTH2 =
       new UserAuthentication(TEST_AUTH2.toBuilder().build(), TEST_TEMPORARY_TOKEN_VALUE);
+  public static final UserAuthentication TEST_ENTREPRENEUR_USER_AUTH =
+      new UserAuthentication(
+          TEST_AUTH_ENTREPRENEUR.toBuilder().build(), TEST_TEMPORARY_TOKEN_VALUE);
   public static final MockHttpServletRequest TEST_REQUEST = new MockHttpServletRequest();
   public static final MockHttpServletResponse TEST_RESPONSE = new MockHttpServletResponse();
   public static final Cookie TEST_COOKIE = new Cookie(COOKIE_NAME, TEST_VALUE);
@@ -142,6 +159,14 @@ public class AuthUtils {
 
   public static void mockRequestAndContext() {
     mockSecurityContext(TEST_USER_AUTH);
+
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addHeader("X-Forwarded-For", "localhost");
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+  }
+
+  public static void mockRequestAndContextEntrepreneur() {
+    mockSecurityContext(TEST_ENTREPRENEUR_USER_AUTH);
 
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.addHeader("X-Forwarded-For", "localhost");
