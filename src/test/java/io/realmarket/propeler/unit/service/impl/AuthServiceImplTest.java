@@ -11,6 +11,7 @@ import io.realmarket.propeler.model.enums.EAuthorizedActionType;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.repository.AuthStateRepository;
+import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
@@ -66,6 +67,7 @@ public class AuthServiceImplTest {
   @Mock private LoginUsernameAttemptsService loginUsernameAttemptsService;
   @Mock private UserRoleRepository userRoleRepository;
   @Mock private AuthStateRepository authStateRepository;
+  @Mock private CountryRepository countryRepository;
   @InjectMocks private AuthServiceImpl authServiceImpl;
 
   @Before
@@ -83,6 +85,10 @@ public class AuthServiceImplTest {
     when(passwordEncoder.encode(TEST_PASSWORD)).thenReturn(TEST_PASSWORD);
     when(userRoleRepository.findByName(any())).thenReturn(Optional.of(AuthUtils.TEST_USER_ROLE));
     when(authStateRepository.findByName(any())).thenReturn(Optional.of(TEST_AUTH_STATE));
+    when(countryRepository.findByCode(TEST_COUNTRY_CODE))
+        .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY));
+    when(countryRepository.findByCode(TEST_COUNTRY_CODE2))
+        .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY2));
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
     authServiceImpl.register(AuthUtils.TEST_REGISTRATION_DTO);

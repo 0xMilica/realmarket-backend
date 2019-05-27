@@ -10,9 +10,11 @@ import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.repository.AuthStateRepository;
+import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
@@ -40,6 +42,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.realmarket.propeler.model.enums.ETemporaryTokenType.PASSWORD_VERIFIED_TOKEN;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_COUNTRY_CODE;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
 
 @Service
@@ -56,6 +59,7 @@ public class AuthServiceImpl implements AuthService {
   private final AuthRepository authRepository;
   private final UserRoleRepository userRoleRepository;
   private final AuthStateRepository authStateRepository;
+  private final CountryRepository countryRepository;
 
   private final PersonService personService;
   private final EmailService emailService;
@@ -76,6 +80,7 @@ public class AuthServiceImpl implements AuthService {
       AuthRepository authRepository,
       UserRoleRepository userRoleRepository,
       AuthStateRepository authStateRepository,
+      CountryRepository countryRepository,
       TemporaryTokenService temporaryTokenService,
       RememberMeCookieService rememberMeCookieService,
       JWTService jwtService,
@@ -88,6 +93,7 @@ public class AuthServiceImpl implements AuthService {
     this.authRepository = authRepository;
     this.userRoleRepository = userRoleRepository;
     this.authStateRepository = authStateRepository;
+    this.countryRepository = countryRepository;
     this.temporaryTokenService = temporaryTokenService;
     this.jwtService = jwtService;
     this.rememberMeCookieService = rememberMeCookieService;
@@ -132,7 +138,21 @@ public class AuthServiceImpl implements AuthService {
     Optional<AuthState> authState =
         this.authStateRepository.findByName(EAuthState.CONFIRM_REGISTRATION);
 
-    Person person = this.personService.save(new Person(registrationDto));
+    Country countryOfResidence =
+        this.countryRepository
+            .findByCode(registrationDto.getCountryOfResidence())
+            .orElseThrow(() -> new BadRequestException(INVALID_COUNTRY_CODE));
+
+    Country countryForTaxation =
+        (registrationDto.getCountryForTaxation() != null)
+            ? this.countryRepository
+                .findByCode(registrationDto.getCountryForTaxation())
+                .orElseThrow(() -> new BadRequestException(INVALID_COUNTRY_CODE))
+            : null;
+
+    Person person =
+        this.personService.save(
+            new Person(registrationDto, countryOfResidence, countryForTaxation));
 
     Auth auth =
         this.authRepository.save(

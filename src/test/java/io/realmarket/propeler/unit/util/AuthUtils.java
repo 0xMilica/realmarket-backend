@@ -2,10 +2,7 @@ package io.realmarket.propeler.unit.util;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
-import io.realmarket.propeler.model.Auth;
-import io.realmarket.propeler.model.AuthState;
-import io.realmarket.propeler.model.Person;
-import io.realmarket.propeler.model.UserRole;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.EAuthState;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.security.UserAuthentication;
@@ -66,6 +63,11 @@ public class AuthUtils {
   public static final AuthState TEST_AUTH_STATE =
       AuthState.builder().name(EAuthState.ACTIVE).id(100L).build();
 
+  public static final String TEST_COUNTRY_CODE = "RS";
+  public static final Country TEST_COUNTRY = Country.builder().code("RS").name("Serbia").build();
+  public static final String TEST_COUNTRY_CODE2 = "BS";
+  public static final Country TEST_COUNTRY2 = Country.builder().code("BS").name("Bahamas").build();
+
   public static final RegistrationDto TEST_REGISTRATION_DTO =
       RegistrationDto.builder()
           .email(TEST_EMAIL)
@@ -74,7 +76,7 @@ public class AuthUtils {
           .userRole(TEST_ROLE)
           .firstName(TEST_FIRST_NAME)
           .lastName(TEST_LAST_NAME)
-          .countryOfResidence("TEST_COUNTRY_OF_RESIDENCE")
+          .countryOfResidence("RS")
           .city("TEST_CITY")
           .address("TEST_ADDRESS")
           .build();
@@ -86,7 +88,7 @@ public class AuthUtils {
           .userRole(TEST_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
-          .person(new Person(TEST_REGISTRATION_DTO))
+          .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
           .blocked(false)
           .build();
 
@@ -98,7 +100,7 @@ public class AuthUtils {
           .userRole(TEST_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
-          .person(new Person(TEST_REGISTRATION_DTO))
+          .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
           .build();
 
   public static final Auth TEST_AUTH_ENTREPRENEUR =
@@ -109,7 +111,7 @@ public class AuthUtils {
           .userRole(TEST_ENTREPRENEUR_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
-          .person(new Person(TEST_REGISTRATION_DTO))
+          .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
           .build();
   public static final Auth TEST_AUTH_OLD_SECRET =
       Auth.builder()
@@ -118,7 +120,7 @@ public class AuthUtils {
           .userRole(TEST_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(OTPUtils.TEST_SECRET_1)
-          .person(new Person(TEST_REGISTRATION_DTO))
+          .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
           .build();
 
   public static final ConfirmEmailChangeDto TEST_CONFIRM_EMAIL_CHANGE_DTO =

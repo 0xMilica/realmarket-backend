@@ -6,7 +6,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width" initial-scale="1">
+    <meta content="width=device-width" initial-scale="1" name="viewport">
     <!--[if !mso]>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <![endif]-->
@@ -105,41 +105,42 @@
     <!-- Preheader message here -->
 </div>
 <div style="display: none; max-height: 0px; overflow: hidden;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>
-<table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center"
-       class="document">
+<table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="document"
+       role="presentation">
     <tr>
         <td valign="top">
-            <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center"
-                   width="600" class="container">
+            <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="container"
+                   role="presentation" width="600">
                 <tr>
                     <td>
-                        <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0"
-                               align="center" width="100%">
+                        <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0"
+                               role="presentation" width="100%">
                             <tr>
                                 <td>
-                                    <img style="width: 50%" th:src="|cid:${logo}|" alt="Logo">
+                                    <img alt="Logo" style="width: 50%" th:src="|cid:${logo}|">
                                 </td>
                             </tr>
                         </table>
                     </td>
                 </tr>
             </table>
-            <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center"
-                   width="600" class="container">
+            <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="container"
+                   role="presentation" width="600">
                 <tr>
                     <td>
-                        <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0"
-                               align="center" width="100%">
+                        <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0"
+                               role="presentation" width="100%">
                             <tr>
                                 <td>
                                     <h1 style="color: #39316c; font-size: 30px; font-weight: 600; line-height: 45px;">
-                                       Account blocked</h1>
+                                        Account blocked</h1>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; color: #39316c;">
-                                        The account with the username  <span th:text="${username}"></span>, has been blocked!</p>
+                                        The account with the username <span th:text="${username}"></span>, has been
+                                        blocked!</p>
                                 </td>
                             </tr>
                             <tr>
@@ -154,8 +155,8 @@
                     </td>
                 </tr>
             </table>
-            <table style="margin-top: 20px; border-top: 1px solid #9498b8;" role="presentation" aria-hidden="true"
-                   cellspacing="0" cellpadding="0" border="0" align="center" width="600" class="container">
+            <table align="center" aria-hidden="true" border="0"
+                   cellpadding="0" cellspacing="0" class="container" role="presentation" style="margin-top: 20px; border-top: 1px solid #9498b8;" width="600">
                 <tr>
                     <td>
                         <!-- Physical address -->

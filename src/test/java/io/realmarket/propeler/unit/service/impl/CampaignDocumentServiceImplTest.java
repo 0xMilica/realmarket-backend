@@ -63,8 +63,7 @@ public class CampaignDocumentServiceImplTest {
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE));
     when(cloudObjectStorageService.doesFileExist(campaignDocumentDtoMocked.getUrl()))
         .thenReturn(true);
-    when(campaignDocumentRepository.save(any()))
-        .thenReturn(campaignDocumentMocked);
+    when(campaignDocumentRepository.save(any())).thenReturn(campaignDocumentMocked);
     when(campaignDocumentService.submitDocument(
             campaignDocumentDtoMocked, CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenReturn(campaignDocumentMocked);

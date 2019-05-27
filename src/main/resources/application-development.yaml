@@ -90,7 +90,7 @@ app:
       ban:
         attempts: 3
         time-banned: 3
-        
+
   registration-captcha:
     ban:
       attempts: 5
