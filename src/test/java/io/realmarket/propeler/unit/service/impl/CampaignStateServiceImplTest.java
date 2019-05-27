@@ -11,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
 import static io.realmarket.propeler.unit.util.AuthUtils.mockRequestAndContext;
 import static io.realmarket.propeler.unit.util.AuthUtils.mockRequestAndContextEntrepreneur;
 import static io.realmarket.propeler.unit.util.CampaignUtils.TEST_CAMPAIGN;
@@ -21,22 +20,20 @@ import static org.junit.Assert.assertTrue;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(CampaignStateService.class)
 public class CampaignStateServiceImplTest {
-
   @InjectMocks private CampaignStateServiceImpl campaignStateServiceImpl;
 
   @Before
   public void createAuthContext() {
-    mockRequestAndContextEntrepreneur();
-  }
+    mockRequestAndContextEntrepreneur(); }
 
   @Test
   public void changeState_Success() {
     Campaign testCampaign = TEST_CAMPAIGN.toBuilder().build();
-
     boolean isValid =
         campaignStateServiceImpl.changeState(
-            testCampaign, new CampaignState(100L, CampaignStateName.REVIEW_READY.toString()), true);
-
+            testCampaign,
+            CampaignState.builder().name(CampaignStateName.REVIEW_READY).build(),
+            true);
     assertTrue(isValid);
   }
 
@@ -45,21 +42,18 @@ public class CampaignStateServiceImplTest {
     Campaign testCampaign = TEST_CAMPAIGN.toBuilder().build();
     boolean isValid =
         campaignStateServiceImpl.changeState(
-            testCampaign, new CampaignState(100L, CampaignStateName.ACTIVE.toString()), true);
-
+            testCampaign, CampaignState.builder().name(CampaignStateName.ACTIVE).build(), true);
     assertFalse(isValid);
   }
 
   @Test
   public void changeState_RoleEntrepreneurButNotOwner() {
     Campaign testCampaign = TEST_CAMPAIGN.toBuilder().build();
-
     boolean isValid =
         campaignStateServiceImpl.changeState(
             testCampaign,
-            new CampaignState(100L, CampaignStateName.REVIEW_READY.toString()),
+            CampaignState.builder().name(CampaignStateName.REVIEW_READY).build(),
             false);
-
     assertFalse(isValid);
   }
 
@@ -70,9 +64,8 @@ public class CampaignStateServiceImplTest {
     boolean isValid =
         campaignStateServiceImpl.changeState(
             testCampaign,
-            new CampaignState(100L, CampaignStateName.REVIEW_READY.toString()),
+            CampaignState.builder().name(CampaignStateName.REVIEW_READY).build(),
             false);
-
     assertFalse(isValid);
   }
 
@@ -80,11 +73,9 @@ public class CampaignStateServiceImplTest {
   public void changeState_InvalidStateAndRoleHasNoPermission() {
     mockRequestAndContext();
     Campaign testCampaign = TEST_CAMPAIGN.toBuilder().build();
-
     boolean isValid =
         campaignStateServiceImpl.changeState(
-            testCampaign, new CampaignState(100L, CampaignStateName.ACTIVE.toString()), false);
-
+            testCampaign, CampaignState.builder().name(CampaignStateName.ACTIVE).build(), false);
     assertFalse(isValid);
   }
 }
