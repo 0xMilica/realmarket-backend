@@ -4,7 +4,9 @@ import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.Company;
+import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
@@ -36,6 +38,7 @@ public class CampaignServiceImpl implements CampaignService {
   private final CloudObjectStorageService cloudObjectStorageService;
   private final CompanyService companyService;
   private final CampaignTopicService campaignTopicService;
+  private final CampaignStateService campaignStateService;
   private final ModelMapperBlankString modelMapperBlankString;
   private final PlatformSettingsService platformSettingsService;
 
@@ -44,15 +47,16 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Autowired
   public CampaignServiceImpl(
-      CampaignRepository campaignRepository,
-      CompanyService companyService,
-      @Lazy CampaignTopicService campaignTopicService,
-      ModelMapperBlankString modelMapperBlankString,
-      CloudObjectStorageService cloudObjectStorageService,
-      PlatformSettingsService platformSettingsService) {
+          CampaignRepository campaignRepository,
+          CompanyService companyService,
+          @Lazy CampaignTopicService campaignTopicService,
+          CampaignStateService campaignStateService, ModelMapperBlankString modelMapperBlankString,
+          CloudObjectStorageService cloudObjectStorageService,
+          PlatformSettingsService platformSettingsService) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
     this.campaignTopicService = campaignTopicService;
+    this.campaignStateService = campaignStateService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.platformSettingsService = platformSettingsService;
@@ -199,5 +203,26 @@ public class CampaignServiceImpl implements CampaignService {
             < 0) {
       throw new BadRequestException(INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN);
     }
+  }
+
+  @Override
+  @Transactional
+  public void requestReviewForCampaign(String campaignName) {
+    Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
+    CampaignState campaignState= campaignStateService.getCampaignStateByName(CampaignStateName.REVIEW_READY.toString());
+    boolean bolan = isOwner(campaign);
+    campaignStateService.changeState(
+            campaign,
+            campaignState,
+            bolan
+    );
+//    if(!campaignStateService.changeState(
+//            campaign,
+//            campaignState,
+//            bolan
+//    )) {
+//      throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
+//    }
+//    campaignRepository.save(campaign);
   }
 }
