@@ -18,16 +18,21 @@ public class CampaignStateServiceImpl implements CampaignStateService {
   private Map<CampaignStateName, List<EUserRole>> rolesPerState = createAndInitRolesPerState();
 
   @Override
-  public boolean changeState(Campaign campaign, CampaignState followingCampaignState) {
+  public boolean changeState(
+      Campaign campaign, CampaignState followingCampaignState, boolean isOwner) {
     CampaignState currentCampaignState = campaign.getCampaignState();
     EUserRole eUserRole = AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
 
-    if (stateTransitFlow
-            .get(currentCampaignState)
-            .contains(currentCampaignState)
+    if (eUserRole.equals(EUserRole.ROLE_ENTREPRENEUR) && !isOwner) {
+      return false;
+    }
+
+      if (stateTransitFlow
+        .get(currentCampaignState)
+        .contains(currentCampaignState)
         && rolesPerState
-            .get(currentCampaignState)
-            .contains(eUserRole)) {
+        .get(currentCampaignState)
+        .contains(eUserRole)) {
       campaign.setCampaignState(followingCampaignState);
       return true;
     }
