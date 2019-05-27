@@ -138,4 +138,11 @@ public class CampaignControllerImpl implements CampaignController {
     campaignTeamMemberService.deletePicture(campaignName, teamMemberId);
     return ResponseEntity.noContent().build();
   }
+
+  @PatchMapping(value = "/review/{campaignName}")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity prepareCampaign(@PathVariable String campaignName) {
+    campaignService.requestReviewForCampaign(campaignName);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
