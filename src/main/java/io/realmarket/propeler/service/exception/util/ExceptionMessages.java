@@ -32,6 +32,8 @@ public interface ExceptionMessages {
 
   String CAMPAIGN_NOT_FOUND = "Campaign with the provided name not found!";
 
+  String CAMPAIGN_STATE_NOT_FOUND = "Campaign state with the provided name not found!";
+
   String CAMPAIGN_INVESTOR_NOT_FOUND = "Campaign investor with the provided id not found!";
 
   String USER_IS_NOT_OWNER_OF_CAMPAIGN = "Caller is not owner of campaign.";

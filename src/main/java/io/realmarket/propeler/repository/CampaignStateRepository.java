@@ -10,5 +10,4 @@ import java.util.Optional;
 @Repository
 public interface CampaignStateRepository  extends JpaRepository<CampaignState, Long> {
     Optional<CampaignState> findByName(CampaignStateName name);
-//    Optional<CampaignState> findByName(String name);
 }
