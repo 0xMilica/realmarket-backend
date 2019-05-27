@@ -291,7 +291,7 @@ public class CampaignServiceImplTest {
   public void DeleteCampaign_Should_Throw_ForbiddenException() {
     Campaign testCampaign = getCampaignMocked();
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
-        .thenReturn(Optional.of(testCampaign));
+            .thenReturn(Optional.of(testCampaign));
     mockSecurityContext(TEST_USER_AUTH2);
 
     campaignServiceImpl.delete(testCampaign.getUrlFriendlyName());

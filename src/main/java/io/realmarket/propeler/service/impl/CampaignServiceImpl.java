@@ -47,12 +47,13 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Autowired
   public CampaignServiceImpl(
-          CampaignRepository campaignRepository,
-          CompanyService companyService,
-          @Lazy CampaignTopicService campaignTopicService,
-          CampaignStateService campaignStateService, ModelMapperBlankString modelMapperBlankString,
-          CloudObjectStorageService cloudObjectStorageService,
-          PlatformSettingsService platformSettingsService) {
+      CampaignRepository campaignRepository,
+      CompanyService companyService,
+      @Lazy CampaignTopicService campaignTopicService,
+      CampaignStateService campaignStateService,
+      ModelMapperBlankString modelMapperBlankString,
+      CloudObjectStorageService cloudObjectStorageService,
+      PlatformSettingsService platformSettingsService) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
     this.campaignTopicService = campaignTopicService;
@@ -209,20 +210,12 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional
   public void requestReviewForCampaign(String campaignName) {
     Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
-    CampaignState campaignState= campaignStateService.getCampaignStateByName(CampaignStateName.REVIEW_READY.toString());
-    boolean bolan = isOwner(campaign);
-    campaignStateService.changeState(
-            campaign,
-            campaignState,
-            bolan
-    );
-//    if(!campaignStateService.changeState(
-//            campaign,
-//            campaignState,
-//            bolan
-//    )) {
-//      throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
-//    }
-//    campaignRepository.save(campaign);
+    if (!campaignStateService.changeState(
+        campaign,
+        campaignStateService.getCampaignStateByName(CampaignStateName.REVIEW_READY.toString()),
+        isOwner(campaign))) {
+      throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
+    }
+    campaignRepository.save(campaign);
   }
 }
