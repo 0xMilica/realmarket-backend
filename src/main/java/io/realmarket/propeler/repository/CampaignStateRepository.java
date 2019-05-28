@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CampaignStateRepository  extends JpaRepository<CampaignState, Long> {
-    Optional<CampaignState> findByName(CampaignStateName name);
+public interface CampaignStateRepository extends JpaRepository<CampaignState, Long> {
+  Optional<CampaignState> findByName(CampaignStateName name);
 }

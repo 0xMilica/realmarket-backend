@@ -139,7 +139,7 @@ public class CampaignControllerImpl implements CampaignController {
     return ResponseEntity.noContent().build();
   }
 
-  @PatchMapping(value = "/review/{campaignName}")
+  @PatchMapping(value = "/{campaignName}/review")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity prepareCampaign(@PathVariable String campaignName) {
     campaignService.requestReviewForCampaign(campaignName);
