@@ -212,4 +212,20 @@ public interface CampaignController {
     @ApiResponse(code = 500, message = "Internal server error.")
   })
   ResponseEntity deletePicture(String campaignName, Long teamMemberId);
+
+  @ApiOperation(
+          value = "Mark campaign as ready for review.",
+          httpMethod = "PATCH")
+  @ApiImplicitParams({
+          @ApiImplicitParam(
+                  name = "campaignName",
+                  value = "Name of the campaign that is being marked as ready for review.",
+                  required = true,
+                  dataType = "String")
+  })
+  @ApiResponses({
+          @ApiResponse(code = 204, message = "Campaign was successfully submitted for review."),
+          @ApiResponse(code = 403, message = "Campaign state transition is invalid, insufficient privileges or there is no campaign under provided name."),
+  })
+  ResponseEntity prepareCampaign(String campaignName);
 }

@@ -4,11 +4,16 @@ import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.EUserRole;
+import io.realmarket.propeler.repository.CampaignStateRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignStateService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.*;
+
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_STATE_NOT_FOUND;
 
 @Service
 public class CampaignStateServiceImpl implements CampaignStateService {
@@ -16,6 +21,13 @@ public class CampaignStateServiceImpl implements CampaignStateService {
   private Map<CampaignStateName, List<CampaignStateName>> stateTransitFlow =
       createAndInitStateChangeFlow();
   private Map<CampaignStateName, List<EUserRole>> rolesPerState = createAndInitRolesPerState();
+
+  private final CampaignStateRepository campaignStateRepository;
+
+  @Autowired
+  public CampaignStateServiceImpl(CampaignStateRepository campaignStateRepository) {
+    this.campaignStateRepository = campaignStateRepository;
+  }
 
   @Override
   public boolean changeState(
@@ -28,11 +40,9 @@ public class CampaignStateServiceImpl implements CampaignStateService {
     }
 
     if (stateTransitFlow
-            .get(CampaignStateName.fromString(currentCampaignState.getName()))
-            .contains(CampaignStateName.fromString(followingCampaignState.getName()))
-        && rolesPerState
-            .get(CampaignStateName.fromString(currentCampaignState.getName()))
-            .contains(eUserRole)) {
+            .get(currentCampaignState.getName())
+            .contains(followingCampaignState.getName())
+        && rolesPerState.get(currentCampaignState.getName()).contains(eUserRole)) {
       campaign.setCampaignState(followingCampaignState);
       return true;
     }
@@ -47,6 +57,13 @@ public class CampaignStateServiceImpl implements CampaignStateService {
   @Override
   public boolean hasWriteAccess() {
     return false;
+  }
+
+  @Override
+  public CampaignState getCampaignStateByName(String name) {
+    return campaignStateRepository
+        .findByName(CampaignStateName.fromString(name))
+        .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_STATE_NOT_FOUND));
   }
 
   private Map<CampaignStateName, List<CampaignStateName>> createAndInitStateChangeFlow() {

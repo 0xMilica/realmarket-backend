@@ -10,4 +10,6 @@ public interface CampaignStateService {
   boolean hasReadAccess();
 
   boolean hasWriteAccess();
+
+  CampaignState getCampaignStateByName(String name);
 }

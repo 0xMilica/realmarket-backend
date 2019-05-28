@@ -32,4 +32,6 @@ public interface CampaignService {
   Campaign getCampaignByUrlFriendlyName(String name);
 
   void delete(String campaignName);
+
+  void requestReviewForCampaign(String campaignName);
 }

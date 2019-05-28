@@ -11,7 +11,7 @@ public class CampaignUtils {
   public static final String TEST_MARKET_IMAGE_UTL = "MARKET_IMAGE_URL";
   public static final Long TEST_FUNDING_GOALS = 58L;
   public static final CampaignState TEST_CAMPAIGN_STATE =
-      new CampaignState(100L, CampaignStateName.INITIAL.toString());
+          CampaignState.builder().name(CampaignStateName.INITIAL).build();
 
   public static final Campaign TEST_CAMPAIGN =
       Campaign.builder()

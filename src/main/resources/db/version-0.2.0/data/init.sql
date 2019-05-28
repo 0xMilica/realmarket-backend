@@ -57,13 +57,13 @@ INSERT INTO public.company_category (id, name) VALUES (NEXTVAL('company_category
 INSERT INTO public.company_category (id, name) VALUES (NEXTVAL('company_category_seq'), 'Virtual & Augmented Reality');
 
 -- campaign state
-INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'initial');
-INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'readyForAudit');
-INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'auditing');
-INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'auditingCompleted');
-INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'leadInvestment');
-INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'crowdfunding');
-INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'postCampaign');
+INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'INITIAL');
+INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'REVIEW_READY');
+INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'AUDIT');
+INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'FINANCE_PROPOSITION');
+INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'LEAD_INVESTMENT');
+INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'ACTIVE');
+INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'POST_CAMPAIGN');
 
 -- campaign topic type
 INSERT INTO public.campaign_topic_type (id, name) VALUES (NEXTVAL('campaign_topic_type_seq'), 'PROBLEM');
