@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.AuthenticationException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -55,8 +56,10 @@ public class CampaignControllerImpl implements CampaignController {
 
   @DeleteMapping(value = "/{campaignName}")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
-  public ResponseEntity<Void> deleteCampaign(@PathVariable String campaignName) {
-    campaignService.delete(campaignName);
+  public ResponseEntity<Void> deleteCampaign(
+      @PathVariable String campaignName, @RequestBody @Valid TwoFADto twoFADto)
+      throws AuthenticationException {
+    campaignService.delete(campaignName, twoFADto);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 

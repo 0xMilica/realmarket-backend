@@ -3,8 +3,11 @@ package io.realmarket.propeler.service;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
+import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Campaign;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.naming.AuthenticationException;
 
 public interface CampaignService {
   Campaign findByUrlFriendlyNameOrThrowException(String name);
@@ -31,7 +34,7 @@ public interface CampaignService {
 
   Campaign getCampaignByUrlFriendlyName(String name);
 
-  void delete(String campaignName);
+  void delete(String campaignName, TwoFADto twoFADto) throws AuthenticationException;
 
   void requestReviewForCampaign(String campaignName);
 }

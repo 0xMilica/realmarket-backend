@@ -3,21 +3,17 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
+import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.repository.CampaignRepository;
-import io.realmarket.propeler.service.CampaignTopicService;
-import io.realmarket.propeler.service.CloudObjectStorageService;
-import io.realmarket.propeler.service.CompanyService;
-import io.realmarket.propeler.service.PlatformSettingsService;
+import io.realmarket.propeler.security.util.AuthenticationUtil;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
-import io.realmarket.propeler.util.CampaignUtils;
-import io.realmarket.propeler.util.CompanyUtils;
-import io.realmarket.propeler.util.FileUtils;
-import io.realmarket.propeler.util.PlatformSettingsUtils;
+import io.realmarket.propeler.util.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +51,8 @@ public class CampaignServiceImplTest {
   @Mock private CampaignTopicService campaignTopicService;
 
   @Mock private PlatformSettingsService platformSettingsService;
+
+  @Mock private OTPService otpService;
 
   @InjectMocks private CampaignServiceImpl campaignServiceImpl;
 
@@ -264,12 +262,17 @@ public class CampaignServiceImplTest {
   }
 
   @Test
-  public void DeleteCampaign_Should_SetDeletedFlag() {
+  public void DeleteCampaign_Should_SetStateDeleted() {
     Campaign testCampaign = getCampaignMocked();
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
         .thenReturn(Optional.of(testCampaign));
+    when(otpService.validate(
+            AuthenticationUtil.getAuthentication().getAuth(),
+            new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null)))
+        .thenReturn(true);
 
-    campaignServiceImpl.delete(testCampaign.getUrlFriendlyName());
+    campaignServiceImpl.delete(
+        testCampaign.getUrlFriendlyName(), new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null));
 
     verify(campaignRepository, Mockito.times(1))
         .findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName());
@@ -282,8 +285,12 @@ public class CampaignServiceImplTest {
     Campaign testCampaign = getCampaignMocked();
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
         .thenReturn(Optional.empty());
-
-    campaignServiceImpl.delete(testCampaign.getUrlFriendlyName());
+    when(otpService.validate(
+            AuthenticationUtil.getAuthentication().getAuth(),
+            new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null)))
+        .thenReturn(true);
+    campaignServiceImpl.delete(
+        testCampaign.getUrlFriendlyName(), new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null));
   }
 
   @Test(expected = ForbiddenOperationException.class)
@@ -292,7 +299,12 @@ public class CampaignServiceImplTest {
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
             .thenReturn(Optional.of(testCampaign));
     mockSecurityContext(TEST_USER_AUTH2);
+    when(otpService.validate(
+            AuthenticationUtil.getAuthentication().getAuth(),
+            new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null)))
+        .thenReturn(true);
 
-    campaignServiceImpl.delete(testCampaign.getUrlFriendlyName());
+    campaignServiceImpl.delete(
+        testCampaign.getUrlFriendlyName(), new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null));
   }
 }

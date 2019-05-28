@@ -5,6 +5,7 @@ import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +54,11 @@ public interface CampaignController {
   })
   ResponseEntity<CampaignDto> getCampaign(String campaignName);
 
-  @ApiOperation(value = "Delete campaign", httpMethod = "DELETE", produces = APPLICATION_JSON_VALUE)
+  @ApiOperation(
+      value = "Delete campaign",
+      httpMethod = "DELETE",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParam(
       name = "campaignName",
       value = "Campaign's name",
@@ -63,7 +68,8 @@ public interface CampaignController {
     @ApiResponse(code = 200, message = "Campaign successfully deleted."),
     @ApiResponse(code = 404, message = "Campaign does not exists.")
   })
-  ResponseEntity<Void> deleteCampaign(String campaignName);
+  ResponseEntity<Void> deleteCampaign(String campaignName, TwoFADto twoFADto)
+      throws AuthenticationException;
 
   @ApiOperation(
       value = "Patch campaign fields",

@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
+import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.Company;
@@ -41,6 +42,7 @@ public class CampaignServiceImpl implements CampaignService {
   private final CampaignStateService campaignStateService;
   private final ModelMapperBlankString modelMapperBlankString;
   private final PlatformSettingsService platformSettingsService;
+  private final OTPService otpService;
 
   @Value(value = "${cos.file_prefix.campaign_market_image}")
   private String companyFeaturedImage;
@@ -53,7 +55,8 @@ public class CampaignServiceImpl implements CampaignService {
       CampaignStateService campaignStateService,
       ModelMapperBlankString modelMapperBlankString,
       CloudObjectStorageService cloudObjectStorageService,
-      PlatformSettingsService platformSettingsService) {
+      PlatformSettingsService platformSettingsService,
+      OTPService otpService) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
     this.campaignTopicService = campaignTopicService;
@@ -61,6 +64,7 @@ public class CampaignServiceImpl implements CampaignService {
     this.modelMapperBlankString = modelMapperBlankString;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.platformSettingsService = platformSettingsService;
+    this.otpService = otpService;
   }
 
   public Campaign findByUrlFriendlyNameOrThrowException(String urlFriendlyName) {
@@ -136,8 +140,11 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Transactional
-  public void delete(String campaignName) {
+  public void delete(String campaignName, TwoFADto twoFADto) {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
+    if (!(otpService.validate(AuthenticationUtil.getAuthentication().getAuth(), twoFADto))) {
+      throw new AccessDeniedException(INVALID_TOTP_CODE_PROVIDED);
+    }
     throwIfNoAccess(campaign);
     campaign.setDeleted(true);
     campaignRepository.save(campaign);
