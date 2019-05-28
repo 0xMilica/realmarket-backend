@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @ApiModel(value = "PersonDto", description = "Person profile information")
 @Data
@@ -49,8 +50,10 @@ public class PersonDto {
     this.firstName = person.getFirstName();
     this.address = person.getAddress();
     this.city = person.getCity();
-    this.countryForTaxation = person.getCountryForTaxation();
-    this.countryOfResidence = person.getCountryOfResidence();
+    if (!StringUtils.isEmpty(person.getCountryForTaxation())) {
+      this.countryForTaxation = person.getCountryForTaxation().getCode();
+    }
+    this.countryOfResidence = person.getCountryOfResidence().getCode();
     this.email = person.getEmail();
     this.phoneNumber = person.getPhoneNumber();
     this.profilePictureUrl = person.getProfilePictureUrl();

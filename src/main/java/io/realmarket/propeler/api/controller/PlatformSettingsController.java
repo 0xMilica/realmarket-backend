@@ -22,4 +22,8 @@ public interface PlatformSettingsController {
     @ApiResponse(code = 404, message = "No current platform settings"),
   })
   ResponseEntity<PlatformSettingsDto> getCurrentPlatformSettings();
+
+  @ApiOperation(value = "Get countries list", httpMethod = "GET", produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({@ApiResponse(code = 200, message = "Countires successfully retrieved.")})
+  ResponseEntity getCountries();
 }

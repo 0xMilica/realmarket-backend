@@ -10,10 +10,10 @@
             create sequence platform_settings_seq;
             create table platform_settings
             (
-                id bigint not null
-                constraint platform_settings_pkey
-                primary key,
-                platform_min_investment numeric(19,2)
+            id bigint not null
+            constraint platform_settings_pkey
+            primary key,
+            platform_min_investment numeric(19,2)
             );
 
         </sql>

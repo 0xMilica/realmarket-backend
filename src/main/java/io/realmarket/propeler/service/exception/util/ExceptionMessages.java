@@ -72,4 +72,6 @@ public interface ExceptionMessages {
 
   String INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN =
       "Campaign investment must be greater thant platform minimum!";
+
+  String INVALID_COUNTRY_CODE = "Invalid country code";
 }

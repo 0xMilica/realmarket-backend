@@ -4,7 +4,8 @@
         <property name="LOG_PATH" value="log_data"/>
         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - call_signature: %X{callSignature} - return_value: %X{returnValue} - user_id: %X{userId} - correlation_id: %X{correlationId} - %msg%n
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - call_signature: %X{callSignature}
+                    - return_value: %X{returnValue} - user_id: %X{userId} - correlation_id: %X{correlationId} - %msg%n
                 </pattern>
             </encoder>
         </appender>
@@ -12,7 +13,8 @@
             <file>${LOG_PATH}/log.log</file>
             <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
                 <Pattern>
-                    %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - call_signature: %X{callSignature} - return_value: %X{returnValue} - user_id: %X{userId} - correlation_id: %X{correlationId} - %msg%n
+                    %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - call_signature: %X{callSignature} -
+                    return_value: %X{returnValue} - user_id: %X{userId} - correlation_id: %X{correlationId} - %msg%n
                 </Pattern>
             </encoder>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -23,7 +25,7 @@
         </appender>
         <root level="info">
             <appender-ref ref="STDOUT"/>
-            <appender-ref ref="SAVE-TO-FILE" />
+            <appender-ref ref="SAVE-TO-FILE"/>
         </root>
     </springProfile>
 </configuration>
