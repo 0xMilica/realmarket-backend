@@ -47,7 +47,7 @@ public class CampaignTopicServiceImpl implements CampaignTopicService {
 
     CampaignTopicType campaignTopicType = findByTopicTypeOrThrowException(topicType);
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
-    campaignService.throwIfNoAccess(campaign);
+    campaignService.throwIfNotOwnerOrNotEditable(campaign);
 
     campaignTopicRepository.save(
         CampaignTopic.builder()
@@ -102,7 +102,7 @@ public class CampaignTopicServiceImpl implements CampaignTopicService {
       String campaignName, String topicType, CampaignTopicDto campaignTopicDto) {
     CampaignTopicType campaignTopicType = findByTopicTypeOrThrowException(topicType);
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
-    campaignService.throwIfNoAccess(campaign);
+    campaignService.throwIfNotOwnerOrNotEditable(campaign);
 
     CampaignTopic campaignTopic =
         findByCampaignAndCampaignTopicTypeOrThrowException(campaign, campaignTopicType);

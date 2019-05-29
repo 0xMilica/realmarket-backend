@@ -75,29 +75,16 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Transactional
   public void createCampaign(CampaignDto campaignDto) {
-    campaignRepository
-        .findByCompanyIdAndActiveTrueAndDeletedFalse(campaignDto.getCompanyId())
-        .ifPresent(
-            c -> {
-              throw new ActiveCampaignAlreadyExistsException();
-            });
-
-    if (campaignRepository
-        .findByUrlFriendlyNameAndDeletedFalse(campaignDto.getUrlFriendlyName())
-        .isPresent()) {
-      log.error("Campaign with the provided name '{}' already exists!", campaignDto.getName());
-      throw new CampaignNameAlreadyExistsException(ExceptionMessages.CAMPAIGN_NAME_ALREADY_EXISTS);
-    }
 
     Company company = companyService.findByIdOrThrowException(campaignDto.getCompanyId());
 
-    if (!AuthenticationUtil.isAuthenticatedUserId(company.getAuth().getId())) {
-      throw new AccessDeniedException(ExceptionMessages.NOT_COMPANY_OWNER);
-    }
+    throwIfNotCompanyOwner(company);
+    throwIfCompanyHasActiveCampaign(company);
+    throwIfCampaignNameExists(campaignDto.getUrlFriendlyName());
 
     Campaign campaign = new Campaign(campaignDto);
-    campaign.setActive(true);
     campaign.setCompany(company);
+    campaign.setCampaignState(campaignStateService.getCampaignState(CampaignStateName.INITIAL));
     validateCampaign(campaign);
     campaignRepository.save(campaign);
 
@@ -106,7 +93,7 @@ public class CampaignServiceImpl implements CampaignService {
 
   public CampaignDto patchCampaign(String campaignName, CampaignPatchDto campaignPatchDto) {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
-    throwIfNoAccess(campaign);
+    throwIfNotOwnerOrNotEditable(campaign);
     modelMapperBlankString.map(campaignPatchDto, campaign);
     validateCampaign(campaign);
     return new CampaignDto(campaignRepository.save(campaign));
@@ -117,7 +104,7 @@ public class CampaignServiceImpl implements CampaignService {
         companyService.findByAuthIdOrThrowException(
             AuthenticationUtil.getAuthentication().getAuth().getId());
     return campaignRepository
-        .findByCompanyIdAndActiveTrueAndDeletedFalse(company.getId())
+        .findExistingByCompany(company)
         .orElseThrow(() -> new EntityNotFoundException(NO_ACTIVE_CAMPAIGN));
   }
 
@@ -146,7 +133,7 @@ public class CampaignServiceImpl implements CampaignService {
       throw new AccessDeniedException(INVALID_TOTP_CODE_PROVIDED);
     }
     throwIfNoAccess(campaign);
-    campaign.setDeleted(true);
+    campaign.setCampaignState(CampaignState.builder().name(CampaignStateName.DELETED).build());
     campaignRepository.save(campaign);
   }
 
@@ -165,9 +152,24 @@ public class CampaignServiceImpl implements CampaignService {
         .equals(AuthenticationUtil.getAuthentication().getAuth().getId());
   }
 
+  public void throwIfNotOwnerOrNotEditable(Campaign campaign) {
+    throwIfNoAccess(campaign);
+    throwIfNotEditable(campaign);
+  }
+
   public void throwIfNoAccess(Campaign campaign) {
     if (!isOwner(campaign)) {
       throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_CAMPAIGN);
+    }
+  }
+
+  public void throwIfNotEditable(Campaign campaign) {
+    switch (campaign.getCampaignState().getName()) {
+      case INITIAL:
+      case REVIEW_READY:
+        return;
+      default:
+        throw new ForbiddenOperationException(CAMPAIGN_NOT_EDITABLE);
     }
   }
 
@@ -177,7 +179,7 @@ public class CampaignServiceImpl implements CampaignService {
     log.info("Market image upload requested");
     String extension = FileUtils.getExtensionOrThrowException(logo);
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
-    throwIfNoAccess(campaign);
+    throwIfNotOwnerOrNotEditable(campaign);
     String url =
         String.join("", companyFeaturedImage, campaign.getUrlFriendlyName(), ".", extension);
     cloudObjectStorageService.uploadAndReplace(campaign.getMarketImageUrl(), url, logo);
@@ -196,7 +198,7 @@ public class CampaignServiceImpl implements CampaignService {
   public void deleteMarketImage(String campaignName) {
     log.info("Delete campaign[{}] market image requested", campaignName);
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
-    throwIfNoAccess(campaign);
+    throwIfNotOwnerOrNotEditable(campaign);
     cloudObjectStorageService.delete(campaign.getMarketImageUrl());
     campaign.setMarketImageUrl(null);
     campaignRepository.save(campaign);
@@ -213,13 +215,37 @@ public class CampaignServiceImpl implements CampaignService {
     }
   }
 
+  private void throwIfNotCompanyOwner(Company company) {
+    if (!AuthenticationUtil.isAuthenticatedUserId(company.getAuth().getId())) {
+      throw new AccessDeniedException(ExceptionMessages.NOT_COMPANY_OWNER);
+    }
+  }
+
+  private void throwIfCompanyHasActiveCampaign(Company company) {
+    campaignRepository
+        .findExistingByCompany(company)
+        .ifPresent(
+            c -> {
+              throw new ActiveCampaignAlreadyExistsException();
+            });
+  }
+
+  private void throwIfCampaignNameExists(String campaignName) {
+    if (campaignRepository
+        .findByUrlFriendlyNameAndDeletedFalse(campaignName)
+        .isPresent()) {
+      log.error("Campaign with the provided name '{}' already exists!", campaignName);
+      throw new CampaignNameAlreadyExistsException(ExceptionMessages.CAMPAIGN_NAME_ALREADY_EXISTS);
+    }
+  }
+
   @Override
   @Transactional
   public void requestReviewForCampaign(String campaignName) {
     Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
     if (!campaignStateService.changeState(
         campaign,
-        campaignStateService.getCampaignStateByName(CampaignStateName.REVIEW_READY.toString()),
+        campaignStateService.getCampaignState(CampaignStateName.REVIEW_READY.toString()),
         isOwner(campaign))) {
       throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
     }

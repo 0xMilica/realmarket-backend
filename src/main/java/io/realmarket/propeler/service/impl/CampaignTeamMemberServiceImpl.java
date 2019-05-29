@@ -56,7 +56,7 @@ public class CampaignTeamMemberServiceImpl implements CampaignTeamMemberService 
   public NewTeamMemberIdDto createTeamMember(
       String campaignName, TeamMemberPatchDto teamMemberPatchDto) {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
-    campaignService.throwIfNoAccess(campaign);
+    campaignService.throwIfNotOwnerOrNotEditable(campaign);
 
     CampaignTeamMember teamMember = new CampaignTeamMember();
     modelMapperBlankString.map(teamMemberPatchDto, teamMember);
@@ -163,7 +163,7 @@ public class CampaignTeamMemberServiceImpl implements CampaignTeamMemberService 
 
   private void checkCampaignMembersAccess(String campaignName) {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
-    campaignService.throwIfNoAccess(campaign);
+    campaignService.throwIfNotOwnerOrNotEditable(campaign);
   }
 
   private void verifyMemberIdsList(String campaignName, List<Long> membersIds) {

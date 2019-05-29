@@ -2,6 +2,7 @@ package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignState;
+import io.realmarket.propeler.model.enums.CampaignStateName;
 
 public interface CampaignStateService {
 
@@ -11,5 +12,7 @@ public interface CampaignStateService {
 
   boolean hasWriteAccess();
 
-  CampaignState getCampaignStateByName(String name);
+  CampaignState getCampaignState(String name);
+
+  CampaignState getCampaignState(CampaignStateName campaignStateName);
 }

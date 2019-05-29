@@ -99,7 +99,7 @@ public class CampaignDocumentServiceImplTest {
 
     Mockito.doThrow(ForbiddenOperationException.class)
         .when(campaignService)
-        .throwIfNoAccess(CampaignUtils.TEST_CAMPAIGN);
+        .throwIfNotOwnerOrNotEditable(CampaignUtils.TEST_CAMPAIGN);
 
     when(campaignDocumentAccessLevelRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL));
@@ -137,6 +137,22 @@ public class CampaignDocumentServiceImplTest {
         campaignDocumentDtoMocked, CampaignUtils.TEST_URL_FRIENDLY_NAME);
   }
 
+  @Test(expected = ForbiddenOperationException.class)
+  public void submitDocument_ShouldThrow_ForbiddenOperationException() {
+    CampaignDocumentDto campaignDocumentDtoMocked =
+        CampaignDocumentUtils.getCampaignDocumentDtoMocked();
+
+    when(campaignService.findByUrlFriendlyNameOrThrowException(
+            CampaignUtils.TEST_ACTIVE_URL_FRIENDLY_NAME))
+        .thenReturn(CampaignUtils.TEST_ACTIVE_CAMPAIGN);
+    Mockito.doThrow(ForbiddenOperationException.class)
+        .when(campaignService)
+        .throwIfNotOwnerOrNotEditable(CampaignUtils.TEST_ACTIVE_CAMPAIGN);
+
+    campaignDocumentService.submitDocument(
+        campaignDocumentDtoMocked, CampaignUtils.TEST_ACTIVE_URL_FRIENDLY_NAME);
+  }
+
   @Test
   public void deleteDocument_Should_RemoveDocument() {
     CampaignDocument campaignDocumentMocked = CampaignDocumentUtils.getCampaignDocumentMocked();
@@ -159,6 +175,23 @@ public class CampaignDocumentServiceImplTest {
 
     campaignDocumentService.deleteDocument(
         CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID);
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void deleteDocument_Should_Throw_ForbiddenOperationException() {
+    CampaignDocument campaignDocumentMocked = CampaignDocumentUtils.getCampaignDocumentMocked();
+    campaignDocumentMocked.setCampaign(CampaignUtils.TEST_ACTIVE_CAMPAIGN);
+
+    when(campaignService.findByUrlFriendlyNameOrThrowException(
+            CampaignUtils.TEST_ACTIVE_URL_FRIENDLY_NAME))
+        .thenReturn(CampaignUtils.TEST_ACTIVE_CAMPAIGN);
+
+    Mockito.doThrow(ForbiddenOperationException.class)
+        .when(campaignService)
+        .throwIfNotEditable(CampaignUtils.TEST_ACTIVE_CAMPAIGN);
+
+    campaignDocumentService.deleteDocument(
+        CampaignUtils.TEST_ACTIVE_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID);
   }
 
   @Test(expected = EntityNotFoundException.class)

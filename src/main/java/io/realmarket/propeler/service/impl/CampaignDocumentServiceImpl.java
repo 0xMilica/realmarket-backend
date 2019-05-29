@@ -58,7 +58,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
       CampaignDocumentDto campaignDocumentDto, String campaignUrlFriendlyName) {
     Campaign campaign =
         campaignService.findByUrlFriendlyNameOrThrowException(campaignUrlFriendlyName);
-    campaignService.throwIfNoAccess(campaign);
+    campaignService.throwIfNotOwnerOrNotEditable(campaign);
 
     Optional<CampaignDocumentAccessLevel> accessLevel =
         this.campaignDocumentAccessLevelRepository.findByName(campaignDocumentDto.getAccessLevel());
@@ -92,7 +92,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     if (!campaignDocument.getCampaign().getUrlFriendlyName().equals(campaignUrlFriendlyName)) {
       throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
     }
-    campaignService.throwIfNoAccess(campaignDocument.getCampaign());
+    campaignService.throwIfNotOwnerOrNotEditable(campaignDocument.getCampaign());
     cloudObjectStorageService.delete(campaignDocument.getUrl());
     campaignDocumentRepository.delete(campaignDocument);
   }

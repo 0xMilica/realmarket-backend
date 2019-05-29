@@ -18,11 +18,10 @@ import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CA
 @Service
 public class CampaignStateServiceImpl implements CampaignStateService {
 
+  private final CampaignStateRepository campaignStateRepository;
   private Map<CampaignStateName, List<CampaignStateName>> stateTransitFlow =
       createAndInitStateChangeFlow();
   private Map<CampaignStateName, List<EUserRole>> rolesPerState = createAndInitRolesPerState();
-
-  private final CampaignStateRepository campaignStateRepository;
 
   @Autowired
   public CampaignStateServiceImpl(CampaignStateRepository campaignStateRepository) {
@@ -60,9 +59,16 @@ public class CampaignStateServiceImpl implements CampaignStateService {
   }
 
   @Override
-  public CampaignState getCampaignStateByName(String name) {
+  public CampaignState getCampaignState(String name) {
     return campaignStateRepository
         .findByName(CampaignStateName.fromString(name))
+        .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_STATE_NOT_FOUND));
+  }
+
+  @Override
+  public CampaignState getCampaignState(CampaignStateName campaignStateName) {
+    return campaignStateRepository
+        .findByName(campaignStateName)
         .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_STATE_NOT_FOUND));
   }
 

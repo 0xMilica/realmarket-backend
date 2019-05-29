@@ -24,7 +24,11 @@ public interface CampaignService {
 
   boolean isOwner(Campaign campaign);
 
+  void throwIfNotOwnerOrNotEditable(Campaign campaign);
+
   void throwIfNoAccess(Campaign campaign);
+
+  void throwIfNotEditable(Campaign campaign);
 
   Campaign getActiveCampaignForCompany();
 

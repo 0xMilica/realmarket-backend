@@ -147,5 +147,5 @@ public class CampaignControllerImpl implements CampaignController {
   public ResponseEntity prepareCampaign(@PathVariable String campaignName) {
     campaignService.requestReviewForCampaign(campaignName);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+  }
 }

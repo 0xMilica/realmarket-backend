@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @ApiModel(description = "Dto used to patch campaign data")
@@ -43,6 +42,5 @@ public class CampaignPatchDto {
   private BigDecimal maxEquityOffered;
 
   @ApiModelProperty(value = "Campaign min equity offered")
-  @NotNull
   private BigDecimal minInvestment;
 }

@@ -7,14 +7,14 @@ public enum CampaignStateName {
   FINANCE_PROPOSITION("FINANCE_PROPOSITION"),
   LEAD_INVESTMENT("LEAD_INVESTMENT"),
   ACTIVE("ACTIVE"),
-  POST_CAMPAIGN("POST_CAMPAIGN");
-
-  @Override
-  public String toString() {
-    return text;
-  }
+  POST_CAMPAIGN("POST_CAMPAIGN"),
+  DELETED("DELETED");
 
   private final String text;
+
+  CampaignStateName(final String text) {
+    this.text = text;
+  }
 
   public static CampaignStateName fromString(String text) {
     for (CampaignStateName campaignStateName : CampaignStateName.values()) {
@@ -25,7 +25,8 @@ public enum CampaignStateName {
     return CampaignStateName.INITIAL;
   }
 
-  CampaignStateName(final String text) {
-    this.text = text;
+  @Override
+  public String toString() {
+    return text;
   }
 }

@@ -56,7 +56,7 @@ public class CampaignTopicImageServiceImpl implements CampaignTopicImageService 
     CampaignTopicType campaignTopicType =
         campaignTopicService.findByTopicTypeOrThrowException(topicType);
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
-    campaignService.throwIfNoAccess(campaign);
+    campaignService.throwIfNotOwnerOrNotEditable(campaign);
 
     CampaignTopic campaignTopic =
         campaignTopicService.findByCampaignAndCampaignTopicTypeOrThrowException(

@@ -5,6 +5,7 @@ import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
@@ -33,7 +34,6 @@ import static io.realmarket.propeler.util.CampaignUtils.*;
 import static io.realmarket.propeler.util.CompanyUtils.TEST_FEATURED_IMAGE_URL;
 import static io.realmarket.propeler.util.CompanyUtils.getCompanyMocked;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -53,6 +53,8 @@ public class CampaignServiceImplTest {
   @Mock private PlatformSettingsService platformSettingsService;
 
   @Mock private OTPService otpService;
+
+  @Mock private CampaignStateService campaignStateService;
 
   @InjectMocks private CampaignServiceImpl campaignServiceImpl;
 
@@ -108,16 +110,28 @@ public class CampaignServiceImplTest {
     assertEquals(CampaignUtils.TEST_FUNDING_GOALS, campaignDto.getFundingGoals());
   }
 
+  @Test(expected = ForbiddenOperationException.class)
+  public void PatchCampaign_Should_Throw_ForbiddenOperationException() {
+    Campaign testCampaign = TEST_ACTIVE_CAMPAIGN.toBuilder().build();
+    CampaignPatchDto campaignPatchDto = CampaignUtils.TEST_CAMPAIGN_PATCH_DTO_FUNDING_GOALS();
+
+    PowerMockito.when(
+            campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_ACTIVE_URL_FRIENDLY_NAME))
+        .thenReturn(Optional.of(testCampaign));
+
+    campaignServiceImpl.patchCampaign(TEST_ACTIVE_URL_FRIENDLY_NAME, campaignPatchDto);
+  }
+
   @Test
-  public void CreateCampaign_Should_CreateCampaign() throws Exception {
-    when(campaignRepository.findByCompanyIdAndActiveTrueAndDeletedFalse(
-            TEST_CAMPAIGN_DTO.getCompanyId()))
+  public void CreateCampaign_Should_CreateCampaign() {
+    when(campaignRepository.findExistingByCompany(getCompanyMocked()))
         .thenReturn(Optional.empty());
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.empty());
     when(campaignRepository.save(TEST_CAMPAIGN)).thenReturn(TEST_CAMPAIGN);
     when(companyService.findByIdOrThrowException(anyLong()))
         .thenReturn(CompanyUtils.getCompanyMocked());
+    when(campaignStateService.getCampaignState(CampaignStateName.INITIAL)).thenReturn(TEST_CAMPAIGN_INITIAL_STATE);
 
     TEST_CAMPAIGN_DTO.setMinInvestment(new BigDecimal("1000"));
     when(platformSettingsService.getCurrentPlatformSettings())
@@ -135,8 +149,7 @@ public class CampaignServiceImplTest {
   public void
       CreateCampaign_Should_ThrowException_When_Min_Investment_Smaller_Than_PlatformMinimum()
           throws Exception {
-    when(campaignRepository.findByCompanyIdAndActiveTrueAndDeletedFalse(
-            TEST_CAMPAIGN_DTO.getCompanyId()))
+    when(campaignRepository.findExistingByCompany(getCompanyMocked()))
         .thenReturn(Optional.empty());
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.empty());
@@ -159,8 +172,9 @@ public class CampaignServiceImplTest {
   @Test(expected = ActiveCampaignAlreadyExistsException.class)
   public void
       CreateCampaign_Should_Throw_ActiveCampaignAlreadyExistsException_WhenCampaignNameExists() {
-    when(campaignRepository.findByCompanyIdAndActiveTrueAndDeletedFalse(
-            TEST_CAMPAIGN_DTO.getCompanyId()))
+    when(companyService.findByIdOrThrowException(anyLong()))
+        .thenReturn(CompanyUtils.getCompanyMocked());
+    when(campaignRepository.findExistingByCompany(getCompanyMocked()))
         .thenReturn(Optional.of(TEST_CAMPAIGN));
 
     campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
@@ -169,6 +183,8 @@ public class CampaignServiceImplTest {
   @Test(expected = CampaignNameAlreadyExistsException.class)
   public void
       CreateCampaign_Should_Throw_CampaignNameAlreadyExistsException_WhenCampaignNameExists() {
+    when(companyService.findByIdOrThrowException(anyLong()))
+        .thenReturn(CompanyUtils.getCompanyMocked());
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.of(TEST_CAMPAIGN.toBuilder().build()));
 
@@ -188,6 +204,26 @@ public class CampaignServiceImplTest {
         .uploadAndReplace(
             TEST_FEATURED_IMAGE_URL, campaign.getMarketImageUrl(), FileUtils.MOCK_FILE_VALID);
     verify(campaignRepository, times(1)).save(campaign);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void UploadMarketImage_ShouldThrow_ForbiddenOperationException_CannotBeEdited() {
+    Campaign campaign = getActiveCampaignMocked();
+    campaign.setMarketImageUrl(TEST_FEATURED_IMAGE_URL);
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(Optional.of(campaign));
+    campaignServiceImpl.uploadMarketImage(TEST_URL_FRIENDLY_NAME, FileUtils.MOCK_FILE_VALID);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void UploadMarketImage_ShouldThrow_ForbiddenOperationException_NotOwner() {
+    Campaign campaign = getCampaignMocked();
+    campaign.setMarketImageUrl(TEST_FEATURED_IMAGE_URL);
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(Optional.of(campaign));
+    mockSecurityContext(TEST_USER_AUTH2);
+
+    campaignServiceImpl.uploadMarketImage(TEST_URL_FRIENDLY_NAME, FileUtils.MOCK_FILE_VALID);
   }
 
   @Test
@@ -227,12 +263,27 @@ public class CampaignServiceImplTest {
     verify(cloudObjectStorageService, Mockito.times(1)).delete(TEST_MARKET_IMAGE_UTL);
   }
 
+  @Test(expected = ForbiddenOperationException.class)
+  public void DeleteMarketImage_ShouldThrow_ForbiddenOperationException_CannotBeEdited() {
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(Optional.of(getActiveCampaignMocked()));
+    campaignServiceImpl.deleteMarketImage(TEST_URL_FRIENDLY_NAME);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void DeleteMarketImage_ShouldThrow_ForbiddenOperationException_NotOwner() {
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(Optional.of(getCampaignMocked()));
+    mockSecurityContext(TEST_USER_AUTH2);
+    campaignServiceImpl.deleteMarketImage(TEST_URL_FRIENDLY_NAME);
+  }
+
   @Test
   public void GetActiveCampaignDto_Should_Return_Campaign() {
     when(companyService.findByAuthIdOrThrowException(TEST_USER_AUTH.getAuth().getId()))
         .thenReturn(getCompanyMocked());
     Campaign campaign = getCampaignMocked();
-    when(campaignRepository.findByCompanyIdAndActiveTrueAndDeletedFalse(getCompanyMocked().getId()))
+    when(campaignRepository.findExistingByCompany(getCompanyMocked()))
         .thenReturn(Optional.of(campaign));
 
     campaignServiceImpl.getActiveCampaignDto();
@@ -240,8 +291,7 @@ public class CampaignServiceImplTest {
     verify(companyService, Mockito.times(1))
         .findByAuthIdOrThrowException(TEST_USER_AUTH.getAuth().getId());
     verify(campaignTopicService, times(1)).getTopicStatus(campaign);
-    verify(campaignRepository, Mockito.times(1))
-        .findByCompanyIdAndActiveTrueAndDeletedFalse(getCompanyMocked().getId());
+    verify(campaignRepository, Mockito.times(1)).findExistingByCompany(getCompanyMocked());
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -277,7 +327,7 @@ public class CampaignServiceImplTest {
     verify(campaignRepository, Mockito.times(1))
         .findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName());
     verify(campaignRepository, Mockito.times(1)).save(testCampaign);
-    assertTrue(testCampaign.getDeleted());
+    assertEquals(CampaignStateName.DELETED, testCampaign.getCampaignState().getName());
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -297,7 +347,7 @@ public class CampaignServiceImplTest {
   public void DeleteCampaign_Should_Throw_ForbiddenException() {
     Campaign testCampaign = getCampaignMocked();
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
-            .thenReturn(Optional.of(testCampaign));
+        .thenReturn(Optional.of(testCampaign));
     mockSecurityContext(TEST_USER_AUTH2);
     when(otpService.validate(
             AuthenticationUtil.getAuthentication().getAuth(),

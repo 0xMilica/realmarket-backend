@@ -37,6 +37,7 @@ public class CampaignStateServiceImplTest {
             testCampaign,
             CampaignState.builder().name(CampaignStateName.REVIEW_READY).build(),
             true);
+
     assertTrue(isValid);
   }
 
@@ -46,6 +47,7 @@ public class CampaignStateServiceImplTest {
     boolean isValid =
         campaignStateServiceImpl.changeState(
             testCampaign, CampaignState.builder().name(CampaignStateName.ACTIVE).build(), true);
+
     assertFalse(isValid);
   }
 
@@ -83,6 +85,7 @@ public class CampaignStateServiceImplTest {
     boolean isValid =
         campaignStateServiceImpl.changeState(
             testCampaign, CampaignState.builder().name(CampaignStateName.ACTIVE).build(), false);
+
     assertFalse(isValid);
   }
 }
