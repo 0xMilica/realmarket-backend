@@ -23,6 +23,7 @@ import io.realmarket.propeler.service.util.LoginIPAttemptsService;
 import io.realmarket.propeler.service.util.LoginUsernameAttemptsService;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.RememberMeCookieHelper;
+import liquibase.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -144,7 +145,7 @@ public class AuthServiceImpl implements AuthService {
             .orElseThrow(() -> new BadRequestException(INVALID_COUNTRY_CODE));
 
     Country countryForTaxation =
-        (registrationDto.getCountryForTaxation() != null)
+        (StringUtils.isNotEmpty(registrationDto.getCountryForTaxation()))
             ? this.countryRepository
                 .findByCode(registrationDto.getCountryForTaxation())
                 .orElseThrow(() -> new BadRequestException(INVALID_COUNTRY_CODE))
