@@ -24,6 +24,7 @@ buildscript {
 apply plugin: "java"
 apply plugin: "org.springframework.boot"
 apply plugin: "io.spring.dependency-management"
+apply from: "$rootDir/integration-test.gradle"
 
 group = "io.realmarket"
 version = "0.1.0-SNAPSHOT"

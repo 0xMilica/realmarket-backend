@@ -104,3 +104,5 @@ INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_sec
 INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 3, false, 'secret', 'entrepreneur', 5);
 INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 2, false, 'secret', 'investor', 6);
 INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 3, false, 'secret', 'entrepreneur2', 7);
+
+INSERT INTO public.remember_me_cookie (id, expiration_time, value, auth_id) VALUES (1, TO_DATE('01/05/2022', 'DD/MM/YYYY'), '1234', 5);
