@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.util;
 import org.modelmapper.AbstractCondition;
 import org.modelmapper.Condition;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MappingContext;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -11,7 +12,9 @@ import org.springframework.util.StringUtils;
 public class ModelMapperBlankString extends ModelMapper {
 
   ModelMapperBlankString() {
-    this.getConfiguration().setPropertyCondition(getCondition());
+    this.getConfiguration()
+        .setPropertyCondition(getCondition())
+        .setMatchingStrategy(MatchingStrategies.STRICT);
   }
 
   // string blank condition: https://github.com/modelmapper/modelmapper/issues/319
