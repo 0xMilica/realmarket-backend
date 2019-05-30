@@ -13,18 +13,12 @@
             id bigint not null
             constraint campaign_pkey
             primary key,
-            url_friendly_name varchar(255)
-            constraint campaign_uk_on_urlFriendlyName
-            unique,
+            url_friendly_name varchar(255),
             funding_goals bigint,
             market_image_url varchar(255),
-            active boolean,
-            deleted boolean,
             max_equity_offered numeric(19,2),
             min_equity_offered numeric(19,2),
-            name varchar(255)
-            constraint campaign_uk_on_name
-            unique,
+            name varchar(255),
             time_to_raise_funds int check (time_to_raise_funds > 0),
             min_investment numeric(19,2),
             company_id bigint

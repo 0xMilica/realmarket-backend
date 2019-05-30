@@ -124,14 +124,14 @@ public class CampaignServiceImplTest {
 
   @Test
   public void CreateCampaign_Should_CreateCampaign() {
-    when(campaignRepository.findExistingByCompany(getCompanyMocked()))
-        .thenReturn(Optional.empty());
+    when(campaignRepository.findExistingByCompany(getCompanyMocked())).thenReturn(Optional.empty());
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.empty());
     when(campaignRepository.save(TEST_CAMPAIGN)).thenReturn(TEST_CAMPAIGN);
     when(companyService.findByIdOrThrowException(anyLong()))
         .thenReturn(CompanyUtils.getCompanyMocked());
-    when(campaignStateService.getCampaignState(CampaignStateName.INITIAL)).thenReturn(TEST_CAMPAIGN_INITIAL_STATE);
+    when(campaignStateService.getCampaignState(CampaignStateName.INITIAL))
+        .thenReturn(TEST_CAMPAIGN_INITIAL_STATE);
 
     TEST_CAMPAIGN_DTO.setMinInvestment(new BigDecimal("1000"));
     when(platformSettingsService.getCurrentPlatformSettings())
@@ -149,8 +149,7 @@ public class CampaignServiceImplTest {
   public void
       CreateCampaign_Should_ThrowException_When_Min_Investment_Smaller_Than_PlatformMinimum()
           throws Exception {
-    when(campaignRepository.findExistingByCompany(getCompanyMocked()))
-        .thenReturn(Optional.empty());
+    when(campaignRepository.findExistingByCompany(getCompanyMocked())).thenReturn(Optional.empty());
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.empty());
     when(campaignRepository.save(TEST_CAMPAIGN)).thenReturn(TEST_CAMPAIGN);
@@ -320,6 +319,8 @@ public class CampaignServiceImplTest {
             AuthenticationUtil.getAuthentication().getAuth(),
             new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null)))
         .thenReturn(true);
+    when(campaignStateService.getCampaignState(CampaignStateName.DELETED))
+        .thenReturn(TEST_CAMPAIGN_DELETED_STATE);
 
     campaignServiceImpl.delete(
         testCampaign.getUrlFriendlyName(), new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null));

@@ -15,6 +15,8 @@ public class CampaignUtils {
       CampaignState.builder().name(CampaignStateName.INITIAL).build();
   public static final CampaignState TEST_CAMPAIGN_ACTIVE_STATE =
       CampaignState.builder().name(CampaignStateName.ACTIVE).build();
+  public static final CampaignState TEST_CAMPAIGN_DELETED_STATE =
+      CampaignState.builder().name(CampaignStateName.DELETED).build();
 
   public static final Campaign TEST_CAMPAIGN =
       Campaign.builder()

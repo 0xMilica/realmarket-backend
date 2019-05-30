@@ -14,10 +14,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(
     name = "campaign",
-    indexes = {
-      @Index(columnList = "name", unique = true, name = "campaign_uk_on_name"),
-      @Index(columnList = "urlFriendlyName", unique = true, name = "campaign_uk_on_urlFriendlyName")
-    })
+    indexes = {@Index(columnList = "urlFriendlyName")})
 public class Campaign {
 
   @Id

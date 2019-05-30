@@ -5,7 +5,6 @@ import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
@@ -133,7 +132,7 @@ public class CampaignServiceImpl implements CampaignService {
       throw new AccessDeniedException(INVALID_TOTP_CODE_PROVIDED);
     }
     throwIfNoAccess(campaign);
-    campaign.setCampaignState(CampaignState.builder().name(CampaignStateName.DELETED).build());
+    campaign.setCampaignState(campaignStateService.getCampaignState(CampaignStateName.DELETED));
     campaignRepository.save(campaign);
   }
 
@@ -231,9 +230,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   private void throwIfCampaignNameExists(String campaignName) {
-    if (campaignRepository
-        .findByUrlFriendlyNameAndDeletedFalse(campaignName)
-        .isPresent()) {
+    if (campaignRepository.findByUrlFriendlyNameAndDeletedFalse(campaignName).isPresent()) {
       log.error("Campaign with the provided name '{}' already exists!", campaignName);
       throw new CampaignNameAlreadyExistsException(ExceptionMessages.CAMPAIGN_NAME_ALREADY_EXISTS);
     }
