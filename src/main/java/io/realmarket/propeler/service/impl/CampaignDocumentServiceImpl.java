@@ -16,6 +16,7 @@ import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   private final CampaignDocumentTypeRepository campaignDocumentTypeRepository;
   private final CampaignService campaignService;
   private final CloudObjectStorageService cloudObjectStorageService;
+  private ModelMapperBlankString modelMapperBlankString;
 
   @Autowired
   public CampaignDocumentServiceImpl(
@@ -45,12 +47,14 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
       CampaignDocumentAccessLevelRepository campaignDocumentAccessLevelRepository,
       CampaignDocumentTypeRepository campaignDocumentTypeRepository,
       CampaignService campaignService,
-      CloudObjectStorageService cloudObjectStorageService) {
+      CloudObjectStorageService cloudObjectStorageService,
+      ModelMapperBlankString modelMapperBlankString) {
     this.campaignDocumentRepository = campaignDocumentRepository;
     this.campaignDocumentAccessLevelRepository = campaignDocumentAccessLevelRepository;
     this.campaignDocumentTypeRepository = campaignDocumentTypeRepository;
     this.campaignService = campaignService;
     this.cloudObjectStorageService = cloudObjectStorageService;
+    this.modelMapperBlankString = modelMapperBlankString;
   }
 
   @Transactional
@@ -60,23 +64,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
         campaignService.findByUrlFriendlyNameOrThrowException(campaignUrlFriendlyName);
     campaignService.throwIfNotOwnerOrNotEditable(campaign);
 
-    Optional<CampaignDocumentAccessLevel> accessLevel =
-        this.campaignDocumentAccessLevelRepository.findByName(campaignDocumentDto.getAccessLevel());
-    Optional<CampaignDocumentType> type =
-        this.campaignDocumentTypeRepository.findByName(campaignDocumentDto.getType());
-    if (!accessLevel.isPresent() || !type.isPresent()) {
-      throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
-    }
-
-    CampaignDocument campaignDocument =
-        CampaignDocument.builder()
-            .title(campaignDocumentDto.getTitle())
-            .accessLevel(accessLevel.get())
-            .type(type.get())
-            .url(campaignDocumentDto.getUrl())
-            .campaign(campaign)
-            .uploadDate(Instant.now())
-            .build();
+    CampaignDocument campaignDocument = convertDocumentDtoToDocument(campaignDocumentDto, campaign);
 
     if (!cloudObjectStorageService.doesFileExist(campaignDocument.getUrl())) {
       throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
@@ -136,5 +124,48 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     return campaignDocumentRepository
         .findById(documentId)
         .orElseThrow(EntityNotFoundException::new);
+  }
+
+  @Override
+  public CampaignDocument patchCampaignDocument(
+      String campaignUrlFriendlyName, Long documentId, CampaignDocumentDto campaignDocumentDto) {
+    CampaignDocument campaignDocument = findByIdOrThrowException(documentId);
+    if (!campaignDocument.getCampaign().getUrlFriendlyName().equals(campaignUrlFriendlyName)) {
+      throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
+    }
+    campaignService.throwIfNotOwnerOrNotEditable(campaignDocument.getCampaign());
+
+    CampaignDocument campaignDocumentPatch =
+        convertDocumentDtoToDocument(campaignDocumentDto, campaignDocument.getCampaign());
+
+    if (!cloudObjectStorageService.doesFileExist(campaignDocumentPatch.getUrl())) {
+      throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
+    }
+
+    modelMapperBlankString.map(campaignDocumentPatch, campaignDocument);
+    return campaignDocumentRepository.save(campaignDocument);
+  }
+
+  public CampaignDocument convertDocumentDtoToDocument(
+      CampaignDocumentDto campaignDocumentDto, Campaign campaign) {
+    Optional<CampaignDocumentAccessLevel> accessLevel =
+        this.campaignDocumentAccessLevelRepository.findByName(campaignDocumentDto.getAccessLevel());
+    Optional<CampaignDocumentType> type =
+        this.campaignDocumentTypeRepository.findByName(campaignDocumentDto.getType());
+    if (!accessLevel.isPresent() || !type.isPresent()) {
+      throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
+    }
+
+    CampaignDocument campaignDocument =
+        CampaignDocument.builder()
+            .title(campaignDocumentDto.getTitle())
+            .accessLevel(accessLevel.get())
+            .type(type.get())
+            .url(campaignDocumentDto.getUrl())
+            .campaign(campaign)
+            .uploadDate(Instant.now())
+            .build();
+
+    return campaignDocument;
   }
 }

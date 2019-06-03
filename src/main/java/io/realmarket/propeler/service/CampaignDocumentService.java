@@ -18,4 +18,7 @@ public interface CampaignDocumentService {
       String campaignName);
 
   CampaignDocument findByIdOrThrowException(Long documentId);
+
+  CampaignDocument patchCampaignDocument(
+      String campaignUrlFriendlyName, Long documentId, CampaignDocumentDto campaignDocumentDto);
 }

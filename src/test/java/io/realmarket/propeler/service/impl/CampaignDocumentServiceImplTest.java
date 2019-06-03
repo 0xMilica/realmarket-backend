@@ -8,7 +8,9 @@ import io.realmarket.propeler.repository.CampaignDocumentRepository;
 import io.realmarket.propeler.repository.CampaignDocumentTypeRepository;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
+import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.CampaignDocumentUtils;
 import io.realmarket.propeler.util.CampaignUtils;
@@ -18,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.persistence.EntityNotFoundException;
@@ -29,6 +32,7 @@ import static io.realmarket.propeler.util.AuthUtils.TEST_USER_AUTH2;
 import static io.realmarket.propeler.util.AuthUtils.mockSecurityContext;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -39,6 +43,7 @@ public class CampaignDocumentServiceImplTest {
   @Mock private CampaignDocumentTypeRepository campaignDocumentTypeRepository;
   @Mock private CampaignService campaignService;
   @Mock private CloudObjectStorageService cloudObjectStorageService;
+  @Mock private ModelMapperBlankString modelMapperBlankString;
 
   @InjectMocks private CampaignDocumentServiceImpl campaignDocumentService;
 
@@ -56,16 +61,14 @@ public class CampaignDocumentServiceImplTest {
     when(campaignService.findByUrlFriendlyNameOrThrowException(
             CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenReturn(CampaignUtils.TEST_CAMPAIGN);
-    when(campaignDocumentAccessLevelRepository.findByName(any()))
+    when(campaignDocumentAccessLevelRepository.findByName(
+            CampaignDocumentUtils.TEST_ACCESS_LEVEL_ENUM))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL));
-    when(campaignDocumentTypeRepository.findByName(any()))
+    when(campaignDocumentTypeRepository.findByName(CampaignDocumentUtils.TEST_TYPE_ENUM))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE));
     when(cloudObjectStorageService.doesFileExist(campaignDocumentDtoMocked.getUrl()))
         .thenReturn(true);
     when(campaignDocumentRepository.save(any())).thenReturn(campaignDocumentMocked);
-    when(campaignDocumentService.submitDocument(
-            campaignDocumentDtoMocked, CampaignUtils.TEST_URL_FRIENDLY_NAME))
-        .thenReturn(campaignDocumentMocked);
 
     CampaignDocument retVal =
         campaignDocumentService.submitDocument(
@@ -253,5 +256,63 @@ public class CampaignDocumentServiceImplTest {
         .thenReturn(Optional.empty());
 
     campaignDocumentService.findByIdOrThrowException(CampaignDocumentUtils.TEST_ID);
+  }
+
+  @Test
+  public void patchCampaignDocument_Should_ModifyCampaignDocument() {
+    CampaignDocumentDto campaignDocumentDtoMocked =
+        CampaignDocumentUtils.getCampaignDocumentDtoMocked2();
+    CampaignDocument campaignDocumentMocked = CampaignDocumentUtils.getCampaignDocumentMocked2();
+
+    when(campaignDocumentRepository.findById(CampaignDocumentUtils.TEST_ID))
+        .thenReturn(Optional.of(CampaignDocumentUtils.TEST_CAMPAIGN_DOCUMENT));
+    when(campaignDocumentAccessLevelRepository.findByName(any()))
+        .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL_2));
+    when(campaignDocumentTypeRepository.findByName(any()))
+        .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE_2));
+    when(cloudObjectStorageService.doesFileExist(campaignDocumentDtoMocked.getUrl()))
+        .thenReturn(true);
+    when(campaignDocumentRepository.save(any())).thenReturn(campaignDocumentMocked);
+
+    doAnswer(
+            invocation -> {
+              Object[] args = invocation.getArguments();
+              ((CampaignDocument) args[1]).setTitle(CampaignDocumentUtils.TEST_TITLE_2);
+              ((CampaignDocument) args[1])
+                  .setAccessLevel(CampaignDocumentUtils.TEST_ACCESS_LEVEL_2);
+              ((CampaignDocument) args[1]).setType(CampaignDocumentUtils.TEST_TYPE_2);
+              ((CampaignDocument) args[1]).setUrl(CampaignDocumentUtils.TEST_URL_2);
+              return null;
+            })
+        .when(modelMapperBlankString)
+        .map(campaignDocumentDtoMocked, campaignDocumentMocked);
+
+    CampaignDocument retVal =
+        campaignDocumentService.patchCampaignDocument(
+            CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID, campaignDocumentDtoMocked);
+
+    assertEquals(campaignDocumentMocked, retVal);
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void patchCampaignDocument_Should_Throw_EntityNotFoundException() {
+    CampaignDocumentDto campaignDocumentDtoMocked =
+        CampaignDocumentUtils.getCampaignDocumentDtoMocked2();
+
+    campaignDocumentService.patchCampaignDocument(
+        CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID, campaignDocumentDtoMocked);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void patchCampaignDocument_Should_Throw_BadRequestException() {
+    CampaignDocumentDto campaignDocumentDtoMocked =
+        CampaignDocumentUtils.getCampaignDocumentDtoMocked2();
+    CampaignDocument campaignDocumentMocked = CampaignDocumentUtils.getCampaignDocumentMocked2();
+
+    PowerMockito.when(campaignDocumentRepository.findById(CampaignDocumentUtils.TEST_ID))
+        .thenReturn(Optional.of(campaignDocumentMocked));
+
+    campaignDocumentService.patchCampaignDocument(
+        CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID, campaignDocumentDtoMocked);
   }
 }

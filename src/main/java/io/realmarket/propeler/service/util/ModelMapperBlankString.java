@@ -11,7 +11,7 @@ import org.springframework.util.StringUtils;
 @Service
 public class ModelMapperBlankString extends ModelMapper {
 
-  ModelMapperBlankString() {
+  public ModelMapperBlankString() {
     this.getConfiguration()
         .setPropertyCondition(getCondition())
         .setMatchingStrategy(MatchingStrategies.STRICT);

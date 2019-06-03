@@ -15,6 +15,7 @@ public class CampaignUtils {
       CampaignState.builder().name(CampaignStateName.INITIAL).build();
   public static final CampaignState TEST_CAMPAIGN_ACTIVE_STATE =
       CampaignState.builder().name(CampaignStateName.ACTIVE).build();
+  public static final String TEST_NAME = "TEST_NAME";
   public static final CampaignState TEST_CAMPAIGN_DELETED_STATE =
       CampaignState.builder().name(CampaignStateName.DELETED).build();
 
@@ -22,6 +23,7 @@ public class CampaignUtils {
       Campaign.builder()
           .company(CompanyUtils.getCompanyMocked())
           .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
+          .name(TEST_NAME)
           .fundingGoals(0L)
           .campaignState(TEST_CAMPAIGN_INITIAL_STATE)
           .build();

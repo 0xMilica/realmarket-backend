@@ -107,6 +107,18 @@ public class CampaignControllerImpl implements CampaignController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  @PatchMapping(value = "/{campaignName}/documents/{documentId}")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<CampaignDocumentResponseDto> patchCampaignDocument(
+      @PathVariable String campaignName,
+      @PathVariable Long documentId,
+      @RequestBody @Valid CampaignDocumentDto campaignDocumentDto) {
+    return ResponseEntity.ok(
+        new CampaignDocumentResponseDto(
+            campaignDocumentService.patchCampaignDocument(
+                campaignName, documentId, campaignDocumentDto)));
+  }
+
   @GetMapping(value = "/{campaignName}/documents")
   public ResponseEntity<Map<String, List<CampaignDocumentResponseDto>>> getCampaignDocuments(
       @PathVariable String campaignName) {

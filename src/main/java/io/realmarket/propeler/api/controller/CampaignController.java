@@ -157,6 +157,18 @@ public interface CampaignController {
   ResponseEntity deleteCampaignDocument(String campaignName, Long documentId);
 
   @ApiOperation(
+      value = "Patch campaign document",
+      httpMethod = "PATCH",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaign document successfully modified."),
+    @ApiResponse(code = 400, message = "Invalid request.")
+  })
+  ResponseEntity<CampaignDocumentResponseDto> patchCampaignDocument(
+      String campaignName, Long documentId, CampaignDocumentDto campaignDocumentDto);
+
+  @ApiOperation(
       value = "Get all campaign documents groped by document type.",
       httpMethod = "GET",
       consumes = APPLICATION_JSON_VALUE,
