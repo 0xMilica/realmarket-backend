@@ -5,12 +5,16 @@ import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.Company;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.AuthenticationException;
+import java.util.List;
 
 public interface CampaignService {
   Campaign findByUrlFriendlyNameOrThrowException(String name);
+
+  List<Campaign> findAllByCompany(Company company);
 
   void createCampaign(CampaignDto campaignDto);
 

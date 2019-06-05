@@ -127,6 +127,11 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   }
 
   @Override
+  public List<CampaignDocument> findAllByCampaign(Campaign campaign) {
+    return campaignDocumentRepository.findAllByCampaign(campaign);
+  }
+
+  @Override
   public CampaignDocument patchCampaignDocument(
       String campaignUrlFriendlyName, Long documentId, CampaignDocumentDto campaignDocumentDto) {
     CampaignDocument campaignDocument = findByIdOrThrowException(documentId);

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -239,4 +240,16 @@ public interface UserController {
     @ApiResponse(code = 400, message = "Invalid request.")
   })
   ResponseEntity verifySecretChange(Long userId, VerifySecretChangeDto verifySecretChangeDto);
+
+  @ApiOperation(
+      value = "Get documents submitted by user",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "User documents successfully retrieved."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve campaign documents."),
+    @ApiResponse(code = 404, message = "User not found.")
+  })
+  ResponseEntity<List<DocumentResponseDto>> getDocuments(Long userId);
 }

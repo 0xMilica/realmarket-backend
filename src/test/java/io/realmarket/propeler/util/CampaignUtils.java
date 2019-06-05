@@ -7,6 +7,8 @@ import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 
 public class CampaignUtils {
+
+  public static final Long TEST_CAMPAIGN_ID = 1L;
   public static final String TEST_URL_FRIENDLY_NAME = "TEST_URL_FRIENDLY_NAME";
   public static final String TEST_ACTIVE_URL_FRIENDLY_NAME = "TEST_URL_FRIENDLY_NAME";
   public static final String TEST_MARKET_IMAGE_UTL = "MARKET_IMAGE_URL";

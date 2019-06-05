@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,4 +25,6 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
   @Query(
       "select c, s from Campaign c join fetch c.campaignState s where c.company = :company and s.name <> 'DELETED' and s.name <> 'POST_CAMPAIGN'")
   Optional<Campaign> findExistingByCompany(@Param("company") final Company company);
+
+  List<Campaign> findAllByCompany(Company company);
 }

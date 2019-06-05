@@ -289,7 +289,9 @@ public class CampaignDocumentServiceImplTest {
 
     CampaignDocument retVal =
         campaignDocumentService.patchCampaignDocument(
-            CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID, campaignDocumentDtoMocked);
+            CampaignUtils.TEST_URL_FRIENDLY_NAME,
+            CampaignDocumentUtils.TEST_ID,
+            campaignDocumentDtoMocked);
 
     assertEquals(campaignDocumentMocked, retVal);
   }
@@ -300,7 +302,9 @@ public class CampaignDocumentServiceImplTest {
         CampaignDocumentUtils.getCampaignDocumentDtoMocked2();
 
     campaignDocumentService.patchCampaignDocument(
-        CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID, campaignDocumentDtoMocked);
+        CampaignUtils.TEST_URL_FRIENDLY_NAME,
+        CampaignDocumentUtils.TEST_ID,
+        campaignDocumentDtoMocked);
   }
 
   @Test(expected = BadRequestException.class)
@@ -313,6 +317,8 @@ public class CampaignDocumentServiceImplTest {
         .thenReturn(Optional.of(campaignDocumentMocked));
 
     campaignDocumentService.patchCampaignDocument(
-        CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID, campaignDocumentDtoMocked);
+        CampaignUtils.TEST_URL_FRIENDLY_NAME,
+        CampaignDocumentUtils.TEST_ID,
+        campaignDocumentDtoMocked);
   }
 }

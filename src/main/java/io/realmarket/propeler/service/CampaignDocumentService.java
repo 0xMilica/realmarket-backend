@@ -2,6 +2,7 @@ package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.CampaignDocumentDto;
 import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
+import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignDocument;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface CampaignDocumentService {
       String campaignName);
 
   CampaignDocument findByIdOrThrowException(Long documentId);
+
+  List<CampaignDocument> findAllByCampaign(Campaign campaign);
 
   CampaignDocument patchCampaignDocument(
       String campaignUrlFriendlyName, Long documentId, CampaignDocumentDto campaignDocumentDto);

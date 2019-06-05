@@ -3,10 +3,12 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
+import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.CompanyRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.FileUtils;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
@@ -97,6 +99,17 @@ public class CompanyServiceImpl implements CompanyService {
   @Override
   public Company findMyCompany() {
     return findByAuthOrThrowException(AuthenticationUtil.getAuthentication().getAuth());
+  }
+
+  @Override
+  public void throwIfNotOwnerOrAdmin(Company company, Auth auth) {
+    if (auth.getUserRole().getName().equals(EUserRole.ROLE_ADMIN)) {
+      return;
+    } else if (auth.getUserRole().getName().equals(EUserRole.ROLE_ENTREPRENEUR)) {
+      if (!company.getAuth().getId().equals(auth.getId())) {
+        throw new BadRequestException(NOT_COMPANY_OWNER);
+      }
+    }
   }
 
   @Override

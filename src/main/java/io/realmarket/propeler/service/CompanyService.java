@@ -17,6 +17,8 @@ public interface CompanyService {
 
   Company findMyCompany();
 
+  void throwIfNotOwnerOrAdmin(Company company, Auth auth);
+
   void uploadLogo(Long companyId, MultipartFile logo);
 
   FileDto downloadLogo(Long companyId);

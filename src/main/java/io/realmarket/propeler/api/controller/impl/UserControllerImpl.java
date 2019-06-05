@@ -3,15 +3,18 @@ package io.realmarket.propeler.api.controller.impl;
 import io.realmarket.propeler.api.controller.UserController;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.AuthService;
+import io.realmarket.propeler.service.DocumentService;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.TwoFactorAuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -23,14 +26,17 @@ public class UserControllerImpl implements UserController {
   private final AuthService authService;
   private final PersonService personService;
   private final TwoFactorAuthService twoFactorAuthService;
+  private final DocumentService documentService;
 
   public UserControllerImpl(
       AuthService authService,
       PersonService personService,
-      TwoFactorAuthService twoFactorAuthService) {
+      TwoFactorAuthService twoFactorAuthService,
+      DocumentService documentService) {
     this.authService = authService;
     this.personService = personService;
     this.twoFactorAuthService = twoFactorAuthService;
+    this.documentService = documentService;
   }
 
   @RequestMapping(value = "{username}", method = RequestMethod.HEAD)
@@ -126,5 +132,12 @@ public class UserControllerImpl implements UserController {
       @PathVariable Long userId, @RequestBody VerifySecretChangeDto verifySecretChangeDto) {
     twoFactorAuthService.verifyNewSecret(verifySecretChangeDto, userId);
     return ResponseEntity.ok().build();
+  }
+
+  @Override
+  @PreAuthorize("hasAnyAuthority('ROLE_ADMIN, ROLE_ENTREPRENEUR')")
+  @GetMapping(value = "/{userId}/documents")
+  public ResponseEntity<List<DocumentResponseDto>> getDocuments(@PathVariable Long userId) {
+    return ResponseEntity.ok(documentService.getDocuments(userId));
   }
 }

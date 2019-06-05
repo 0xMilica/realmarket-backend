@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
@@ -70,6 +71,11 @@ public class CampaignServiceImpl implements CampaignService {
     return campaignRepository
         .findByUrlFriendlyNameAndDeletedFalse(urlFriendlyName)
         .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_NOT_FOUND));
+  }
+
+  @Override
+  public List<Campaign> findAllByCompany(Company company) {
+    return campaignRepository.findAllByCompany(company);
   }
 
   @Transactional
