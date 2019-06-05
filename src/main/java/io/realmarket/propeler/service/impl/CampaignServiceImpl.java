@@ -1,9 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.CampaignDto;
-import io.realmarket.propeler.api.dto.CampaignPatchDto;
-import io.realmarket.propeler.api.dto.FileDto;
-import io.realmarket.propeler.api.dto.TwoFADto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.enums.CampaignStateName;
@@ -21,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -253,5 +252,18 @@ public class CampaignServiceImpl implements CampaignService {
       throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
     }
     campaignRepository.save(campaign);
+  }
+
+  @Override
+  public Page<CampaignResponseDto> getPublicCampaigns(Pageable pageable, String filter) {
+
+    if (filter.equalsIgnoreCase("all")) {
+      return campaignRepository.findAllPublic(pageable).map(CampaignResponseDto::new);
+    } else if (filter.equalsIgnoreCase("active") || filter.equalsIgnoreCase("post_campaign")) {
+      return campaignRepository
+          .findAllByCampaignState(pageable, campaignStateService.getCampaignState(filter))
+          .map(CampaignResponseDto::new);
+    }
+    throw new BadRequestException(INVALID_REQUEST);
   }
 }

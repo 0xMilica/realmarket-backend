@@ -2,6 +2,8 @@ package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.*;
 import io.swagger.annotations.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -247,4 +249,38 @@ public interface CampaignController {
             "Campaign state transition is invalid, insufficient privileges or there is no campaign under provided name."),
   })
   ResponseEntity prepareCampaign(String campaignName);
+
+  @ApiOperation(
+      value = "Get all campaign which publicly accessible",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "page",
+        value = "Number of page to be returned",
+        defaultValue = "20",
+        required = false,
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        required = false,
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "filter",
+        value = "State of campaign to be returned",
+        allowableValues = "all, active, post_campaign",
+        defaultValue = "active",
+        required = false,
+        dataType = "String",
+        paramType = "query")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully retrieved all publicly accessible campaigns."),
+    @ApiResponse(code = 400, message = "Invalid request.")
+  })
+  ResponseEntity<Page<CampaignResponseDto>> getPublicCampaigns(Pageable pageable, String filter);
 }

@@ -6,6 +6,8 @@ import io.realmarket.propeler.service.CampaignDocumentService;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignTeamMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -159,5 +161,13 @@ public class CampaignControllerImpl implements CampaignController {
   public ResponseEntity prepareCampaign(@PathVariable String campaignName) {
     campaignService.requestReviewForCampaign(campaignName);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  @GetMapping
+  public ResponseEntity<Page<CampaignResponseDto>> getPublicCampaigns(
+      Pageable pageable,
+      @RequestParam(value = "filter", required = false, defaultValue = "active") String filter) {
+    campaignService.getPublicCampaigns(pageable, filter);
+    return ResponseEntity.ok(campaignService.getPublicCampaigns(pageable, filter));
   }
 }

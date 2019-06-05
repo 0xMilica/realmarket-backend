@@ -1,7 +1,10 @@
 package io.realmarket.propeler.repository;
 
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.Company;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,4 +30,13 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
   Optional<Campaign> findExistingByCompany(@Param("company") final Company company);
 
   List<Campaign> findAllByCompany(Company company);
+
+  @Query(
+      value =
+          "SELECT c FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = 'ACTIVE' OR s.name = 'POST_CAMPAIGN'",
+      countQuery =
+          "SELECT COUNT(c) FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = 'ACTIVE' OR s.name = 'POST_CAMPAIGN'")
+  Page<Campaign> findAllPublic(Pageable pageable);
+
+  Page<Campaign> findAllByCampaignState(Pageable pageable, CampaignState state);
 }
