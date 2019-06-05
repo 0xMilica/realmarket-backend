@@ -43,7 +43,7 @@ cos:
     company_featured_image: company_featured_image/
     company_logo: company_logo/
     campaign_market_image: campaign_market_image/
-    campaign_investor_picture: campaign_investor_picture/
+    shareholder_picture: shareholder_picture/
     campaign_team_member_picture: campaign_team_member_picture/
     campaign_topic_image: local/campaign_topic_image/
   api.key.id: ${COS_API_KEY}

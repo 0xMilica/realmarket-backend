@@ -6,11 +6,11 @@ public interface ExceptionMessages {
 
   String USERNAME_ALREADY_EXISTS = "Person with the provided username already exists!";
 
-  String USERNAME_DOES_NOT_EXISTS = "Person with provided username does not exists.";
+  String USERNAME_DOES_NOT_EXISTS = "Person with provided username does not exist.";
 
   String EMAIL_DOES_NOT_EXIST = "Person with provided e-mail address does not exist!";
 
-  String PERSON_ID_DOES_NOT_EXISTS = "Person with provided identifier does not exists.";
+  String PERSON_ID_DOES_NOT_EXISTS = "Person with provided identifier does not exist.";
 
   String INVALID_REQUEST = "Invalid request!";
 
@@ -34,7 +34,7 @@ public interface ExceptionMessages {
 
   String CAMPAIGN_STATE_NOT_FOUND = "Campaign state with the provided name not found!";
 
-  String CAMPAIGN_INVESTOR_NOT_FOUND = "Campaign investor with the provided id not found!";
+  String CAMPAIGN_INVESTOR_NOT_FOUND = "Shareholder with the provided id not found!";
 
   String USER_IS_NOT_OWNER_OF_CAMPAIGN = "Caller is not owner of campaign.";
 
@@ -54,7 +54,7 @@ public interface ExceptionMessages {
 
   String COMPANY_DOES_NOT_EXIST = "Company with provided id does not exist.";
 
-  String ENTREPRENEUR_MISSING_COMPANY = "Entrepreneur does not have company.";
+  String ENTREPRENEUR_MISSING_COMPANY = "Entrepreneur does not have a company.";
 
   String FILE_NOT_EXISTS = "File with provided URL does not exist!";
 
@@ -71,7 +71,7 @@ public interface ExceptionMessages {
   String PLATFORM_SETTINGS_NOT_FOUND = "Platform settings couldn't be found!";
 
   String INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN =
-      "Campaign investment must be greater thant platform minimum!";
+      "Campaign investment must be greater than platform minimum!";
 
   String CAMPAIGN_NOT_EDITABLE = "Campaign can not be edited at this stage";
 

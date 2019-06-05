@@ -2,7 +2,7 @@ package io.realmarket.propeler.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.CampaignInvestor;
+import io.realmarket.propeler.model.Shareholder;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,30 +12,30 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@ApiModel(description = "Dto used for transfer of campaign investor data")
+@ApiModel(description = "Dto used for transfer of campaign shareholder data")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CampaignInvestorDto {
+public class ShareholderDto {
 
-  @ApiModelProperty(value = "Campaign investor id")
+  @ApiModelProperty(value = "Shareholder id")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long id;
 
-  @ApiModelProperty(value = "Is investor anonymous")
+  @ApiModelProperty(value = "Is shareholder anonymous")
   private Boolean isAnonymous;
 
-  @ApiModelProperty(value = "Name of investor")
+  @ApiModelProperty(value = "Name of shareholder")
   private String name;
 
-  @ApiModelProperty(value = "Location of investor")
+  @ApiModelProperty(value = "Location of shareholder")
   private String location;
 
   @ApiModelProperty(value = "Invested amount")
   private BigDecimal investedAmount;
 
-  @ApiModelProperty(value = "Short description of investor")
+  @ApiModelProperty(value = "Short description of shareholder")
   private String description;
 
   @ApiModelProperty(value = "Photo url")
@@ -54,32 +54,32 @@ public class CampaignInvestorDto {
   @ApiModelProperty(value = "Custom url")
   private String customProfileUrl;
 
-  @ApiModelProperty(value = "Order in investor list")
+  @ApiModelProperty(value = "Order in shareholder list")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Integer orderNumber;
 
-  @ApiModelProperty(value = "Campaign where investor belongs")
+  @ApiModelProperty(value = "Campaign where shareholder belongs")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long campaignId;
 
-  public CampaignInvestorDto(CampaignInvestor campaignInvestor) {
-    this.id = campaignInvestor.getId();
-    this.isAnonymous = campaignInvestor.getIsAnonymous();
-    this.name = campaignInvestor.getName();
-    this.location = campaignInvestor.getLocation();
-    this.investedAmount = campaignInvestor.getInvestedAmount();
-    this.description = campaignInvestor.getDescription();
-    this.photoUrl = campaignInvestor.getPhotoUrl();
-    this.linkedinUrl = campaignInvestor.getLinkedinUrl();
-    this.twitterUrl = campaignInvestor.getTwitterUrl();
-    this.facebookUrl = campaignInvestor.getFacebookUrl();
-    this.customProfileUrl = campaignInvestor.getCustomProfileUrl();
-    this.orderNumber = campaignInvestor.getOrderNumber();
-    this.campaignId = campaignInvestor.getCampaign().getId();
+  public ShareholderDto(Shareholder shareholder) {
+    this.id = shareholder.getId();
+    this.isAnonymous = shareholder.getIsAnonymous();
+    this.name = shareholder.getName();
+    this.location = shareholder.getLocation();
+    this.investedAmount = shareholder.getInvestedAmount();
+    this.description = shareholder.getDescription();
+    this.photoUrl = shareholder.getPhotoUrl();
+    this.linkedinUrl = shareholder.getLinkedinUrl();
+    this.twitterUrl = shareholder.getTwitterUrl();
+    this.facebookUrl = shareholder.getFacebookUrl();
+    this.customProfileUrl = shareholder.getCustomProfileUrl();
+    this.orderNumber = shareholder.getOrderNumber();
+    this.campaignId = shareholder.getCampaign().getId();
   }
 
-  public CampaignInvestor createInvestor(Campaign campaign) {
-    return CampaignInvestor.builder()
+  public Shareholder createShareholder(Campaign campaign) {
+    return Shareholder.builder()
         .campaign(campaign)
         .customProfileUrl(customProfileUrl)
         .description(description)

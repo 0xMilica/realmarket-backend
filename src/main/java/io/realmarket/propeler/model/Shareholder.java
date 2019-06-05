@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "campaign_investor")
-public class CampaignInvestor {
+@Table(name = "shareholder")
+public class Shareholder {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CAMPAIGN_INVESTOR_SEQ")
   @SequenceGenerator(
@@ -35,9 +35,7 @@ public class CampaignInvestor {
   private String customProfileUrl;
   private Integer orderNumber;
 
-  @JoinColumn(
-      name = "campaignId",
-      foreignKey = @ForeignKey(name = "campaign_investor_fk_on_campaign"))
+  @JoinColumn(name = "campaignId", foreignKey = @ForeignKey(name = "shareholder_fk_on_campaign"))
   @ManyToOne
   private Campaign campaign;
 }

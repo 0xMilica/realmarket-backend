@@ -7,11 +7,11 @@
                 endDelimiter=";"
                 splitStatements="true"
                 stripComments="true">
-            create sequence campaign_investor_seq;
-            create table if not exists campaign_investor
+            create sequence shareholder_seq;
+            create table if not exists shareholder
             (
             id bigint not null
-            constraint campaign_investor_pkey
+            constraint shareholder_pkey
             primary key,
             custom_profile_url varchar(255),
             description varchar(255),
@@ -25,7 +25,7 @@
             photo_url varchar(255),
             twitter_url varchar(255),
             campaign_id bigint
-            constraint campaign_investor_fk_on_campaign
+            constraint shareholder_fk_on_campaign
             references campaign
             );
 
