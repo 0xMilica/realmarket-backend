@@ -2,9 +2,9 @@ package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.Company;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import io.realmarket.propeler.model.Company;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.AuthenticationException;
@@ -15,9 +15,9 @@ public interface CampaignService {
 
   List<Campaign> findAllByCompany(Company company);
 
-  void createCampaign(CampaignDto campaignDto);
+  CampaignResponseDto createCampaign(CampaignDto campaignDto);
 
-  CampaignDto patchCampaign(String campaignName, CampaignPatchDto campaignPatchDto);
+  CampaignResponseDto patchCampaign(String campaignName, CampaignPatchDto campaignPatchDto);
 
   void uploadMarketImage(String campaignName, MultipartFile logo);
 

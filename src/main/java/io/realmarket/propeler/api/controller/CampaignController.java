@@ -89,7 +89,8 @@ public interface CampaignController {
     @ApiResponse(code = 200, message = "Return campaign."),
     @ApiResponse(code = 400, message = "Invalid request."),
   })
-  ResponseEntity<CampaignDto> patchCampaign(String campaignName, CampaignPatchDto campaignPatchDto);
+  ResponseEntity<CampaignResponseDto> patchCampaign(
+      String campaignName, CampaignPatchDto campaignPatchDto);
 
   @ApiOperation(
       value = "Upload campaign featured image",

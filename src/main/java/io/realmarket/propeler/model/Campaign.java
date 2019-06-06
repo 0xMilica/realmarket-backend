@@ -30,6 +30,7 @@ public class Campaign {
   private BigDecimal maxEquityOffered;
   private String marketImageUrl;
   private BigDecimal minInvestment;
+  private String tagLine;
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "companyId", foreignKey = @ForeignKey(name = "campaign_fk_on_company"))
@@ -51,5 +52,6 @@ public class Campaign {
     this.maxEquityOffered = campaignDto.getMaxEquityOffered();
     this.urlFriendlyName = campaignDto.getUrlFriendlyName();
     this.minInvestment = campaignDto.getMinInvestment();
+    this.tagLine = campaignDto.getTagLine();
   }
 }

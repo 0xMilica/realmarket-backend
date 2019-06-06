@@ -69,6 +69,11 @@ public class CampaignDto {
   @ApiModelProperty(value = "Campaign minimal investment")
   private BigDecimal minInvestment;
 
+  @ApiModelProperty(value = "Campaign tag line")
+  @NotNull(message = "Please provide tag line")
+  @Size(max = 230, message = "Campaign tag line cannot be longer than 230 characters.")
+  private String tagLine;
+
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String marketImageUrl;
 
@@ -85,5 +90,6 @@ public class CampaignDto {
     this.maxEquityOffered = campaign.getMaxEquityOffered();
     this.marketImageUrl = campaign.getMarketImageUrl();
     this.minInvestment = campaign.getMinInvestment();
+    this.tagLine = campaign.getTagLine();
   }
 }

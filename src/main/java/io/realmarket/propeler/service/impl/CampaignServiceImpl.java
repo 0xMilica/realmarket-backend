@@ -78,7 +78,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Transactional
-  public void createCampaign(CampaignDto campaignDto) {
+  public CampaignResponseDto createCampaign(CampaignDto campaignDto) {
 
     Company company = companyService.findByIdOrThrowException(campaignDto.getCompanyId());
 
@@ -90,17 +90,15 @@ public class CampaignServiceImpl implements CampaignService {
     campaign.setCompany(company);
     campaign.setCampaignState(campaignStateService.getCampaignState(CampaignStateName.INITIAL));
     validateCampaign(campaign);
-    campaignRepository.save(campaign);
-
-    log.info("Campaign with name '{}' saved successfully.", campaignDto.getUrlFriendlyName());
+    return new CampaignResponseDto(campaignRepository.save(campaign));
   }
 
-  public CampaignDto patchCampaign(String campaignName, CampaignPatchDto campaignPatchDto) {
+  public CampaignResponseDto patchCampaign(String campaignName, CampaignPatchDto campaignPatchDto) {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
     throwIfNotOwnerOrNotEditable(campaign);
     modelMapperBlankString.map(campaignPatchDto, campaign);
     validateCampaign(campaign);
-    return new CampaignDto(campaignRepository.save(campaign));
+    return new CampaignResponseDto(campaignRepository.save(campaign));
   }
 
   public Campaign getActiveCampaignForCompany() {

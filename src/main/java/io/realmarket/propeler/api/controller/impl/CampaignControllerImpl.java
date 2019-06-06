@@ -46,9 +46,9 @@ public class CampaignControllerImpl implements CampaignController {
 
   @PostMapping
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
-  public ResponseEntity createCampaign(@RequestBody @Valid CampaignDto campaignDto) {
-    campaignService.createCampaign(campaignDto);
-    return new ResponseEntity(HttpStatus.CREATED);
+  public ResponseEntity<CampaignResponseDto> createCampaign(
+      @RequestBody @Valid CampaignDto campaignDto) {
+    return new ResponseEntity<>(campaignService.createCampaign(campaignDto), HttpStatus.CREATED);
   }
 
   @GetMapping(value = "/{campaignName}")
@@ -67,7 +67,7 @@ public class CampaignControllerImpl implements CampaignController {
 
   @PatchMapping(value = "/{campaignName}")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
-  public ResponseEntity<CampaignDto> patchCampaign(
+  public ResponseEntity<CampaignResponseDto> patchCampaign(
       @PathVariable String campaignName, @RequestBody @Valid CampaignPatchDto campaignPatchDto) {
     return ResponseEntity.ok(campaignService.patchCampaign(campaignName, campaignPatchDto));
   }

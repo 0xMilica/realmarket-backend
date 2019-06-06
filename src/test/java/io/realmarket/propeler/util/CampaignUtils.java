@@ -10,7 +10,7 @@ public class CampaignUtils {
 
   public static final Long TEST_CAMPAIGN_ID = 1L;
   public static final String TEST_URL_FRIENDLY_NAME = "TEST_URL_FRIENDLY_NAME";
-  public static final String TEST_ACTIVE_URL_FRIENDLY_NAME = "TEST_URL_FRIENDLY_NAME";
+  public static final String TEST_ACTIVE_URL_FRIENDLY_NAME = "TEST_ACTIVE_URL_FRIENDLY_NAME";
   public static final String TEST_MARKET_IMAGE_UTL = "MARKET_IMAGE_URL";
   public static final Long TEST_FUNDING_GOALS = 58L;
   public static final CampaignState TEST_CAMPAIGN_INITIAL_STATE =
@@ -20,6 +20,7 @@ public class CampaignUtils {
   public static final String TEST_NAME = "TEST_NAME";
   public static final CampaignState TEST_CAMPAIGN_DELETED_STATE =
       CampaignState.builder().name(CampaignStateName.DELETED).build();
+  public static final String TEST_TAG_LINE = "TAG_LINE";
 
   public static final Campaign TEST_CAMPAIGN =
       Campaign.builder()
@@ -28,7 +29,9 @@ public class CampaignUtils {
           .name(TEST_NAME)
           .fundingGoals(0L)
           .campaignState(TEST_CAMPAIGN_INITIAL_STATE)
+          .tagLine(TEST_TAG_LINE)
           .build();
+
   public static final CampaignDto TEST_CAMPAIGN_DTO = new CampaignDto(TEST_CAMPAIGN);
 
   public static Campaign getCampaignMocked() {

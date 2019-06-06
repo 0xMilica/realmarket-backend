@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 @ApiModel(description = "Dto used to patch campaign data")
@@ -43,4 +44,8 @@ public class CampaignPatchDto {
 
   @ApiModelProperty(value = "Campaign min equity offered")
   private BigDecimal minInvestment;
+
+  @ApiModelProperty(value = "Campaign tag line")
+  @Size(max = 230, message = "Campaign tag line cannot be longer than 230 characters.")
+  private String tagLine;
 }

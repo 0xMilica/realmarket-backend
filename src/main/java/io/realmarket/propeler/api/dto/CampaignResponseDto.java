@@ -78,7 +78,7 @@ public class CampaignResponseDto {
     this.minInvestment = campaign.getMinInvestment();
     this.marketImageUrl = campaign.getMarketImageUrl();
     this.companyLogoUrl = campaign.getCompany().getLogoUrl();
-    this.tagLine = "tagline";
+    this.tagLine = campaign.getTagLine();
     this.tag = campaign.getCompany().getCompanyCategory().getName();
     this.location = campaign.getCompany().getCity() + ", " + campaign.getCompany().getCounty();
     this.state = campaign.getCampaignState().getName().toString();

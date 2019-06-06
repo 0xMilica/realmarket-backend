@@ -1,7 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
+import io.realmarket.propeler.api.dto.CampaignResponseDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Campaign;
@@ -105,9 +105,9 @@ public class CampaignServiceImplTest {
     when(platformSettingsService.getCurrentPlatformSettings())
         .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_SETTINGS_DTO);
 
-    CampaignDto campaignDto =
+    CampaignResponseDto campaignResponseDto =
         campaignServiceImpl.patchCampaign(TEST_URL_FRIENDLY_NAME, campaignPatchDto);
-    assertEquals(CampaignUtils.TEST_FUNDING_GOALS, campaignDto.getFundingGoals());
+    assertEquals(CampaignUtils.TEST_FUNDING_GOALS, campaignResponseDto.getFundingGoals());
   }
 
   @Test(expected = ForbiddenOperationException.class)
@@ -124,12 +124,11 @@ public class CampaignServiceImplTest {
 
   @Test
   public void CreateCampaign_Should_CreateCampaign() {
+    when(companyService.findByIdOrThrowException(anyLong()))
+        .thenReturn(CompanyUtils.getCompanyMocked());
     when(campaignRepository.findExistingByCompany(getCompanyMocked())).thenReturn(Optional.empty());
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.empty());
-    when(campaignRepository.save(TEST_CAMPAIGN)).thenReturn(TEST_CAMPAIGN);
-    when(companyService.findByIdOrThrowException(anyLong()))
-        .thenReturn(CompanyUtils.getCompanyMocked());
     when(campaignStateService.getCampaignState(CampaignStateName.INITIAL))
         .thenReturn(TEST_CAMPAIGN_INITIAL_STATE);
 
@@ -137,7 +136,9 @@ public class CampaignServiceImplTest {
     when(platformSettingsService.getCurrentPlatformSettings())
         .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_SETTINGS_DTO);
 
-    campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
+    when(campaignRepository.save(any())).thenReturn(TEST_CAMPAIGN);
+    CampaignResponseDto campaignResponseDto = campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
+    assertEquals(CampaignUtils.TEST_NAME, campaignResponseDto.getName());
 
     verify(companyService, Mockito.times(1)).findByIdOrThrowException(anyLong());
     verify(campaignRepository, Mockito.times(1))
@@ -147,8 +148,7 @@ public class CampaignServiceImplTest {
 
   @Test(expected = BadRequestException.class)
   public void
-      CreateCampaign_Should_ThrowException_When_Min_Investment_Smaller_Than_PlatformMinimum()
-          throws Exception {
+      CreateCampaign_Should_ThrowException_When_Min_Investment_Smaller_Than_PlatformMinimum() {
     when(campaignRepository.findExistingByCompany(getCompanyMocked())).thenReturn(Optional.empty());
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.empty());
