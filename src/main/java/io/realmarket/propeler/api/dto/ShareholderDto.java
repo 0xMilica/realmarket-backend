@@ -1,7 +1,7 @@
 package io.realmarket.propeler.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.Shareholder;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@ApiModel(description = "Dto used for transfer of campaign shareholder data")
+@ApiModel(description = "Dto used for transfer of shareholder data")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -58,9 +58,9 @@ public class ShareholderDto {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Integer orderNumber;
 
-  @ApiModelProperty(value = "Campaign where shareholder belongs")
+  @ApiModelProperty(value = "Company where shareholder belongs")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Long campaignId;
+  private Long companyId;
 
   public ShareholderDto(Shareholder shareholder) {
     this.id = shareholder.getId();
@@ -75,12 +75,12 @@ public class ShareholderDto {
     this.facebookUrl = shareholder.getFacebookUrl();
     this.customProfileUrl = shareholder.getCustomProfileUrl();
     this.orderNumber = shareholder.getOrderNumber();
-    this.campaignId = shareholder.getCampaign().getId();
+    this.companyId = shareholder.getCompany().getId();
   }
 
-  public Shareholder createShareholder(Campaign campaign) {
+  public Shareholder createShareholder(Company company) {
     return Shareholder.builder()
-        .campaign(campaign)
+        .company(company)
         .customProfileUrl(customProfileUrl)
         .description(description)
         .facebookUrl(facebookUrl)

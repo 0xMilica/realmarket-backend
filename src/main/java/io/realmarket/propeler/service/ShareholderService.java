@@ -9,20 +9,21 @@ import java.util.List;
 
 public interface ShareholderService {
 
-  Shareholder createShareholder(String campaignName, ShareholderDto shareholderDto);
+  Shareholder createShareholder(ShareholderDto shareholderDto);
 
-  List<Shareholder> patchShareholderOrder(String campaignName, List<Long> order);
+  List<Shareholder> patchShareholderOrder(List<Long> order);
 
-  List<Shareholder> getShareholders(String campaignName);
+  List<Shareholder> getShareholders();
 
-  Shareholder patchShareholder(
-      String campaignName, Long shareholderId, ShareholderDto shareholderDto);
+  List<Shareholder> getShareholders(Long companyId);
 
-  void deleteShareholder(String campaignName, Long shareholderId);
+  Shareholder patchShareholder(Long shareholderId, ShareholderDto shareholderDto);
 
-  void uploadPicture(String campaignName, Long shareholderId, MultipartFile picture);
+  void deleteShareholder(Long shareholderId);
 
-  FileDto downloadPicture(String campaignName, Long shareholderId);
+  void uploadPicture(Long shareholderId, MultipartFile picture);
 
-  void deletePicture(String campaignName, Long shareholderId);
+  FileDto downloadPicture(Long shareholderId);
+
+  void deletePicture(Long shareholderId);
 }

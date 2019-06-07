@@ -16,11 +16,8 @@ import java.math.BigDecimal;
 @Table(name = "shareholder")
 public class Shareholder {
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CAMPAIGN_INVESTOR_SEQ")
-  @SequenceGenerator(
-      name = "CAMPAIGN_INVESTOR_SEQ",
-      sequenceName = "CAMPAIGN_INVESTOR_SEQ",
-      allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SHAREHOLDER_SEQ")
+  @SequenceGenerator(name = "SHAREHOLDER_SEQ", sequenceName = "SHAREHOLDER_SEQ", allocationSize = 1)
   private Long id;
 
   private Boolean isAnonymous;
@@ -35,7 +32,7 @@ public class Shareholder {
   private String customProfileUrl;
   private Integer orderNumber;
 
-  @JoinColumn(name = "campaignId", foreignKey = @ForeignKey(name = "shareholder_fk_on_campaign"))
+  @JoinColumn(name = "companyId", foreignKey = @ForeignKey(name = "shareholder_fk_on_company"))
   @ManyToOne
-  private Campaign campaign;
+  private Company company;
 }

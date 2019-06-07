@@ -166,4 +166,15 @@ public class CompanyServiceImpl implements CompanyService {
         .findByAuthId(authId)
         .orElseThrow(() -> new EntityNotFoundException(NOT_COMPANY_OWNER));
   }
+
+  public void throwIfNotCompanyOwner() {
+    Auth owner = AuthenticationUtil.getAuthentication().getAuth();
+    if (!isCompanyOwner(owner)) {
+      throw new ForbiddenOperationException(NOT_COMPANY_OWNER);
+    }
+  }
+
+  public boolean isCompanyOwner(Auth auth) {
+    return companyRepository.existsCompanyByAuth(auth);
+  }
 }

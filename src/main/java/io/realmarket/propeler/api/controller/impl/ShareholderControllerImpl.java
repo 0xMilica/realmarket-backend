@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/campaigns/{campaignName}/shareholders")
+@RequestMapping(value = "/companies")
 @Slf4j
 public class ShareholderControllerImpl implements ShareholderController {
 
@@ -27,71 +27,82 @@ public class ShareholderControllerImpl implements ShareholderController {
   }
 
   @Override
-  @PostMapping
+  @PostMapping("/mine/shareholders")
   public ResponseEntity<ShareholderDto> createShareholder(
-      @PathVariable String campaignName, @RequestBody ShareholderDto shareholderDto) {
+      @RequestBody ShareholderDto shareholderDto) {
     return new ResponseEntity<>(
-        new ShareholderDto(shareholderService.createShareholder(campaignName, shareholderDto)),
+        new ShareholderDto(shareholderService.createShareholder(shareholderDto)),
         HttpStatus.CREATED);
   }
 
   @Override
-  @PatchMapping
+  @PatchMapping("/mine/shareholders")
   public ResponseEntity<List<ShareholderDto>> patchShareholderOrder(
-      @PathVariable String campaignName, @RequestBody List<Long> shareholderOrder) {
+      @RequestBody List<Long> shareholderOrder) {
     return ResponseEntity.ok(
-        shareholderService.patchShareholderOrder(campaignName, shareholderOrder).stream()
+        shareholderService.patchShareholderOrder(shareholderOrder).stream()
             .map(ShareholderDto::new)
             .collect(Collectors.toList()));
   }
 
   @Override
-  @GetMapping
-  public ResponseEntity<List<ShareholderDto>> getShareholders(@PathVariable String campaignName) {
+  @GetMapping("/mine/shareholders")
+  public ResponseEntity<List<ShareholderDto>> getShareholders() {
     return ResponseEntity.ok(
-        shareholderService.getShareholders(campaignName).stream()
+        shareholderService.getShareholders().stream()
             .map(ShareholderDto::new)
             .collect(Collectors.toList()));
   }
 
   @Override
-  @PatchMapping("/{shareholderId}")
+  @GetMapping("/{companyId}/shareholders")
+  public ResponseEntity<List<ShareholderDto>> getShareholders(@PathVariable Long companyId) {
+    return ResponseEntity.ok(
+        shareholderService.getShareholders(companyId).stream()
+            .map(ShareholderDto::new)
+            .collect(Collectors.toList()));
+  }
+
+  @Override
+  @PatchMapping("/mine/shareholders/{shareholderId}")
   public ResponseEntity<ShareholderDto> patchShareholder(
-      @PathVariable String campaignName,
-      @PathVariable Long shareholderId,
-      @RequestBody ShareholderDto shareholderDto) {
+      @PathVariable Long shareholderId, @RequestBody ShareholderDto shareholderDto) {
     return ResponseEntity.ok(
-        new ShareholderDto(
-            shareholderService.patchShareholder(campaignName, shareholderId, shareholderDto)));
+        new ShareholderDto(shareholderService.patchShareholder(shareholderId, shareholderDto)));
   }
 
   @Override
-  @DeleteMapping("/{shareholderId}")
-  public ResponseEntity deleteShareholder(
-      @PathVariable String campaignName, @PathVariable Long shareholderId) {
-    shareholderService.deleteShareholder(campaignName, shareholderId);
+  @DeleteMapping("/mine/shareholders/{shareholderId}")
+  public ResponseEntity deleteShareholder(@PathVariable Long shareholderId) {
+    shareholderService.deleteShareholder(shareholderId);
     return ResponseEntity.noContent().build();
   }
 
-  @PostMapping("/{shareholderId}/picture")
+  @Override
+  @PostMapping("/mine/shareholders/{shareholderId}/picture")
   public ResponseEntity uploadShareholderPicture(
-      @PathVariable String campaignName,
-      @PathVariable Long shareholderId,
-      @RequestParam("picture") MultipartFile picture) {
-    shareholderService.uploadPicture(campaignName, shareholderId, picture);
+      @PathVariable Long shareholderId, @RequestParam("picture") MultipartFile picture) {
+    shareholderService.uploadPicture(shareholderId, picture);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping("/{shareholderId}/picture")
-  public ResponseEntity<FileDto> downloadShareholderPicture(
-      @PathVariable String campaignName, @PathVariable Long shareholderId) {
-    return ResponseEntity.ok(shareholderService.downloadPicture(campaignName, shareholderId));
+  @Override
+  @GetMapping("/mine/shareholders/{shareholderId}/picture")
+  public ResponseEntity<FileDto> downloadShareholderPicture(@PathVariable Long shareholderId) {
+    return ResponseEntity.ok(shareholderService.downloadPicture(shareholderId));
   }
 
-  @DeleteMapping("/{shareholderId}/picture")
-  public ResponseEntity deleteShareholderPicture(
-      @PathVariable String campaignName, @PathVariable Long shareholderId) {
-    shareholderService.deletePicture(campaignName, shareholderId);
+  @Override
+  @GetMapping("/{companyId}/shareholders/{shareholderId}/picture")
+  public ResponseEntity<FileDto> downloadShareholderPicture(
+      @PathVariable Long companyId, @PathVariable Long shareholderId) {
+    return ResponseEntity.ok(shareholderService.downloadPicture(shareholderId));
+  }
+
+  @Override
+  @DeleteMapping("/mine/shareholders/{shareholderId}/picture")
+  public ResponseEntity deleteShareholderPicture(@PathVariable Long shareholderId) {
+    shareholderService.deletePicture(shareholderId);
     return ResponseEntity.noContent().build();
   }
 }

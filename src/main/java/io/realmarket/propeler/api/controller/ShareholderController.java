@@ -19,12 +19,10 @@ public interface ShareholderController {
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-    @ApiResponse(code = 201, message = "Campaign successfully created."),
+    @ApiResponse(code = 201, message = "Shareholder successfully created."),
     @ApiResponse(code = 400, message = "Invalid request."),
-    @ApiResponse(code = 409, message = "Campaign with the provided name already exists.")
   })
-  ResponseEntity<ShareholderDto> createShareholder(
-      String campaignName, ShareholderDto shareholderDto);
+  ResponseEntity<ShareholderDto> createShareholder(ShareholderDto shareholderDto);
 
   @ApiOperation(
       value = "Change order of showing shareholders",
@@ -35,7 +33,7 @@ public interface ShareholderController {
     @ApiResponse(code = 200, message = "Order of shareholders changed."),
     @ApiResponse(code = 400, message = "Invalid request."),
   })
-  ResponseEntity patchShareholderOrder(String campaignName, List<Long> shareholderOrder);
+  ResponseEntity patchShareholderOrder(List<Long> shareholderOrder);
 
   @ApiOperation(
       value = "Get all shareholders",
@@ -43,10 +41,21 @@ public interface ShareholderController {
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-    @ApiResponse(code = 201, message = "Campaign successfully created."),
+    @ApiResponse(code = 201, message = "Shareholders successfully retrieved."),
     @ApiResponse(code = 400, message = "Invalid request.")
   })
-  ResponseEntity<List<ShareholderDto>> getShareholders(String campaignName);
+  ResponseEntity<List<ShareholderDto>> getShareholders();
+
+  @ApiOperation(
+      value = "Get all shareholders",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 201, message = "Shareholders successfully retrieved."),
+    @ApiResponse(code = 400, message = "Invalid request.")
+  })
+  ResponseEntity<List<ShareholderDto>> getShareholders(Long companyId);
 
   @ApiOperation(
       value = "Patch shareholder",
@@ -54,12 +63,10 @@ public interface ShareholderController {
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-    @ApiResponse(code = 201, message = "Campaign successfully created."),
+    @ApiResponse(code = 201, message = "Shareholder successfully created."),
     @ApiResponse(code = 400, message = "Invalid request."),
-    @ApiResponse(code = 409, message = "Campaign with the provided name already exists.")
   })
-  ResponseEntity patchShareholder(
-      String campaignName, Long shareholderId, ShareholderDto shareholderDto);
+  ResponseEntity patchShareholder(Long shareholderId, ShareholderDto shareholderDto);
 
   @ApiOperation(
       value = "Delete shareholder",
@@ -70,7 +77,7 @@ public interface ShareholderController {
     @ApiResponse(code = 204, message = "Shareholder removed"),
     @ApiResponse(code = 400, message = "Invalid request."),
   })
-  ResponseEntity deleteShareholder(String campaignName, Long shareholderId);
+  ResponseEntity deleteShareholder(Long shareholderId);
 
   @ApiOperation(
       value = "Upload shareholder picture",
@@ -88,8 +95,7 @@ public interface ShareholderController {
     @ApiResponse(code = 201, message = "Picture successfully uploaded."),
     @ApiResponse(code = 400, message = "Picture cannot be saved.")
   })
-  ResponseEntity uploadShareholderPicture(
-      String campaignName, Long shareholderId, MultipartFile picture);
+  ResponseEntity uploadShareholderPicture(Long shareholderId, MultipartFile picture);
 
   @ApiOperation(
       value = "Download shareholder picture",
@@ -100,7 +106,18 @@ public interface ShareholderController {
     @ApiResponse(code = 200, message = "Picture retrieved successfully."),
     @ApiResponse(code = 400, message = "Picture cannot be found.")
   })
-  ResponseEntity<FileDto> downloadShareholderPicture(String campaignName, Long shareholderId);
+  ResponseEntity<FileDto> downloadShareholderPicture(Long shareholderId);
+
+  @ApiOperation(
+      value = "Download shareholder picture",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Picture retrieved successfully."),
+    @ApiResponse(code = 400, message = "Picture cannot be found.")
+  })
+  ResponseEntity<FileDto> downloadShareholderPicture(Long companyId, Long shareholderId);
 
   @ApiOperation(
       value = "Delete shareholder picture",
@@ -111,5 +128,5 @@ public interface ShareholderController {
     @ApiResponse(code = 200, message = "Picture successfully deleted."),
     @ApiResponse(code = 500, message = "Internal server error.")
   })
-  ResponseEntity deleteShareholderPicture(String campaignName, Long shareholderId);
+  ResponseEntity deleteShareholderPicture(Long shareholderId);
 }

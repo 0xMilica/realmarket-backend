@@ -1,14 +1,14 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.ShareholderDto;
-import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.Shareholder;
 import io.realmarket.propeler.repository.ShareholderRepository;
-import io.realmarket.propeler.service.CampaignService;
+import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.AuthUtils;
-import io.realmarket.propeler.util.CampaignUtils;
+import io.realmarket.propeler.util.CompanyUtils;
 import io.realmarket.propeler.util.ShareholderTestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,8 +21,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.List;
 import java.util.Optional;
 
-import static io.realmarket.propeler.util.CampaignUtils.TEST_CAMPAIGN;
-import static io.realmarket.propeler.util.CampaignUtils.TEST_URL_FRIENDLY_NAME;
 import static io.realmarket.propeler.util.ShareholderTestUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +34,7 @@ public class ShareholderServiceImplTest {
 
   @Mock private ShareholderRepository shareholderRepository;
 
-  @Mock private CampaignService campaignService;
+  @Mock private CompanyService companyService;
 
   @Mock private ModelMapperBlankString modelMapperBlankString;
 
@@ -49,20 +47,24 @@ public class ShareholderServiceImplTest {
 
   @Test
   public void CreateShareholder_Should_CreateShareholder() throws Exception {
-    Campaign campaign = CampaignUtils.getCampaignMocked();
-    when(campaignService.findByUrlFriendlyNameOrThrowException(campaign.getUrlFriendlyName()))
-        .thenReturn(campaign);
-    shareholderService.createShareholder(campaign.getUrlFriendlyName(), createMockShareholderDto());
+    Company company = CompanyUtils.getCompanyMocked();
+
+    when(companyService.findMyCompany()).thenReturn(company);
+
+    shareholderService.createShareholder(createMockShareholderDto());
 
     verify(shareholderRepository, times(1)).save(any());
   }
 
   @Test
-  public void DeleteShareholder_Should_DeleteShareholder() throws Exception {
+  public void DeleteShareholder_Should_DeleteShareholder() {
     Shareholder shareholder = ShareholderTestUtils.createMockShareholder();
+    Company company = CompanyUtils.getCompanyMocked();
+
+    when(companyService.findMyCompany()).thenReturn(company);
     when(shareholderRepository.findById(shareholder.getId())).thenReturn(Optional.of(shareholder));
-    shareholderService.deleteShareholder(
-        shareholder.getCampaign().getUrlFriendlyName(), shareholder.getId());
+
+    shareholderService.deleteShareholder(shareholder.getId());
 
     verify(shareholderRepository, times(1)).delete(shareholder);
   }
@@ -70,18 +72,23 @@ public class ShareholderServiceImplTest {
   @Test(expected = ForbiddenOperationException.class)
   public void DeleteShareholder_Should_ThrowException() {
     Shareholder shareholder = ShareholderTestUtils.createMockShareholder();
-    doThrow(ForbiddenOperationException.class).when(campaignService).throwIfNoAccess(any());
+    Company company = CompanyUtils.getCompanyMocked();
+
+    when(companyService.findMyCompany()).thenReturn(company);
+    doThrow(ForbiddenOperationException.class).when(companyService).throwIfNotCompanyOwner();
     when(shareholderRepository.findById(shareholder.getId())).thenReturn(Optional.of(shareholder));
-    shareholderService.deleteShareholder("TEST", shareholder.getId());
+
+    shareholderService.deleteShareholder(shareholder.getId());
   }
 
   @Test
   public void PatchShareholder_Should_PatchChanges() {
     Shareholder shareholder = ShareholderTestUtils.createMockShareholder();
     ShareholderDto shareholderDto = ShareholderTestUtils.mockShareholderPatchLastName();
+    Company company = CompanyUtils.getCompanyMocked();
 
+    when(companyService.findMyCompany()).thenReturn(company);
     when(shareholderRepository.findById(shareholder.getId())).thenReturn(Optional.of(shareholder));
-
     doAnswer(
             invocation -> {
               Object[] args = invocation.getArguments();
@@ -91,10 +98,9 @@ public class ShareholderServiceImplTest {
         .when(modelMapperBlankString)
         .map(shareholderDto, shareholder);
 
-    shareholderService.patchShareholder(
-        shareholder.getCampaign().getUrlFriendlyName(), shareholder.getId(), shareholderDto);
+    shareholderService.patchShareholder(shareholder.getId(), shareholderDto);
 
-    assertEquals(TEST_CAMPAIGN_INVESTOR_NAME_2, shareholder.getName());
+    assertEquals(TEST_SHAREHOLDER_NAME_2, shareholder.getName());
     verify(modelMapperBlankString, times(1)).map(shareholderDto, shareholder);
     verify(shareholderRepository, times(1)).save(shareholder);
   }
@@ -102,13 +108,13 @@ public class ShareholderServiceImplTest {
   @Test
   public void GetShareholder_Should_ReturnListOfShareholders() {
     List<Shareholder> shareholdersList = mockShareholderList();
-    when(campaignService.findByUrlFriendlyNameOrThrowException(TEST_URL_FRIENDLY_NAME))
-        .thenReturn(TEST_CAMPAIGN);
-    when(shareholderRepository.findAllByCampaignUrlFriendlyNameOrderByOrderNumberAsc(
-            TEST_URL_FRIENDLY_NAME))
+    Company company = CompanyUtils.getCompanyMocked();
+
+    when(companyService.findMyCompany()).thenReturn(company);
+    when(shareholderRepository.findAllByCompanyIdOrderByOrderNumberAsc(company.getId()))
         .thenReturn(shareholdersList);
 
-    List<Shareholder> ret = shareholderService.getShareholders(TEST_URL_FRIENDLY_NAME);
+    List<Shareholder> ret = shareholderService.getShareholders();
     assertEquals(shareholdersList, ret);
   }
 }

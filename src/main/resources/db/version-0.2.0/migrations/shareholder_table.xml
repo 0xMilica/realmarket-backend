@@ -24,9 +24,9 @@
             order_number smallint,
             photo_url varchar(255),
             twitter_url varchar(255),
-            campaign_id bigint
-            constraint shareholder_fk_on_campaign
-            references campaign
+            company_id bigint
+            constraint shareholder_fk_on_company
+            references company
             );
 
         </sql>
