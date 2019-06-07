@@ -45,5 +45,9 @@ public interface CampaignService {
 
   void requestReviewForCampaign(String campaignName);
 
+  List<Campaign> findByCompany(Company company);
+
+  List<CampaignResponseDto> getAllCampaignsForUser();
+
   Page<CampaignResponseDto> getPublicCampaigns(Pageable pageable, String filter);
 }

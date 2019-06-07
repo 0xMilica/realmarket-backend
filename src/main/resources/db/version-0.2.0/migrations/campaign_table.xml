@@ -22,6 +22,7 @@
             time_to_raise_funds int check (time_to_raise_funds > 0),
             min_investment numeric(19,2),
             tag_line varchar(255),
+            creation_date timestamp DEFAULT localtimestamp NOT NULL,
             company_id bigint
             constraint campaign_fk_on_company
             references company,

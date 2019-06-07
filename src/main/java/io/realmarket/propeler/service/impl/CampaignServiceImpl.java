@@ -1,6 +1,11 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
+import io.realmarket.propeler.api.dto.CampaignDto;
+import io.realmarket.propeler.api.dto.CampaignPatchDto;
+import io.realmarket.propeler.api.dto.FileDto;
+import io.realmarket.propeler.api.dto.TwoFADto;
+import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.enums.CampaignStateName;
@@ -27,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
@@ -263,5 +269,22 @@ public class CampaignServiceImpl implements CampaignService {
           .map(CampaignResponseDto::new);
     }
     throw new BadRequestException(INVALID_REQUEST);
+  }
+
+  @Override
+  public List<Campaign> findByCompany(Company company) {
+    return campaignRepository.findByCompany(company);
+  }
+
+  @Override
+  public List<CampaignResponseDto> getAllCampaignsForUser() {
+    Auth user = AuthenticationUtil.getAuthentication().getAuth();
+    switch (user.getUserRole().getName()) {
+      case ROLE_ENTREPRENEUR:
+        Company company = companyService.findMyCompany();
+        return findByCompany(company).stream().map(CampaignResponseDto::new).collect(Collectors.toList());
+      default:
+        throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
+    }
   }
 }

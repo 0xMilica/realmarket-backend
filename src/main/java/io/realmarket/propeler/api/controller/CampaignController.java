@@ -5,6 +5,7 @@ import io.swagger.annotations.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.AuthenticationException;
@@ -284,4 +285,11 @@ public interface CampaignController {
     @ApiResponse(code = 400, message = "Invalid request.")
   })
   ResponseEntity<Page<CampaignResponseDto>> getPublicCampaigns(Pageable pageable, String filter);
+
+  @ApiOperation(value = "List all accessible campaigns for user.", httpMethod = "GET")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaigns found."),
+    @ApiResponse(code = 400, message = "Not authorized or insufficient data to process request."),
+  })
+  ResponseEntity getAllCampaignsForUser();
 }

@@ -29,8 +29,6 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
       "select c, s from Campaign c join fetch c.campaignState s where c.company = :company and s.name <> 'DELETED' and s.name <> 'POST_CAMPAIGN'")
   Optional<Campaign> findExistingByCompany(@Param("company") final Company company);
 
-  List<Campaign> findAllByCompany(Company company);
-
   @Query(
       value =
           "SELECT c FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = 'ACTIVE' OR s.name = 'POST_CAMPAIGN'",
@@ -39,4 +37,10 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
   Page<Campaign> findAllPublic(Pageable pageable);
 
   Page<Campaign> findAllByCampaignState(Pageable pageable, CampaignState state);
+
+  List<Campaign> findAllByCompany(Company company);
+
+  @Query(
+      "select c, s from Campaign c join fetch c.campaignState s where c.company = :company and s.name <> 'DELETED' order by c.creationDate desc")
+  List<Campaign> findByCompany(@Param("company") Company company);
 }

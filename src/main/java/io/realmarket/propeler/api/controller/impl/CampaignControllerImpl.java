@@ -170,4 +170,10 @@ public class CampaignControllerImpl implements CampaignController {
     campaignService.getPublicCampaigns(pageable, filter);
     return ResponseEntity.ok(campaignService.getPublicCampaigns(pageable, filter));
   }
+
+  @GetMapping(value = "/mine")
+  public ResponseEntity getAllCampaignsForUser() {
+    return new ResponseEntity<>(
+            campaignService.getAllCampaignsForUser(), HttpStatus.OK);
+  }
 }

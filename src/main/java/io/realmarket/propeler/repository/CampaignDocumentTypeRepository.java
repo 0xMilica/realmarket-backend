@@ -4,7 +4,6 @@ import io.realmarket.propeler.model.CampaignDocumentType;
 import io.realmarket.propeler.model.enums.ECampaignDocumentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
 
 @Repository

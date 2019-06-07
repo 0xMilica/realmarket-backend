@@ -1,12 +1,18 @@
 package io.realmarket.propeler.model;
 
 import io.realmarket.propeler.api.dto.CampaignDto;
+import javafx.beans.DefaultProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
@@ -31,6 +37,8 @@ public class Campaign {
   private String marketImageUrl;
   private BigDecimal minInvestment;
   private String tagLine;
+  @Column(name = "creation_date")
+  private Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "companyId", foreignKey = @ForeignKey(name = "campaign_fk_on_company"))
