@@ -206,7 +206,7 @@
                                             </td>
                                         </tr>
 
-                                        <div th:with="campaign=${campaign}">
+                                        <div th:each="campaign: ${campaigns}">
                                             <tr>
                                                 <td align="center" style="padding-bottom: 12px; color: #39316C; font-size: 14px; font-family: 'Open Sans Regular', sans-serif;">
                                                     You have received an investment proposal for the <strong><span th:text="${campaign.name}"></span></strong>.

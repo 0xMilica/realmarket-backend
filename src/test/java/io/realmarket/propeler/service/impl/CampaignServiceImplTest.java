@@ -13,6 +13,7 @@ import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsExcep
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.*;
 import org.junit.Before;
@@ -55,6 +56,10 @@ public class CampaignServiceImplTest {
   @Mock private OTPService otpService;
 
   @Mock private CampaignStateService campaignStateService;
+
+  @Mock private AuthService authService;
+
+  @Mock private EmailService emailService;
 
   @InjectMocks private CampaignServiceImpl campaignServiceImpl;
 
@@ -357,5 +362,13 @@ public class CampaignServiceImplTest {
 
     campaignServiceImpl.delete(
         testCampaign.getUrlFriendlyName(), new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null));
+  }
+
+  @Test
+  public void sendNewCampaignOpportunityEmail_Should_SendEmail() {
+    Campaign testCampaign = getCampaignMocked();
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+
+    campaignServiceImpl.sendNewCampaignOpportunityEmail(testCampaign);
   }
 }

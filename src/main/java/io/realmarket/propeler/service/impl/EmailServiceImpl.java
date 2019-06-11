@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,6 +30,8 @@ public class EmailServiceImpl implements EmailService {
   public static final String USERNAME_LIST = "username_list";
   public static final String RESET_TOKEN = "resetToken";
   public static final String EMAIL_CHANGE_TOKEN = "changeEmailToken";
+  public static final String CAMPAIGN = "campaign";
+  public static final String CAMPAIGNS = "campaigns";
 
   private static final String CONTACT_US_EMAIL = "contactUsEmail";
   private static final String LOGO = "logo";
@@ -67,7 +70,8 @@ public class EmailServiceImpl implements EmailService {
    */
   private EmailMessageDto generateMailMessage(MailContentHolder mailContentHolder) {
     EmailMessageDto emailMessageDto = new EmailMessageDto();
-    emailMessageDto.setReceiver(mailContentHolder.getEmail());
+    List<String> emails = mailContentHolder.getEmails();
+    emailMessageDto.setReceivers(emails.toArray(new String[emails.size()]));
     String subject = "";
 
     Map<String, Object> data = null;
@@ -103,10 +107,23 @@ public class EmailServiceImpl implements EmailService {
         data = getBasicEmailData();
         templateName = "secretCHangeMailTemplate";
         break;
+
       case ACCOUNT_BLOCKED:
         subject = "Propeler - Account blocked";
         data = getBlockedAccountData(mailContentHolder);
         templateName = "accountBlockedEmailTemplate";
+        break;
+
+      case NEW_CAMPAIGN_OPPORTUNITY:
+        subject = "Propeler - New campaign opportunity";
+        data = getNewCampaignOpportunity(mailContentHolder);
+        templateName = "newCampaignEmailTemplate";
+        break;
+
+      case NEW_CAMPAIGN_OPPORTUNITIES:
+        subject = "Propeler - New campaign opportunities";
+        data = getNewCampaignOpportunities(mailContentHolder);
+        templateName = "newCampaignOpportunitiesEmailTemplate";
         break;
 
       default:
@@ -188,6 +205,18 @@ public class EmailServiceImpl implements EmailService {
     return data;
   }
 
+  private Map<String, Object> getNewCampaignOpportunity(MailContentHolder mailContentHolder) {
+    Map<String, Object> data = getBasicEmailData();
+    data.put(CAMPAIGN, mailContentHolder.getContent().get(CAMPAIGN));
+    return data;
+  }
+
+  private Map<String, Object> getNewCampaignOpportunities(MailContentHolder mailContentHolder) {
+    Map<String, Object> data = getBasicEmailData();
+    data.put(CAMPAIGNS, mailContentHolder.getContent().get(CAMPAIGNS));
+    return data;
+  }
+
   private void sendMessage(EmailMessageDto emailMessageDto) {
 
     MimeMessage email = javaMailSender.createMimeMessage();
@@ -196,7 +225,7 @@ public class EmailServiceImpl implements EmailService {
       MimeMessageHelper helper = new MimeMessageHelper(email, true, "UTF-8");
 
       helper.setSubject(emailMessageDto.getSubject());
-      helper.setTo(emailMessageDto.getReceiver());
+      helper.setTo(emailMessageDto.getReceivers());
       helper.setText(emailMessageDto.getText(), true);
 
       helper.addInline(LOGO, new ClassPathResource(LOGO_PATH), "image/png");
@@ -205,7 +234,7 @@ public class EmailServiceImpl implements EmailService {
 
       javaMailSender.send(email);
 
-      log.info("E-mail sent to user {}", emailMessageDto.getReceiver());
+      log.info("E-mail sent to users");
 
     } catch (MessagingException e) {
       log.error("Problem with sending email: {}", e.getCause());

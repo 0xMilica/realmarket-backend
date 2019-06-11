@@ -173,7 +173,6 @@ public class CampaignControllerImpl implements CampaignController {
 
   @GetMapping(value = "/mine")
   public ResponseEntity getAllCampaignsForUser() {
-    return new ResponseEntity<>(
-            campaignService.getAllCampaignsForUser(), HttpStatus.OK);
+    return new ResponseEntity<>(campaignService.getAllCampaignsForUser(), HttpStatus.OK);
   }
 }

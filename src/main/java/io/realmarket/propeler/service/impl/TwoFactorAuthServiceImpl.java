@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -172,6 +173,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
       throw new BadCredentialsException(ExceptionMessages.INVALID_TOTP_CODE_PROVIDED);
     }
     emailService.sendMailToUser(
-        new MailContentHolder(auth.getPerson().getEmail(), EEmailType.SECRET_CHANGE, null));
+        new MailContentHolder(
+            Arrays.asList(auth.getPerson().getEmail()), EEmailType.SECRET_CHANGE, null));
   }
 }

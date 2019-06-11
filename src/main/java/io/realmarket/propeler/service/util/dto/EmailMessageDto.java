@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class EmailMessageDto {
 
-  @NotNull private String receiver;
+  private String[] receivers;
 
   @NotNull private String subject;
 

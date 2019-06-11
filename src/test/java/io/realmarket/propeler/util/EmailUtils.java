@@ -3,6 +3,7 @@ package io.realmarket.propeler.util;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.service.util.MailContentHolder;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,16 +19,17 @@ public class EmailUtils {
   public static final Map<String, Object> TEST_EMAIL_DATA =
       Collections.singletonMap("activationToken", TEST_ACTIVATION_TOKEN);
   public static final MailContentHolder TEST_VALID_REGISTRATION_EMAIL_DTO =
-      new MailContentHolder(TEST_USER_EMAIL, EEmailType.REGISTER, TEST_EMAIL_DATA);
+      new MailContentHolder(Arrays.asList(TEST_USER_EMAIL), EEmailType.REGISTER, TEST_EMAIL_DATA);
   public static final MailContentHolder TEST_INVALID_REGISTRATION_EMAIL_DTO =
-      new MailContentHolder(TEST_USER_EMAIL, EEmailType.REGISTER, new HashMap<>());
+      new MailContentHolder(Arrays.asList(TEST_USER_EMAIL), EEmailType.REGISTER, new HashMap<>());
   public static final MailContentHolder TEST_VALID_RESET_EMAIL_DTO =
       new MailContentHolder(
-          TEST_USER_EMAIL,
+          Arrays.asList(TEST_USER_EMAIL),
           EEmailType.RESET_PASSWORD,
           Collections.singletonMap("resetToken", TEST_RESET_TOKEN));
   public static final MailContentHolder TEST_INVALID_RESET_EMAIL_DTO =
-      new MailContentHolder(TEST_USER_EMAIL, EEmailType.RESET_PASSWORD, new HashMap<>());
+      new MailContentHolder(
+          Arrays.asList(TEST_USER_EMAIL), EEmailType.RESET_PASSWORD, new HashMap<>());
 
   private EmailUtils() {}
 }

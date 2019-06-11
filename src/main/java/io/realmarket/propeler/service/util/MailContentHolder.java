@@ -5,15 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class MailContentHolder {
-  @NotBlank private String email;
+  private List<String> emails;
   @NotNull private EEmailType type;
   private Map<String, Object> content;
 }

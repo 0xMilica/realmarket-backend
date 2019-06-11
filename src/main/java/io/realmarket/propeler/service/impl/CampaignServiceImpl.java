@@ -1,10 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
-import io.realmarket.propeler.api.dto.CampaignDto;
-import io.realmarket.propeler.api.dto.CampaignPatchDto;
-import io.realmarket.propeler.api.dto.FileDto;
-import io.realmarket.propeler.api.dto.TwoFADto;
+import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Company;
@@ -18,6 +15,7 @@ import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsExcepti
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.FileUtils;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
@@ -48,9 +49,14 @@ public class CampaignServiceImpl implements CampaignService {
   private final ModelMapperBlankString modelMapperBlankString;
   private final PlatformSettingsService platformSettingsService;
   private final OTPService otpService;
+  private final EmailService emailService;
+  private final AuthService authService;
 
   @Value(value = "${cos.file_prefix.campaign_market_image}")
   private String companyFeaturedImage;
+
+  @Value(value = "${frontend.service.url}")
+  private String frontendServiceUrlPath;
 
   @Autowired
   public CampaignServiceImpl(
@@ -61,7 +67,9 @@ public class CampaignServiceImpl implements CampaignService {
       ModelMapperBlankString modelMapperBlankString,
       CloudObjectStorageService cloudObjectStorageService,
       PlatformSettingsService platformSettingsService,
-      OTPService otpService) {
+      OTPService otpService,
+      EmailService emailService,
+      AuthService authService) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
     this.campaignTopicService = campaignTopicService;
@@ -70,6 +78,8 @@ public class CampaignServiceImpl implements CampaignService {
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.platformSettingsService = platformSettingsService;
     this.otpService = otpService;
+    this.emailService = emailService;
+    this.authService = authService;
   }
 
   public Campaign findByUrlFriendlyNameOrThrowException(String urlFriendlyName) {
@@ -255,6 +265,8 @@ public class CampaignServiceImpl implements CampaignService {
         isOwner(campaign))) {
       throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
     }
+    // TODO: Temporary here. Remove this line when campaign could be set to active state.
+    sendNewCampaignOpportunityEmail(campaign);
     campaignRepository.save(campaign);
   }
 
@@ -272,6 +284,56 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
+  public void sendNewCampaignOpportunityEmail(Campaign campaign) {
+    CampaignEmailDto campaignEmailDto = new CampaignEmailDto(campaign, frontendServiceUrlPath);
+    List<String> emails =
+        authService.findAllInvestors().stream()
+            .map(auth -> auth.getPerson().getEmail())
+            .collect(Collectors.toList());
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            emails,
+            EEmailType.NEW_CAMPAIGN_OPPORTUNITY,
+            Collections.unmodifiableMap(
+                Stream.of(
+                        new AbstractMap.SimpleEntry<>(EmailServiceImpl.CAMPAIGN, campaignEmailDto))
+                    .collect(
+                        Collectors.toMap(
+                            AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)))));
+  }
+
+  @Override
+  public void sendNewCampaignOpportunitiesEmail() {
+    List<CampaignEmailDto> campaignEmailList =
+        findActiveCampaigns().stream()
+            .map(campaign -> new CampaignEmailDto(campaign, frontendServiceUrlPath))
+            .collect(Collectors.toList());
+
+    List<String> emails =
+        authService.findAllInvestors().stream()
+            .map(auth -> auth.getPerson().getEmail())
+            .collect(Collectors.toList());
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            emails,
+            EEmailType.NEW_CAMPAIGN_OPPORTUNITIES,
+            Collections.unmodifiableMap(
+                Stream.of(
+                        new AbstractMap.SimpleEntry<>(
+                            EmailServiceImpl.CAMPAIGNS, campaignEmailList))
+                    .collect(
+                        Collectors.toMap(
+                            AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)))));
+  }
+
+  private List<Campaign> findActiveCampaigns() {
+    return campaignRepository.findAllByCampaignState(
+        campaignStateService.getCampaignState("ACTIVE"));
+  }
+
+  @Override
   public List<Campaign> findByCompany(Company company) {
     return campaignRepository.findByCompany(company);
   }
@@ -282,7 +344,9 @@ public class CampaignServiceImpl implements CampaignService {
     switch (user.getUserRole().getName()) {
       case ROLE_ENTREPRENEUR:
         Company company = companyService.findMyCompany();
-        return findByCompany(company).stream().map(CampaignResponseDto::new).collect(Collectors.toList());
+        return findByCompany(company).stream()
+            .map(CampaignResponseDto::new)
+            .collect(Collectors.toList());
       default:
         throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
     }

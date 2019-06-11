@@ -32,6 +32,7 @@ public class Campaign {
   private String marketImageUrl;
   private BigDecimal minInvestment;
   private String tagLine;
+
   @Column(name = "creation_date")
   private Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 

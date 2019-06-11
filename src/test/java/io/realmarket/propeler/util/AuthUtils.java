@@ -17,6 +17,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static io.realmarket.propeler.service.util.RememberMeCookieHelper.COOKIE_NAME;
@@ -36,7 +37,7 @@ public class AuthUtils {
   public static final Long TEST_AUTH_ID = 10L;
   public static final MailContentHolder TEST_EMAIL_DTO =
       new MailContentHolder(
-          TEST_EMAIL,
+          Arrays.asList(TEST_EMAIL),
           EEmailType.REGISTER,
           new HashMap<String, Object>() {
             {

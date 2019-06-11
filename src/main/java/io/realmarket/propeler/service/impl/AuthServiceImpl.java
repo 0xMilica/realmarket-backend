@@ -171,7 +171,7 @@ public class AuthServiceImpl implements AuthService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            registrationDto.getEmail(),
+            Arrays.asList(registrationDto.getEmail()),
             EEmailType.REGISTER,
             Collections.unmodifiableMap(
                 Stream.of(
@@ -227,7 +227,7 @@ public class AuthServiceImpl implements AuthService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            emailDto.getEmail(),
+            Arrays.asList(emailDto.getEmail()),
             EEmailType.RECOVER_USERNAME,
             Collections.singletonMap(EmailServiceImpl.USERNAME_LIST, usernameList)));
   }
@@ -240,7 +240,7 @@ public class AuthServiceImpl implements AuthService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            auth.getPerson().getEmail(),
+            Arrays.asList(auth.getPerson().getEmail()),
             EEmailType.RESET_PASSWORD,
             Collections.singletonMap(EmailServiceImpl.RESET_TOKEN, temporaryToken.getValue())));
   }
@@ -332,6 +332,10 @@ public class AuthServiceImpl implements AuthService {
         .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXISTS));
   }
 
+  public List<Auth> findAllInvestors() {
+    return authRepository.findAllByUserRoleName(EUserRole.ROLE_INVESTOR);
+  }
+
   public void initializeEmailChange(final Long authId, final EmailDto emaildto) {
     checkIfAllowed(authId);
     authorizedActionService.storeAuthorizationAction(
@@ -356,7 +360,7 @@ public class AuthServiceImpl implements AuthService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            newEmail,
+            Arrays.asList(newEmail),
             EEmailType.CHANGE_EMAIL,
             Collections.singletonMap(EmailServiceImpl.EMAIL_CHANGE_TOKEN, token.getValue())));
   }
@@ -446,7 +450,7 @@ public class AuthServiceImpl implements AuthService {
         authRepository.save(auth);
         emailService.sendMailToUser(
             new MailContentHolder(
-                auth.getPerson().getEmail(),
+                Arrays.asList(auth.getPerson().getEmail()),
                 EEmailType.ACCOUNT_BLOCKED,
                 Collections.singletonMap(EmailServiceImpl.USERNAME, auth.getUsername())));
       }

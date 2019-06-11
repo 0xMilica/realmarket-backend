@@ -76,4 +76,6 @@ public interface ExceptionMessages {
   String CAMPAIGN_NOT_EDITABLE = "Campaign can not be edited at this stage";
 
   String INVALID_COUNTRY_CODE = "Invalid country code";
+
+  String ROLE_NOT_FOUND = "Role with the provided name not found!";
 }

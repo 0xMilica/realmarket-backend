@@ -50,4 +50,8 @@ public interface CampaignService {
   List<CampaignResponseDto> getAllCampaignsForUser();
 
   Page<CampaignResponseDto> getPublicCampaigns(Pageable pageable, String filter);
+
+  void sendNewCampaignOpportunityEmail(Campaign campaign);
+
+  void sendNewCampaignOpportunitiesEmail();
 }

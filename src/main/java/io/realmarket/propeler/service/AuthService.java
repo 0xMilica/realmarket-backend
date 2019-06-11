@@ -5,6 +5,7 @@ import io.realmarket.propeler.model.Auth;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Optional;
 
 public interface AuthService {
@@ -25,6 +26,8 @@ public interface AuthService {
   Optional<Auth> findById(Long id);
 
   Auth findByIdOrThrowException(Long id);
+
+  List<Auth> findAllInvestors();
 
   void confirmRegistration(ConfirmRegistrationDto confirmRegistrationDto);
 
