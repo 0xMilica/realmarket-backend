@@ -18,7 +18,7 @@ public class CampaignDocumentUtils {
   public static final ECampaignDocumentAccessLevel TEST_ACCESS_LEVEL_ENUM =
       ECampaignDocumentAccessLevel.PUBLIC;
   public static final ECampaignDocumentType TEST_TYPE_ENUM =
-      ECampaignDocumentType.DOCTYPE_APR_PAPER;
+      ECampaignDocumentType.DOCTYPE_LEGAL;
   public static final CampaignDocumentAccessLevel TEST_ACCESS_LEVEL =
       CampaignDocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM).build();
   public static final CampaignDocumentType TEST_TYPE =
@@ -30,7 +30,7 @@ public class CampaignDocumentUtils {
   public static final ECampaignDocumentAccessLevel TEST_ACCESS_LEVEL_ENUM_2 =
       ECampaignDocumentAccessLevel.INVESTORS;
   public static final ECampaignDocumentType TEST_TYPE_ENUM_2 =
-      ECampaignDocumentType.DOCTYPE_BUSINESS_PLAN;
+      ECampaignDocumentType.DOCTYPE_DUE_DILIGENCE;
   public static final CampaignDocumentAccessLevel TEST_ACCESS_LEVEL_2 =
       CampaignDocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM_2).build();
   public static final CampaignDocumentType TEST_TYPE_2 =

@@ -1,17 +1,12 @@
 package io.realmarket.propeler.model;
 
 import io.realmarket.propeler.api.dto.CampaignDto;
-import javafx.beans.DefaultProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
-import org.joda.time.DateTime;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 @Data

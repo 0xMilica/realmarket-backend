@@ -65,6 +65,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     campaignService.throwIfNotOwnerOrNotEditable(campaign);
 
     CampaignDocument campaignDocument = convertDocumentDtoToDocument(campaignDocumentDto, campaign);
+    campaignDocument.setUploadDate(Instant.now());
 
     if (!cloudObjectStorageService.doesFileExist(campaignDocument.getUrl())) {
       throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
@@ -168,7 +169,6 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
             .type(type.get())
             .url(campaignDocumentDto.getUrl())
             .campaign(campaign)
-            .uploadDate(Instant.now())
             .build();
 
     return campaignDocument;
