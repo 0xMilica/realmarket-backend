@@ -66,6 +66,11 @@ INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq
 INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'POST_CAMPAIGN');
 INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'DELETED');
 
+-- request state
+INSERT INTO public.request_state (id, name) VALUES (NEXTVAL('request_state_seq'), 'PENDING');
+INSERT INTO public.request_state (id, name) VALUES (NEXTVAL('request_state_seq'), 'APPROVED');
+INSERT INTO public.request_state (id, name) VALUES (NEXTVAL('request_state_seq'), 'DECLINED');
+
 -- campaign topic type
 INSERT INTO public.campaign_topic_type (id, name) VALUES (NEXTVAL('campaign_topic_type_seq'), 'PROBLEM');
 INSERT INTO public.campaign_topic_type (id, name) VALUES (NEXTVAL('campaign_topic_type_seq'), 'SOLUTION');

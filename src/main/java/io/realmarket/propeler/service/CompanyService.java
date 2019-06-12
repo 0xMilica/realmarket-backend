@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service;
 
+import io.realmarket.propeler.api.dto.CompanyPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
@@ -9,7 +10,7 @@ public interface CompanyService {
 
   Company save(Company company);
 
-  Company patch(Long companyId, Company companyPatch);
+  Company patch(Long companyId, CompanyPatchDto companyPatch);
 
   Company findByIdOrThrowException(Long id);
 

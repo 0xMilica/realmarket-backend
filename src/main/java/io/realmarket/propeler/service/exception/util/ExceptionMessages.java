@@ -34,6 +34,8 @@ public interface ExceptionMessages {
 
   String CAMPAIGN_STATE_NOT_FOUND = "Campaign state with the provided name not found!";
 
+  String REQUEST_STATE_NOT_FOUND = "Request state with the provided name not found!";
+
   String SHAREHOLDER_NOT_FOUND = "Shareholder with the provided id not found!";
 
   String USER_IS_NOT_OWNER_OF_CAMPAIGN = "Caller is not owner of campaign.";

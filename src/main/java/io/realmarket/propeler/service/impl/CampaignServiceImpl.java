@@ -29,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
@@ -106,6 +108,7 @@ public class CampaignServiceImpl implements CampaignService {
     campaign.setCompany(company);
     campaign.setCampaignState(campaignStateService.getCampaignState(CampaignStateName.INITIAL));
     validateCampaign(campaign);
+
     return new CampaignResponseDto(campaignRepository.save(campaign));
   }
 

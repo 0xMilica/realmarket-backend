@@ -1,11 +1,13 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.CompanyPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.CompanyRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
+import io.realmarket.propeler.service.AdministratorService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.exception.BadRequestException;
@@ -28,6 +30,7 @@ import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 public class CompanyServiceImpl implements CompanyService {
 
   private final CompanyRepository companyRepository;
+  private final AdministratorService administratorService;
   private final CloudObjectStorageService cloudObjectStorageService;
   private final ModelMapperBlankString modelMapperBlankString;
 
@@ -39,10 +42,12 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Autowired
   public CompanyServiceImpl(
-      CompanyRepository companyRepository,
-      CloudObjectStorageService cloudObjectStorageService,
-      ModelMapperBlankString modelMapperBlankString) {
+          CompanyRepository companyRepository,
+          AdministratorService administratorService,
+          CloudObjectStorageService cloudObjectStorageService,
+          ModelMapperBlankString modelMapperBlankString) {
     this.companyRepository = companyRepository;
+    this.administratorService = administratorService;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.modelMapperBlankString = modelMapperBlankString;
   }
@@ -63,10 +68,14 @@ public class CompanyServiceImpl implements CompanyService {
     return companyRepository.save(company);
   }
 
-  public Company patch(Long companyId, Company companyPatch) {
+  public Company patch(Long companyId, CompanyPatchDto companyPatchDto) {
     Company company = findByIdOrThrowException(companyId);
     throwIfNoAccess(company);
-    modelMapperBlankString.map(companyPatch, company);
+    if (companyPatchDto.shouldAdminBeCalled()) {
+      administratorService.requestCompanyEdit(companyPatchDto.buildCompanyEditRequest(company));
+      return company;
+    }
+    modelMapperBlankString.map(companyPatchDto, company);
     return companyRepository.save(company);
   }
 

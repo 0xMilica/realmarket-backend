@@ -64,8 +64,9 @@ public class CompanyControllerImpl implements CompanyController {
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity<CompanyDto> patchCompany(
       @PathVariable Long companyId, @RequestBody CompanyPatchDto companyPatchDto) {
-    return ResponseEntity.ok(
-        new CompanyDto(companyService.patch(companyId, companyPatchDto.buildCompany())));
+    return new ResponseEntity<>(
+        new CompanyDto(companyService.patch(companyId, companyPatchDto)),
+        (companyPatchDto.shouldAdminBeCalled()) ? HttpStatus.NO_CONTENT : HttpStatus.ACCEPTED);
   }
 
   @PostMapping(value = "/{companyId}/featured_image")

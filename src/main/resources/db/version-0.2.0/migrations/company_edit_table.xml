@@ -1,0 +1,40 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="ртуровић" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence company_edit_seq;
+            create table if not exists company_edit
+            (
+            id bigint not null
+            constraint company_edit_pkey
+            primary key,
+            address varchar(255),
+            bank_account varchar(255),
+            city varchar(255),
+            county varchar(255),
+            name varchar(255),
+            tax_identifier varchar(255),
+            website varchar(255),
+            linkedin_url varchar(255),
+            twitter_url varchar(255),
+            facebook_url varchar(255),
+            custom_url varchar(255),
+            request_timestamp timestamp,
+            company_category_id bigint
+            constraint company_edit_fk_on_company_category
+            references company_category,
+            company_id bigint
+            constraint company_edit_fk_on_company
+            references company_category,
+            request_state_id bigint
+            constraint company_edit_fk_on_request_state
+            references request_state
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
