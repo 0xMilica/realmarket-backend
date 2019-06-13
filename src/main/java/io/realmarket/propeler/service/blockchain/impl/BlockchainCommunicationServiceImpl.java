@@ -75,28 +75,16 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     args.put(method, methodName);
 
     try {
-      String jsonDto = new ObjectMapper().writeValueAsString(dto);
-      log.debug("{}", jsonDto);
-      args.put(arguments, Collections.singletonList(jsonDto));
+      args.put(arguments, Collections.singletonList(new ObjectMapper().writeValueAsString(dto)));
     } catch (JsonProcessingException jpe) {
       log.error(jpe.getMessage());
-      throw new BlockchainException("DTO serialization error: " + jpe.getMessage());
+      throw new BlockchainException("Blockchain DTO serialization error: " + jpe.getMessage());
     }
 
     HttpEntity<Map<String, Object>> entity = new HttpEntity<>(args, headers);
     Map<String, Object> response = restTemplate.postForObject(invocationUrl, entity, Map.class);
 
-    if (response == null) {
-      log.error("Failed to invoke chaincode. Response object is null.");
-      throw new BlockchainException("Response is null.");
-    } else if (!(Boolean) response.get("success")) {
-      log.error("Failed to invoke chaincode. Error: {}", response.get(RESPONSE_MESSAGE));
-      throw new BlockchainException((String) response.get(RESPONSE_MESSAGE));
-    }
-
-    log.debug("Invocation response: {}", response.get(RESPONSE_MESSAGE));
-
-    return response;
+    return processResponse(response);
   }
 
   private String enrollUser() {
@@ -120,5 +108,19 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
 
     log.debug("Enroll response  : " + response.getBody());
     return (String) response.getBody().get("token");
+  }
+
+  private Map<String, Object> processResponse(Map<String, Object> response) {
+    if (response == null) {
+      log.error("Failed to invoke chaincode. Response object is null.");
+      throw new BlockchainException("Response is null.");
+    } else if (!(Boolean) response.get("success")) {
+      log.error("Failed to invoke chaincode. Error: {}", response.get(RESPONSE_MESSAGE));
+      throw new BlockchainException((String) response.get(RESPONSE_MESSAGE));
+    }
+
+    log.debug("Invocation response: {}", response.get(RESPONSE_MESSAGE));
+
+    return response;
   }
 }
