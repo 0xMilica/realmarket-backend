@@ -20,6 +20,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CompanyPatchDto {
 
+  @ApiModelProperty(value = "Company's name")
+  private String name;
+
   @ApiModelProperty(value = "Company's tax identifier")
   private String taxIdentifier;
 
@@ -55,6 +58,7 @@ public class CompanyPatchDto {
 
   public Company buildCompany() {
     return Company.builder()
+        .name(this.getName())
         .taxIdentifier(this.getTaxIdentifier())
         .bankAccount(this.getBankAccount())
         .county(this.getCounty())
@@ -72,6 +76,7 @@ public class CompanyPatchDto {
 
   public CompanyEditRequest buildCompanyEditRequest(Company company) {
     return CompanyEditRequest.builder()
+        .name(this.getName())
         .taxIdentifier(this.getTaxIdentifier())
         .bankAccount(this.getBankAccount())
         .county(this.getCounty())
@@ -88,6 +93,7 @@ public class CompanyPatchDto {
   }
 
   public boolean shouldAdminBeCalled() {
+    if (this.name != null) return true;
     if (this.taxIdentifier != null) return true;
     if (this.bankAccount != null) return true;
     if (this.county != null) return true;

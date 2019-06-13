@@ -34,6 +34,7 @@ public class CompanyEditRequest {
   private String facebookUrl;
   private String customUrl;
 
+  @Builder.Default
   @Column(name = "request_timestamp")
   private Instant requestTimestamp = Instant.now();
 
