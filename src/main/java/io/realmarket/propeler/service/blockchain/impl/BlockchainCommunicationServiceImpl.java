@@ -4,9 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.blockchain.dto.AbstractBlockchainDto;
-import io.realmarket.propeler.service.blockchain.dto.EmailChangeDto;
-import io.realmarket.propeler.service.blockchain.dto.PasswordChangeDto;
-import io.realmarket.propeler.service.blockchain.dto.RegistrationDto;
 import io.realmarket.propeler.service.blockchain.exception.BlockchainException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,13 +31,13 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
   @Value("${blockchain.address}")
   private String blockchainAddress;
 
-  @Value("${blockchain.peers}")
+  @Value("${blockchain.invocation.peers}")
   private String[] peersAddresses;
 
-  @Value("${blockchain.method}")
+  @Value("${blockchain.invocation.method}")
   private String method;
 
-  @Value("${blockchain.arguments}")
+  @Value("${blockchain.invocation.arguments}")
   private String arguments;
 
   @Value("${blockchain.user.organization}")
@@ -59,14 +54,13 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     this.restTemplate = restTemplate;
   }
 
-  public Map<String, Object> invoke(String methodName, AbstractBlockchainDto dto)
-      throws JsonProcessingException {
+  public Map<String, Object> invoke(String methodName, AbstractBlockchainDto dto) {
     if (!active) {
       log.info("Blockchain is off.");
       return null;
     }
 
-    log.info("Invoke chaincode method: {}", methodName);
+    log.debug("Invoke chaincode method: {}", methodName);
 
     String invocationUrl =
         String.format(
@@ -79,7 +73,15 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     Map<String, Object> args = new HashMap<>();
     args.put("peers", peersAddresses);
     args.put(method, methodName);
-    args.put(arguments, Collections.singletonList(new ObjectMapper().writeValueAsString(dto)));
+
+    try {
+      String jsonDto = new ObjectMapper().writeValueAsString(dto);
+      log.debug("{}", jsonDto);
+      args.put(arguments, Collections.singletonList(jsonDto));
+    } catch (JsonProcessingException jpe) {
+      log.error(jpe.getMessage());
+      throw new BlockchainException("DTO serialization error: " + jpe.getMessage());
+    }
 
     HttpEntity<Map<String, Object>> entity = new HttpEntity<>(args, headers);
     Map<String, Object> response = restTemplate.postForObject(invocationUrl, entity, Map.class);
@@ -97,7 +99,7 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     return response;
   }
 
-  public String enrollUser() {
+  private String enrollUser() {
     HttpHeaders headers = new HttpHeaders();
     headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
@@ -118,37 +120,5 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
 
     log.debug("Enroll response  : " + response.getBody());
     return (String) response.getBody().get("token");
-  }
-
-  @PostConstruct
-  public void test() {
-    try {
-      invoke(
-          "UserRegistration",
-          RegistrationDto.builder()
-              .userId(1L)
-              .timestamp(Instant.now().getEpochSecond())
-              .IP("127.0.0.1")
-              .role("ROLE")
-              .build());
-      invoke(
-          "UserPasswordChange",
-          PasswordChangeDto.builder()
-              .userId(1L)
-              .timestamp(Instant.now().getEpochSecond())
-              .IP("127.0.0.1")
-              .build());
-      invoke(
-          "UserEmailChange",
-          EmailChangeDto.builder()
-              .userId(1L)
-              .timestamp(Instant.now().getEpochSecond())
-              .IP("127.0.0.1")
-              .newEmailHash("tralala")
-              .build());
-      // invoke("UserRegenerationOfRecovery", REGENERATION_OF_RECOVERY_DTO);
-    } catch (Exception e) {
-      log.error(e.getMessage());
-    }
   }
 }
