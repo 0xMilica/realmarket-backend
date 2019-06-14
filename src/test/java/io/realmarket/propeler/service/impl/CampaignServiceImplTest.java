@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static io.realmarket.propeler.util.AuthUtils.*;
+import static io.realmarket.propeler.util.CampaignTopicUtil.TEST_CAMPAIGN_TOPIC_DTO;
 import static io.realmarket.propeler.util.CampaignUtils.*;
 import static io.realmarket.propeler.util.CompanyUtils.TEST_FEATURED_IMAGE_URL;
 import static io.realmarket.propeler.util.CompanyUtils.getCompanyMocked;
@@ -367,6 +368,7 @@ public class CampaignServiceImplTest {
   @Test
   public void sendNewCampaignOpportunityEmail_Should_SendEmail() {
     Campaign testCampaign = getCampaignMocked();
+    when(campaignTopicService.getCampaignTopic(testCampaign.getUrlFriendlyName(), "OVERVIEW")).thenReturn(TEST_CAMPAIGN_TOPIC_DTO);
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
     campaignServiceImpl.sendNewCampaignOpportunityEmail(testCampaign);

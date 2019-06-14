@@ -288,7 +288,8 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Override
   public void sendNewCampaignOpportunityEmail(Campaign campaign) {
-    CampaignEmailDto campaignEmailDto = new CampaignEmailDto(campaign, frontendServiceUrlPath);
+    CampaignTopicDto campaignTopicDto = campaignTopicService.getCampaignTopic(campaign.getUrlFriendlyName(), "OVERVIEW");
+    CampaignEmailDto campaignEmailDto = new CampaignEmailDto(campaign, frontendServiceUrlPath, campaignTopicDto.getContent());
     List<String> emails =
         authService.findAllInvestors().stream()
             .map(auth -> auth.getPerson().getEmail())
@@ -310,7 +311,7 @@ public class CampaignServiceImpl implements CampaignService {
   public void sendNewCampaignOpportunitiesEmail() {
     List<CampaignEmailDto> campaignEmailList =
         findActiveCampaigns().stream()
-            .map(campaign -> new CampaignEmailDto(campaign, frontendServiceUrlPath))
+            .map(campaign -> new CampaignEmailDto(campaign, frontendServiceUrlPath, ""))
             .collect(Collectors.toList());
 
     List<String> emails =

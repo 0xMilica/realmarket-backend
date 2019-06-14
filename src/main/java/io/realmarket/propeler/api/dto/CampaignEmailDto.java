@@ -22,9 +22,9 @@ public class CampaignEmailDto {
   private BigDecimal maxEquityOffered;
   private String link;
 
-  public CampaignEmailDto(Campaign campaign, String frontendUrl) {
+  public CampaignEmailDto(Campaign campaign, String frontendUrl, String overview) {
     this.name = campaign.getName();
-    this.overview = "Overview";
+    this.overview = overview;
     this.fundingGoals = campaign.getFundingGoals();
     this.timeToRaiseFunds = campaign.getTimeToRaiseFunds();
     this.minEquityOffered = campaign.getMinEquityOffered();
