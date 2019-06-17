@@ -1,0 +1,2978 @@
+{
+	"info": {
+		"_postman_id": "a0bee230-8ee1-48bd-861c-e9a10f497258",
+		"name": "propeler",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "companies",
+			"item": [
+				{
+					"name": "docs",
+					"item": [
+						{
+							"name": "/documents/{{document_id}}",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"accessLevel\": \"PUBLIC\",\r\n  \"title\": \"FIRSTDOCUMENTMODIFIED\",\r\n  \"type\": \"DOCTYPE_BUSINESS_PLAN\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/companies/mine/documents/{{document_id}}",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"mine",
+										"documents",
+										"{{document_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"accessLevel\": \"PLATFORM_ADMINS\",\r\n  \"title\": \"FIRSTDOCUMENT\",\r\n  \"type\": \"DOCTYPE_APR_PAPER\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/companies/{{company_id}}/documents",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"{{company_id}}",
+										"documents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents/{{document_id}}",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/companies/mine/documents/{{document_id}}",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"mine",
+										"documents",
+										"{{document_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/companies",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"address\": \"string\",\r\n  \"bankAccount\": \"string\",\r\n  \"city\": \"string\",\r\n  \"companyCategory\": {\r\n    \"id\": 1\r\n  },\r\n  \"county\": \"string\",\r\n  \"featuredImageUrl\": \"string\",\r\n  \"logoUrl\": \"string\",\r\n  \"name\": \"string2\",\r\n  \"taxIdentifier\": \"string\",\r\n  \"website\": \"string\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/companies",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"companies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/companies/mine",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "*/*, application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/companies/mine",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"mine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/companies/{company_id}",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"address\": \"string\",\r\n  \"bankAccount\": \"string3232\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/companies/{{company_id}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{company_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/companies/{{company_id}}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/companies/{{company_id}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{company_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/companies/{{company_id}}/featured_image",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/companies/{{company_id}}/featured_image",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{company_id}}",
+								"featured_image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/companies/{{company_id}}/featured_image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "featured image",
+									"value": "{{featured image}}",
+									"type": "text"
+								},
+								{
+									"key": "picture",
+									"value": "{{picture}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/companies/{{company_id}}/featured_image",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{company_id}}",
+								"featured_image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/companies/{{company_id}}/featured_image",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/companies/{{company_id}}/featured_image",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{company_id}}",
+								"featured_image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/companies/{{company_id}}/logo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/companies/{{company_id}}/logo",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{company_id}}",
+								"logo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/companies/{{company_id}}/logo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Logo picture",
+									"value": "{{Logo picture}}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "picture",
+									"type": "file",
+									"src": "/C:/Users/Ognjen Vlajic/Downloads/9M0A8KD21X.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/companies/{{company_id}}/logo",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{company_id}}",
+								"logo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/companies/{{company_id}}/logo",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/companies/{{company_id}}/logo",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{company_id}}",
+								"logo"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Folder for companies"
+		},
+		{
+			"name": "campaigns",
+			"item": [
+				{
+					"name": "docs",
+					"item": [
+						{
+							"name": "/documents",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"accessLevel\": \"PLATFORM_ADMINS\",\r\n  \"title\": \"FIRSTDOCUMENT\",\r\n  \"type\": \"DOCTYPE_LEGAL\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/documents",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"documents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents/{{document_id}}",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/mine/documents/{{document_id}}",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"mine",
+										"documents",
+										"{{document_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents/{{document_id}}",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"accessLevel\": \"PUBLIC\",\r\n  \"title\": \"FIRSTDOCUMENTMODIFIED\",\r\n  \"type\": \"DOCTYPE_DUE_DILIGENCE\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/mine/documents/{{document_id}}",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"mine",
+										"documents",
+										"{{document_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "team",
+					"item": [
+						{
+							"name": "/team",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "*/*, application/json"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"customProfileUrl\": \"string\",\r\n  \"description\": \"string\",\r\n  \"facebookUrl\": \"string\",\r\n  \"investedAmount\": 100,\r\n  \"isAnonymous\": false,\r\n  \"linkedinUrl\": \"string\",\r\n  \"location\": \"string\",\r\n  \"name\": \"string\",\r\n  \"orderNumber\": 1,\r\n  \"photoUrl\": \"string\",\r\n  \"twitterUrl\": \"string\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/team",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"team"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/team",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "*/*, application/json"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/team",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"team"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/team",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "*/*, application/json"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[ 2, 1,4,6]"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/team",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"team"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/team/{{team_member_id}}",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "*/*, application/json"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/team/4",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"team",
+										"4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/team/{{team_member_id}}",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "*/*, application/json"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"customProfileUrl\": \"str1ing\",\r\n  \"description\": \"string1\",\r\n  \"facebookUrl\": \"strin1g\",\r\n  \"investedAmount\": 0,\r\n  \"isAnonymous\": true,\r\n  \"linkedinUrl\": \"st1ring\",\r\n  \"location\": \"str1ing\",\r\n  \"name\": \"str1ing\",\r\n  \"orderNumber\": 3,\r\n  \"photoUrl\": \"str11ing\",\r\n  \"twitterUrl\": \"st1ring\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/team/2",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"team",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d3e3f893-634a-4710-b439-d281e7b870f5",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "479892fc-1b14-4b7c-8231-37d363319fc0",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "investors",
+					"item": [
+						{
+							"name": "/investors",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"customProfileUrl\": \"string\",\r\n  \"description\": \"string\",\r\n  \"facebookUrl\": \"string\",\r\n  \"investedAmount\": 100,\r\n  \"isAnonymous\": false,\r\n  \"linkedinUrl\": \"string\",\r\n  \"location\": \"string\",\r\n  \"name\": \"string\",\r\n  \"orderNumber\": 1,\r\n  \"photoUrl\": \"string\",\r\n  \"twitterUrl\": \"string\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/investors",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"investors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/investors",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/investors",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"investors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/investors",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "*/*, application/json"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[ 2, 1,4,6]"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/investors",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"investors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/investors/{{investor_id}}",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/investors/4",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"investors",
+										"4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/investors/{{investor_id}}",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"customProfileUrl\": \"str1ing\",\r\n  \"description\": \"string1\",\r\n  \"facebookUrl\": \"strin1g\",\r\n  \"investedAmount\": 0,\r\n  \"isAnonymous\": true,\r\n  \"linkedinUrl\": \"st1ring\",\r\n  \"location\": \"str1ing\",\r\n  \"name\": \"str1ing\",\r\n  \"orderNumber\": 3,\r\n  \"photoUrl\": \"str11ing\",\r\n  \"twitterUrl\": \"st1ring\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/investors/2",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"investors",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/investors/{{investor_id}}/picture",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "picture",
+											"value": "",
+											"type": "file"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/investors/{{investor_id}}/picture",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"investors",
+										"{{investor_id}}",
+										"picture"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/investors/{{investor_id}}/picture",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "*/*, application/json"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/investors/{{investor_id}}/picture",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"investors",
+										"{{investor_id}}",
+										"picture"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/investors/{{investor_id}}/picture",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "*/*, application/json"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/investors/{{investor_id}}/picture",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"investors",
+										"{{investor_id}}",
+										"picture"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "2f604ecd-4d90-49d6-a2f3-82f0355c605e",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ea4f13c5-1565-4008-85fd-2fcaa15eb8a3",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "topic",
+					"item": [
+						{
+							"name": "{{topic}}/images",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "picture",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "picture",
+											"value": "",
+											"type": "file"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/topics/MARKET/images",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"topics",
+										"MARKET",
+										"images"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "{{topic}}",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"content\":\"content\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/topics/{{campaign_topic}}",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"topics",
+										"{{campaign_topic}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/campaigns",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"companyId\": 1,\r\n  \"fundingGoals\": 100000,\r\n  \"marketImageUrl\": \"string\",\r\n  \"maxEquityOffered\": 6.4,\r\n  \"minEquityOffered\": 3.2,\r\n  \"name\": \"Test Campaigni\",\r\n  \"timeToRaiseFunds\": 39,\r\n  \"minInvestment\": 600,\r\n  \"urlFriendlyName\": \"test_campaign\",\r\n  \"tagLine\": \"Tagline example\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/{{campaign_fname}}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/active",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "*/*, application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/active",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"active"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/{{campaign_fname}}",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"maxEquityOffered\": 1.2,\r\n  \"minEquityOffered\": 3.4,\r\n  \"timeToRaiseFunds\": 20,\r\n  \"tagLine\": \"Tagline 2.0\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/{{campaign_fname}}",
+					"request": {
+						"method": "HEAD",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/{{campaign_fname}}/market_image",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/market_image",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}",
+								"market_image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/{{campaign_fname}}/market_image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "market image",
+									"value": "{{market image}}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "picture",
+									"value": "",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/market_image",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}",
+								"market_image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/{{campaign_fname}}/market_image",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/market_image",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}",
+								"market_image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/public?page=1&size=3",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns?page=1&size=3",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/{{campaign_fname}}/review",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/review",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}",
+								"review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/{{campaign_fname}}/convertMoney",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "money",
+									"value": "200000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/convertMoney",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}",
+								"convertMoney"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/{{campaign_fname}}/convertPercent",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "percentageOfEquity",
+									"value": "6.4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/convertPercentage",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}",
+								"convertPercentage"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Folder for campaigns"
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "2fa",
+					"item": [
+						{
+							"name": "/auth/2fa",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7e692de8-4589-4582-a741-a1721f6c02d3",
+										"exec": [
+											"pm.environment.set(\"token\", \"Bearer \" + pm.response.json().jwt);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"type": "text",
+										"value": "",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"code\": \"014385\",\n  \"wildcard\": \"545\",\n  \"token\": \"N3YRMF46UZCYCVSRZFP3GOM3DFGRCTUYQVPA\",\n  \"rememberMe\":true\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/auth/2fa",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"2fa"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/auth/2fa/remember_me",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cf231355-5b01-493c-90da-ef465b59ade1",
+										"exec": [
+											"pm.environment.set(\"token\", \"Bearer \" + pm.response.json().jwt);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"type": "text",
+										"value": "",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"token\": \"VMJZEX4J7HIGJWUH6KB6IYK2EGCZ4XGSIDOQ\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/auth/2fa/remember_me",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"2fa",
+										"remember_me"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/auth/2fa/secret",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"type": "text",
+										"value": "",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"setupToken\": \"KUQMF2226SAJO6CZATYFIEI2UH6WDYUBWOUQ\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/auth/2fa/secret",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"2fa",
+										"secret"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/auth/2fa/verify",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"code\": \"068160\",\r\n  \"token\": \"KUQMF2226SAJO6CZATYFIEI2UH6WDYUBWOUQ\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/auth/2fa/verify",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"2fa",
+										"verify"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/auth/register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "test"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "captcha_response",
+								"value": "dwada",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"address\": \"string\",\r\n  \"city\": \"string\",\r\n  \"countryForTaxation\": \"RS\",\r\n  \"countryOfResidence\": \"BB\",\r\n  \"email\": \"ognjen.vlajic@realmarket.io\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"password\": \"testPASS123\",\r\n  \"phoneNumber\": \"strwdding\",\r\n  \"userRole\": \"ROLE_ENTREPRENEUR\",\r\n  \"username\": \"user\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/auth/register",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"testPASS123\",\r\n  \"username\": \"entrepreneur\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/auth",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/auth",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/confirm_registration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"token\": \"O25CGZL3FXAT7GTG7RN5KWKA6LMIRDBHSY4Q\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/auth/confirm_registration",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"confirm_registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/email_confirm",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"token\": \"9bdd3390-7206-4838-8aef-ce685c6eb89e\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/auth/email_confirm",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"email_confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/reset_password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"user\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/auth/reset_password",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"reset_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/reset_password",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"secret\": \"user\",\n\t\"token\": \"token\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/auth/reset_password",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"reset_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/recover_username",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"user\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/auth/recover_username",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"recover_username"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "file",
+			"item": [
+				{
+					"name": "/files",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "96a11ec1-349a-43e8-9667-3e9f56612e45",
+								"exec": [
+									"pm.environment.set(\"file_name\", pm.response.text());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Ognjen Vlajic/Desktop/2fa.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/files",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"files"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/files/{file_name}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"secret\": \"user\",\n\t\"token\": \"token\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/files/{{file_name}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"files",
+								"{{file_name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/files/{file_name}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a690c59-9582-4b2c-8583-57db79a98e96",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"secret\": \"user\",\n\t\"token\": \"token\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/files/{{file_name}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"files",
+								"{{file_name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/files/public{file_name}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"secret\": \"user\",\n\t\"token\": \"token\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/files/public/4FTWF54RA4RR4XYSVDYEOJCTXP52QIEN.PNG",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"files",
+								"public",
+								"4FTWF54RA4RR4XYSVDYEOJCTXP52QIEN.PNG"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "/users/{auth_id}/secret",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"twoFaCode\": \"599834\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/secret",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"secret"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}/secret",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"password\":\"testPASS123\",\n\t\"twoFa\": {\n\t\t\"code\":\"059349\",\n\t\t\"wildcard\":\"wildcard\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/secret",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"secret"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}/recovery_code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"code\": \"267096\",\n\t\"wildcard\": \"NFRYYXJR7MMA\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/recovery_code",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"recovery_code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}/email",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"code\": \"302619\",\n\t\"wildcard\":\"\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/email",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}/email",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"dragan.rakita@realmarket.io\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/email",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}/picture",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/picture",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"picture"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}/picture",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/picture",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"picture"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}/picture",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "picture",
+									"value": "",
+									"type": "file",
+									"disabled": true
+								},
+								{
+									"key": "Authorization",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMiIsImlzcyI6InJlYWxtYXJrZXQuaW8iLCJpYXQiOjE1NDk5ODM0NzZ9.k9Ft-K01MmvvrFAMyNbnjxsWZykLaJ-XVUTVx9W_jNChAgOvWn6zkQUI3HTs4beUNqRqDHGPN2NW3gEnzWNHVg",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/picture",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"picture"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}/password",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"code\":\"879147\",\n\t\"wildcard\":\"\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/password",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}/password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"newPassword\": \"testPASS123\",\n\t\"oldPassword\": \"testPASS1234\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/password",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"address\": \"testdwdwwdwdwdttt\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{auth_id}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{{auth_id}}/companyDocuments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/companyDocuments",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"companyDocuments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{{auth_id}}/campaignDocuments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/campaignDocuments",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"campaignDocuments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/{{auth_id}}/pageableCampaignDocuments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/users/{{auth_id}}/pageableCampaignDocuments?page=0&size=1",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{auth_id}}",
+								"pageableCampaignDocuments"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
