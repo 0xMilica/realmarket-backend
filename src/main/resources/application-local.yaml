@@ -92,6 +92,19 @@ reports:
   template-names:
     user-wildcards-pdf: userWildcardsPdf
 
+blockchain:
+  active: true
+  user:
+    organization: Org1
+    username: Jim
+  address: http://localhost:5000
+  invocation:
+    peers: peer0.org1.example.com
+    method: fcn
+    arguments: args
+  chaincode_name: mycc
+  channel_name: mychannel
+
 
 logging:
   level:
