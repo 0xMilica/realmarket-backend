@@ -42,6 +42,9 @@ public class CampaignDto {
   @NotNull(message = "Please provide funding goals")
   private Long fundingGoals;
 
+  @ApiModelProperty(value = "Collected amount of money")
+  private BigDecimal collectedAmount;
+
   @ApiModelProperty(value = "Campaign time to raise funds")
   @NotNull(message = "Please provide time to raise funds")
   @Max(value = 90, message = "Please provide time to raise funds that is between 1 and 90 days")
@@ -85,6 +88,7 @@ public class CampaignDto {
     this.name = campaign.getName();
     this.urlFriendlyName = campaign.getUrlFriendlyName();
     this.fundingGoals = campaign.getFundingGoals();
+    this.collectedAmount = campaign.getCollectedAmount();
     this.timeToRaiseFunds = campaign.getTimeToRaiseFunds();
     this.minEquityOffered = campaign.getMinEquityOffered();
     this.maxEquityOffered = campaign.getMaxEquityOffered();

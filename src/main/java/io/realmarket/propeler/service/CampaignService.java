@@ -58,6 +58,10 @@ public interface CampaignService {
 
   void sendNewCampaignOpportunitiesEmail();
 
+  void increaseCollectedAmount(Campaign campaign, BigDecimal amountOfMoney);
+
+  void decreaseCollectedAmount(Campaign campaign, BigDecimal amountOfMoney);
+
   BigDecimal convertMoneyToPercentageOfEquity(String campaignName, BigDecimal money);
 
   BigDecimal convertPercentageOfEquityToMoney(String campaignName, BigDecimal percentageOfEquity);

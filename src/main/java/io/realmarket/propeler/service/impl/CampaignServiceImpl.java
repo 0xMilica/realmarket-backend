@@ -339,6 +339,20 @@ public class CampaignServiceImpl implements CampaignService {
                             AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)))));
   }
 
+  @Transactional
+  @Override
+  public void increaseCollectedAmount(Campaign campaign, BigDecimal amountOfMoney) {
+    campaign.setCollectedAmount(campaign.getCollectedAmount().add(amountOfMoney));
+    campaignRepository.save(campaign);
+  }
+
+  @Transactional
+  @Override
+  public void decreaseCollectedAmount(Campaign campaign, BigDecimal amountOfMoney) {
+    campaign.setCollectedAmount(campaign.getCollectedAmount().subtract(amountOfMoney));
+    campaignRepository.save(campaign);
+  }
+
   private List<Campaign> findActiveCampaigns() {
     return campaignRepository.findAllByCampaignState(
         campaignStateService.getCampaignState("ACTIVE"));

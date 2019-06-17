@@ -36,6 +36,8 @@ public interface ExceptionMessages {
 
   String REQUEST_STATE_NOT_FOUND = "Request state with the provided name not found!";
 
+  String INVESTMENT_STATE_NOT_FOUND = "Investment state with the provided name not found!";
+
   String SHAREHOLDER_NOT_FOUND = "Shareholder with the provided id not found!";
 
   String USER_IS_NOT_OWNER_OF_CAMPAIGN = "Caller is not owner of campaign.";
@@ -91,6 +93,8 @@ public interface ExceptionMessages {
   String NEGATIVE_VALUE_EXCEPTION = "Negative value provided.";
 
   String ROLE_NOT_FOUND = "Role with the provided name not found!";
+
+  String NOT_CAMPAIGN_INVESTOR = "User is not investor in this campaign!";
 
   String CAMPAIGN_IS_NOT_ACTIVE = "Campaign is not active!";
 }

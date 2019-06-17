@@ -76,6 +76,21 @@ public class CampaignUtils {
         .build();
   }
 
+  public static final Campaign TEST_INVESTABLE_CAMPAIGN =
+      Campaign.builder()
+          .id(1L)
+          .company(CompanyUtils.getCompanyMocked())
+          .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
+          .name(TEST_NAME)
+          .fundingGoals(100L)
+          .minInvestment(BigDecimal.ONE)
+          .collectedAmount(BigDecimal.TEN)
+          .minEquityOffered(BigDecimal.ONE)
+          .maxEquityOffered(BigDecimal.TEN)
+          .campaignState(TEST_CAMPAIGN_ACTIVE_STATE)
+          .tagLine(TEST_TAG_LINE)
+          .build();
+
   public static CampaignPatchDto TEST_CAMPAIGN_PATCH_DTO_FUNDING_GOALS() {
     return CampaignPatchDto.builder().fundingGoals(TEST_FUNDING_GOALS).build();
   }

@@ -8,6 +8,7 @@
 
     <include file="migrations/campaign_state_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/request_state_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/investment_state_table.xml" relativeToChangelogFile="true"/>
 
     <include file="migrations/company_category_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/company_table.xml" relativeToChangelogFile="true"/>

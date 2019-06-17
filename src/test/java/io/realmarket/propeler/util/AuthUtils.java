@@ -32,6 +32,7 @@ public class AuthUtils {
   public static final String TEST_ENCODED_SECRET = "enc_secret";
   public static final EUserRole TEST_ROLE = EUserRole.ROLE_INVESTOR;
   public static final EUserRole TEST_ROLE_ENTREPRENEUR = EUserRole.ROLE_ENTREPRENEUR;
+  public static final EUserRole TEST_ROLE_INVESTOR = EUserRole.ROLE_INVESTOR;
   public static final EUserRole TEST_ROLE_FORBIDDEN = EUserRole.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
@@ -61,6 +62,8 @@ public class AuthUtils {
   public static final UserRole TEST_USER_ROLE = UserRole.builder().name(TEST_ROLE).id(100L).build();
   public static final UserRole TEST_ENTREPRENEUR_USER_ROLE =
       UserRole.builder().name(TEST_ROLE_ENTREPRENEUR).id(101L).build();
+  public static final UserRole TEST_INVESTOR_USER_ROLE =
+      UserRole.builder().name(TEST_ROLE_INVESTOR).id(102L).build();
   public static final AuthState TEST_AUTH_STATE =
       AuthState.builder().name(EAuthState.ACTIVE).id(100L).build();
 
@@ -114,6 +117,18 @@ public class AuthUtils {
           .totpSecret(TEST_ENCODED_SECRET)
           .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
           .build();
+
+  public static final Auth TEST_AUTH_INVESTOR =
+      Auth.builder()
+          .id(TEST_AUTH_ID + 1)
+          .username(TEST_USERNAME)
+          .state(TEST_AUTH_STATE)
+          .userRole(TEST_INVESTOR_USER_ROLE)
+          .password(TEST_PASSWORD)
+          .totpSecret(TEST_ENCODED_SECRET)
+          .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
+          .build();
+
   public static final Auth TEST_AUTH_OLD_SECRET =
       Auth.builder()
           .username(TEST_USERNAME)

@@ -1,5 +1,6 @@
 package io.realmarket.propeler.model;
 
+import com.google.common.base.MoreObjects;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,8 @@ public class Campaign {
   private String name;
   private String urlFriendlyName;
   private Long fundingGoals;
-  private BigDecimal collectedAmount;
+
+  @Builder.Default private BigDecimal collectedAmount = BigDecimal.ZERO;
   private Integer timeToRaiseFunds;
   private BigDecimal minEquityOffered;
   private BigDecimal maxEquityOffered;
@@ -54,6 +56,8 @@ public class Campaign {
   public Campaign(CampaignDto campaignDto) {
     this.name = campaignDto.getName();
     this.fundingGoals = campaignDto.getFundingGoals();
+    this.collectedAmount =
+        MoreObjects.firstNonNull(campaignDto.getCollectedAmount(), BigDecimal.ZERO);
     this.timeToRaiseFunds = campaignDto.getTimeToRaiseFunds();
     this.minEquityOffered = campaignDto.getMinEquityOffered();
     this.maxEquityOffered = campaignDto.getMaxEquityOffered();
