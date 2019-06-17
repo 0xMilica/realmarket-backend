@@ -16,24 +16,24 @@ import static io.realmarket.propeler.service.exception.util.ExceptionMessages.RE
 @Slf4j
 public class RequestStateServiceImpl implements RequestStateService {
 
-    private final RequestStateRepository requestStateRepository;
+  private final RequestStateRepository requestStateRepository;
 
-    @Autowired
-    public RequestStateServiceImpl(RequestStateRepository requestStateRepository) {
-        this.requestStateRepository = requestStateRepository;
-    }
+  @Autowired
+  public RequestStateServiceImpl(RequestStateRepository requestStateRepository) {
+    this.requestStateRepository = requestStateRepository;
+  }
 
-    @Override
-    public RequestState getRequestState(String name) {
-        return requestStateRepository
-                .findByName(RequestStateName.fromString(name))
-                .orElseThrow(() -> new EntityNotFoundException(REQUEST_STATE_NOT_FOUND));
-    }
+  @Override
+  public RequestState getRequestState(String name) {
+    return requestStateRepository
+        .findByName(RequestStateName.fromString(name))
+        .orElseThrow(() -> new EntityNotFoundException(REQUEST_STATE_NOT_FOUND));
+  }
 
-    @Override
-    public RequestState getRequestState(RequestStateName requestStateName) {
-        return requestStateRepository
-                .findByName(requestStateName)
-                .orElseThrow(() -> new EntityNotFoundException(REQUEST_STATE_NOT_FOUND));
-    }
+  @Override
+  public RequestState getRequestState(RequestStateName requestStateName) {
+    return requestStateRepository
+        .findByName(requestStateName)
+        .orElseThrow(() -> new EntityNotFoundException(REQUEST_STATE_NOT_FOUND));
+  }
 }

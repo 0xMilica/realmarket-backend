@@ -14,19 +14,18 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(
-        name = "request_state",
-        indexes = {@Index(columnList = "name", unique = true, name = "request_state_uk_on_name")})
+    name = "request_state",
+    indexes = {@Index(columnList = "name", unique = true, name = "request_state_uk_on_name")})
 public class RequestState {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "REQUEST_STATE_SEQ")
-    @SequenceGenerator(
-            name = "REQUEST_STATE_SEQ",
-            sequenceName = "REQUEST_STATE_SEQ",
-            allocationSize = 1)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "REQUEST_STATE_SEQ")
+  @SequenceGenerator(
+      name = "REQUEST_STATE_SEQ",
+      sequenceName = "REQUEST_STATE_SEQ",
+      allocationSize = 1)
+  private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private RequestStateName name;
+  @Enumerated(EnumType.STRING)
+  private RequestStateName name;
 }
-

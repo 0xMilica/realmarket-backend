@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.AuthenticationException;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -174,5 +175,18 @@ public class CampaignControllerImpl implements CampaignController {
   @GetMapping(value = "/mine")
   public ResponseEntity getAllCampaignsForUser() {
     return new ResponseEntity<>(campaignService.getAllCampaignsForUser(), HttpStatus.OK);
+  }
+
+  @GetMapping(value = "/{campaignName}/convertMoney")
+  public ResponseEntity<BigDecimal> convertMoneyToPercentageOfEquity(
+      @PathVariable String campaignName, BigDecimal money) {
+    return ResponseEntity.ok(campaignService.convertMoneyToPercentageOfEquity(campaignName, money));
+  }
+
+  @GetMapping(value = "/{campaignName}/convertPercentage")
+  public ResponseEntity<BigDecimal> convertPercentageOfEquityToMoney(
+      @PathVariable String campaignName, BigDecimal percentageOfEquity) {
+    return ResponseEntity.ok(
+        campaignService.convertPercentageOfEquityToMoney(campaignName, percentageOfEquity));
   }
 }

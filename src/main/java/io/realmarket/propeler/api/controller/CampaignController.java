@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.AuthenticationException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -291,4 +292,58 @@ public interface CampaignController {
     @ApiResponse(code = 400, message = "Not authorized or insufficient data to process request."),
   })
   ResponseEntity getAllCampaignsForUser();
+
+  @ApiOperation(
+      value = "Convert amount of money to percent of equity",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignName",
+        dataType = "String",
+        value = "Campaign's name",
+        paramType = "path",
+        required = true),
+    @ApiImplicitParam(
+        name = "money",
+        dataType = "Long",
+        value = "Amount of money which need to be converted",
+        paramType = "form",
+        required = true)
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully convert money to percentage of equity."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 404, message = "Campaign not found.")
+  })
+  ResponseEntity<BigDecimal> convertMoneyToPercentageOfEquity(
+      String campaignName, BigDecimal money);
+
+  @ApiOperation(
+      value = "Convert percent of equity to money",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignName",
+        dataType = "String",
+        value = "Campaign's name",
+        paramType = "path",
+        required = true),
+    @ApiImplicitParam(
+        name = "percentageOfEquity",
+        dataType = "BigDecimal",
+        value = "Percentage of equity which need to be converted",
+        paramType = "form",
+        required = true)
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully convert percentage of equity to money."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 404, message = "Campaign not found.")
+  })
+  ResponseEntity<BigDecimal> convertPercentageOfEquityToMoney(
+      String campaignName, BigDecimal percentageOfEquity);
 }

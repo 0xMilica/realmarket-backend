@@ -15,6 +15,7 @@
             primary key,
             url_friendly_name varchar(255),
             funding_goals bigint,
+            collected_amount numeric(19,2),
             market_image_url varchar(255),
             max_equity_offered numeric(19,2),
             min_equity_offered numeric(19,2),
@@ -23,6 +24,7 @@
             min_investment numeric(19,2),
             tag_line varchar(255),
             creation_date timestamp DEFAULT localtimestamp NOT NULL,
+            activation_date timestamp,
             company_id bigint
             constraint campaign_fk_on_company
             references company,

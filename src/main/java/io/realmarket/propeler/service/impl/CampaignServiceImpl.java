@@ -29,8 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
@@ -194,6 +193,12 @@ public class CampaignServiceImpl implements CampaignService {
     }
   }
 
+  public void throwIfNotActive(Campaign campaign) {
+    if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)) {
+      throw new BadRequestException(CAMPAIGN_IS_NOT_ACTIVE);
+    }
+  }
+
   @Override
   @Transactional
   public void uploadMarketImage(String campaignName, MultipartFile logo) {
@@ -288,8 +293,10 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Override
   public void sendNewCampaignOpportunityEmail(Campaign campaign) {
-    CampaignTopicDto campaignTopicDto = campaignTopicService.getCampaignTopic(campaign.getUrlFriendlyName(), "OVERVIEW");
-    CampaignEmailDto campaignEmailDto = new CampaignEmailDto(campaign, frontendServiceUrlPath, campaignTopicDto.getContent());
+    CampaignTopicDto campaignTopicDto =
+        campaignTopicService.getCampaignTopic(campaign.getUrlFriendlyName(), "OVERVIEW");
+    CampaignEmailDto campaignEmailDto =
+        new CampaignEmailDto(campaign, frontendServiceUrlPath, campaignTopicDto.getContent());
     List<String> emails =
         authService.findAllInvestors().stream()
             .map(auth -> auth.getPerson().getEmail())
@@ -354,5 +361,47 @@ public class CampaignServiceImpl implements CampaignService {
       default:
         throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
     }
+  }
+
+  @Override
+  public BigDecimal convertMoneyToPercentageOfEquity(String campaignName, BigDecimal money) {
+    if (money.compareTo(BigDecimal.valueOf(0)) < 0) {
+      throw new BadRequestException(NEGATIVE_VALUE_EXCEPTION);
+    }
+
+    Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
+    throwIfNotActive(campaign);
+
+    BigDecimal maxInvest =
+        BigDecimal.valueOf(campaign.getFundingGoals())
+            .multiply(campaign.getMaxEquityOffered().divide(campaign.getMinEquityOffered()));
+    if (money.compareTo(campaign.getMinInvestment()) < 0) {
+      throw new BadRequestException(INVESTMENT_MUST_BE_GREATER_THAN_CAMPAIGN_MIN_INVESTMENT);
+    } else if (money.compareTo(maxInvest) > 0) {
+      throw new BadRequestException(INVESTMENT_CAN_NOT_BE_GREATER_THAN_MAX_INVESTMENT);
+    }
+
+    return money
+        .divide(BigDecimal.valueOf(campaign.getFundingGoals()))
+        .multiply(campaign.getMinEquityOffered());
+  }
+
+  @Override
+  public BigDecimal convertPercentageOfEquityToMoney(
+      String campaignName, BigDecimal percentageOfEquity) {
+    if (percentageOfEquity.compareTo(BigDecimal.valueOf(0)) < 0) {
+      throw new BadRequestException(NEGATIVE_VALUE_EXCEPTION);
+    }
+
+    Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
+    throwIfNotActive(campaign);
+
+    if (percentageOfEquity.compareTo(campaign.getMaxEquityOffered()) > 0) {
+      throw new BadRequestException(INVESTMENT_CAN_NOT_BE_GREATER_THAN_CAMPAIGN_MAXIMUM_EQUITY);
+    }
+
+    return percentageOfEquity
+        .divide(campaign.getMinEquityOffered())
+        .multiply(BigDecimal.valueOf(campaign.getFundingGoals()));
   }
 }

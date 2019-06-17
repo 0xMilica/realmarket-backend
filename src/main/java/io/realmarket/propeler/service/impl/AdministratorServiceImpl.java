@@ -10,17 +10,17 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class AdministratorServiceImpl implements AdministratorService {
-    private final CompanyEditRequestService companyEditRequestService;
+  private final CompanyEditRequestService companyEditRequestService;
 
-    @Autowired
-    public AdministratorServiceImpl(CompanyEditRequestService companyEditRequestService) {
-        this.companyEditRequestService = companyEditRequestService;
-    }
+  @Autowired
+  public AdministratorServiceImpl(CompanyEditRequestService companyEditRequestService) {
+    this.companyEditRequestService = companyEditRequestService;
+  }
 
-    @Override
-    public Long requestCompanyEdit(CompanyEditRequest companyEditRequest) {
-        companyEditRequest = companyEditRequestService.createCompanyEditRequest(companyEditRequest);
-        if (companyEditRequest!=null) return companyEditRequest.getId();
-        return -1L;
-    }
+  @Override
+  public Long requestCompanyEdit(CompanyEditRequest companyEditRequest) {
+    companyEditRequest = companyEditRequestService.createCompanyEditRequest(companyEditRequest);
+    if (companyEditRequest != null) return companyEditRequest.getId();
+    return -1L;
+  }
 }

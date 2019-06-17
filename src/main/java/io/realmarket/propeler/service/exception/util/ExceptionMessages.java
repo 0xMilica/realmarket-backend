@@ -79,5 +79,18 @@ public interface ExceptionMessages {
 
   String INVALID_COUNTRY_CODE = "Invalid country code";
 
+  String INVESTMENT_MUST_BE_GREATER_THAN_CAMPAIGN_MIN_INVESTMENT =
+      "Amount of money must be greater than campaign minimum investment.";
+
+  String INVESTMENT_CAN_NOT_BE_GREATER_THAN_MAX_INVESTMENT =
+      "Amount of money can not be greater than maximum investment.";
+
+  String INVESTMENT_CAN_NOT_BE_GREATER_THAN_CAMPAIGN_MAXIMUM_EQUITY =
+      "Percentage of equity can not be greater than campaign maximum equity offered.";
+
+  String NEGATIVE_VALUE_EXCEPTION = "Negative value provided.";
+
   String ROLE_NOT_FOUND = "Role with the provided name not found!";
+
+  String CAMPAIGN_IS_NOT_ACTIVE = "Campaign is not active!";
 }

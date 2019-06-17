@@ -368,9 +368,120 @@ public class CampaignServiceImplTest {
   @Test
   public void sendNewCampaignOpportunityEmail_Should_SendEmail() {
     Campaign testCampaign = getCampaignMocked();
-    when(campaignTopicService.getCampaignTopic(testCampaign.getUrlFriendlyName(), "OVERVIEW")).thenReturn(TEST_CAMPAIGN_TOPIC_DTO);
+    when(campaignTopicService.getCampaignTopic(testCampaign.getUrlFriendlyName(), "OVERVIEW"))
+        .thenReturn(TEST_CAMPAIGN_TOPIC_DTO);
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
     campaignServiceImpl.sendNewCampaignOpportunityEmail(testCampaign);
+  }
+
+  @Test
+  public void ConvertMoney_Should_Return_Percentage() {
+    Campaign testCampaign = getActiveCampaignMocked();
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
+        .thenReturn(Optional.of(testCampaign));
+
+    campaignServiceImpl.convertMoneyToPercentageOfEquity(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(1000));
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void ConvertMoney_Should_Throw_EntityNotFoundException() {
+    Campaign testCampaign = getActiveCampaignMocked();
+
+    campaignServiceImpl.convertMoneyToPercentageOfEquity(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(1000));
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void ConvertMoney_Should_Throw_BadRequestException_When_Campaign_Is_Not_Active() {
+    Campaign testCampaign = getCampaignMocked();
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
+        .thenReturn(Optional.of(testCampaign));
+
+    campaignServiceImpl.convertMoneyToPercentageOfEquity(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(1000));
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void ConvertMoney_Should_Throw_BadRequestException_When_Money_Is_Negative_Value() {
+    Campaign testCampaign = getActiveCampaignMocked();
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
+        .thenReturn(Optional.of(testCampaign));
+
+    campaignServiceImpl.convertMoneyToPercentageOfEquity(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(-1000));
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void
+      ConvertMoney_Should_Throw_BadRequestException_When_Money_Smaller_Than_Min_Investment() {
+    Campaign testCampaign = getActiveCampaignMocked();
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
+        .thenReturn(Optional.of(testCampaign));
+
+    campaignServiceImpl.convertMoneyToPercentageOfEquity(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(550));
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void
+      ConvertMoney_Should_Throw_BadRequestException_When_Money_Greater_Than_Max_Investment() {
+    Campaign testCampaign = getActiveCampaignMocked();
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
+        .thenReturn(Optional.of(testCampaign));
+
+    campaignServiceImpl.convertMoneyToPercentageOfEquity(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(300000));
+  }
+
+  @Test
+  public void ConvertPercentage_Should_Return_Money() {
+    Campaign testCampaign = getActiveCampaignMocked();
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
+        .thenReturn(Optional.of(testCampaign));
+
+    campaignServiceImpl.convertPercentageOfEquityToMoney(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(1.5));
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void ConvertPercentage_Should_Throw_EntityNotFoundException() {
+    Campaign testCampaign = getActiveCampaignMocked();
+
+    campaignServiceImpl.convertPercentageOfEquityToMoney(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(1.5));
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void ConvertPercentage_Should_Throw_BadRequestException_When_Campaign_Is_Not_Active() {
+    Campaign testCampaign = getCampaignMocked();
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
+        .thenReturn(Optional.of(testCampaign));
+
+    campaignServiceImpl.convertPercentageOfEquityToMoney(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(1.5));
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void
+      ConvertPercentage_Should_Throw_BadRequestException_When_Percentage_Is_Negative_Value() {
+    Campaign testCampaign = getActiveCampaignMocked();
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
+        .thenReturn(Optional.of(testCampaign));
+
+    campaignServiceImpl.convertMoneyToPercentageOfEquity(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(-1.5));
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void
+      ConvertPercentage_Should_Throw_BadRequestException_When_Percent_Greater_Than_Max_Equity_Offered() {
+    Campaign testCampaign = getActiveCampaignMocked();
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
+        .thenReturn(Optional.of(testCampaign));
+
+    campaignServiceImpl.convertPercentageOfEquityToMoney(
+        testCampaign.getUrlFriendlyName(), BigDecimal.valueOf(20.5));
   }
 }

@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface RequestStateRepository extends JpaRepository<RequestState, Long> {
-    Optional<RequestState> findByName(RequestStateName name);
+  Optional<RequestState> findByName(RequestStateName name);
 }

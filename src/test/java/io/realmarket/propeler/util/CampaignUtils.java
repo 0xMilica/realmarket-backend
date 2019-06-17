@@ -6,13 +6,18 @@ import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 
+import java.math.BigDecimal;
+
 public class CampaignUtils {
 
   public static final Long TEST_CAMPAIGN_ID = 1L;
   public static final String TEST_URL_FRIENDLY_NAME = "TEST_URL_FRIENDLY_NAME";
   public static final String TEST_ACTIVE_URL_FRIENDLY_NAME = "TEST_ACTIVE_URL_FRIENDLY_NAME";
   public static final String TEST_MARKET_IMAGE_UTL = "MARKET_IMAGE_URL";
-  public static final Long TEST_FUNDING_GOALS = 58L;
+  public static final Long TEST_FUNDING_GOALS = 100000L;
+  public static final BigDecimal TEST_MIN_EQUITY_OFFERED = BigDecimal.valueOf(5);
+  public static final BigDecimal TEST_MAX_EQUITY_OFFERED = BigDecimal.valueOf(10);
+  public static final BigDecimal TEST_MIN_INVESTMENT = BigDecimal.valueOf(600);
   public static final CampaignState TEST_CAMPAIGN_INITIAL_STATE =
       CampaignState.builder().name(CampaignStateName.INITIAL).build();
   public static final CampaignState TEST_CAMPAIGN_ACTIVE_STATE =
@@ -27,7 +32,10 @@ public class CampaignUtils {
           .company(CompanyUtils.getCompanyMocked())
           .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
           .name(TEST_NAME)
-          .fundingGoals(0L)
+          .fundingGoals(TEST_FUNDING_GOALS)
+          .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
+          .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
+          .minInvestment(TEST_MIN_INVESTMENT)
           .campaignState(TEST_CAMPAIGN_INITIAL_STATE)
           .tagLine(TEST_TAG_LINE)
           .build();
@@ -38,7 +46,10 @@ public class CampaignUtils {
     return Campaign.builder()
         .company(CompanyUtils.getCompanyMocked())
         .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
-        .fundingGoals(0L)
+        .fundingGoals(TEST_FUNDING_GOALS)
+        .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
+        .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
+        .minInvestment(TEST_MIN_INVESTMENT)
         .campaignState(TEST_CAMPAIGN_INITIAL_STATE)
         .marketImageUrl(TEST_MARKET_IMAGE_UTL)
         .build();
@@ -51,13 +62,15 @@ public class CampaignUtils {
           .fundingGoals(0L)
           .campaignState(TEST_CAMPAIGN_ACTIVE_STATE)
           .build();
-  public static final CampaignDto TEST_ACTIVE_CAMPAIGN_DTO = new CampaignDto(TEST_ACTIVE_CAMPAIGN);
 
   public static Campaign getActiveCampaignMocked() {
     return Campaign.builder()
         .company(CompanyUtils.getCompanyMocked())
         .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
-        .fundingGoals(0L)
+        .fundingGoals(TEST_FUNDING_GOALS)
+        .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
+        .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
+        .minInvestment(TEST_MIN_INVESTMENT)
         .campaignState(TEST_CAMPAIGN_ACTIVE_STATE)
         .marketImageUrl(TEST_MARKET_IMAGE_UTL)
         .build();

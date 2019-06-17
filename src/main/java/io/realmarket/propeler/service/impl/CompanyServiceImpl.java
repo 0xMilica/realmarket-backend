@@ -42,10 +42,10 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Autowired
   public CompanyServiceImpl(
-          CompanyRepository companyRepository,
-          AdministratorService administratorService,
-          CloudObjectStorageService cloudObjectStorageService,
-          ModelMapperBlankString modelMapperBlankString) {
+      CompanyRepository companyRepository,
+      AdministratorService administratorService,
+      CloudObjectStorageService cloudObjectStorageService,
+      ModelMapperBlankString modelMapperBlankString) {
     this.companyRepository = companyRepository;
     this.administratorService = administratorService;
     this.cloudObjectStorageService = cloudObjectStorageService;

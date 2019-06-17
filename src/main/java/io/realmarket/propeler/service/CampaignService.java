@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.AuthenticationException;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface CampaignService {
@@ -33,6 +34,8 @@ public interface CampaignService {
 
   void throwIfNotEditable(Campaign campaign);
 
+  void throwIfNotActive(Campaign campaign);
+
   Campaign getActiveCampaignForCompany();
 
   CampaignDto getActiveCampaignDto();
@@ -54,4 +57,8 @@ public interface CampaignService {
   void sendNewCampaignOpportunityEmail(Campaign campaign);
 
   void sendNewCampaignOpportunitiesEmail();
+
+  BigDecimal convertMoneyToPercentageOfEquity(String campaignName, BigDecimal money);
+
+  BigDecimal convertPercentageOfEquityToMoney(String campaignName, BigDecimal percentageOfEquity);
 }

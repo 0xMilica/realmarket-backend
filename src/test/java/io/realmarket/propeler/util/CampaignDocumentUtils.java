@@ -17,8 +17,7 @@ public class CampaignDocumentUtils {
   public static final String TEST_TITLE = "TEST_TITLE";
   public static final ECampaignDocumentAccessLevel TEST_ACCESS_LEVEL_ENUM =
       ECampaignDocumentAccessLevel.PUBLIC;
-  public static final ECampaignDocumentType TEST_TYPE_ENUM =
-      ECampaignDocumentType.DOCTYPE_LEGAL;
+  public static final ECampaignDocumentType TEST_TYPE_ENUM = ECampaignDocumentType.DOCTYPE_LEGAL;
   public static final CampaignDocumentAccessLevel TEST_ACCESS_LEVEL =
       CampaignDocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM).build();
   public static final CampaignDocumentType TEST_TYPE =
