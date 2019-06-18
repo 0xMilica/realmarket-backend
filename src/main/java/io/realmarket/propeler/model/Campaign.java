@@ -2,9 +2,7 @@ package io.realmarket.propeler.model;
 
 import com.google.common.base.MoreObjects;
 import io.realmarket.propeler.api.dto.CampaignDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

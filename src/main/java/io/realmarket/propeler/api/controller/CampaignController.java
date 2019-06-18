@@ -346,4 +346,36 @@ public interface CampaignController {
   })
   ResponseEntity<BigDecimal> convertPercentageOfEquityToMoney(
       String campaignName, BigDecimal percentageOfEquity);
+
+  @ApiOperation(value = "Get available equity for campaign.", httpMethod = "GET")
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignName",
+        value = "Name of the campaign that is being queried for available equity.",
+        required = true,
+        dataType = "String")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "There is available equity for campaign."),
+    @ApiResponse(
+        code = 400,
+        message = "There is no campaign, no equity left, campaign is not active."),
+  })
+  ResponseEntity getAvailableEquity(String campaignName);
+
+  @ApiOperation(
+          value = "Invest in campaign.",
+          httpMethod = "POST",
+          consumes = APPLICATION_JSON_VALUE)
+  @ApiImplicitParam(
+          name = "campaignName",
+          value = "Campaign's name",
+          required = true,
+          dataType = "String")
+  @ApiResponses({
+          @ApiResponse(code = 200, message = "Investment successfully submitted."),
+          @ApiResponse(code = 404, message = "No campaign with given name."),
+          @ApiResponse(code = 400, message = "Too large investment or campaign is inactive."),
+  })
+  ResponseEntity investInCampaign(InvestmentDto amountOfMoney, String campaignName);
 }

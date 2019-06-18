@@ -13,7 +13,7 @@
             id bigint not null
             constraint campaign_investment_pkey
             primary key,
-            invested_amount bigint,
+            invested_amount  numeric(19,2),
             auth_id bigint
             constraint campaign_investment_fk_on_auth
             references auth,

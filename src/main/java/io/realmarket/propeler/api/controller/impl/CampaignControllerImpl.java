@@ -5,6 +5,7 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.CampaignDocumentService;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignTeamMemberService;
+import io.realmarket.propeler.service.InvestmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,15 +28,18 @@ public class CampaignControllerImpl implements CampaignController {
   private final CampaignService campaignService;
   private final CampaignDocumentService campaignDocumentService;
   private final CampaignTeamMemberService campaignTeamMemberService;
+  private final InvestmentService investmentService;
 
   @Autowired
   public CampaignControllerImpl(
       CampaignService campaignService,
       CampaignDocumentService campaignDocumentService,
-      CampaignTeamMemberService campaignTeamMemberService) {
+      CampaignTeamMemberService campaignTeamMemberService,
+      InvestmentService investmentService) {
     this.campaignService = campaignService;
     this.campaignDocumentService = campaignDocumentService;
     this.campaignTeamMemberService = campaignTeamMemberService;
+    this.investmentService = investmentService;
   }
 
   @RequestMapping(value = "/{campaignName}", method = RequestMethod.HEAD)
@@ -185,5 +189,19 @@ public class CampaignControllerImpl implements CampaignController {
       @PathVariable String campaignName, BigDecimal percentageOfEquity) {
     return ResponseEntity.ok(
         campaignService.convertPercentageOfEquityToMoney(campaignName, percentageOfEquity));
+  }
+
+  @GetMapping(value = "/{campaignName}/availableEquity")
+  @PreAuthorize("hasAnyAuthority('ROLE_INVESTOR', 'ROLE_ENTREPRENEUR')")
+  public ResponseEntity getAvailableEquity(@PathVariable String campaignName) {
+    return ResponseEntity.ok(campaignService.getAvailableEquity(campaignName));
+  }
+
+  @PostMapping(value = "/{campaignName}/invest")
+  @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
+  public ResponseEntity investInCampaign(
+      @RequestBody InvestmentDto amountOfMoney, @PathVariable String campaignName) {
+    investmentService.invest(amountOfMoney.getAmount(), campaignName);
+    return ResponseEntity.noContent().build();
   }
 }

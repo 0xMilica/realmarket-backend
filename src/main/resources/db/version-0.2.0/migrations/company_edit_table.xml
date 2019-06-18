@@ -30,7 +30,7 @@
             references company_category,
             company_id bigint
             constraint company_edit_fk_on_company
-            references company_category,
+            references company,
             request_state_id bigint
             constraint company_edit_fk_on_request_state
             references request_state

@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
@@ -388,7 +389,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     BigDecimal maxInvest =
         BigDecimal.valueOf(campaign.getFundingGoals())
-            .multiply(campaign.getMaxEquityOffered().divide(campaign.getMinEquityOffered()));
+            .multiply(campaign.getMaxEquityOffered().divide(campaign.getMinEquityOffered(), MathContext.DECIMAL128));
     if (money.compareTo(campaign.getMinInvestment()) < 0) {
       throw new BadRequestException(INVESTMENT_MUST_BE_GREATER_THAN_CAMPAIGN_MIN_INVESTMENT);
     } else if (money.compareTo(maxInvest) > 0) {
@@ -396,7 +397,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     return money
-        .divide(BigDecimal.valueOf(campaign.getFundingGoals()))
+        .divide(BigDecimal.valueOf(campaign.getFundingGoals()), MathContext.DECIMAL128)
         .multiply(campaign.getMinEquityOffered());
   }
 
@@ -415,7 +416,22 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     return percentageOfEquity
-        .divide(campaign.getMinEquityOffered())
+        .divide(campaign.getMinEquityOffered(), MathContext.DECIMAL128)
         .multiply(BigDecimal.valueOf(campaign.getFundingGoals()));
+  }
+
+  @Override
+  public BigDecimal getAvailableEquity(String campaignName) {
+    Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
+    BigDecimal maxSum =
+        BigDecimal.valueOf(campaign.getFundingGoals())
+            .multiply(campaign.getMaxEquityOffered(), MathContext.DECIMAL128)
+            .divide(campaign.getMinEquityOffered(), MathContext.DECIMAL128);
+    return campaign
+        .getMaxEquityOffered()
+        .multiply(
+            maxSum.subtract(campaign.getCollectedAmount(), MathContext.DECIMAL128),
+            MathContext.DECIMAL128)
+        .divide(maxSum, MathContext.DECIMAL128);
   }
 }

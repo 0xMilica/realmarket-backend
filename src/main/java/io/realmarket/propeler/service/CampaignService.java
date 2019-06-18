@@ -65,4 +65,6 @@ public interface CampaignService {
   BigDecimal convertMoneyToPercentageOfEquity(String campaignName, BigDecimal money);
 
   BigDecimal convertPercentageOfEquityToMoney(String campaignName, BigDecimal percentageOfEquity);
+
+  BigDecimal getAvailableEquity(String campaignName);
 }
