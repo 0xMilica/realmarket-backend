@@ -2,10 +2,9 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.UserController;
 import io.realmarket.propeler.api.dto.*;
-import io.realmarket.propeler.service.AuthService;
-import io.realmarket.propeler.service.DocumentService;
-import io.realmarket.propeler.service.PersonService;
-import io.realmarket.propeler.service.TwoFactorAuthService;
+import io.realmarket.propeler.service.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,17 +25,20 @@ public class UserControllerImpl implements UserController {
   private final AuthService authService;
   private final PersonService personService;
   private final TwoFactorAuthService twoFactorAuthService;
-  private final DocumentService documentService;
+  private final CampaignDocumentService campaignDocumentService;
+  private final CompanyDocumentService companyDocumentService;
 
   public UserControllerImpl(
       AuthService authService,
       PersonService personService,
       TwoFactorAuthService twoFactorAuthService,
-      DocumentService documentService) {
+      CampaignDocumentService campaignDocumentService,
+      CompanyDocumentService companyDocumentService) {
     this.authService = authService;
     this.personService = personService;
     this.twoFactorAuthService = twoFactorAuthService;
-    this.documentService = documentService;
+    this.campaignDocumentService = campaignDocumentService;
+    this.companyDocumentService = companyDocumentService;
   }
 
   @RequestMapping(value = "{username}", method = RequestMethod.HEAD)
@@ -136,8 +138,26 @@ public class UserControllerImpl implements UserController {
 
   @Override
   @PreAuthorize("hasAnyAuthority('ROLE_ADMIN, ROLE_ENTREPRENEUR')")
-  @GetMapping(value = "/{userId}/documents")
-  public ResponseEntity<List<DocumentResponseDto>> getDocuments(@PathVariable Long userId) {
-    return ResponseEntity.ok(documentService.getDocuments(userId));
+  @GetMapping(value = "/{userId}/campaignDocuments")
+  public ResponseEntity<List<CampaignDocumentResponseDto>> getCampaignDocuments(
+      @PathVariable Long userId) {
+    return ResponseEntity.ok(campaignDocumentService.getUserCampaignDocuments(userId));
+  }
+
+  @Override
+  @PreAuthorize("hasAnyAuthority('ROLE_ADMIN, ROLE_ENTREPRENEUR')")
+  @GetMapping(value = "/{userId}/pageableCampaignDocuments")
+  public ResponseEntity<Page<CampaignDocumentResponseDto>> getPageableCampaignDocuments(
+      @PathVariable Long userId, Pageable pageable) {
+    return ResponseEntity.ok(
+        campaignDocumentService.getPageableUserCampaignDocuments(userId, pageable));
+  }
+
+  @Override
+  @PreAuthorize("hasAnyAuthority('ROLE_ADMIN, ROLE_ENTREPRENEUR')")
+  @GetMapping(value = "/{userId}/companyDocuments")
+  public ResponseEntity<List<CompanyDocumentResponseDto>> getCompanyDocuments(
+      @PathVariable Long userId) {
+    return ResponseEntity.ok(companyDocumentService.getUserCompanyDocuments(userId));
   }
 }

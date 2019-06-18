@@ -25,11 +25,11 @@ import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 @Service
 public class InvestmentServiceImpl implements InvestmentService {
 
+  private static final long WEEK = 604800000L;
   private final CampaignService campaignService;
   private final CampaignInvestmentRepository campaignInvestmentRepository;
   private final PaymentService paymentService;
   private final InvestmentStateService investmentStateService;
-  private static final long WEEK = 604800000L;
 
   @Autowired
   public InvestmentServiceImpl(

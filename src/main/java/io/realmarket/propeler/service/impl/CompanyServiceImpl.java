@@ -52,7 +52,7 @@ public class CompanyServiceImpl implements CompanyService {
     this.modelMapperBlankString = modelMapperBlankString;
   }
 
-  private static void throwIfNoAccess(Company company) {
+  public void throwIfNoAccess(Company company) {
     if (!AuthenticationUtil.getAuthentication()
         .getAuth()
         .getId()

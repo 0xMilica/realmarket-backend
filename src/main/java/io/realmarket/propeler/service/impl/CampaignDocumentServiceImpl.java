@@ -2,10 +2,7 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.CampaignDocumentDto;
 import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
-import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.CampaignDocument;
-import io.realmarket.propeler.model.CampaignDocumentAccessLevel;
-import io.realmarket.propeler.model.CampaignDocumentType;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.CampaignDocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.CampaignDocumentRepository;
@@ -14,10 +11,13 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignDocumentService;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
+import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +38,9 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   private final CampaignDocumentAccessLevelRepository campaignDocumentAccessLevelRepository;
   private final CampaignDocumentTypeRepository campaignDocumentTypeRepository;
   private final CampaignService campaignService;
+  private final CompanyService companyService;
   private final CloudObjectStorageService cloudObjectStorageService;
-  private ModelMapperBlankString modelMapperBlankString;
+  private final ModelMapperBlankString modelMapperBlankString;
 
   @Autowired
   public CampaignDocumentServiceImpl(
@@ -47,12 +48,14 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
       CampaignDocumentAccessLevelRepository campaignDocumentAccessLevelRepository,
       CampaignDocumentTypeRepository campaignDocumentTypeRepository,
       CampaignService campaignService,
+      CompanyService companyService,
       CloudObjectStorageService cloudObjectStorageService,
       ModelMapperBlankString modelMapperBlankString) {
     this.campaignDocumentRepository = campaignDocumentRepository;
     this.campaignDocumentAccessLevelRepository = campaignDocumentAccessLevelRepository;
     this.campaignDocumentTypeRepository = campaignDocumentTypeRepository;
     this.campaignService = campaignService;
+    this.companyService = companyService;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.modelMapperBlankString = modelMapperBlankString;
   }
@@ -75,12 +78,10 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   }
 
   @Transactional
-  public void deleteDocument(String campaignUrlFriendlyName, Long documentId) {
+  public void deleteDocument(Long documentId) {
 
     CampaignDocument campaignDocument = findByIdOrThrowException(documentId);
-    if (!campaignDocument.getCampaign().getUrlFriendlyName().equals(campaignUrlFriendlyName)) {
-      throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
-    }
+
     campaignService.throwIfNotOwnerOrNotEditable(campaignDocument.getCampaign());
     cloudObjectStorageService.delete(campaignDocument.getUrl());
     campaignDocumentRepository.delete(campaignDocument);
@@ -133,12 +134,21 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   }
 
   @Override
+  public List<CampaignDocument> findAllByCampaigns(List<Campaign> campaigns) {
+    return campaignDocumentRepository.findAllByCampaignIn(campaigns);
+  }
+
+  @Override
+  public Page<CampaignDocument> findAllPageableByCampaigns(
+      List<Campaign> campaigns, Pageable pageable) {
+    return campaignDocumentRepository.findAllByCampaignIn(campaigns, pageable);
+  }
+
+  @Override
   public CampaignDocument patchCampaignDocument(
-      String campaignUrlFriendlyName, Long documentId, CampaignDocumentDto campaignDocumentDto) {
+      Long documentId, CampaignDocumentDto campaignDocumentDto) {
     CampaignDocument campaignDocument = findByIdOrThrowException(documentId);
-    if (!campaignDocument.getCampaign().getUrlFriendlyName().equals(campaignUrlFriendlyName)) {
-      throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
-    }
+
     campaignService.throwIfNotOwnerOrNotEditable(campaignDocument.getCampaign());
 
     CampaignDocument campaignDocumentPatch =
@@ -152,9 +162,34 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     return campaignDocumentRepository.save(campaignDocument);
   }
 
-  public CampaignDocument convertDocumentDtoToDocument(
+  @Override
+  public List<CampaignDocumentResponseDto> getUserCampaignDocuments(Long userId) {
+    Company company = companyService.findByAuthIdOrThrowException(userId);
+    companyService.throwIfNotOwnerOrAdmin(
+        company, AuthenticationUtil.getAuthentication().getAuth());
+
+    List<Campaign> campaignsList = campaignService.findAllByCompany(company);
+
+    return findAllByCampaigns(campaignsList).stream()
+        .map(CampaignDocumentResponseDto::new)
+        .collect(toList());
+  }
+
+  @Override
+  public Page<CampaignDocumentResponseDto> getPageableUserCampaignDocuments(
+      Long userId, Pageable pageable) {
+    Company company = companyService.findByAuthIdOrThrowException(userId);
+    companyService.throwIfNotOwnerOrAdmin(
+        company, AuthenticationUtil.getAuthentication().getAuth());
+
+    List<Campaign> campaignList = campaignService.findAllByCompany(company);
+
+    return findAllPageableByCampaigns(campaignList, pageable).map(CampaignDocumentResponseDto::new);
+  }
+
+  private CampaignDocument convertDocumentDtoToDocument(
       CampaignDocumentDto campaignDocumentDto, Campaign campaign) {
-    Optional<CampaignDocumentAccessLevel> accessLevel =
+    Optional<DocumentAccessLevel> accessLevel =
         this.campaignDocumentAccessLevelRepository.findByName(campaignDocumentDto.getAccessLevel());
     Optional<CampaignDocumentType> type =
         this.campaignDocumentTypeRepository.findByName(campaignDocumentDto.getType());
@@ -162,15 +197,12 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
       throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
     }
 
-    CampaignDocument campaignDocument =
-        CampaignDocument.builder()
-            .title(campaignDocumentDto.getTitle())
-            .accessLevel(accessLevel.get())
-            .type(type.get())
-            .url(campaignDocumentDto.getUrl())
-            .campaign(campaign)
-            .build();
-
-    return campaignDocument;
+    return CampaignDocument.builder()
+        .title(campaignDocumentDto.getTitle())
+        .accessLevel(accessLevel.get())
+        .type(type.get())
+        .url(campaignDocumentDto.getUrl())
+        .campaign(campaign)
+        .build();
   }
 }

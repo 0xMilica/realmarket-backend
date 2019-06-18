@@ -1,9 +1,8 @@
 package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.CompanyController;
-import io.realmarket.propeler.api.dto.CompanyDto;
-import io.realmarket.propeler.api.dto.CompanyPatchDto;
-import io.realmarket.propeler.api.dto.FileDto;
+import io.realmarket.propeler.api.dto.*;
+import io.realmarket.propeler.service.CompanyDocumentService;
 import io.realmarket.propeler.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,15 +11,20 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/companies")
 public class CompanyControllerImpl implements CompanyController {
 
   private final CompanyService companyService;
+  private final CompanyDocumentService companyDocumentService;
 
   @Autowired
-  public CompanyControllerImpl(CompanyService companyService) {
+  public CompanyControllerImpl(
+      CompanyService companyService, CompanyDocumentService companyDocumentService) {
     this.companyService = companyService;
+    this.companyDocumentService = companyDocumentService;
   }
 
   @PostMapping
@@ -85,5 +89,30 @@ public class CompanyControllerImpl implements CompanyController {
   public ResponseEntity deleteFeaturedImage(@PathVariable Long companyId) {
     companyService.deleteFeaturedImage(companyId);
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping(value = "/{companyId}/documents")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<CompanyDocumentResponseDto> submitCompanyDocument(
+      @RequestBody @Valid CompanyDocumentDto companyDocumentDto, @PathVariable Long companyId) {
+    return ResponseEntity.ok(
+        new CompanyDocumentResponseDto(
+            companyDocumentService.submitDocument(companyDocumentDto, companyId)));
+  }
+
+  @PatchMapping(value = "/mine/documents/{documentId}")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<CompanyDocumentResponseDto> patchCompanyDocument(
+      @PathVariable Long documentId, @RequestBody @Valid CompanyDocumentDto companyDocumentDto) {
+    return ResponseEntity.ok(
+        new CompanyDocumentResponseDto(
+            companyDocumentService.patchCompanyDocument(documentId, companyDocumentDto)));
+  }
+
+  @DeleteMapping(value = "/mine/documents/{documentId}")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity deleteCompanyDocument(@PathVariable Long documentId) {
+    companyDocumentService.deleteDocument(documentId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

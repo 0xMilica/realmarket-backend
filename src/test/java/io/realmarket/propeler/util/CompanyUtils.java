@@ -22,6 +22,22 @@ public class CompanyUtils {
   public static final CompanyCategory TEST_CATEGORY_COMPANY =
       CompanyCategory.builder().id(TEST_ID).name(TEST_NAME).build();
 
+  public static final Company TEST_COMPANY =
+      Company.builder()
+          .id(TEST_ID)
+          .name(TEST_NAME)
+          .taxIdentifier(TEST_TAX_IDENTIFIER)
+          .bankAccount(TEST_BANK_ACCOUNT)
+          .county(TEST_COUNTY)
+          .city(TEST_CITY)
+          .address(TEST_ADDRESS)
+          .website(TEST_WEBSITE)
+          .logoUrl(TEST_LOGO_URL)
+          .featuredImageUrl(TEST_FEATURED_IMAGE_URL)
+          .companyCategory(TEST_CATEGORY_COMPANY)
+          .auth(TEST_AUTH)
+          .build();
+
   public static Company getCompanyMocked() {
     return Company.builder()
         .id(TEST_ID)

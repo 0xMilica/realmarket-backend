@@ -103,23 +103,20 @@ public class CampaignControllerImpl implements CampaignController {
             campaignDocumentService.submitDocument(campaignDocumentDto, campaignName)));
   }
 
-  @DeleteMapping(value = "/{campaignName}/documents/{documentId}")
-  public ResponseEntity<Void> deleteCampaignDocument(
-      @PathVariable String campaignName, @PathVariable Long documentId) {
-    campaignDocumentService.deleteDocument(campaignName, documentId);
+  @DeleteMapping(value = "/mine/documents/{documentId}")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<Void> deleteCampaignDocument(@PathVariable Long documentId) {
+    campaignDocumentService.deleteDocument(documentId);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  @PatchMapping(value = "/{campaignName}/documents/{documentId}")
+  @PatchMapping(value = "/mine/documents/{documentId}")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity<CampaignDocumentResponseDto> patchCampaignDocument(
-      @PathVariable String campaignName,
-      @PathVariable Long documentId,
-      @RequestBody @Valid CampaignDocumentDto campaignDocumentDto) {
+      @PathVariable Long documentId, @RequestBody @Valid CampaignDocumentDto campaignDocumentDto) {
     return ResponseEntity.ok(
         new CampaignDocumentResponseDto(
-            campaignDocumentService.patchCampaignDocument(
-                campaignName, documentId, campaignDocumentDto)));
+            campaignDocumentService.patchCampaignDocument(documentId, campaignDocumentDto)));
   }
 
   @GetMapping(value = "/{campaignName}/documents")

@@ -22,9 +22,13 @@ public class CampaignDocumentResponseDto extends CampaignDocumentDto {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Instant uploadDate;
 
+  @ApiModelProperty(value = "Campaign name")
+  private String campaignName;
+
   public CampaignDocumentResponseDto(CampaignDocument campaignDocument) {
     super(campaignDocument);
     this.uploadDate = campaignDocument.getUploadDate();
     this.id = campaignDocument.getId();
+    this.campaignName = campaignDocument.getCampaign().getName();
   }
 }

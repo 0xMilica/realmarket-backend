@@ -87,16 +87,20 @@ INSERT INTO public.campaign_topic_type (id, name) VALUES (NEXTVAL('campaign_topi
 INSERT INTO public.campaign_topic_type (id, name) VALUES (NEXTVAL('campaign_topic_type_seq'), 'MARKET');
 INSERT INTO public.campaign_topic_type (id, name) VALUES (NEXTVAL('campaign_topic_type_seq'), 'TRACTION');
 
--- campaign document access level
-INSERT INTO public.campaign_document_access_level (id, name) VALUES (NEXTVAL('campaign_document_access_level_seq'), 'PLATFORM_ADMINS');
-INSERT INTO public.campaign_document_access_level (id, name) VALUES (NEXTVAL('campaign_document_access_level_seq'), 'INVESTORS');
-INSERT INTO public.campaign_document_access_level (id, name) VALUES (NEXTVAL('campaign_document_access_level_seq'), 'PUBLIC');
+-- document access level
+INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PLATFORM_ADMINS');
+INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'INVESTORS');
+INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PUBLIC');
+
+-- company document type
+INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_APR_PAPER');
+INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_BUSINESS_PLAN');
+INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_PITCH_DECK');
+INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_BANK');
 
 -- campaign document type
-INSERT INTO public.campaign_document_type (id, name) VALUES (NEXTVAL('campaign_document_type_seq'), 'DOCTYPE_APR_PAPER');
-INSERT INTO public.campaign_document_type (id, name) VALUES (NEXTVAL('campaign_document_type_seq'), 'DOCTYPE_BUSINESS_PLAN');
-INSERT INTO public.campaign_document_type (id, name) VALUES (NEXTVAL('campaign_document_type_seq'), 'DOCTYPE_PITCH_DECK');
-INSERT INTO public.campaign_document_type (id, name) VALUES (NEXTVAL('campaign_document_type_seq'), 'DOCTYPE_DUE_DILIGENCE_OTHER');
+INSERT INTO public.campaign_document_type (id, name) VALUES (NEXTVAL('campaign_document_type_seq'), 'DOCTYPE_DUE_DILIGENCE');
+INSERT INTO public.campaign_document_type (id, name) VALUES (NEXTVAL('campaign_document_type_seq'), 'DOCTYPE_LEGAL');
 
 -- person
 INSERT INTO public.person (id, address, city, country_for_taxation, country_of_residence, email, first_name, last_name, phone_number, profile_picture_url) VALUES (NEXTVAL('person_seq'), 'Modene', 'Novi Sad', null, 'BB', 'marina.nenic@realmarket.io', 'Marina', 'Nenic', null, null);

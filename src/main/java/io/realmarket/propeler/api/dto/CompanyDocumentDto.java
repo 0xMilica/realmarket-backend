@@ -1,7 +1,7 @@
 package io.realmarket.propeler.api.dto;
 
-import io.realmarket.propeler.model.CampaignDocument;
-import io.realmarket.propeler.model.enums.ECampaignDocumentType;
+import io.realmarket.propeler.model.CompanyDocument;
+import io.realmarket.propeler.model.enums.ECompanyDocumentType;
 import io.realmarket.propeler.model.enums.EDocumentAccessLevel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@ApiModel(value = "CampaignDocumentDto")
+@ApiModel(value = "CompanyDocumentDto")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CampaignDocumentDto {
+public class CompanyDocumentDto {
 
-  @ApiModelProperty(value = "Campaign document's title")
+  @ApiModelProperty(value = "Company document's title")
   @NotBlank
   private String title;
 
@@ -30,16 +30,16 @@ public class CampaignDocumentDto {
 
   @ApiModelProperty(value = "Campaign document's type")
   @NotNull
-  private ECampaignDocumentType type;
+  private ECompanyDocumentType type;
 
   @ApiModelProperty(value = "Campaign document's URL")
   @NotBlank
   private String url;
 
-  public CampaignDocumentDto(CampaignDocument campaignDocument) {
-    this.title = campaignDocument.getTitle();
-    this.accessLevel = campaignDocument.getAccessLevel().getName();
-    this.type = campaignDocument.getType().getName();
-    this.url = campaignDocument.getUrl();
+  public CompanyDocumentDto(CompanyDocument companyDocument) {
+    this.title = companyDocument.getTitle();
+    this.accessLevel = companyDocument.getAccessLevel().getName();
+    this.type = companyDocument.getType().getName();
+    this.url = companyDocument.getUrl();
   }
 }

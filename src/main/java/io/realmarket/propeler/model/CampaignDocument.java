@@ -29,7 +29,7 @@ public class CampaignDocument {
       name = "accessLevelId",
       foreignKey = @ForeignKey(name = "campaign_document_fk_on_access_level"))
   @ManyToOne
-  private CampaignDocumentAccessLevel accessLevel;
+  private DocumentAccessLevel accessLevel;
 
   @JoinColumn(name = "typeId", foreignKey = @ForeignKey(name = "campaign_document_fk_on_type"))
   @ManyToOne

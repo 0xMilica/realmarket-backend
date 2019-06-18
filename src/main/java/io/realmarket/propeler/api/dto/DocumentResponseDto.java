@@ -1,6 +1,7 @@
 package io.realmarket.propeler.api.dto;
 
 import io.realmarket.propeler.model.CampaignDocument;
+import io.realmarket.propeler.model.CompanyDocument;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -23,9 +24,6 @@ public class DocumentResponseDto {
   @ApiModelProperty(value = "Document's title")
   private String title;
 
-  @ApiModelProperty(value = "Type of document")
-  private String type;
-
   @ApiModelProperty(value = "Kind of document")
   private String kind;
 
@@ -44,11 +42,19 @@ public class DocumentResponseDto {
   public DocumentResponseDto(CampaignDocument campaignDocument) {
     this.id = campaignDocument.getId();
     this.title = campaignDocument.getTitle();
-    this.type = "campaign";
     this.kind = campaignDocument.getType().getName().name();
     this.accessLevel = campaignDocument.getAccessLevel().getName().name();
     this.url = campaignDocument.getUrl();
     this.uploadDate = campaignDocument.getUploadDate();
     this.campaignName = campaignDocument.getCampaign().getName();
+  }
+
+  public DocumentResponseDto(CompanyDocument companyDocument) {
+    this.id = companyDocument.getId();
+    this.title = companyDocument.getTitle();
+    this.kind = companyDocument.getType().getName().name();
+    this.accessLevel = companyDocument.getAccessLevel().getName().name();
+    this.url = companyDocument.getUrl();
+    this.uploadDate = companyDocument.getUploadDate();
   }
 }

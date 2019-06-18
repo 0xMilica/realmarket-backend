@@ -18,6 +18,8 @@ public interface CompanyService {
 
   Company findMyCompany();
 
+  void throwIfNoAccess(Company company);
+
   void throwIfNotOwnerOrAdmin(Company company, Auth auth);
 
   void uploadLogo(Long companyId, MultipartFile logo);

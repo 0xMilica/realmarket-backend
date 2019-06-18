@@ -158,7 +158,7 @@ public interface CampaignController {
     @ApiResponse(code = 200, message = "Successfully deleted campaign document."),
     @ApiResponse(code = 404, message = "Campaign document does not exist.")
   })
-  ResponseEntity deleteCampaignDocument(String campaignName, Long documentId);
+  ResponseEntity deleteCampaignDocument(Long documentId);
 
   @ApiOperation(
       value = "Patch campaign document",
@@ -170,7 +170,7 @@ public interface CampaignController {
     @ApiResponse(code = 400, message = "Invalid request.")
   })
   ResponseEntity<CampaignDocumentResponseDto> patchCampaignDocument(
-      String campaignName, Long documentId, CampaignDocumentDto campaignDocumentDto);
+      Long documentId, CampaignDocumentDto campaignDocumentDto);
 
   @ApiOperation(
       value = "Get all campaign documents groped by document type.",

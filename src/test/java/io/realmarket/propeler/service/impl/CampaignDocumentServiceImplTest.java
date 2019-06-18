@@ -2,18 +2,22 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.CampaignDocumentDto;
 import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
+import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignDocument;
+import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.repository.CampaignDocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.CampaignDocumentRepository;
 import io.realmarket.propeler.repository.CampaignDocumentTypeRepository;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
+import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.CampaignDocumentUtils;
 import io.realmarket.propeler.util.CampaignUtils;
+import io.realmarket.propeler.util.CompanyUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +26,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +39,7 @@ import java.util.Optional;
 import static io.realmarket.propeler.util.AuthUtils.TEST_USER_AUTH2;
 import static io.realmarket.propeler.util.AuthUtils.mockSecurityContext;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -42,6 +51,7 @@ public class CampaignDocumentServiceImplTest {
   @Mock private CampaignDocumentAccessLevelRepository campaignDocumentAccessLevelRepository;
   @Mock private CampaignDocumentTypeRepository campaignDocumentTypeRepository;
   @Mock private CampaignService campaignService;
+  @Mock private CompanyService companyService;
   @Mock private CloudObjectStorageService cloudObjectStorageService;
   @Mock private ModelMapperBlankString modelMapperBlankString;
 
@@ -166,8 +176,7 @@ public class CampaignDocumentServiceImplTest {
     when(campaignDocumentRepository.findById(CampaignDocumentUtils.TEST_ID))
         .thenReturn(Optional.of(campaignDocumentMocked));
 
-    campaignDocumentService.deleteDocument(
-        CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID);
+    campaignDocumentService.deleteDocument(CampaignDocumentUtils.TEST_ID);
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -176,8 +185,7 @@ public class CampaignDocumentServiceImplTest {
             CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenThrow(EntityNotFoundException.class);
 
-    campaignDocumentService.deleteDocument(
-        CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID);
+    campaignDocumentService.deleteDocument(CampaignDocumentUtils.TEST_ID);
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -193,8 +201,7 @@ public class CampaignDocumentServiceImplTest {
         .when(campaignService)
         .throwIfNotEditable(CampaignUtils.TEST_ACTIVE_CAMPAIGN);
 
-    campaignDocumentService.deleteDocument(
-        CampaignUtils.TEST_ACTIVE_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID);
+    campaignDocumentService.deleteDocument(CampaignDocumentUtils.TEST_ID);
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -205,8 +212,7 @@ public class CampaignDocumentServiceImplTest {
 
     mockSecurityContext(TEST_USER_AUTH2);
 
-    campaignDocumentService.deleteDocument(
-        CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID);
+    campaignDocumentService.deleteDocument(CampaignDocumentUtils.TEST_ID);
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -217,8 +223,7 @@ public class CampaignDocumentServiceImplTest {
     when(campaignDocumentRepository.findById(CampaignDocumentUtils.TEST_ID))
         .thenThrow(EntityNotFoundException.class);
 
-    campaignDocumentService.deleteDocument(
-        CampaignUtils.TEST_URL_FRIENDLY_NAME, CampaignDocumentUtils.TEST_ID);
+    campaignDocumentService.deleteDocument(CampaignDocumentUtils.TEST_ID);
   }
 
   @Test
@@ -289,9 +294,7 @@ public class CampaignDocumentServiceImplTest {
 
     CampaignDocument retVal =
         campaignDocumentService.patchCampaignDocument(
-            CampaignUtils.TEST_URL_FRIENDLY_NAME,
-            CampaignDocumentUtils.TEST_ID,
-            campaignDocumentDtoMocked);
+            CampaignDocumentUtils.TEST_ID, campaignDocumentDtoMocked);
 
     assertEquals(campaignDocumentMocked, retVal);
   }
@@ -302,9 +305,7 @@ public class CampaignDocumentServiceImplTest {
         CampaignDocumentUtils.getCampaignDocumentDtoMocked2();
 
     campaignDocumentService.patchCampaignDocument(
-        CampaignUtils.TEST_URL_FRIENDLY_NAME,
-        CampaignDocumentUtils.TEST_ID,
-        campaignDocumentDtoMocked);
+        CampaignDocumentUtils.TEST_ID, campaignDocumentDtoMocked);
   }
 
   @Test(expected = BadRequestException.class)
@@ -317,8 +318,36 @@ public class CampaignDocumentServiceImplTest {
         .thenReturn(Optional.of(campaignDocumentMocked));
 
     campaignDocumentService.patchCampaignDocument(
-        CampaignUtils.TEST_URL_FRIENDLY_NAME,
-        CampaignDocumentUtils.TEST_ID,
-        campaignDocumentDtoMocked);
+        CampaignDocumentUtils.TEST_ID, campaignDocumentDtoMocked);
+  }
+
+  @Test
+  public void getUserDocuments_Should_ReturnListOfDocuments() {
+    Company companyMocked = CompanyUtils.getCompanyMocked();
+    Campaign campaignMocked = CampaignUtils.getCampaignMocked();
+
+    when(companyService.findByAuthIdOrThrowException(AuthUtils.TEST_AUTH_ID))
+        .thenReturn(companyMocked);
+    when(campaignService.findAllByCompany(companyMocked)).thenReturn(Arrays.asList(campaignMocked));
+
+    assertNotNull(campaignDocumentService.getUserCampaignDocuments(AuthUtils.TEST_AUTH_ID));
+  }
+
+  @Test
+  public void getPageableUserDocuments_Should_ReturnListOfDocuments() {
+    Company companyMocked = CompanyUtils.getCompanyMocked();
+    Campaign campaignMocked = CampaignUtils.getCampaignMocked();
+    Pageable pageable = Mockito.mock(Pageable.class);
+    CampaignDocument campaignDocumentMocked = CampaignDocumentUtils.getCampaignDocumentMocked2();
+    Page<CampaignDocument> page = new PageImpl<>(Arrays.asList(campaignDocumentMocked));
+
+    when(companyService.findByAuthIdOrThrowException(AuthUtils.TEST_AUTH_ID))
+        .thenReturn(companyMocked);
+    when(campaignService.findAllByCompany(companyMocked)).thenReturn(Arrays.asList(campaignMocked));
+    when(campaignDocumentRepository.findAllByCampaignIn(Arrays.asList(campaignMocked), pageable))
+        .thenReturn(page);
+
+    assertNotNull(
+        campaignDocumentService.getPageableUserCampaignDocuments(AuthUtils.TEST_AUTH_ID, pageable));
   }
 }

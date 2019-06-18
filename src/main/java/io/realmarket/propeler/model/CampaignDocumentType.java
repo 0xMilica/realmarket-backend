@@ -20,10 +20,10 @@ import javax.persistence.*;
     })
 public class CampaignDocumentType {
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CAMPAIGN_DOCUMENT_SEQ")
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CAMPAIGN_DOCUMENT_TYPE_SEQ")
   @SequenceGenerator(
-      name = "CAMPAIGN_DOCUMENT_SEQ",
-      sequenceName = "CAMPAIGN_DOCUMENT_SEQ",
+      name = "CAMPAIGN_DOCUMENT_TYPE_SEQ",
+      sequenceName = "CAMPAIGN_DOCUMENT_TYPE_SEQ",
       allocationSize = 1)
   private Long id;
 

@@ -1,0 +1,22 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="ovlajic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence document_access_level_seq;
+            create table if not exists document_access_level
+            (
+            id bigint not null
+            constraint document_access_level_pkey
+            primary key,
+            name varchar(255)
+            constraint document_access_level_uk_on_name
+            unique
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

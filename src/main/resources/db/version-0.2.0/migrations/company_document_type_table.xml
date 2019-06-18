@@ -7,14 +7,14 @@
                 endDelimiter=";"
                 splitStatements="true"
                 stripComments="true">
-            create sequence campaign_document_access_level_seq;
-            create table if not exists campaign_document_access_level
+            create sequence company_document_type_seq;
+            create table if not exists company_document_type
             (
             id bigint not null
-            constraint campaign_document_access_level_pkey
+            constraint company_document_type_pkey
             primary key,
             name varchar(255)
-            constraint campaign_document_access_level_uk_on_name
+            constraint company_document_type_uk_on_name
             unique
             );
         </sql>

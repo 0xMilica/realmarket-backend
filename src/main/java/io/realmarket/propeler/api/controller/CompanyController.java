@@ -1,8 +1,6 @@
 package io.realmarket.propeler.api.controller;
 
-import io.realmarket.propeler.api.dto.CompanyDto;
-import io.realmarket.propeler.api.dto.CompanyPatchDto;
-import io.realmarket.propeler.api.dto.FileDto;
+import io.realmarket.propeler.api.dto.*;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -134,4 +132,73 @@ public interface CompanyController {
     @ApiResponse(code = 500, message = "Internal server error.")
   })
   ResponseEntity deleteFeaturedImage(Long companyId);
+
+  @ApiOperation(
+      value = "Submit company document",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "companyDocumentDto",
+        value = "Dto that contains information about submitted document",
+        required = true,
+        dataType = "CampaignDocumentDto",
+        paramType = "body"),
+    @ApiImplicitParam(
+        name = "companyId",
+        value = "Company id",
+        required = true,
+        dataType = "Long",
+        paramType = "path")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully saved company document."),
+    @ApiResponse(
+        code = 400,
+        message =
+            "Campaign documents not saved. Check request body -  probably missing document type in request, or title and user id are blank.")
+  })
+  ResponseEntity<CompanyDocumentResponseDto> submitCompanyDocument(
+      CompanyDocumentDto companyDocumentDto, Long companyId);
+
+  @ApiOperation(
+      value = "Patch company document",
+      httpMethod = "PATCH",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "documentId",
+        value = "Company document id",
+        required = true,
+        dataType = "Long",
+        paramType = "path"),
+    @ApiImplicitParam(
+        name = "companyDocumentDto",
+        value = "Dto that contains information about patched document",
+        required = true,
+        dataType = "CompanyDocumentDto",
+        paramType = "body")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Company document successfully modified."),
+    @ApiResponse(code = 400, message = "Invalid request.")
+  })
+  ResponseEntity<CompanyDocumentResponseDto> patchCompanyDocument(
+      Long documentId, CompanyDocumentDto companyDocumentDto);
+
+  @ApiOperation(value = "Delete company document", httpMethod = "DELETE")
+  @ApiImplicitParams(
+      @ApiImplicitParam(
+          name = "documentId",
+          value = "Company document id",
+          required = true,
+          dataType = "Long",
+          paramType = "path"))
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully deleted company document."),
+    @ApiResponse(code = 404, message = "Campaign document does not exist.")
+  })
+  ResponseEntity deleteCompanyDocument(Long documentId);
 }

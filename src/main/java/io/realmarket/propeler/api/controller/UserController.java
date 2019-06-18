@@ -2,6 +2,8 @@ package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.*;
 import io.swagger.annotations.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -242,14 +244,75 @@ public interface UserController {
   ResponseEntity verifySecretChange(Long userId, VerifySecretChangeDto verifySecretChangeDto);
 
   @ApiOperation(
-      value = "Get documents submitted by user",
+      value = "Get campaign documents submitted by user",
       httpMethod = "GET",
       produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams(
+      @ApiImplicitParam(
+          name = "userId",
+          dataType = "Long",
+          value = "User id",
+          paramType = "path",
+          required = true))
   @ApiResponses({
-    @ApiResponse(code = 200, message = "User documents successfully retrieved."),
+    @ApiResponse(code = 200, message = "Campaign documents successfully retrieved."),
     @ApiResponse(code = 400, message = "Invalid request."),
     @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve campaign documents."),
     @ApiResponse(code = 404, message = "User not found.")
   })
-  ResponseEntity<List<DocumentResponseDto>> getDocuments(Long userId);
+  ResponseEntity<List<CampaignDocumentResponseDto>> getCampaignDocuments(Long userId);
+
+  @ApiOperation(
+      value = "Get pageable campaign documents submitted by user",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "userId",
+        dataType = "Long",
+        value = "User id",
+        paramType = "path",
+        required = true),
+    @ApiImplicitParam(
+        name = "page",
+        value = "Number of page to be returned",
+        defaultValue = "20",
+        required = false,
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        required = false,
+        dataType = "Integer",
+        paramType = "query")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaign documents successfully retrieved."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve campaign documents."),
+    @ApiResponse(code = 404, message = "User not found.")
+  })
+  ResponseEntity<Page<CampaignDocumentResponseDto>> getPageableCampaignDocuments(
+      Long userId, Pageable pageable);
+
+  @ApiOperation(
+      value = "Get company documents submitted by user",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams(
+      @ApiImplicitParam(
+          name = "userId",
+          dataType = "Long",
+          value = "User id",
+          paramType = "path",
+          required = true))
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Company documents successfully retrieved."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve company documents."),
+    @ApiResponse(code = 404, message = "User not found.")
+  })
+  ResponseEntity<List<CompanyDocumentResponseDto>> getCompanyDocuments(Long userId);
 }
