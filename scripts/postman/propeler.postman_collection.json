@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a0bee230-8ee1-48bd-861c-e9a10f497258",
+		"_postman_id": "43fb189a-264d-46bd-8f4f-ceacf4c817d0",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1615,6 +1615,41 @@
 					"response": []
 				},
 				{
+					"name": "campaigns/mine",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/mine",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"mine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/campaigns/public?page=1&size=3",
 					"request": {
 						"method": "GET",
@@ -1775,6 +1810,75 @@
 								"campaigns",
 								"{{campaign_fname}}",
 								"convertPercentage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/{{campaign_fname}}/invest",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"amount\":\"50000.2698741\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/invest",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}",
+								"invest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableEquity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableEquity?",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}",
+								"availableEquity"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -1985,7 +2089,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"address\": \"string\",\r\n  \"city\": \"string\",\r\n  \"countryForTaxation\": \"RS\",\r\n  \"countryOfResidence\": \"BB\",\r\n  \"email\": \"ognjen.vlajic@realmarket.io\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"password\": \"testPASS123\",\r\n  \"phoneNumber\": \"strwdding\",\r\n  \"userRole\": \"ROLE_ENTREPRENEUR\",\r\n  \"username\": \"user\"\r\n}"
+							"raw": "{\r\n  \"address\": \"string\",\r\n  \"city\": \"string\",\r\n  \"countryForTaxation\": \"RS\",\r\n  \"countryOfResidence\": \"RS\",\r\n  \"email\": \"dragan.rakita@realmarket.io\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"password\": \"testPASS123\",\r\n  \"phoneNumber\": \"strwdding\",\r\n  \"userRole\": \"ROLE_ENTREPRENEUR\",\r\n  \"username\": \"user\"\r\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/auth/register",
@@ -2967,6 +3071,37 @@
 									"key": "size",
 									"value": "1"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "investments",
+			"item": [
+				{
+					"name": "{{server_ip}}/api/investments/{{investID}}",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/investments/{{investID}}/revoke",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"investments",
+								"{{investID}}",
+								"revoke"
 							]
 						}
 					},
