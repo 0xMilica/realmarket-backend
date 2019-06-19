@@ -96,6 +96,9 @@ app:
       attempts: 5
       time-banned: 240
 
+  investment:
+    weekInMillis: 604800000
+
 google:
   recaptcha:
     secret: ${GOOGLE_RECAPTCHA_SECRET}

@@ -45,4 +45,7 @@ public class CampaignInvestment {
   @Builder.Default
   @Column(name = "creation_date")
   private Instant creationDate = Instant.now();
+
+  @Column(name = "payment_date")
+  private Instant paymentDate;
 }

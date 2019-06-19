@@ -97,4 +97,10 @@ public interface ExceptionMessages {
   String NOT_CAMPAIGN_INVESTOR = "User is not investor in this campaign!";
 
   String CAMPAIGN_IS_NOT_ACTIVE = "Campaign is not active!";
+
+  String INVESTMENT_CAN_NOT_BE_REVOKED = "Investment can not be revoked at this stage!";
+
+  String INVESTMENT_CAN_BE_REVOKED = "Investment can be revoked at this stage!";
+
+  String PAYMENT_NOT_PROCESSED = "Payment not processed for this investment!";
 }

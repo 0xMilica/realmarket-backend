@@ -67,6 +67,9 @@ app:
       time-banned: 5
       attempts: 5
 
+  investment:
+    weekInMillis: 604800000
+
 cos:
   public_prefix: local_public
   file_prefix:

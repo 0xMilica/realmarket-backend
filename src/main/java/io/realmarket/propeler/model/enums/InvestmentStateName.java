@@ -1,10 +1,11 @@
 package io.realmarket.propeler.model.enums;
 
 public enum InvestmentStateName {
-  PENDING("PENDING"),
+  INITIAL("INITIAL"),
+  PAID("PAID"),
+  REVOKED("REVOKED"),
   APPROVED("APPROVED"),
-  DECLINED("DECLINED"),
-  CANCELLED("CANCELLED");
+  REJECTED("REJECTED");
 
   private final String text;
 

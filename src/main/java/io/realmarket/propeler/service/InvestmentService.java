@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 public interface InvestmentService {
   CampaignInvestment invest(BigDecimal amountOfMoney, String campaignUrlFriendlyName);
 
-  void cancelInvestment(Long campaignInvestmentId);
+  void revokeInvestment(Long campaignInvestmentId);
 
   void approveInvestment(Long campaignInvestmentId);
 
-  void declineInvestment(Long campaignInvestmentId);
+  void rejectInvestment(Long campaignInvestmentId);
 }
