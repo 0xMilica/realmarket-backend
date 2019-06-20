@@ -71,7 +71,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     campaignDocument.setUploadDate(Instant.now());
 
     if (!cloudObjectStorageService.doesFileExist(campaignDocument.getUrl())) {
-      throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
+      throw new EntityNotFoundException(ExceptionMessages.FILE_DOES_NOT_EXIST);
     }
 
     return campaignDocumentRepository.save(campaignDocument);
@@ -155,7 +155,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
         convertDocumentDtoToDocument(campaignDocumentDto, campaignDocument.getCampaign());
 
     if (!cloudObjectStorageService.doesFileExist(campaignDocumentPatch.getUrl())) {
-      throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
+      throw new EntityNotFoundException(ExceptionMessages.FILE_DOES_NOT_EXIST);
     }
 
     modelMapperBlankString.map(campaignDocumentPatch, campaignDocument);

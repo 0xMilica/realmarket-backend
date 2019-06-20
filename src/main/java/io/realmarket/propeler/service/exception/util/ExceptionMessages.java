@@ -2,107 +2,144 @@ package io.realmarket.propeler.service.exception.util;
 
 public interface ExceptionMessages {
 
-  String INVALID_CREDENTIALS_MESSAGE = "Invalid credentials provided";
+  // Person with the provided username already exists.
+  String USERNAME_ALREADY_EXISTS = "REG_001";
 
-  String USERNAME_ALREADY_EXISTS = "Person with the provided username already exists!";
+  // Email Sending exception:
+  String EMAIL_SENDING_EXCEPTION = "REG_002";
 
-  String USERNAME_DOES_NOT_EXISTS = "Person with provided username does not exist.";
+  // Invalid credentials provided.
+  String INVALID_CREDENTIALS_MESSAGE = "LOG_001";
 
-  String EMAIL_DOES_NOT_EXIST = "Person with provided e-mail address does not exist!";
+  // Person with provided username does not exist.
+  String USERNAME_DOES_NOT_EXIST = "LOG_002";
 
-  String PERSON_ID_DOES_NOT_EXISTS = "Person with provided identifier does not exist.";
+  // Person with provided e-mail address does not exist.
+  String EMAIL_DOES_NOT_EXIST = "LOG_003";
 
-  String INVALID_REQUEST = "Invalid request!";
+  // Person with provided identifier does not exist.
+  String PERSON_ID_DOES_NOT_EXIST = "LOG_004";
 
-  String EMAIL_SENDING_EXCEPTION = "Email Sending exception: ";
+  // Invalid token provided.
+  String INVALID_TOKEN_PROVIDED = "LOG_005";
 
-  String INVALID_TOKEN_PROVIDED = "Invalid token provided";
+  // Invalid token type.
+  String INVALID_TOKEN_TYPE = "LOG_006";
 
-  String INVALID_TOKEN_TYPE = "Invalid token type";
+  // Invalid TOTP code provided.
+  String INVALID_TOTP_CODE_PROVIDED = "LOG_007";
 
-  String INVALID_TOTP_CODE_PROVIDED = "Invalid TOTP code provided";
+  // Captcha did not validate successfully.
+  String INVALID_CAPTCHA = "LOG_008";
 
-  String PROFILE_PICTURE_DOES_NOT_EXIST = "Profile picture does not exist!";
+  // Maximum number of failed attempts exceeded, try again in half an hour.
+  String BLOCKED_CLIENT = "LOG_009";
 
-  String IMAGE_DOES_NOT_EXIST = "Image does not exist!";
+  // Authorization action not found.
+  String AUTHORIZATION_ACTION_NOT_FOUND = "LOG_010";
 
-  String FORBIDDEN_OPERATION_EXCEPTION = "Not allowed operation";
+  // User is not the owner of a company.
+  String NOT_COMPANY_OWNER = "COM_001";
 
-  String AUTHORIZATION_ACTION_NOT_FOUND = "Authorization action not found";
+  // Company already exists.
+  String COMPANY_ALREADY_EXISTS = "COM_002";
 
-  String CAMPAIGN_NOT_FOUND = "Campaign with the provided name not found!";
+  // Company with provided id does not exist.
+  String COMPANY_DOES_NOT_EXIST = "COM_003";
 
-  String CAMPAIGN_STATE_NOT_FOUND = "Campaign state with the provided name not found!";
+  // Entrepreneur does not have a company.
+  String ENTREPRENEUR_MISSING_COMPANY = "COM_004";
 
-  String REQUEST_STATE_NOT_FOUND = "Request state with the provided name not found!";
+  // Shareholder with the provided id not found.
+  String SHAREHOLDER_NOT_FOUND = "COM_005";
 
-  String INVESTMENT_STATE_NOT_FOUND = "Investment state with the provided name not found!";
+  // Campaign with the provided name not found.
+  String CAMPAIGN_NOT_FOUND = "CAM_001";
 
-  String SHAREHOLDER_NOT_FOUND = "Shareholder with the provided id not found!";
+  // Campaign state with the provided name not found.
+  String CAMPAIGN_STATE_NOT_FOUND = "CAM_002";
 
-  String USER_IS_NOT_OWNER_OF_CAMPAIGN = "Caller is not owner of campaign.";
+  // User is not owner of campaign.
+  String USER_IS_NOT_OWNER_OF_CAMPAIGN = "CAM_003";
 
-  String USER_IS_NOT_OWNER_OF_COMPANY = "Caller is not owner of company.";
+  // Campaign team member with the provided id not found.
+  String TEAM_MEMBER_NOT_FOUND = "CAM_004";
 
-  String TEAM_MEMBER_NOT_FOUND = "Campaign teem member with the provided id not found!";
+  // Campaign with the provided name already exists.
+  String CAMPAIGN_NAME_ALREADY_EXISTS = "CAM_005";
 
-  String CAMPAIGN_NAME_ALREADY_EXISTS = "Campaign with the provided name already exists!";
+  // Campaign topic type with the provided name does not exist.
+  String CAMPAIGN_TOPIC_TYPE_DOES_NOT_EXIST = "CAM_006";
 
-  String INVALID_CAPTCHA = "Captcha did not validate successfully!";
+  // Active campaign already exists for given company.
+  String ACTIVE_CAMPAIGN_EXISTS = "CAM_007";
 
-  String BLOCKED_CLIENT = "Maximum number of failed attempts exceeded, try again in half an hour";
+  // Campaign topic for the provided campaign name and campaign topic type not found.
+  String CAMPAIGN_TOPIC_DOES_NOT_EXIST = "CAM_008";
 
-  String NOT_COMPANY_OWNER = "User is not an owner of a company!";
+  // Campaign can not be edited at this stage.
+  String CAMPAIGN_NOT_EDITABLE = "CAM_009";
 
-  String COMPANY_ALREADY_EXIST = "Company already exists!";
+  // Campaign is not active.
+  String CAMPAIGN_IS_NOT_ACTIVE = "CAM_010";
 
-  String COMPANY_DOES_NOT_EXIST = "Company with provided id does not exist.";
+  // No active campaign.
+  String NO_ACTIVE_CAMPAIGN = "CAM_011";
 
-  String ENTREPRENEUR_MISSING_COMPANY = "Entrepreneur does not have a company.";
+  // User is not investor in this campaign.
+  String NOT_CAMPAIGN_INVESTOR = "INV_001";
 
-  String FILE_NOT_EXISTS = "File with provided URL does not exist!";
+  // Investment state with the provided name not found.
+  String INVESTMENT_STATE_NOT_FOUND = "INV_002";
 
-  String NO_ACTIVE_CAMPAIGN = "No active campaign";
+  // Campaign investment must be greater than platform minimum.
+  String INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN = "INV_003";
 
-  String CAMPAIGN_TOPIC_TYPE_NOT_EXISTS =
-      "Campaign topic type with the provided name does not exist!";
+  // Amount of money must be greater than campaign minimum investment.
+  String INVESTMENT_MUST_BE_GREATER_THAN_CAMPAIGN_MIN_INVESTMENT = "INV_004";
 
-  String ACTIVE_CAMPAIGN_EXISTS = "Active campaign already exists for given company";
+  // Amount of money can not be greater than maximum investment.
+  String INVESTMENT_CAN_NOT_BE_GREATER_THAN_MAX_INVESTMENT = "INV_005";
 
-  String CAMPAIGN_TOPIC_NOT_EXISTS =
-      "Campaign topic for the provided campaign name and campaign topic type not found!";
+  // Percentage of equity can not be greater than campaign maximum equity offered.
+  String INVESTMENT_CAN_NOT_BE_GREATER_THAN_CAMPAIGN_MAXIMUM_EQUITY = "INV_006";
 
-  String PLATFORM_SETTINGS_NOT_FOUND = "Platform settings couldn't be found!";
+  // Negative value provided.
+  String NEGATIVE_VALUE_EXCEPTION = "INV_007";
 
-  String INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN =
-      "Campaign investment must be greater than platform minimum!";
+  // Investment can be revoked at this stage.
+  String INVESTMENT_CAN_BE_REVOKED = "INV_008";
 
-  String CAMPAIGN_NOT_EDITABLE = "Campaign can not be edited at this stage";
+  // Investment can not be revoked at this stage.
+  String INVESTMENT_CAN_NOT_BE_REVOKED = "INV_009";
 
-  String INVALID_COUNTRY_CODE = "Invalid country code";
+  // Payment not processed for this investment.
+  String PAYMENT_NOT_PROCESSED = "PAY_001";
 
-  String INVESTMENT_MUST_BE_GREATER_THAN_CAMPAIGN_MIN_INVESTMENT =
-      "Amount of money must be greater than campaign minimum investment.";
+  // Invalid request.
+  String INVALID_REQUEST = "REQ_001";
 
-  String INVESTMENT_CAN_NOT_BE_GREATER_THAN_MAX_INVESTMENT =
-      "Amount of money can not be greater than maximum investment.";
+  // Request state with the provided name not found.
+  String REQUEST_STATE_NOT_FOUND = "REQ_002";
 
-  String INVESTMENT_CAN_NOT_BE_GREATER_THAN_CAMPAIGN_MAXIMUM_EQUITY =
-      "Percentage of equity can not be greater than campaign maximum equity offered.";
+  // Profile picture does not exist.
+  String PROFILE_PICTURE_DOES_NOT_EXIST = "IMG_001";
 
-  String NEGATIVE_VALUE_EXCEPTION = "Negative value provided.";
+  // Image does not exist.
+  String IMAGE_DOES_NOT_EXIST = "IMG_002";
 
-  String ROLE_NOT_FOUND = "Role with the provided name not found!";
+  // Not allowed operation.
+  String FORBIDDEN_OPERATION_EXCEPTION = "FRB_001";
 
-  String NOT_CAMPAIGN_INVESTOR = "User is not investor in this campaign!";
+  // Platform settings can not be found.
+  String PLATFORM_SETTINGS_NOT_FOUND = "PTF_001";
 
-  String CAMPAIGN_IS_NOT_ACTIVE = "Campaign is not active!";
+  // Invalid country code.
+  String INVALID_COUNTRY_CODE = "CTR_001";
 
-  String NO_HASH_ALGORITHM = "No SHA Algorithm";
-  
-  String INVESTMENT_CAN_NOT_BE_REVOKED = "Investment can not be revoked at this stage!";
+  // File with provided URL does not exist.
+  String FILE_DOES_NOT_EXIST = "FIL_001";
 
-  String INVESTMENT_CAN_BE_REVOKED = "Investment can be revoked at this stage!";
-
-  String PAYMENT_NOT_PROCESSED = "Payment not processed for this investment!";
+  // No SHA Algorithm.
+  String NO_HASH_ALGORITHM = "SHA_001";
 }

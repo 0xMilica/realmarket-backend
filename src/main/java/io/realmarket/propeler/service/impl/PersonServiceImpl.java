@@ -53,8 +53,7 @@ public class PersonServiceImpl implements PersonService {
   public Person findByIdOrThrowException(Long id) {
     return personRepository
         .findById(id)
-        .orElseThrow(
-            () -> new EntityNotFoundException(ExceptionMessages.PERSON_ID_DOES_NOT_EXISTS));
+        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.PERSON_ID_DOES_NOT_EXIST));
   }
 
   public PersonDto getPerson(Long id) {

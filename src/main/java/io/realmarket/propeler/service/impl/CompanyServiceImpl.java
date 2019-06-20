@@ -57,13 +57,13 @@ public class CompanyServiceImpl implements CompanyService {
         .getAuth()
         .getId()
         .equals(company.getAuth().getId())) {
-      throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_COMPANY);
+      throw new ForbiddenOperationException(NOT_COMPANY_OWNER);
     }
   }
 
   public Company save(Company company) {
     if (companyRepository.existsCompanyByAuth(AuthenticationUtil.getAuthentication().getAuth())) {
-      throw new ForbiddenOperationException(COMPANY_ALREADY_EXIST);
+      throw new ForbiddenOperationException(COMPANY_ALREADY_EXISTS);
     }
     return companyRepository.save(company);
   }

@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_TOPIC_NOT_EXISTS;
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_TOPIC_TYPE_NOT_EXISTS;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_TOPIC_DOES_NOT_EXIST;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_TOPIC_TYPE_DOES_NOT_EXIST;
 
 @Service
 public class CampaignTopicServiceImpl implements CampaignTopicService {
@@ -62,7 +62,7 @@ public class CampaignTopicServiceImpl implements CampaignTopicService {
         campaignTopicTypeRepository
             .findByNameIgnoreCase(topicType)
             .orElseThrow(
-                () -> new CampaignTopicTypeNotExistException(CAMPAIGN_TOPIC_TYPE_NOT_EXISTS));
+                () -> new CampaignTopicTypeNotExistException(CAMPAIGN_TOPIC_TYPE_DOES_NOT_EXIST));
     final Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
     campaignService.throwIfNoAccess(campaign);
 
@@ -74,14 +74,14 @@ public class CampaignTopicServiceImpl implements CampaignTopicService {
   public CampaignTopicType findByTopicTypeOrThrowException(String topicType) {
     return campaignTopicTypeRepository
         .findByNameIgnoreCase(topicType)
-        .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_TOPIC_TYPE_NOT_EXISTS));
+        .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_TOPIC_TYPE_DOES_NOT_EXIST));
   }
 
   public CampaignTopic findByCampaignAndCampaignTopicTypeOrThrowException(
       Campaign campaign, CampaignTopicType campaignTopicType) {
     return campaignTopicRepository
         .findByCampaignAndCampaignTopicType(campaign, campaignTopicType)
-        .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_TOPIC_NOT_EXISTS));
+        .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_TOPIC_DOES_NOT_EXIST));
   }
 
   @Override

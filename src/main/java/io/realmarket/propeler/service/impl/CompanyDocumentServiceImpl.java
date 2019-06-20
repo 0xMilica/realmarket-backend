@@ -73,7 +73,7 @@ public class CompanyDocumentServiceImpl implements CompanyDocumentService {
     companyDocument.setUploadDate(Instant.now());
 
     if (!cloudObjectStorageService.doesFileExist(companyDocument.getUrl())) {
-      throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
+      throw new EntityNotFoundException(ExceptionMessages.FILE_DOES_NOT_EXIST);
     }
 
     return companyDocumentRepository.save(companyDocument);
@@ -90,7 +90,7 @@ public class CompanyDocumentServiceImpl implements CompanyDocumentService {
         convertDocumentDtoToDocument(companyDocumentDto, companyDocument.getCompany());
 
     if (!cloudObjectStorageService.doesFileExist(companyDocumentPatch.getUrl())) {
-      throw new EntityNotFoundException(ExceptionMessages.FILE_NOT_EXISTS);
+      throw new EntityNotFoundException(ExceptionMessages.FILE_DOES_NOT_EXIST);
     }
 
     modelMapperBlankString.map(companyDocumentPatch, companyDocument);

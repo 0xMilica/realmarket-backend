@@ -334,20 +334,19 @@ public class AuthServiceImpl implements AuthService {
   public Auth findByUsernameOrThrowException(String username) {
     return authRepository
         .findByUsername(username)
-        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXISTS));
+        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXIST));
   }
 
   public Auth findByUserIdrThrowException(Long userId) {
     return authRepository
         .findByPersonId(userId)
-        .orElseThrow(
-            () -> new EntityNotFoundException(ExceptionMessages.PERSON_ID_DOES_NOT_EXISTS));
+        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.PERSON_ID_DOES_NOT_EXIST));
   }
 
   public Auth findByIdOrThrowException(Long id) {
     return authRepository
         .findById(id)
-        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXISTS));
+        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.USERNAME_DOES_NOT_EXIST));
   }
 
   public List<Auth> findAllInvestors() {
