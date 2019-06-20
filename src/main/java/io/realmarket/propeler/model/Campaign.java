@@ -2,7 +2,9 @@ package io.realmarket.propeler.model;
 
 import com.google.common.base.MoreObjects;
 import io.realmarket.propeler.api.dto.CampaignDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -34,6 +36,7 @@ public class Campaign {
   private BigDecimal minInvestment;
   private String tagLine;
   private Instant activationDate;
+  private Instant modifiedDate;
 
   @Builder.Default
   @Column(name = "creation_date")

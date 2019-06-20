@@ -55,7 +55,7 @@ public interface CampaignController {
     @ApiResponse(code = 200, message = "Campaign successfully retrieved."),
     @ApiResponse(code = 404, message = "Campaign does not exists.")
   })
-  ResponseEntity<CampaignDto> getCampaign(String campaignName);
+  ResponseEntity<CampaignResponseDto> getCampaign(String campaignName);
 
   @ApiOperation(
       value = "Delete campaign",
@@ -193,7 +193,7 @@ public interface CampaignController {
     @ApiResponse(code = 200, message = "Successfully retrieved active campaign"),
     @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve campaign.")
   })
-  ResponseEntity<CampaignDto> getActiveCampaign();
+  ResponseEntity<CampaignResponseDto> getActiveCampaign();
 
   @ApiOperation(
       value = "Upload team member picture",
@@ -364,18 +364,38 @@ public interface CampaignController {
   ResponseEntity getAvailableEquity(String campaignName);
 
   @ApiOperation(
-          value = "Invest in campaign.",
-          httpMethod = "POST",
-          consumes = APPLICATION_JSON_VALUE)
+      value = "Invest in campaign.",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE)
   @ApiImplicitParam(
-          name = "campaignName",
-          value = "Campaign's name",
-          required = true,
-          dataType = "String")
+      name = "campaignName",
+      value = "Campaign's name",
+      required = true,
+      dataType = "String")
   @ApiResponses({
-          @ApiResponse(code = 200, message = "Investment successfully submitted."),
-          @ApiResponse(code = 404, message = "No campaign with given name."),
-          @ApiResponse(code = 400, message = "Too large investment or campaign is inactive."),
+    @ApiResponse(code = 200, message = "Investment successfully submitted."),
+    @ApiResponse(code = 404, message = "No campaign with given name."),
+    @ApiResponse(code = 400, message = "Too large investment or campaign is inactive."),
   })
   ResponseEntity investInCampaign(InvestmentDto amountOfMoney, String campaignName);
+
+  @ApiOperation(value = "Get user portfolio", httpMethod = "GET", produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "page",
+        value = "Number of page to be returned",
+        defaultValue = "20",
+        required = false,
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        required = false,
+        dataType = "Integer",
+        paramType = "query")
+  })
+  @ApiResponses(@ApiResponse(code = 200, message = "OK"))
+  ResponseEntity<Page<PortfolioCampaignResponseDto>> getPortfolio(Pageable pageable);
 }

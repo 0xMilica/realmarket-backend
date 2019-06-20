@@ -57,7 +57,7 @@ public class CampaignControllerImpl implements CampaignController {
   }
 
   @GetMapping(value = "/{campaignName}")
-  public ResponseEntity<CampaignDto> getCampaign(@PathVariable String campaignName) {
+  public ResponseEntity<CampaignResponseDto> getCampaign(@PathVariable String campaignName) {
     return ResponseEntity.ok(campaignService.getCampaignDtoByUrlFriendlyName(campaignName));
   }
 
@@ -130,9 +130,9 @@ public class CampaignControllerImpl implements CampaignController {
         campaignDocumentService.getAllCampaignDocumentDtoGropedByType(campaignName));
   }
 
-  @GetMapping(value = "/active")
+  @GetMapping(value = "/mine/active")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
-  public ResponseEntity<CampaignDto> getActiveCampaign() {
+  public ResponseEntity<CampaignResponseDto> getActiveCampaign() {
     return ResponseEntity.ok(campaignService.getActiveCampaignDto());
   }
 
@@ -169,7 +169,6 @@ public class CampaignControllerImpl implements CampaignController {
   public ResponseEntity<Page<CampaignResponseDto>> getPublicCampaigns(
       Pageable pageable,
       @RequestParam(value = "filter", required = false, defaultValue = "active") String filter) {
-    campaignService.getPublicCampaigns(pageable, filter);
     return ResponseEntity.ok(campaignService.getPublicCampaigns(pageable, filter));
   }
 
@@ -203,5 +202,12 @@ public class CampaignControllerImpl implements CampaignController {
       @RequestBody InvestmentDto amountOfMoney, @PathVariable String campaignName) {
     investmentService.invest(amountOfMoney.getAmount(), campaignName);
     return ResponseEntity.noContent().build();
+  }
+
+  @Override
+  @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
+  @GetMapping(value = "/mine/portfolio")
+  public ResponseEntity<Page<PortfolioCampaignResponseDto>> getPortfolio(Pageable pageable) {
+    return ResponseEntity.ok(investmentService.getPortfolio(pageable));
   }
 }

@@ -129,16 +129,16 @@ public class CampaignServiceImpl implements CampaignService {
         .orElseThrow(() -> new EntityNotFoundException(NO_ACTIVE_CAMPAIGN));
   }
 
-  public CampaignDto getActiveCampaignDto() {
+  public CampaignResponseDto getActiveCampaignDto() {
     Campaign campaign = getActiveCampaignForCompany();
-    CampaignDto campaignDto = new CampaignDto(campaign);
+    CampaignResponseDto campaignDto = new CampaignResponseDto(campaign);
     campaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
     return campaignDto;
   }
 
-  public CampaignDto getCampaignDtoByUrlFriendlyName(String name) {
+  public CampaignResponseDto getCampaignDtoByUrlFriendlyName(String name) {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(name);
-    CampaignDto campaignDto = new CampaignDto(campaign);
+    CampaignResponseDto campaignDto = new CampaignResponseDto(campaign);
     campaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
     return campaignDto;
   }
@@ -389,7 +389,11 @@ public class CampaignServiceImpl implements CampaignService {
 
     BigDecimal maxInvest =
         BigDecimal.valueOf(campaign.getFundingGoals())
-            .multiply(campaign.getMaxEquityOffered().divide(campaign.getMinEquityOffered(), MathContext.DECIMAL128));
+            .multiply(
+                campaign
+                    .getMaxEquityOffered()
+                    .divide(campaign.getMinEquityOffered(), MathContext.DECIMAL128));
+
     if (money.compareTo(campaign.getMinInvestment()) < 0) {
       throw new BadRequestException(INVESTMENT_MUST_BE_GREATER_THAN_CAMPAIGN_MIN_INVESTMENT);
     } else if (money.compareTo(maxInvest) > 0) {

@@ -1,5 +1,9 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.CampaignInvestmentResponseDto;
+import io.realmarket.propeler.api.dto.CampaignResponseDto;
+import io.realmarket.propeler.api.dto.PortfolioCampaignResponseDto;
+import io.realmarket.propeler.api.dto.TotalCampaignInvestmentsResponseDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignInvestment;
@@ -14,25 +18,31 @@ import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
 @Service
 public class InvestmentServiceImpl implements InvestmentService {
 
-  @Value("${app.investment.weekInMillis}")
-  private long weekInMillis;
-
   private final CampaignService campaignService;
   private final CampaignInvestmentRepository campaignInvestmentRepository;
   private final PaymentService paymentService;
   private final InvestmentStateService investmentStateService;
+
+  @Value("${app.investment.weekInMillis}")
+  private long weekInMillis;
 
   @Autowired
   public InvestmentServiceImpl(
@@ -44,6 +54,11 @@ public class InvestmentServiceImpl implements InvestmentService {
     this.campaignInvestmentRepository = campaignInvestmentRepository;
     this.paymentService = paymentService;
     this.investmentStateService = investmentStateService;
+  }
+
+  @Override
+  public List<CampaignInvestment> findAllByCampaignAndAuth(Campaign campaign, Auth auth) {
+    return campaignInvestmentRepository.findAllByCampaignAndAuth(campaign, auth);
   }
 
   @Transactional
@@ -118,6 +133,41 @@ public class InvestmentServiceImpl implements InvestmentService {
     campaignInvestment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.REJECTED));
     campaignInvestmentRepository.save(campaignInvestment);
+  }
+
+  @Override
+  public Page<PortfolioCampaignResponseDto> getPortfolio(Pageable pageable) {
+    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+
+    Page<Campaign> campaignPage = campaignInvestmentRepository.findCampaign(auth, pageable);
+
+    List<PortfolioCampaignResponseDto> portfolio = new ArrayList<>();
+    campaignPage
+        .getContent()
+        .forEach(
+            campaign -> {
+              PortfolioCampaignResponseDto portfolioCampaign =
+                  convertCampaignToPortfolioCampaign(campaign, auth);
+              portfolio.add(portfolioCampaign);
+            });
+
+    return new PageImpl<>(portfolio, pageable, campaignPage.getTotalElements());
+  }
+
+  private PortfolioCampaignResponseDto convertCampaignToPortfolioCampaign(
+      Campaign campaign, Auth auth) {
+    PortfolioCampaignResponseDto portfolioCampaign = new PortfolioCampaignResponseDto();
+
+    portfolioCampaign.setCampaign(new CampaignResponseDto(campaign));
+
+    List<CampaignInvestment> investments = findAllByCampaignAndAuth(campaign, auth);
+    List<CampaignInvestmentResponseDto> investmentsDto =
+        investments.stream().map(CampaignInvestmentResponseDto::new).collect(Collectors.toList());
+    portfolioCampaign.setInvestments(investmentsDto);
+
+    portfolioCampaign.setTotal(new TotalCampaignInvestmentsResponseDto(investments));
+
+    return portfolioCampaign;
   }
 
   private void throwIfNotPaid(CampaignInvestment campaignInvestment) {

@@ -93,18 +93,18 @@ public class CampaignUtils {
 
   public static Campaign getInvestableCampaignMocked() {
     return Campaign.builder()
-            .id(1L)
-            .company(CompanyUtils.getCompanyMocked())
-            .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
-            .name(TEST_NAME)
-            .fundingGoals(100L)
-            .minInvestment(BigDecimal.ONE)
-            .collectedAmount(BigDecimal.TEN)
-            .minEquityOffered(BigDecimal.ONE)
-            .maxEquityOffered(BigDecimal.TEN)
-            .campaignState(TEST_CAMPAIGN_ACTIVE_STATE)
-            .tagLine(TEST_TAG_LINE)
-            .build();
+        .id(1L)
+        .company(CompanyUtils.getCompanyMocked())
+        .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
+        .name(TEST_NAME)
+        .fundingGoals(100L)
+        .minInvestment(BigDecimal.ONE)
+        .collectedAmount(BigDecimal.TEN)
+        .minEquityOffered(BigDecimal.ONE)
+        .maxEquityOffered(BigDecimal.TEN)
+        .campaignState(TEST_CAMPAIGN_ACTIVE_STATE)
+        .tagLine(TEST_TAG_LINE)
+        .build();
   }
 
   public static CampaignPatchDto TEST_CAMPAIGN_PATCH_DTO_FUNDING_GOALS() {

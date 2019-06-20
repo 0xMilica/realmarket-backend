@@ -33,7 +33,8 @@ import java.util.Optional;
 import static io.realmarket.propeler.util.AuthUtils.*;
 import static io.realmarket.propeler.util.CampaignTopicUtil.TEST_CAMPAIGN_TOPIC_DTO;
 import static io.realmarket.propeler.util.CampaignUtils.*;
-import static io.realmarket.propeler.util.CompanyUtils.*;
+import static io.realmarket.propeler.util.CompanyUtils.TEST_FEATURED_IMAGE_URL;
+import static io.realmarket.propeler.util.CompanyUtils.getCompanyMocked;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -490,8 +491,10 @@ public class CampaignServiceImplTest {
     investableCampaign.setCollectedAmount(BigDecimal.ZERO);
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(
             investableCampaign.getUrlFriendlyName()))
-            .thenReturn(Optional.of(investableCampaign));
-    assertEquals(BigDecimal.TEN, campaignServiceImpl.getAvailableEquity(investableCampaign.getUrlFriendlyName()));
+        .thenReturn(Optional.of(investableCampaign));
+    assertEquals(
+        BigDecimal.TEN,
+        campaignServiceImpl.getAvailableEquity(investableCampaign.getUrlFriendlyName()));
   }
 
   @Test
@@ -500,8 +503,10 @@ public class CampaignServiceImplTest {
     investableCampaign.setCollectedAmount(BigDecimal.valueOf(500L));
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(
             investableCampaign.getUrlFriendlyName()))
-            .thenReturn(Optional.of(investableCampaign));
-    assertEquals(BigDecimal.valueOf(5L), campaignServiceImpl.getAvailableEquity(investableCampaign.getUrlFriendlyName()));
+        .thenReturn(Optional.of(investableCampaign));
+    assertEquals(
+        BigDecimal.valueOf(5L),
+        campaignServiceImpl.getAvailableEquity(investableCampaign.getUrlFriendlyName()));
   }
 
   @Test
@@ -510,8 +515,9 @@ public class CampaignServiceImplTest {
     investableCampaign.setCollectedAmount(BigDecimal.valueOf(1000L));
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(
             investableCampaign.getUrlFriendlyName()))
-            .thenReturn(Optional.of(investableCampaign));
-    assertEquals(BigDecimal.ZERO, campaignServiceImpl.getAvailableEquity(investableCampaign.getUrlFriendlyName()));
+        .thenReturn(Optional.of(investableCampaign));
+    assertEquals(
+        BigDecimal.ZERO,
+        campaignServiceImpl.getAvailableEquity(investableCampaign.getUrlFriendlyName()));
   }
-
 }

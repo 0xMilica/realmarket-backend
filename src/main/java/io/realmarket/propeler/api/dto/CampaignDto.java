@@ -1,7 +1,6 @@
 package io.realmarket.propeler.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.realmarket.propeler.api.annotations.UrlFriendly;
 import io.realmarket.propeler.model.Campaign;
 import io.swagger.annotations.ApiModel;
@@ -77,9 +76,6 @@ public class CampaignDto {
   @Size(max = 230, message = "Campaign tag line cannot be longer than 230 characters.")
   private String tagLine;
 
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private String marketImageUrl;
-
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private Map<String, Boolean> topicStatus;
 
@@ -92,7 +88,6 @@ public class CampaignDto {
     this.timeToRaiseFunds = campaign.getTimeToRaiseFunds();
     this.minEquityOffered = campaign.getMinEquityOffered();
     this.maxEquityOffered = campaign.getMaxEquityOffered();
-    this.marketImageUrl = campaign.getMarketImageUrl();
     this.minInvestment = campaign.getMinInvestment();
     this.tagLine = campaign.getTagLine();
   }

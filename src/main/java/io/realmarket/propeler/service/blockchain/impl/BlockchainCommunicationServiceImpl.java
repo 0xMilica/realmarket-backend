@@ -24,24 +24,34 @@ import java.util.concurrent.Future;
 @Slf4j
 public class BlockchainCommunicationServiceImpl implements BlockchainCommunicationService {
   private static final String RESPONSE_MESSAGE = "message";
+
   @Value("${blockchain.active}")
   private Boolean active;
+
   @Value("${blockchain.chaincode_name}")
   private String chaincodeName;
+
   @Value("${blockchain.channel_name}")
   private String channelName;
+
   @Value("${blockchain.address}")
   private String blockchainAddress;
+
   @Value("${blockchain.invocation.peers}")
   private String[] peersAddresses;
+
   @Value("${blockchain.invocation.method}")
   private String method;
+
   @Value("${blockchain.invocation.arguments}")
   private String arguments;
+
   @Value("${blockchain.user.organization}")
   private String organization;
+
   @Value("${blockchain.user.username}")
   private String username;
+
   private RestTemplate restTemplate;
 
   public BlockchainCommunicationServiceImpl(RestTemplate restTemplate) {

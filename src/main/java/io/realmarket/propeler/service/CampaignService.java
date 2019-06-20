@@ -38,9 +38,9 @@ public interface CampaignService {
 
   Campaign getActiveCampaignForCompany();
 
-  CampaignDto getActiveCampaignDto();
+  CampaignResponseDto getActiveCampaignDto();
 
-  CampaignDto getCampaignDtoByUrlFriendlyName(String name);
+  CampaignResponseDto getCampaignDtoByUrlFriendlyName(String name);
 
   Campaign getCampaignByUrlFriendlyName(String name);
 
