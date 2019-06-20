@@ -7,12 +7,12 @@ import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.ETemporaryTokenType;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.BlockchainMethod;
+import io.realmarket.propeler.service.blockchain.dto.RegenerationOfRecoveryDto;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
-import io.realmarket.propeler.service.util.LoginIPAttemptsService;
-import io.realmarket.propeler.service.util.LoginUsernameAttemptsService;
-import io.realmarket.propeler.service.util.MailContentHolder;
-import io.realmarket.propeler.service.util.RememberMeCookieHelper;
+import io.realmarket.propeler.service.util.*;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +37,9 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
   private final RememberMeCookieService rememberMeCookieService;
   private final LoginIPAttemptsService loginIPAttemptsService;
   private final LoginUsernameAttemptsService loginUsernameAttemptsService;
+  private final BlockchainCommunicationService blockchainCommunicationService;
+
+  @Autowired private HttpServletRequest request;
 
   @Autowired
   TwoFactorAuthServiceImpl(
@@ -47,7 +50,8 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
       RememberMeCookieService rememberMeCookieService,
       EmailService emailService,
       LoginIPAttemptsService loginIPAttemptsService,
-      LoginUsernameAttemptsService loginUsernameAttemptsService) {
+      LoginUsernameAttemptsService loginUsernameAttemptsService,
+      BlockchainCommunicationService blockchainCommunicationService) {
     this.otpService = otpService;
     this.jwtService = jwtService;
     this.authService = authService;
@@ -56,6 +60,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     this.emailService = emailService;
     this.loginIPAttemptsService = loginIPAttemptsService;
     this.loginUsernameAttemptsService = loginUsernameAttemptsService;
+    this.blockchainCommunicationService = blockchainCommunicationService;
   }
 
   @Transactional
@@ -164,6 +169,12 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     if (!otpService.validate(auth, twoFADto)) {
       throw new BadCredentialsException(ExceptionMessages.INVALID_TOTP_CODE_PROVIDED);
     }
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.USER_REGENERATION_OF_RECOVERY,
+        RegenerationOfRecoveryDto.builder().userId(authId).build(),
+        HttpRequestHelper.getIP(request));
+
     return new OTPWildcardResponseDto(otpService.generateRecoveryCodes(auth));
   }
 

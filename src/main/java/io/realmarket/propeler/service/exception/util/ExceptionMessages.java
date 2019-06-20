@@ -98,6 +98,8 @@ public interface ExceptionMessages {
 
   String CAMPAIGN_IS_NOT_ACTIVE = "Campaign is not active!";
 
+  String NO_HASH_ALGORITHM = "No SHA Algorithm";
+  
   String INVESTMENT_CAN_NOT_BE_REVOKED = "Investment can not be revoked at this stage!";
 
   String INVESTMENT_CAN_BE_REVOKED = "Investment can be revoked at this stage!";

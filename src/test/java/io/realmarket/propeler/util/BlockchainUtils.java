@@ -1,6 +1,9 @@
 package io.realmarket.propeler.util;
 
-import io.realmarket.propeler.service.blockchain.dto.*;
+import io.realmarket.propeler.service.blockchain.dto.EmailChangeDto;
+import io.realmarket.propeler.service.blockchain.dto.PasswordChangeDto;
+import io.realmarket.propeler.service.blockchain.dto.RegenerationOfRecoveryDto;
+import io.realmarket.propeler.service.blockchain.dto.RegistrationDto;
 import org.springframework.http.ResponseEntity;
 
 import java.time.Instant;
@@ -24,7 +27,6 @@ public class BlockchainUtils {
           .IP(TEST_IP)
           .role(TEST_ROLE)
           .username(TEST_USERNAME)
-          .person(HashedPersonDetails.builder().email(TEST_EMAIL).build())
           .build();
 
   public static final PasswordChangeDto TEST_PASSWORD_CHANGE_DTO =

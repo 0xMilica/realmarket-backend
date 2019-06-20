@@ -14,15 +14,16 @@ import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.BlockchainMethod;
+import io.realmarket.propeler.service.blockchain.dto.EmailChangeDto;
+import io.realmarket.propeler.service.blockchain.dto.PasswordChangeDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
-import io.realmarket.propeler.service.util.LoginIPAttemptsService;
-import io.realmarket.propeler.service.util.LoginUsernameAttemptsService;
-import io.realmarket.propeler.service.util.MailContentHolder;
-import io.realmarket.propeler.service.util.RememberMeCookieHelper;
+import io.realmarket.propeler.service.util.*;
 import liquibase.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,9 @@ public class AuthServiceImpl implements AuthService {
   private final PasswordEncoder passwordEncoder;
 
   private final RememberMeCookieService rememberMeCookieService;
+  private final BlockchainCommunicationService blockchainCommunicationService;
+
+  private final HttpServletRequest request;
 
   @Autowired
   public AuthServiceImpl(
@@ -87,7 +91,9 @@ public class AuthServiceImpl implements AuthService {
       JWTService jwtService,
       AuthorizedActionService authorizedActionService,
       LoginIPAttemptsService loginAttemptsService,
-      LoginUsernameAttemptsService loginUsernameAttemptsService) {
+      LoginUsernameAttemptsService loginUsernameAttemptsService,
+      BlockchainCommunicationService blockchainCommunicationService,
+      HttpServletRequest request) {
     this.passwordEncoder = passwordEncoder;
     this.personService = personService;
     this.emailService = emailService;
@@ -101,6 +107,8 @@ public class AuthServiceImpl implements AuthService {
     this.authorizedActionService = authorizedActionService;
     this.loginIPAttemptsService = loginAttemptsService;
     this.loginUsernameAttemptsService = loginUsernameAttemptsService;
+    this.blockchainCommunicationService = blockchainCommunicationService;
+    this.request = request;
   }
 
   public static Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
@@ -214,6 +222,11 @@ public class AuthServiceImpl implements AuthService {
     authRepository.save(auth);
 
     temporaryTokenService.deleteToken(temporaryToken);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.USER_REGISTRATION,
+        new io.realmarket.propeler.service.blockchain.dto.RegistrationDto(auth),
+        HttpRequestHelper.getIP(request));
   }
 
   public void recoverUsername(EmailDto emailDto) {
@@ -298,6 +311,11 @@ public class AuthServiceImpl implements AuthService {
 
     authorizedActionService.deleteByAuthAndType(auth, EAuthorizedActionType.NEW_PASSWORD);
     jwtService.deleteAllByAuthAndValueNot(auth, AuthenticationUtil.getAuthentication().getToken());
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.USER_PASSWORD_CHANGE,
+        PasswordChangeDto.builder().userId(authId).build(),
+        HttpRequestHelper.getIP(request));
   }
 
   @Override
@@ -378,6 +396,14 @@ public class AuthServiceImpl implements AuthService {
     temporaryTokenService.deleteToken(token);
     authorizedActionService.deleteByAuthAndType(
         authorizedAction.getAuth(), authorizedAction.getType().getName());
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.USER_EMAIL_CHANGE,
+        EmailChangeDto.builder()
+            .userId(currentAuth.getId())
+            .newEmailHash(HashingHelper.hash(authorizedAction.getData()))
+            .build(),
+        HttpRequestHelper.getIP(request));
   }
 
   private Boolean isRoleAllowed(EUserRole role) {

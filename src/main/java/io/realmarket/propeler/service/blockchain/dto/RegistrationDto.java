@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service.blockchain.dto;
 
+import io.realmarket.propeler.model.Auth;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,5 +22,12 @@ public class RegistrationDto extends AbstractBlockchainDto {
     this.role = role;
     this.username = username;
     this.person = person;
+  }
+
+  public RegistrationDto(Auth auth) {
+    this.role = auth.getUserRole().getName().toString();
+    this.username = auth.getUsername();
+    this.person = new HashedPersonDetails(auth.getPerson());
+    this.userId = auth.getId();
   }
 }

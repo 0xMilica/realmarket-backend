@@ -8,13 +8,17 @@ import io.realmarket.propeler.service.blockchain.exception.BlockchainException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 @Service
 @Slf4j
@@ -44,13 +48,13 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     this.restTemplate = restTemplate;
   }
 
-  public Map<String, Object> invoke(String methodName, AbstractBlockchainDto dto) {
+  @Async
+  public Future<Map<String, Object>> invoke(
+      String methodName, AbstractBlockchainDto dto, String ipAddress) {
     if (!active) {
       log.info("Blockchain is off.");
       return null;
     }
-
-    log.debug("Invoke chaincode method: {}", methodName);
 
     String invocationUrl =
         String.format(
@@ -65,6 +69,8 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     args.put(method, methodName);
 
     try {
+      dto.setIP(ipAddress);
+      dto.setTimestamp(Instant.now().getEpochSecond());
       args.put(arguments, Collections.singletonList(new ObjectMapper().writeValueAsString(dto)));
     } catch (JsonProcessingException jpe) {
       log.error(jpe.getMessage());
@@ -74,7 +80,7 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     HttpEntity<Map<String, Object>> entity = new HttpEntity<>(args, headers);
     Map<String, Object> response = restTemplate.postForObject(invocationUrl, entity, Map.class);
 
-    return processResponse(response);
+    return new AsyncResult<>(processResponse(response));
   }
 
   private String enrollUser() {

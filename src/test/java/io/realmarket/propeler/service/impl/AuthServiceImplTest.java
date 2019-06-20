@@ -14,6 +14,7 @@ import io.realmarket.propeler.repository.AuthStateRepository;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
@@ -36,6 +37,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -66,6 +68,8 @@ public class AuthServiceImplTest {
   @Mock private UserRoleRepository userRoleRepository;
   @Mock private AuthStateRepository authStateRepository;
   @Mock private CountryRepository countryRepository;
+  @Mock private BlockchainCommunicationService blockchainCommunicationService;
+  @Mock private HttpServletRequest httpServletRequest;
   @InjectMocks private AuthServiceImpl authServiceImpl;
 
   @Before
