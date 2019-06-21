@@ -13,7 +13,7 @@
             id bigint not null
             constraint campaign_topic_pkey
             primary key,
-            content varchar(3000),
+            content varchar(10000),
             campaign_id bigint
             constraint campaign_topic_fk_on_campaign
             references campaign,

@@ -28,7 +28,7 @@ public class CampaignTopic {
       allocationSize = 1)
   private Long id;
 
-  @Column(length = 3000)
+  @Column(length = 10000)
   private String content;
 
   @JoinColumn(
