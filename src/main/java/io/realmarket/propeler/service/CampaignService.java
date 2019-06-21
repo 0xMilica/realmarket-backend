@@ -62,9 +62,17 @@ public interface CampaignService {
 
   void decreaseCollectedAmount(Campaign campaign, BigDecimal amountOfMoney);
 
+  BigDecimal getMaximumInvestableAmount(Campaign campaign);
+
+  BigDecimal getMaximumAcquirableEquity(Campaign campaign);
+
   BigDecimal convertMoneyToPercentageOfEquity(String campaignName, BigDecimal money);
 
   BigDecimal convertPercentageOfEquityToMoney(String campaignName, BigDecimal percentageOfEquity);
 
   BigDecimal getAvailableEquity(String campaignName);
+
+  BigDecimal getAvailableInvestableAmount(String campaignName);
+
+  AvailableInvestmentDto getAvailableInvestment(String campaignName);
 }

@@ -363,6 +363,44 @@ public interface CampaignController {
   })
   ResponseEntity getAvailableEquity(String campaignName);
 
+  @ApiOperation(value = "Get available investable amount for campaign.", httpMethod = "GET")
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignName",
+        value = "Name of the campaign that is being queried for available investable amount.",
+        required = true,
+        dataType = "String")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "There is available investable amount for campaign."),
+    @ApiResponse(
+        code = 400,
+        message = "There is no campaign, no investable amount left, campaign is not active."),
+  })
+  ResponseEntity getAvailableInvestableAmount(String campaignName);
+
+  @ApiOperation(
+      value = "Get available equity and investable amount for campaign.",
+      httpMethod = "GET")
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignName",
+        value =
+            "Name of the campaign that is being queried for available equity and investable amount.",
+        required = true,
+        dataType = "String")
+  })
+  @ApiResponses({
+    @ApiResponse(
+        code = 200,
+        message = "There is available equity and investable amount for campaign."),
+    @ApiResponse(
+        code = 400,
+        message =
+            "There is no campaign, no equity nor investable amount left, campaign is not active."),
+  })
+  ResponseEntity getAvailableInvestment(String campaignName);
+
   @ApiOperation(
       value = "Invest in campaign.",
       httpMethod = "POST",
@@ -377,24 +415,24 @@ public interface CampaignController {
     @ApiResponse(code = 404, message = "No campaign with given name."),
     @ApiResponse(code = 400, message = "Too large investment or campaign is inactive."),
   })
-  ResponseEntity investInCampaign(InvestmentDto amountOfMoney, String campaignName);
+  ResponseEntity investInCampaign(AvailableInvestmentDto amountOfMoney, String campaignName);
 
   @ApiOperation(value = "Get user portfolio", httpMethod = "GET", produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "page",
-        value = "Number of page to be returned",
-        defaultValue = "20",
-        required = false,
-        dataType = "Integer",
-        paramType = "query"),
-    @ApiImplicitParam(
-        name = "size",
-        value = "Page size (number of items to be returned)",
-        defaultValue = "0",
-        required = false,
-        dataType = "Integer",
-        paramType = "query")
+          @ApiImplicitParam(
+                  name = "page",
+                  value = "Number of page to be returned",
+                  defaultValue = "20",
+                  required = false,
+                  dataType = "Integer",
+                  paramType = "query"),
+          @ApiImplicitParam(
+                  name = "size",
+                  value = "Page size (number of items to be returned)",
+                  defaultValue = "0",
+                  required = false,
+                  dataType = "Integer",
+                  paramType = "query")
   })
   @ApiResponses(@ApiResponse(code = 200, message = "OK"))
   ResponseEntity<Page<PortfolioCampaignResponseDto>> getPortfolio(Pageable pageable);

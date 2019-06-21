@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 
     <!-- Sets size and scale of the viewport. -->
-    <meta name="viewport" content="width=device-width" initial-scale="1">
+    <meta content="width=device-width" initial-scale="1" name="viewport">
 
     <!-- IE=Edge makes good things happen on Windows Phones. (https://www.emailonacid.com/blog/article/email-development/demystifying-meta-tags-in-email) -->
     <!--[if !mso]>
@@ -20,7 +20,9 @@
     <!-- Desktop Outlook defaults to Times New Roman. Forces a less obscene fallback font. -->
     <!--[if mso]>
     <style>
-        * { font-family: sans-serif !important; }
+        * {
+            font-family: sans-serif !important;
+        }
     </style>
     <![endif]-->
 
@@ -110,6 +112,7 @@
             -webkit-transition: all 200ms ease;
             transition: all 200ms ease;
         }
+
         .btn:hover {
             background-color: #222222;
             border-color: #222222;
@@ -151,7 +154,8 @@
 <!-- Hack to manage presentation of preheader text. (https://litmus.com/blog/the-little-known-preview-text-hack-you-may-want-to-use-in-every-email) -->
 <div style="display: none; max-height: 0px; overflow: hidden;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>
 
-<table bgcolor="#E8ECF1" role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center" class="document">
+<table align="center" aria-hidden="true" bgcolor="#E8ECF1" border="0" cellpadding="0" cellspacing="0"
+       class="document" role="presentation">
     <tr>
         <td valign="top">
             <!-- header -->
@@ -164,13 +168,16 @@
 
             </table>
             <!-- Main -->
-            <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center" width="600px" class="container">
+            <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="container"
+                   role="presentation" width="600px">
                 <tr>
                     <td bgcolor="#ffffff">
-                        <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+                        <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0"
+                               role="presentation" width="100%">
                             <tr>
                                 <td>
-                                    <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
+                                    <table align="center" aria-hidden="true" border="0" cellpadding="0"
+                                           cellspacing="0" role="presentation" width="100%">
                                         <tr>
                                             <td>
                                                 <table align="left">
@@ -180,36 +187,100 @@
                                                 </table>
                                                 <table align="right">
                                                     <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px; color: #39316C;">
-                                                        <a href="#" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="9.546" height="20.41" viewBox="0 0 9.546 20.41"><defs><style>.a{fill:#9498b8;fill-rule:evenodd;}</style></defs><g transform="translate(-16 -56)"><path class="a" d="M201.207,131.559V129.92a.859.859,0,0,1,.9-.974H204.4v-3.5h-3.156a3.969,3.969,0,0,0-4.3,4.275v1.838h-2.038v4.087h2.06v10.211h4.087V135.646h3.023l.133-1.606.244-2.481Z" transform="translate(-178.906 -69.446)"/></g></svg></a>
+                                                        <a href="#" target="_blank">
+                                                            <svg height="20.41" viewBox="0 0 9.546 20.41"
+                                                                 width="9.546" xmlns="http://www.w3.org/2000/svg">
+                                                                <defs>
+                                                                    <style>.a {
+                                                                        fill: #9498b8;
+                                                                        fill-rule: evenodd;
+                                                                    }</style>
+                                                                </defs>
+                                                                <g transform="translate(-16 -56)">
+                                                                    <path class="a"
+                                                                          d="M201.207,131.559V129.92a.859.859,0,0,1,.9-.974H204.4v-3.5h-3.156a3.969,3.969,0,0,0-4.3,4.275v1.838h-2.038v4.087h2.06v10.211h4.087V135.646h3.023l.133-1.606.244-2.481Z"
+                                                                          transform="translate(-178.906 -69.446)"/>
+                                                                </g>
+                                                            </svg>
+                                                        </a>
                                                     </td>
                                                     <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px; color: #39316C;">
-                                                        <a href="#" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="20.42" height="16.33" viewBox="0 0 20.42 16.33"><defs><style>.a{fill:#9498b8;fill-rule:evenodd;}</style></defs><g transform="translate(-63 -60)"><path class="a" d="M145.734,153.425a8.928,8.928,0,0,1-2.4.653,4.13,4.13,0,0,0,1.849-2.292,8.538,8.538,0,0,1-2.669,1.007,4.208,4.208,0,0,0-7.254,2.812,4.312,4.312,0,0,0,.122.941,11.893,11.893,0,0,1-8.638-4.307,4.068,4.068,0,0,0,1.285,5.5,4.059,4.059,0,0,1-1.893-.509v.055a3.9,3.9,0,0,0,.288,1.483,4.178,4.178,0,0,0,3.079,2.547,4.12,4.12,0,0,1-1.108.155,3.739,3.739,0,0,1-.787-.088,4.225,4.225,0,0,0,3.91,2.879,8.474,8.474,0,0,1-5.194,1.76c-.344,0-.664-.022-1.007-.055a12.094,12.094,0,0,0,6.423,1.849,11.654,11.654,0,0,0,11.638-9.234,11.329,11.329,0,0,0,.277-2.491v-.532a8.664,8.664,0,0,0,2.082-2.137Z" transform="translate(-62.314 -91.488)"/></g></svg></a>
+                                                        <a href="#" target="_blank">
+                                                            <svg height="16.33" viewBox="0 0 20.42 16.33"
+                                                                 width="20.42" xmlns="http://www.w3.org/2000/svg">
+                                                                <defs>
+                                                                    <style>.a {
+                                                                        fill: #9498b8;
+                                                                        fill-rule: evenodd;
+                                                                    }</style>
+                                                                </defs>
+                                                                <g transform="translate(-63 -60)">
+                                                                    <path class="a"
+                                                                          d="M145.734,153.425a8.928,8.928,0,0,1-2.4.653,4.13,4.13,0,0,0,1.849-2.292,8.538,8.538,0,0,1-2.669,1.007,4.208,4.208,0,0,0-7.254,2.812,4.312,4.312,0,0,0,.122.941,11.893,11.893,0,0,1-8.638-4.307,4.068,4.068,0,0,0,1.285,5.5,4.059,4.059,0,0,1-1.893-.509v.055a3.9,3.9,0,0,0,.288,1.483,4.178,4.178,0,0,0,3.079,2.547,4.12,4.12,0,0,1-1.108.155,3.739,3.739,0,0,1-.787-.088,4.225,4.225,0,0,0,3.91,2.879,8.474,8.474,0,0,1-5.194,1.76c-.344,0-.664-.022-1.007-.055a12.094,12.094,0,0,0,6.423,1.849,11.654,11.654,0,0,0,11.638-9.234,11.329,11.329,0,0,0,.277-2.491v-.532a8.664,8.664,0,0,0,2.082-2.137Z"
+                                                                          transform="translate(-62.314 -91.488)"/>
+                                                                </g>
+                                                            </svg>
+                                                        </a>
                                                     </td>
                                                     <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px; color: #39316C;">
-                                                        <a href="#" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="20.432" height="14.979" viewBox="0 0 20.432 14.979"><defs><style>.a{fill:#9498b8;fill-rule:evenodd;}</style></defs><g transform="translate(-124.511 -65.347)"><path class="a" d="M145.394,163.365a4.793,4.793,0,0,0-.82-2.115,2.925,2.925,0,0,0-2.037-.908c-2.857-.21-7.143-.21-7.143-.21h-.023s-4.274,0-7.132.21a2.912,2.912,0,0,0-2.048.908,4.8,4.8,0,0,0-.819,2.115,32.5,32.5,0,0,0-.211,3.432v1.627a31.961,31.961,0,0,0,.211,3.432,4.87,4.87,0,0,0,.819,2.126,3.345,3.345,0,0,0,2.259.908c1.628.166,6.944.222,6.944.222s4.285-.022,7.143-.222a2.874,2.874,0,0,0,2.037-.908,4.865,4.865,0,0,0,.82-2.126,33.823,33.823,0,0,0,.2-3.432V166.8c0-1.7-.2-3.432-.2-3.432Zm-6.6,4.03-5.526,2.978v-5.978l2.5,1.362Z" transform="translate(-0.651 -94.785)"/></g></svg></a>
+                                                        <a href="#" target="_blank">
+                                                            <svg height="14.979" viewBox="0 0 20.432 14.979"
+                                                                 width="20.432" xmlns="http://www.w3.org/2000/svg">
+                                                                <defs>
+                                                                    <style>.a {
+                                                                        fill: #9498b8;
+                                                                        fill-rule: evenodd;
+                                                                    }</style>
+                                                                </defs>
+                                                                <g transform="translate(-124.511 -65.347)">
+                                                                    <path class="a"
+                                                                          d="M145.394,163.365a4.793,4.793,0,0,0-.82-2.115,2.925,2.925,0,0,0-2.037-.908c-2.857-.21-7.143-.21-7.143-.21h-.023s-4.274,0-7.132.21a2.912,2.912,0,0,0-2.048.908,4.8,4.8,0,0,0-.819,2.115,32.5,32.5,0,0,0-.211,3.432v1.627a31.961,31.961,0,0,0,.211,3.432,4.87,4.87,0,0,0,.819,2.126,3.345,3.345,0,0,0,2.259.908c1.628.166,6.944.222,6.944.222s4.285-.022,7.143-.222a2.874,2.874,0,0,0,2.037-.908,4.865,4.865,0,0,0,.82-2.126,33.823,33.823,0,0,0,.2-3.432V166.8c0-1.7-.2-3.432-.2-3.432Zm-6.6,4.03-5.526,2.978v-5.978l2.5,1.362Z"
+                                                                          transform="translate(-0.651 -94.785)"/>
+                                                                </g>
+                                                            </svg>
+                                                        </a>
                                                     </td>
                                                     <td style="padding: 26px 20px 19px 20px; font-size: 26px; line-height: 34px; color: #39316C;">
-                                                        <a href="#" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="18.051" height="18.051" viewBox="0 0 18.051 18.051"><defs><style>.a{fill:#9498b8;fill-rule:evenodd;}</style></defs><g transform="translate(-198.066 -66.027)"><path class="a" d="M140.474,149.686v8.837h4.208V146.485h-4.208Zm17.951.5c-.277-2.281-1.318-3.7-4.4-3.7-1.805,0-3.023.665-3.533,1.628h-.056v-1.628h-3.356v12.038H150.6v-5.969c0-1.573.31-3.09,2.238-3.09s2.081,1.794,2.081,3.2v5.858h3.611v-6.611a14.09,14.09,0,0,0-.1-1.728Zm-15.847-9.712a2.1,2.1,0,1,0,2.1,2.1,2.1,2.1,0,0,0-2.1-2.1Z" transform="translate(57.592 -74.445)"/></g></svg></a>
+                                                        <a href="#" target="_blank">
+                                                            <svg height="18.051" viewBox="0 0 18.051 18.051"
+                                                                 width="18.051" xmlns="http://www.w3.org/2000/svg">
+                                                                <defs>
+                                                                    <style>.a {
+                                                                        fill: #9498b8;
+                                                                        fill-rule: evenodd;
+                                                                    }</style>
+                                                                </defs>
+                                                                <g transform="translate(-198.066 -66.027)">
+                                                                    <path class="a"
+                                                                          d="M140.474,149.686v8.837h4.208V146.485h-4.208Zm17.951.5c-.277-2.281-1.318-3.7-4.4-3.7-1.805,0-3.023.665-3.533,1.628h-.056v-1.628h-3.356v12.038H150.6v-5.969c0-1.573.31-3.09,2.238-3.09s2.081,1.794,2.081,3.2v5.858h3.611v-6.611a14.09,14.09,0,0,0-.1-1.728Zm-15.847-9.712a2.1,2.1,0,1,0,2.1,2.1,2.1,2.1,0,0,0-2.1-2.1Z"
+                                                                          transform="translate(57.592 -74.445)"/>
+                                                                </g>
+                                                            </svg>
+                                                        </a>
                                                     </td>
                                                 </table>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td align="center">
-                                                <img src="https://i.ibb.co/8cx9y03/Rectangle-2723-2x.png" alt="Rectangle-2723-2x" border="0">
+                                                <img alt="Rectangle-2723-2x"
+                                                     border="0" src="https://i.ibb.co/8cx9y03/Rectangle-2723-2x.png">
                                             </td>
 
                                         </tr>
                                         <tr>
-                                            <td align="center" style="color:#39316C; font-size: 30px;  font-family: 'Open Sans SemiBold', sans-serif; padding-top: 40px; padding-bottom: 20px;">
+                                            <td align="center"
+                                                style="color:#39316C; font-size: 30px;  font-family: 'Open Sans SemiBold', sans-serif; padding-top: 40px; padding-bottom: 20px;">
                                                 New campaigns
                                             </td>
                                         </tr>
 
                                         <div th:each="campaign: ${campaigns}">
                                             <tr>
-                                                <td align="center" style="padding-bottom: 12px; color: #39316C; font-size: 14px; font-family: 'Open Sans Regular', sans-serif;">
-                                                    You have received an investment proposal for the <strong><span th:text="${campaign.name}"></span></strong>.
+                                                <td align="center"
+                                                    style="padding-bottom: 12px; color: #39316C; font-size: 14px; font-family: 'Open Sans Regular', sans-serif;">
+                                                    You have received an investment proposal for the <strong><span
+                                                        th:text="${campaign.name}"></span></strong>.
                                                 </td>
                                             </tr>
                                             <tr>
@@ -217,25 +288,44 @@
                                                     <table bgcolor="#F4F4F4" style="width:500px; margin: 0 auto;">
                                                         <tr>
                                                             <td style="color: #39316C; font-size: 14px;font-size: 14px; font-family: 'Open Sans Regular', sans-serif; padding: 25px 20px 20px 20px; line-height: 1.5">
-                                                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.
+                                                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+                                                                sed diam nonumy eirmod tempor invidunt ut labore et
+                                                                dolore magna aliquyam erat, sed diam voluptua. At vero
+                                                                eos et accusam et justo duo dolores et ea rebum. Stet
+                                                                clita kasd gubergren, no sea takimata sanctus est Lorem
+                                                                ipsum dolor sit amet. Lorem ipsum dolor sit amet,
+                                                                consetetur sadipscing elitr, sed diam nonumy eirmod
+                                                                tempor.
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; padding-left: 20px; padding-right: 20px; line-height: 1.5">
-                                                                Invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+                                                                Invidunt ut labore et dolore magna aliquyam erat, sed
+                                                                diam voluptua. At vero eos et accusam et justo duo
+                                                                dolores et ea rebum.
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; font-weight: bold; padding-top: 25px; padding-left: 20px; line-height: 1.5"> Key campaign facts </td>
+                                                            <td style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; font-weight: bold; padding-top: 25px; padding-left: 20px; line-height: 1.5">
+                                                                Key campaign facts
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <td style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; padding-left: 20px;line-height: 1.5;"><b>Funding goals: </b><span th:text="${campaign.fundingGoals}"></span></td>
+                                                            <td style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; padding-left: 20px;line-height: 1.5;">
+                                                                <b>Funding goals: </b><span
+                                                                    th:text="${campaign.fundingGoals}"></span></td>
                                                         </tr>
                                                         <tr>
-                                                            <td style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; padding-left: 20px; line-height: 1.5;"><b>Time to raise funds: </b><span th:text="${campaign.timeToRaiseFunds}"></span></td>
+                                                            <td style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; padding-left: 20px; line-height: 1.5;">
+                                                                <b>Time to raise funds: </b><span
+                                                                    th:text="${campaign.timeToRaiseFunds}"></span></td>
                                                         </tr>
                                                         <tr>
-                                                            <td style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; padding-left: 20px; padding-bottom: 25px; line-height: 1.5;"><b>Min and max equity offered: </b><span th:text="${campaign.minEquityOffered}"></span> - <span th:text="${campaign.maxEquityOffered}"></span></td>
+                                                            <td style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; padding-left: 20px; padding-bottom: 25px; line-height: 1.5;">
+                                                                <b>Min and max equity offered: </b><span
+                                                                    th:text="${campaign.minEquityOffered}"></span> -
+                                                                <span th:text="${campaign.maxEquityOffered}"></span>
+                                                            </td>
 
                                                         </tr>
                                                     </table>
@@ -243,10 +333,13 @@
                                             </tr>
                                             <tr>
                                                 <td align="center" style="padding: 42px 0 40px;">
-                                                    <table role="presentation" aria-hidden="true" cellspacing="0" cellpadding="0" border="0" align="center" class="container">
+                                                    <table align="center" aria-hidden="true" border="0"
+                                                           cellpadding="0" cellspacing="0" class="container" role="presentation">
                                                         <tr>
-                                                            <td style="border-radius: 3px;" bgcolor="#3DC6FA">
-                                                                <a class="btn" target="_blank" style="font-size: 16px; font-family: 'Open Sans SemiBold', sans-serif; color: #ffffff; text-decoration: none; text-decoration: none; padding: 15px 22px; border-radius: 4px; border: 1px solid #3DC6FA; display: inline-block;" th:href="${campaign.link}">View the campaign</a>
+                                                            <td bgcolor="#3DC6FA" style="border-radius: 3px;">
+                                                                <a class="btn" style="font-size: 16px; font-family: 'Open Sans SemiBold', sans-serif; color: #ffffff; text-decoration: none; text-decoration: none; padding: 15px 22px; border-radius: 4px; border: 1px solid #3DC6FA; display: inline-block;"
+                                                                   target="_blank"
+                                                                   th:href="${campaign.link}">View the campaign</a>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -258,8 +351,12 @@
                                             <td align="center">
                                                 <table align="center" style="width:500px; margin: 0 auto;">
                                                     <tr>
-                                                        <td bgcolor="#FFF7E0" style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; line-height: 2; padding: 19px;">
-                                                            Be aware that submitting investment in this type of campaign may puts your capital at risk.                                                 Read our <a href="#" style="color: #3DC6FA">Risk Disclosure Statement</a>.
+                                                        <td bgcolor="#FFF7E0"
+                                                            style="color: #39316C; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; line-height: 2; padding: 19px;">
+                                                            Be aware that submitting investment in this type of campaign
+                                                            may puts your capital at risk. Read our <a href="#"
+                                                                                                       style="color: #3DC6FA">Risk
+                                                            Disclosure Statement</a>.
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -270,7 +367,10 @@
                                                 <table align="center">
                                                     <tr>
                                                         <td style="padding: 40px; font-size: 14px; font-size: 14px; font-family: 'Open Sans Regular', sans-serif; color: #9498B8;">
-                                                            <a href="www.propeler.co" target="_blank" style="color: #3DC6FA;">www.propeler.co</a>. You may change your <a href="#" style="color: #3DC6FA;">email preferences</a> at any time.
+                                                            <a href="www.propeler.co" style="color: #3DC6FA;"
+                                                               target="_blank">www.propeler.co</a>. You may
+                                                            change your <a href="#" style="color: #3DC6FA;">email
+                                                            preferences</a> at any time.
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -281,7 +381,17 @@
                                                 <table style="width:500px; margin: 0 auto;">
                                                     <tr>
                                                         <td style="color: #9498B8; font-family: 'Open Sans Regular', sans-serif; font-size:12px; line-height: 1.4; padding-bottom: 25px;">
-                                                            <strong>Legal note</strong>: The information appearing in this email is approved as a financial promotion by Funderbeam Markets Limited (authorised and regulated by the Financial Conduct Authority under FRN 794918). Complete and comprehensive information about an investment opportunity is only available to the investors who have been approved by a Funderbeam group entity. Funderbeam does not provide investment advice or any recommendation to invest. The investment opportunity should not be considered as an offer to the public and is not directed at or offered to anyone located in a jurisdiction where it is unlawful to do so.
+                                                            <strong>Legal note</strong>: The information appearing in
+                                                            this email is approved as a financial promotion by
+                                                            Funderbeam Markets Limited (authorised and regulated by the
+                                                            Financial Conduct Authority under FRN 794918). Complete and
+                                                            comprehensive information about an investment opportunity is
+                                                            only available to the investors who have been approved by a
+                                                            Funderbeam group entity. Funderbeam does not provide
+                                                            investment advice or any recommendation to invest. The
+                                                            investment opportunity should not be considered as an offer
+                                                            to the public and is not directed at or offered to anyone
+                                                            located in a jurisdiction where it is unlawful to do so.
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -297,7 +407,8 @@
 
             <!-- Footer -->
             <table align="center" aria-hidden="true" border="0"
-                   cellpadding="0" cellspacing="0" class="container" role="presentation" style="margin-top: 20px; border-top: 1px solid #9498b8;" width="600">
+                   cellpadding="0" cellspacing="0" class="container" role="presentation"
+                   style="margin-top: 20px; border-top: 1px solid #9498b8;" width="600">
                 <tr>
                     <td>
                         <!-- Physical address -->

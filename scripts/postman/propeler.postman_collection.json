@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "43fb189a-264d-46bd-8f4f-ceacf4c817d0",
+		"_postman_id": "c5c21827-e346-40b2-ab56-74e81a8526dc",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1863,7 +1863,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableEquity?",
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableEquity",
 							"host": [
 								"{{server_ip}}"
 							],
@@ -1872,6 +1872,72 @@
 								"campaigns",
 								"{{campaign_fname}}",
 								"availableEquity"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableInvestableAmount",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableInvestableAmount",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}",
+								"availableInvestableAmount"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableInvestment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableInvestment",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaign_fname}}",
+								"availableInvestment"
 							],
 							"query": [
 								{
@@ -3093,15 +3159,14 @@
 							}
 						],
 						"url": {
-							"raw": "{{server_ip}}/api/investments/{{investID}}/revoke",
+							"raw": "{{server_ip}}/api/investments/{{investID}}",
 							"host": [
 								"{{server_ip}}"
 							],
 							"path": [
 								"api",
 								"investments",
-								"{{investID}}",
-								"revoke"
+								"{{investID}}"
 							]
 						}
 					},

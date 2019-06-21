@@ -102,7 +102,7 @@ public interface ExceptionMessages {
   String INVESTMENT_CAN_NOT_BE_GREATER_THAN_MAX_INVESTMENT = "INV_005";
 
   // Percentage of equity can not be greater than campaign maximum equity offered.
-  String INVESTMENT_CAN_NOT_BE_GREATER_THAN_CAMPAIGN_MAXIMUM_EQUITY = "INV_006";
+  String INVESTMENT_CAN_NOT_BE_GREATER_THAN_CAMPAIGN_MAXIMUM_EQUITY_AVAILABLE = "INV_006";
 
   // Negative value provided.
   String NEGATIVE_VALUE_EXCEPTION = "INV_007";

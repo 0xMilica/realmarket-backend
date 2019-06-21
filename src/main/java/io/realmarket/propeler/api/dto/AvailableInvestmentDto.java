@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @ApiModel("Login credentials.")
@@ -14,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InvestmentDto {
-  @NotNull(message = "Please provide amount")
+public class AvailableInvestmentDto {
   private BigDecimal amount;
+  private BigDecimal equity;
 }

@@ -196,10 +196,22 @@ public class CampaignControllerImpl implements CampaignController {
     return ResponseEntity.ok(campaignService.getAvailableEquity(campaignName));
   }
 
+  @GetMapping(value = "/{campaignName}/availableInvestment")
+  @PreAuthorize("hasAnyAuthority('ROLE_INVESTOR', 'ROLE_ENTREPRENEUR')")
+  public ResponseEntity getAvailableInvestment(@PathVariable String campaignName) {
+    return ResponseEntity.ok(campaignService.getAvailableInvestment(campaignName));
+  }
+
+  @GetMapping(value = "/{campaignName}/availableInvestableAmount")
+  @PreAuthorize("hasAnyAuthority('ROLE_INVESTOR', 'ROLE_ENTREPRENEUR')")
+  public ResponseEntity getAvailableInvestableAmount(@PathVariable String campaignName) {
+    return ResponseEntity.ok(campaignService.getAvailableInvestableAmount(campaignName));
+  }
+
   @PostMapping(value = "/{campaignName}/invest")
   @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
   public ResponseEntity investInCampaign(
-      @RequestBody InvestmentDto amountOfMoney, @PathVariable String campaignName) {
+      @RequestBody AvailableInvestmentDto amountOfMoney, @PathVariable String campaignName) {
     investmentService.invest(amountOfMoney.getAmount(), campaignName);
     return ResponseEntity.noContent().build();
   }

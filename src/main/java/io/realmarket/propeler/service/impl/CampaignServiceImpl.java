@@ -378,6 +378,25 @@ public class CampaignServiceImpl implements CampaignService {
     }
   }
 
+  private BigDecimal getAbsoluteMaximumInvestmentAmount(Campaign campaign) {
+    return BigDecimal.valueOf(campaign.getFundingGoals())
+            .multiply(campaign.getMaxEquityOffered()
+                              .divide(campaign.getMinEquityOffered(), MathContext.DECIMAL128));
+  }
+
+  @Override
+  public BigDecimal getMaximumInvestableAmount(Campaign campaign) {
+    return getAbsoluteMaximumInvestmentAmount(campaign).subtract(campaign.getCollectedAmount());
+  }
+
+  @Override
+  public BigDecimal getMaximumAcquirableEquity(Campaign campaign) {
+    return campaign
+        .getMaxEquityOffered()
+        .multiply(getMaximumInvestableAmount(campaign)
+        .divide(getAbsoluteMaximumInvestmentAmount(campaign), MathContext.DECIMAL128));
+  }
+
   @Override
   public BigDecimal convertMoneyToPercentageOfEquity(String campaignName, BigDecimal money) {
     if (money.compareTo(BigDecimal.valueOf(0)) < 0) {
@@ -387,12 +406,7 @@ public class CampaignServiceImpl implements CampaignService {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
     throwIfNotActive(campaign);
 
-    BigDecimal maxInvest =
-        BigDecimal.valueOf(campaign.getFundingGoals())
-            .multiply(
-                campaign
-                    .getMaxEquityOffered()
-                    .divide(campaign.getMinEquityOffered(), MathContext.DECIMAL128));
+    BigDecimal maxInvest = getMaximumInvestableAmount(campaign);
 
     if (money.compareTo(campaign.getMinInvestment()) < 0) {
       throw new BadRequestException(INVESTMENT_MUST_BE_GREATER_THAN_CAMPAIGN_MIN_INVESTMENT);
@@ -415,8 +429,11 @@ public class CampaignServiceImpl implements CampaignService {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
     throwIfNotActive(campaign);
 
-    if (percentageOfEquity.compareTo(campaign.getMaxEquityOffered()) > 0) {
-      throw new BadRequestException(INVESTMENT_CAN_NOT_BE_GREATER_THAN_CAMPAIGN_MAXIMUM_EQUITY);
+    BigDecimal acquirableEquity = getMaximumAcquirableEquity(campaign);
+
+    if (percentageOfEquity.compareTo(acquirableEquity) > 0) {
+      throw new BadRequestException(
+          INVESTMENT_CAN_NOT_BE_GREATER_THAN_CAMPAIGN_MAXIMUM_EQUITY_AVAILABLE);
     }
 
     return percentageOfEquity
@@ -425,17 +442,23 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
+  public BigDecimal getAvailableInvestableAmount(String campaignName) {
+    Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
+    return getMaximumInvestableAmount(campaign);
+  }
+
+  @Override
   public BigDecimal getAvailableEquity(String campaignName) {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
-    BigDecimal maxSum =
-        BigDecimal.valueOf(campaign.getFundingGoals())
-            .multiply(campaign.getMaxEquityOffered(), MathContext.DECIMAL128)
-            .divide(campaign.getMinEquityOffered(), MathContext.DECIMAL128);
-    return campaign
-        .getMaxEquityOffered()
-        .multiply(
-            maxSum.subtract(campaign.getCollectedAmount(), MathContext.DECIMAL128),
-            MathContext.DECIMAL128)
-        .divide(maxSum, MathContext.DECIMAL128);
+    return getMaximumAcquirableEquity(campaign);
+  }
+
+  @Override
+  public AvailableInvestmentDto getAvailableInvestment(String campaignName) {
+    Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
+    return AvailableInvestmentDto.builder()
+        .amount(getMaximumInvestableAmount(campaign))
+        .equity(getMaximumAcquirableEquity(campaign))
+        .build();
   }
 }

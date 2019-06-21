@@ -505,7 +505,7 @@ public class CampaignServiceImplTest {
             investableCampaign.getUrlFriendlyName()))
         .thenReturn(Optional.of(investableCampaign));
     assertEquals(
-        BigDecimal.valueOf(5L),
+        BigDecimal.valueOf(5.),
         campaignServiceImpl.getAvailableEquity(investableCampaign.getUrlFriendlyName()));
   }
 
@@ -520,4 +520,26 @@ public class CampaignServiceImplTest {
         BigDecimal.ZERO,
         campaignServiceImpl.getAvailableEquity(investableCampaign.getUrlFriendlyName()));
   }
+
+  @Test
+  public void GetAvailableInvestmentAmount_Should_Return_InvestableAmount() {
+    Campaign investableCampaign = getInvestableCampaignMocked();
+    investableCampaign.setCollectedAmount(BigDecimal.ZERO);
+    assertEquals(BigDecimal.valueOf(1000), campaignServiceImpl.getMaximumInvestableAmount(investableCampaign));
+  }
+
+  @Test
+  public void GetAvailableInvestmentAmount_Should_Return_HalfOfInvestableAmount() {
+    Campaign investableCampaign = getInvestableCampaignMocked();
+    investableCampaign.setCollectedAmount(BigDecimal.valueOf(500L));
+    assertEquals(BigDecimal.valueOf(500L), campaignServiceImpl.getMaximumInvestableAmount(investableCampaign));
+  }
+
+  @Test
+  public void GetAvailableEquity_Should_Return_NoInvestableAmountLeft() {
+    Campaign investableCampaign = getInvestableCampaignMocked();
+    investableCampaign.setCollectedAmount(BigDecimal.valueOf(1000L));
+    assertEquals(BigDecimal.ZERO, campaignServiceImpl.getMaximumInvestableAmount(investableCampaign));
+  }
+
 }
