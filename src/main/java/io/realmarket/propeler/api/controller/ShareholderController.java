@@ -2,6 +2,7 @@ package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.ShareholderDto;
+import io.realmarket.propeler.api.dto.ShareholderPublicResponseDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,7 +56,7 @@ public interface ShareholderController {
     @ApiResponse(code = 201, message = "Shareholders successfully retrieved."),
     @ApiResponse(code = 400, message = "Invalid request.")
   })
-  ResponseEntity<List<ShareholderDto>> getShareholders(Long companyId);
+  ResponseEntity<List<ShareholderPublicResponseDto>> getShareholders(Long companyId);
 
   @ApiOperation(
       value = "Patch shareholder",

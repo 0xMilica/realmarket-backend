@@ -3,6 +3,7 @@ package io.realmarket.propeler.api.controller.impl;
 import io.realmarket.propeler.api.controller.ShareholderController;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.ShareholderDto;
+import io.realmarket.propeler.api.dto.ShareholderPublicResponseDto;
 import io.realmarket.propeler.service.ShareholderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +57,11 @@ public class ShareholderControllerImpl implements ShareholderController {
 
   @Override
   @GetMapping("/{companyId}/shareholders")
-  public ResponseEntity<List<ShareholderDto>> getShareholders(@PathVariable Long companyId) {
+  public ResponseEntity<List<ShareholderPublicResponseDto>> getShareholders(
+      @PathVariable Long companyId) {
     return ResponseEntity.ok(
         shareholderService.getShareholders(companyId).stream()
-            .map(ShareholderDto::new)
+            .map(ShareholderPublicResponseDto::new)
             .collect(Collectors.toList()));
   }
 
