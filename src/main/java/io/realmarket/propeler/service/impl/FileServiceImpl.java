@@ -18,7 +18,7 @@ import java.io.IOException;
 @Slf4j
 public class FileServiceImpl implements FileService {
 
-  public static final String PUBLIC_FILE_ENDPOING = "/api/files/public/";
+  public static final String PUBLIC_FILE_ENDPOINT = "/api/files/public/";
   private final CloudObjectStorageService cloudObjectStorageService;
 
   @Value("${app.filename-length}")

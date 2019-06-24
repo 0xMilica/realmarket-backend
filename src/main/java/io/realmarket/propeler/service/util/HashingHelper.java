@@ -8,8 +8,6 @@ import java.security.NoSuchAlgorithmException;
 
 public class HashingHelper {
 
-  private HashingHelper() {}
-
   public static final String HASH_ALGORITHM = "SHA-256";
   private static MessageDigest messageDigest;
 
@@ -20,6 +18,8 @@ public class HashingHelper {
       throw new HashException(ExceptionMessages.NO_HASH_ALGORITHM);
     }
   }
+
+  private HashingHelper() {}
 
   public static String hash(String s) {
     if (s == null) return null;

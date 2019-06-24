@@ -380,8 +380,10 @@ public class CampaignServiceImpl implements CampaignService {
 
   private BigDecimal getAbsoluteMaximumInvestmentAmount(Campaign campaign) {
     return BigDecimal.valueOf(campaign.getFundingGoals())
-            .multiply(campaign.getMaxEquityOffered()
-                              .divide(campaign.getMinEquityOffered(), MathContext.DECIMAL128));
+        .multiply(
+            campaign
+                .getMaxEquityOffered()
+                .divide(campaign.getMinEquityOffered(), MathContext.DECIMAL128));
   }
 
   @Override
@@ -393,8 +395,9 @@ public class CampaignServiceImpl implements CampaignService {
   public BigDecimal getMaximumAcquirableEquity(Campaign campaign) {
     return campaign
         .getMaxEquityOffered()
-        .multiply(getMaximumInvestableAmount(campaign)
-        .divide(getAbsoluteMaximumInvestmentAmount(campaign), MathContext.DECIMAL128));
+        .multiply(
+            getMaximumInvestableAmount(campaign)
+                .divide(getAbsoluteMaximumInvestmentAmount(campaign), MathContext.DECIMAL128));
   }
 
   @Override

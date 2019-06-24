@@ -1,0 +1,25 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="ovlajic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence campaign_update_image_seq;
+            create table if not exists campaign_update_image
+            (
+            id bigint not null
+            constraint campaign_update_image_pkey
+            primary key,
+            url varchar(255)
+            constraint campaign_update_image_uk
+            unique,
+            campaign_update_id bigint
+            constraint campaign_update_image_fk_on_campaign_update
+            references campaign_update
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

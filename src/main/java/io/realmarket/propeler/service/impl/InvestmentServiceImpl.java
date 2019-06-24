@@ -40,6 +40,7 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final CampaignInvestmentRepository campaignInvestmentRepository;
   private final PaymentService paymentService;
   private final InvestmentStateService investmentStateService;
+
   @Value("${app.investment.weekInMillis}")
   private long weekInMillis;
 

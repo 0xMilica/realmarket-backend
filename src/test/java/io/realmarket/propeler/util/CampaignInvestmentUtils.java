@@ -21,6 +21,7 @@ public class CampaignInvestmentUtils {
       InvestmentState.builder().name(InvestmentStateName.APPROVED).build();
   public static final InvestmentState TEST_INVESTMENT_REJECTED_STATE =
       InvestmentState.builder().name(InvestmentStateName.REJECTED).build();
+  public static final Instant TEST_INVESTMENT_PAYMENT_DATE = Instant.now().minusMillis(WEEK);
 
   public static final CampaignInvestment TEST_CAMPAIGN_INVESTMENT_INITIAL =
       CampaignInvestment.builder()
@@ -36,7 +37,7 @@ public class CampaignInvestmentUtils {
           .investmentState(TEST_INVESTMENT_PAID_STATE)
           .auth(AuthUtils.TEST_AUTH_INVESTOR)
           .investedAmount(BigDecimal.valueOf(100))
-          .paymentDate(Instant.now().minusMillis(WEEK))
+          .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
           .build();
 
   public static final CampaignInvestment TEST_CAMPAIGN_INVESTMENT_PAID_REVOCABLE =
@@ -54,7 +55,7 @@ public class CampaignInvestmentUtils {
           .investmentState(TEST_INVESTMENT_INITIAL_STATE)
           .auth(AuthUtils.TEST_AUTH_INVESTOR)
           .investedAmount(BigDecimal.valueOf(100))
-          .paymentDate(Instant.now().minusMillis(WEEK))
+          .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
           .build();
 
   public static final CampaignInvestment TEST_CAMPAIGN_INVESTMENT_REVOKED =
@@ -72,7 +73,7 @@ public class CampaignInvestmentUtils {
           .investmentState(TEST_INVESTMENT_APPROVED_STATE)
           .auth(AuthUtils.TEST_AUTH_INVESTOR)
           .investedAmount(BigDecimal.valueOf(100))
-          .paymentDate(Instant.now().minusMillis(WEEK))
+          .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
           .build();
 
   public static final CampaignInvestment TEST_CAMPAIGN_INVESTMENT_REJECTED =
@@ -81,6 +82,6 @@ public class CampaignInvestmentUtils {
           .investmentState(TEST_INVESTMENT_REJECTED_STATE)
           .auth(AuthUtils.TEST_AUTH_INVESTOR)
           .investedAmount(BigDecimal.valueOf(100))
-          .paymentDate(Instant.now().minusMillis(WEEK))
+          .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
           .build();
 }

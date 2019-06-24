@@ -25,6 +25,8 @@
     <include file="migrations/campaign_topic_type_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_topic_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_topic_image_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/campaign_update_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/campaign_update_image_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/platform_settings_table.xml" relativeToChangelogFile="true"/>
 
     <include file="migrations/country_table_init.xml" relativeToChangelogFile="true"/>

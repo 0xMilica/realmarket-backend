@@ -541,5 +541,4 @@ public class CampaignServiceImplTest {
     investableCampaign.setCollectedAmount(BigDecimal.valueOf(1000L));
     assertEquals(BigDecimal.ZERO, campaignServiceImpl.getMaximumInvestableAmount(investableCampaign));
   }
-
 }

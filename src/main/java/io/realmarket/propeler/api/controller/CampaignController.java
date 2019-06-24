@@ -419,21 +419,114 @@ public interface CampaignController {
 
   @ApiOperation(value = "Get user portfolio", httpMethod = "GET", produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
-          @ApiImplicitParam(
-                  name = "page",
-                  value = "Number of page to be returned",
-                  defaultValue = "20",
-                  required = false,
-                  dataType = "Integer",
-                  paramType = "query"),
-          @ApiImplicitParam(
-                  name = "size",
-                  value = "Page size (number of items to be returned)",
-                  defaultValue = "0",
-                  required = false,
-                  dataType = "Integer",
-                  paramType = "query")
+    @ApiImplicitParam(
+        name = "page",
+        value = "Number of page to be returned",
+        defaultValue = "20",
+        required = false,
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        required = false,
+        dataType = "Integer",
+        paramType = "query")
   })
   @ApiResponses(@ApiResponse(code = 200, message = "OK"))
   ResponseEntity<Page<PortfolioCampaignResponseDto>> getPortfolio(Pageable pageable);
+
+  @ApiOperation(
+      value = "Create campaign update",
+      httpMethod = "POST",
+      produces = APPLICATION_JSON_VALUE,
+      consumes = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignName",
+        value = "Campaign's name",
+        required = true,
+        dataType = "String",
+        paramType = "path"),
+    @ApiImplicitParam(
+        name = "campaignUpdateDto",
+        value = "Dto that contains information about campaign update",
+        required = true,
+        dataType = "CampaignUpdateDto",
+        paramType = "body")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaign update successfully created"),
+    @ApiResponse(code = 404, message = "Campaign not found.")
+  })
+  ResponseEntity<CampaignUpdateResponseDto> createCampaignUpdate(
+      String campaignName, CampaignUpdateDto campaignUpdateDto);
+
+  @ApiOperation(
+      value = "Update campaign update content",
+      httpMethod = "PUT",
+      consumes = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignUpdateId",
+        value = "Campaign update identifier",
+        required = true,
+        dataType = "String",
+        paramType = "path"),
+    @ApiImplicitParam(
+        name = "campaignUpdateDto",
+        value = "Dto that contains information about campaign update",
+        required = true,
+        dataType = "CampaignUpdateDto",
+        paramType = "body")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaign update content successfully updated."),
+    @ApiResponse(code = 404, message = "Campaign not found.")
+  })
+  ResponseEntity<CampaignUpdateResponseDto> updateCampaignUpdate(
+      Long campaignUpdateId, CampaignUpdateDto campaignUpdateDto);
+
+  @ApiOperation(
+      value = "Upload campaign update image",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignUpdateId",
+        value = "Campaign update identifier",
+        required = true,
+        dataType = "Long",
+        paramType = "path"),
+    @ApiImplicitParam(
+        name = "image",
+        value = "Image for campaign update content",
+        required = true,
+        dataType = "MultipartFile",
+        paramType = "form")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 201, message = "Campaign update image successfully uploaded."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 404, message = "Campaign update not found.")
+  })
+  ResponseEntity<FilenameDto> uploadCampaignUpdateImage(Long campaignUpdateId, MultipartFile image);
+
+  @ApiOperation(
+      value = "Get campaign update",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParam(
+      name = "campaignUpdateId",
+      value = "Campaign update identifier",
+      required = true,
+      dataType = "Long",
+      paramType = "path")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaign update successfully retrieved."),
+    @ApiResponse(code = 404, message = "Campaign does not exists.")
+  })
+  ResponseEntity<CampaignUpdateResponseDto> getCampaignUpdate(Long campaignUpdateId);
 }

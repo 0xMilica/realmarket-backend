@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c5c21827-e346-40b2-ab56-74e81a8526dc",
+		"_postman_id": "c35adeed-fe97-499e-8212-146b1825aafe",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1311,6 +1311,172 @@
 					"_postman_isSubFolder": true
 				},
 				{
+					"name": "update",
+					"item": [
+						{
+							"name": "/updates",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\":\"title\",\r\n  \"content\":\"content\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/updates",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"updates"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/updates/{{update_id}}",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/updates/{{update_id}}",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"updates",
+										"{{update_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/updates/{{update_id}}",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"content\": \"new_content\"\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/mine/updates/{{update_id}}",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"mine",
+										"updates",
+										"{{update_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/updates/{{update_id}}/images",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/mine/updates/{{update_id}}/images",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"mine",
+										"updates",
+										"{{update_id}}",
+										"images"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
 					"name": "/campaigns",
 					"request": {
 						"method": "POST",
@@ -1872,13 +2038,6 @@
 								"campaigns",
 								"{{campaign_fname}}",
 								"availableEquity"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "",
-									"disabled": true
-								}
 							]
 						}
 					},
@@ -1905,13 +2064,6 @@
 								"campaigns",
 								"{{campaign_fname}}",
 								"availableInvestableAmount"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "",
-									"disabled": true
-								}
 							]
 						}
 					},
@@ -1938,12 +2090,51 @@
 								"campaigns",
 								"{{campaign_fname}}",
 								"availableInvestment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/campaigns/mine/portfolio",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/mine/portfolio?page=0&size=3",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"mine",
+								"portfolio"
 							],
 							"query": [
 								{
-									"key": "",
-									"value": "",
-									"disabled": true
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "3"
 								}
 							]
 						}

@@ -66,6 +66,6 @@ public class CampaignTopicImageServiceImpl implements CampaignTopicImageService 
     campaignTopicImageRepository.save(
         CampaignTopicImage.builder().url(url).campaignTopic(campaignTopic).build());
 
-    return new FilenameDto(String.join("", FileServiceImpl.PUBLIC_FILE_ENDPOING, url));
+    return new FilenameDto(String.join("", FileServiceImpl.PUBLIC_FILE_ENDPOINT, url));
   }
 }

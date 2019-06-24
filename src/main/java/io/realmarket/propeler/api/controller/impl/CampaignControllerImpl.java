@@ -2,10 +2,7 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.CampaignController;
 import io.realmarket.propeler.api.dto.*;
-import io.realmarket.propeler.service.CampaignDocumentService;
-import io.realmarket.propeler.service.CampaignService;
-import io.realmarket.propeler.service.CampaignTeamMemberService;
-import io.realmarket.propeler.service.InvestmentService;
+import io.realmarket.propeler.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +25,8 @@ public class CampaignControllerImpl implements CampaignController {
   private final CampaignService campaignService;
   private final CampaignDocumentService campaignDocumentService;
   private final CampaignTeamMemberService campaignTeamMemberService;
+  private final CampaignUpdateService campaignUpdateService;
+  private final CampaignUpdateImageService campaignUpdateImageService;
   private final InvestmentService investmentService;
 
   @Autowired
@@ -35,10 +34,14 @@ public class CampaignControllerImpl implements CampaignController {
       CampaignService campaignService,
       CampaignDocumentService campaignDocumentService,
       CampaignTeamMemberService campaignTeamMemberService,
+      CampaignUpdateService campaignUpdateService,
+      CampaignUpdateImageService campaignUpdateImageService,
       InvestmentService investmentService) {
     this.campaignService = campaignService;
     this.campaignDocumentService = campaignDocumentService;
     this.campaignTeamMemberService = campaignTeamMemberService;
+    this.campaignUpdateService = campaignUpdateService;
+    this.campaignUpdateImageService = campaignUpdateImageService;
     this.investmentService = investmentService;
   }
 
@@ -216,10 +219,39 @@ public class CampaignControllerImpl implements CampaignController {
     return ResponseEntity.noContent().build();
   }
 
-  @Override
   @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
   @GetMapping(value = "/mine/portfolio")
   public ResponseEntity<Page<PortfolioCampaignResponseDto>> getPortfolio(Pageable pageable) {
     return ResponseEntity.ok(investmentService.getPortfolio(pageable));
+  }
+
+  @PostMapping(value = "/{campaignName}/updates")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<CampaignUpdateResponseDto> createCampaignUpdate(
+      @PathVariable String campaignName, @Valid @RequestBody CampaignUpdateDto campaignUpdateDto) {
+    return ResponseEntity.ok(
+        campaignUpdateService.createCampaignUpdate(campaignName, campaignUpdateDto));
+  }
+
+  @PutMapping(value = "/mine/updates/{id}")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<CampaignUpdateResponseDto> updateCampaignUpdate(
+      @PathVariable Long campaignUpdateId,
+      @Valid @RequestBody CampaignUpdateDto campaignUpdateDto) {
+    return ResponseEntity.ok(
+        campaignUpdateService.updateCampaignUpdate(campaignUpdateId, campaignUpdateDto));
+  }
+
+  @PostMapping(value = "/mine/updates/{id}/images")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<FilenameDto> uploadCampaignUpdateImage(
+      @PathVariable Long campaignUpdateId, @RequestParam("image") MultipartFile image) {
+    return ResponseEntity.ok(campaignUpdateImageService.uploadImage(campaignUpdateId, image));
+  }
+
+  @GetMapping(value = "/updates/{id}")
+  public ResponseEntity<CampaignUpdateResponseDto> getCampaignUpdate(
+      @PathVariable Long campaignUpdateId) {
+    return ResponseEntity.ok(campaignUpdateService.getCampaignUpdate(campaignUpdateId));
   }
 }

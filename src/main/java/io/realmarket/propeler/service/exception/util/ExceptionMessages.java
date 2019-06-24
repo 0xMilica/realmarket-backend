@@ -86,6 +86,9 @@ public interface ExceptionMessages {
   // No active campaign.
   String NO_ACTIVE_CAMPAIGN = "CAM_011";
 
+  // Campaign update for provided id not found.
+  String CAMPAIGN_UPDATE_NOT_FOUND = "CAM_012";
+
   // User is not investor in this campaign.
   String NOT_CAMPAIGN_INVESTOR = "INV_001";
 
