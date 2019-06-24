@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c35adeed-fe97-499e-8212-146b1825aafe",
+		"_postman_id": "540e2c64-c1f7-42b8-9503-1c71153ef20a",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1379,6 +1379,42 @@
 										"campaigns",
 										"updates",
 										"{{update_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/{{campaign_fname}}/updates",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/updates?size=2&page=0",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"updates"
+									],
+									"query": [
+										{
+											"key": "size",
+											"value": "2"
+										},
+										{
+											"key": "page",
+											"value": "0"
+										}
 									]
 								}
 							},

@@ -254,4 +254,10 @@ public class CampaignControllerImpl implements CampaignController {
       @PathVariable Long campaignUpdateId) {
     return ResponseEntity.ok(campaignUpdateService.getCampaignUpdate(campaignUpdateId));
   }
+
+  @Override
+  @GetMapping(value = "/{campaignName}/updates")
+  public ResponseEntity listCampaignsUpdates(Pageable pageable, @PathVariable String campaignName) {
+    return ResponseEntity.ok(campaignUpdateService.getCampaignUpdates(campaignName, pageable));
+  }
 }

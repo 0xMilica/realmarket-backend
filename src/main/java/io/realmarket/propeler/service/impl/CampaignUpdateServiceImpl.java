@@ -9,7 +9,9 @@ import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CampaignUpdateImageService;
 import io.realmarket.propeler.service.CampaignUpdateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
@@ -77,5 +79,11 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
   @Override
   public CampaignUpdateResponseDto getCampaignUpdate(Long id) {
     return new CampaignUpdateResponseDto(findByIdOrThrowException(id));
+  }
+
+  @Override
+  public Page<CampaignUpdateResponseDto> getCampaignUpdates(String campaignName, Pageable pageable) {
+    Campaign campaign = campaignService.getCampaignByUrlFriendlyName(campaignName);
+    return campaignUpdateRepository.findByCampaign(campaign, pageable).map(CampaignUpdateResponseDto::new);
   }
 }

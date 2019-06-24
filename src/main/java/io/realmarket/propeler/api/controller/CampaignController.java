@@ -529,4 +529,37 @@ public interface CampaignController {
     @ApiResponse(code = 404, message = "Campaign does not exists.")
   })
   ResponseEntity<CampaignUpdateResponseDto> getCampaignUpdate(Long campaignUpdateId);
+
+  @ApiOperation(
+      value = "Get updates for campaign, pageable.",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+      @ApiImplicitParam(
+          name = "page",
+          value = "Number of page to be returned",
+          defaultValue = "20",
+          required = false,
+          dataType = "Integer",
+          paramType = "query"),
+      @ApiImplicitParam(
+          name = "size",
+          value = "Page size (number of items to be returned)",
+          defaultValue = "0",
+          required = false,
+          dataType = "Integer",
+          paramType = "query"),
+      @ApiImplicitParam(
+          name = "campaignName",
+          value = "Name of the campaign that is being queried for updates.",
+          required = true,
+          dataType = "String")
+  })
+  @ApiResponses({
+      @ApiResponse(code = 204, message = "Campaign's updates were successfully fetched."),
+      @ApiResponse(
+          code = 403,
+          message = "Campaign state is invalid, or there is no campaign under provided name."),
+  })
+  ResponseEntity listCampaignsUpdates(Pageable pageable, String campaignName);
 }
