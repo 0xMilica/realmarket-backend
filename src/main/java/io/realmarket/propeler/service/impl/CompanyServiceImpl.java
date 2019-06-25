@@ -4,15 +4,21 @@ import io.realmarket.propeler.api.dto.CompanyPatchDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
+import io.realmarket.propeler.model.CompanyEditRequest;
 import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.CompanyRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.AdministratorService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.BlockchainMethod;
+import io.realmarket.propeler.service.blockchain.dto.company.EditRequestDto;
+import io.realmarket.propeler.service.blockchain.dto.company.RegistrationDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.FileUtils;
+import io.realmarket.propeler.service.util.HttpRequestHelper;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
@@ -33,6 +40,8 @@ public class CompanyServiceImpl implements CompanyService {
   private final AdministratorService administratorService;
   private final CloudObjectStorageService cloudObjectStorageService;
   private final ModelMapperBlankString modelMapperBlankString;
+  private final BlockchainCommunicationService blockchainCommunicationService;
+  private final HttpServletRequest request;
 
   @Value(value = "${cos.file_prefix.company_logo}")
   private String companyLogoPrefix;
@@ -45,11 +54,15 @@ public class CompanyServiceImpl implements CompanyService {
       CompanyRepository companyRepository,
       AdministratorService administratorService,
       CloudObjectStorageService cloudObjectStorageService,
-      ModelMapperBlankString modelMapperBlankString) {
+      ModelMapperBlankString modelMapperBlankString,
+      BlockchainCommunicationService blockchainCommunicationService,
+      HttpServletRequest request) {
     this.companyRepository = companyRepository;
     this.administratorService = administratorService;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.modelMapperBlankString = modelMapperBlankString;
+    this.blockchainCommunicationService = blockchainCommunicationService;
+    this.request = request;
   }
 
   public void throwIfNoAccess(Company company) {
@@ -65,14 +78,28 @@ public class CompanyServiceImpl implements CompanyService {
     if (companyRepository.existsCompanyByAuth(AuthenticationUtil.getAuthentication().getAuth())) {
       throw new ForbiddenOperationException(COMPANY_ALREADY_EXISTS);
     }
-    return companyRepository.save(company);
+    company = companyRepository.save(company);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.COMPANY_REGISTRATION,
+        new RegistrationDto(company),
+        HttpRequestHelper.getIP(request));
+
+    return company;
   }
 
   public Company patch(Long companyId, CompanyPatchDto companyPatchDto) {
     Company company = findByIdOrThrowException(companyId);
     throwIfNoAccess(company);
     if (companyPatchDto.shouldAdminBeCalled()) {
-      administratorService.requestCompanyEdit(companyPatchDto.buildCompanyEditRequest(company));
+      CompanyEditRequest editRequest = companyPatchDto.buildCompanyEditRequest(company);
+      administratorService.requestCompanyEdit(editRequest);
+
+      blockchainCommunicationService.invoke(
+          BlockchainMethod.COMPANY_EDIT_REQUEST,
+          new EditRequestDto(editRequest),
+          HttpRequestHelper.getIP(request));
+
       return company;
     }
     modelMapperBlankString.map(companyPatchDto, company);

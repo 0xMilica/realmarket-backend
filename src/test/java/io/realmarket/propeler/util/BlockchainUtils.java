@@ -1,9 +1,9 @@
 package io.realmarket.propeler.util;
 
-import io.realmarket.propeler.service.blockchain.dto.EmailChangeDto;
-import io.realmarket.propeler.service.blockchain.dto.PasswordChangeDto;
-import io.realmarket.propeler.service.blockchain.dto.RegenerationOfRecoveryDto;
-import io.realmarket.propeler.service.blockchain.dto.RegistrationDto;
+import io.realmarket.propeler.service.blockchain.dto.user.EmailChangeDto;
+import io.realmarket.propeler.service.blockchain.dto.user.PasswordChangeDto;
+import io.realmarket.propeler.service.blockchain.dto.user.RegenerationOfRecoveryDto;
+import io.realmarket.propeler.service.blockchain.dto.user.RegistrationDto;
 import org.springframework.http.ResponseEntity;
 
 import java.time.Instant;

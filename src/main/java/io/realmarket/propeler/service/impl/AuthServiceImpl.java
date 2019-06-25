@@ -16,8 +16,8 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.EmailChangeDto;
-import io.realmarket.propeler.service.blockchain.dto.PasswordChangeDto;
+import io.realmarket.propeler.service.blockchain.dto.user.EmailChangeDto;
+import io.realmarket.propeler.service.blockchain.dto.user.PasswordChangeDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.ForbiddenRoleException;
@@ -225,7 +225,7 @@ public class AuthServiceImpl implements AuthService {
 
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_REGISTRATION,
-        new io.realmarket.propeler.service.blockchain.dto.RegistrationDto(auth),
+        new io.realmarket.propeler.service.blockchain.dto.user.RegistrationDto(auth),
         HttpRequestHelper.getIP(request));
   }
 

@@ -1,7 +1,7 @@
 package io.realmarket.propeler.service.impl.blockchain.impl;
 
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.HashedPersonDetails;
+import io.realmarket.propeler.service.blockchain.dto.user.HashedPersonDetails;
 import io.realmarket.propeler.service.blockchain.exception.BlockchainException;
 import io.realmarket.propeler.service.blockchain.impl.BlockchainCommunicationServiceImpl;
 import io.realmarket.propeler.util.BlockchainUtils;

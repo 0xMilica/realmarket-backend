@@ -9,7 +9,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.RegenerationOfRecoveryDto;
+import io.realmarket.propeler.service.blockchain.dto.user.RegenerationOfRecoveryDto;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.*;

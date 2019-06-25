@@ -81,6 +81,7 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     try {
       dto.setIP(ipAddress);
       dto.setTimestamp(Instant.now().getEpochSecond());
+      log.debug("Blockchain dto: {}", dto);
       args.put(arguments, Collections.singletonList(new ObjectMapper().writeValueAsString(dto)));
     } catch (JsonProcessingException jpe) {
       log.error(jpe.getMessage());

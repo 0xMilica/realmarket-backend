@@ -1,6 +1,7 @@
-package io.realmarket.propeler.service.blockchain.dto;
+package io.realmarket.propeler.service.blockchain.dto.user;
 
 import io.realmarket.propeler.model.Auth;
+import io.realmarket.propeler.service.blockchain.dto.AbstractBlockchainDto;
 import lombok.Builder;
 import lombok.Data;
 
