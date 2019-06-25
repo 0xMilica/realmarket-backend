@@ -1,6 +1,7 @@
 package io.realmarket.propeler.model;
 
 import io.realmarket.propeler.model.enums.EDocumentAccessLevel;
+import io.realmarket.propeler.model.enums.EUserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,4 +30,19 @@ public class DocumentAccessLevel {
 
   @Enumerated(EnumType.STRING)
   private EDocumentAccessLevel name;
+
+  public static boolean hasReadAccess(DocumentAccessLevel accessLevel, EUserRole eUserRole) {
+    switch (accessLevel.getName()) {
+      case PUBLIC:
+        return true;
+      case INVESTORS:
+        if (eUserRole.equals(EUserRole.ROLE_INVESTOR)) return true;
+        // Access INVESTOR means that both ROLE_INVESTOR and ROLE_ADMIN can access this document.
+        // because of this break is omitted.
+      case PLATFORM_ADMINS:
+        if (eUserRole.equals(EUserRole.ROLE_ADMIN)) return true;
+      default:
+        return false;
+    }
+  }
 }

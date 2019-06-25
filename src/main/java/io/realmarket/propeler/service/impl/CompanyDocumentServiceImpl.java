@@ -6,6 +6,7 @@ import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.CompanyDocument;
 import io.realmarket.propeler.model.CompanyDocumentType;
 import io.realmarket.propeler.model.DocumentAccessLevel;
+import io.realmarket.propeler.model.enums.EUserRole;
 import io.realmarket.propeler.repository.CampaignDocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.CompanyDocumentRepository;
 import io.realmarket.propeler.repository.CompanyDocumentTypeRepository;
@@ -64,6 +65,11 @@ public class CompanyDocumentServiceImpl implements CompanyDocumentService {
   }
 
   @Override
+  public List<CompanyDocument> findAllByCompanyOrderByUploadDateDesc(Company company) {
+    return companyDocumentRepository.findAllByCompanyOrderByUploadDateDesc(company);
+  }
+
+  @Override
   @Transactional
   public CompanyDocument submitDocument(CompanyDocumentDto companyDocumentDto, Long companyId) {
     Company company = companyService.findByIdOrThrowException(companyId);
@@ -115,6 +121,25 @@ public class CompanyDocumentServiceImpl implements CompanyDocumentService {
     return findAllByCompany(company).stream()
         .map(CompanyDocumentResponseDto::new)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<CompanyDocumentResponseDto> getCompanyDocuments(Long companyId) {
+    Company company = companyService.findByIdOrThrowException(companyId);
+
+    return findAllByCompanyOrderByUploadDateDesc(company).stream()
+        .filter(this::hasReadAccess)
+        .map(CompanyDocumentResponseDto::new)
+        .collect(Collectors.toList());
+  }
+
+  public boolean hasReadAccess(CompanyDocument companyDocument) {
+    if (companyService.isOwner(companyDocument.getCompany())) {
+      return true;
+    }
+    EUserRole eUserRole = AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
+    DocumentAccessLevel accessLevel = companyDocument.getAccessLevel();
+    return DocumentAccessLevel.hasReadAccess(accessLevel, eUserRole);
   }
 
   private CompanyDocument convertDocumentDtoToDocument(

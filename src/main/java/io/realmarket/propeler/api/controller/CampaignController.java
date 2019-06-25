@@ -181,8 +181,25 @@ public interface CampaignController {
     @ApiResponse(code = 200, message = "Successfully retrieved all documents"),
     @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve campaign documents.")
   })
-  ResponseEntity<Map<String, List<CampaignDocumentResponseDto>>> getCampaignDocuments(
+  ResponseEntity<Map<String, List<CampaignDocumentResponseDto>>> getCampaignDocumentsGroupedByType(
       String campaignName);
+
+  @ApiOperation(
+      value = "Get campaign documents",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParam(
+      name = "campaignName",
+      value = "Campaign's name",
+      required = true,
+      dataType = "String",
+      paramType = "path")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully retrieved campaign documents."),
+    @ApiResponse(code = 404, message = "Campaign not found.")
+  })
+  ResponseEntity<List<CampaignDocumentResponseDto>> getCampaignDocuments(String campaignName);
 
   @ApiOperation(
       value = "Get active campaign",
@@ -261,14 +278,12 @@ public interface CampaignController {
         name = "page",
         value = "Number of page to be returned",
         defaultValue = "20",
-        required = false,
         dataType = "Integer",
         paramType = "query"),
     @ApiImplicitParam(
         name = "size",
         value = "Page size (number of items to be returned)",
         defaultValue = "0",
-        required = false,
         dataType = "Integer",
         paramType = "query"),
     @ApiImplicitParam(
@@ -276,7 +291,6 @@ public interface CampaignController {
         value = "State of campaign to be returned",
         allowableValues = "all, active, post_campaign",
         defaultValue = "active",
-        required = false,
         dataType = "String",
         paramType = "query")
   })
@@ -423,14 +437,12 @@ public interface CampaignController {
         name = "page",
         value = "Number of page to be returned",
         defaultValue = "20",
-        required = false,
         dataType = "Integer",
         paramType = "query"),
     @ApiImplicitParam(
         name = "size",
         value = "Page size (number of items to be returned)",
         defaultValue = "0",
-        required = false,
         dataType = "Integer",
         paramType = "query")
   })

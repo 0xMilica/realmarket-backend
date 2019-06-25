@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/companies")
@@ -114,5 +115,11 @@ public class CompanyControllerImpl implements CompanyController {
   public ResponseEntity deleteCompanyDocument(@PathVariable Long documentId) {
     companyDocumentService.deleteDocument(documentId);
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @GetMapping(value = "/{companyId}/documents")
+  public ResponseEntity<List<CompanyDocumentResponseDto>> getCompanyDocuments(
+      @PathVariable Long companyId) {
+    return ResponseEntity.ok(companyDocumentService.getCompanyDocuments(companyId));
   }
 }

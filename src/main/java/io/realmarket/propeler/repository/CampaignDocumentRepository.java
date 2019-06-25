@@ -17,4 +17,6 @@ public interface CampaignDocumentRepository extends JpaRepository<CampaignDocume
   List<CampaignDocument> findAllByCampaignIn(List<Campaign> campaigns);
 
   Page<CampaignDocument> findAllByCampaignIn(List<Campaign> campaigns, Pageable pageable);
+
+  List<CampaignDocument> findAllByCampaignOrderByUploadDateDesc(Campaign campaign);
 }

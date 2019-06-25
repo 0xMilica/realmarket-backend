@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -92,21 +93,11 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
       return true;
     }
     EUserRole eUserRole = AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
-    switch (campaignDocument.getAccessLevel().getName()) {
-      case PUBLIC:
-        return true;
-      case INVESTORS:
-        if (eUserRole.equals(EUserRole.ROLE_INVESTOR)) return true;
-        // Access INVESTOR means that both ROLE_INVESTOR and ROLE_ADMIN can access this document.
-        // because of this break is omitted.
-      case PLATFORM_ADMINS:
-        if (eUserRole.equals(EUserRole.ROLE_ADMIN)) return true;
-      default:
-        return false;
-    }
+    DocumentAccessLevel accessLevel = campaignDocument.getAccessLevel();
+    return DocumentAccessLevel.hasReadAccess(accessLevel, eUserRole);
   }
 
-  public Map<String, List<CampaignDocumentResponseDto>> getAllCampaignDocumentDtoGropedByType(
+  public Map<String, List<CampaignDocumentResponseDto>> getAllCampaignDocumentDtoGroupedByType(
       String campaignName) {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
     campaignService.throwIfNoAccess(campaign);
@@ -142,6 +133,11 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   public Page<CampaignDocument> findAllPageableByCampaigns(
       List<Campaign> campaigns, Pageable pageable) {
     return campaignDocumentRepository.findAllByCampaignIn(campaigns, pageable);
+  }
+
+  @Override
+  public List<CampaignDocument> findAllByCampaignOrderByUploadDateDesc(Campaign campaign) {
+    return campaignDocumentRepository.findAllByCampaignOrderByUploadDateDesc(campaign);
   }
 
   @Override
@@ -185,6 +181,16 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     List<Campaign> campaignList = campaignService.findAllByCompany(company);
 
     return findAllPageableByCampaigns(campaignList, pageable).map(CampaignDocumentResponseDto::new);
+  }
+
+  @Override
+  public List<CampaignDocumentResponseDto> getCampaignDocuments(String campaignName) {
+    Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
+
+    return findAllByCampaignOrderByUploadDateDesc(campaign).stream()
+        .filter(this::hasReadAccess)
+        .map(CampaignDocumentResponseDto::new)
+        .collect(Collectors.toList());
   }
 
   private CampaignDocument convertDocumentDtoToDocument(

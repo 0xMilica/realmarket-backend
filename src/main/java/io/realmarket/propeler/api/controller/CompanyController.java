@@ -5,6 +5,8 @@ import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Api(value = "/companies")
@@ -201,4 +203,21 @@ public interface CompanyController {
     @ApiResponse(code = 404, message = "Campaign document does not exist.")
   })
   ResponseEntity deleteCompanyDocument(Long documentId);
+
+  @ApiOperation(
+      value = "Get company documents",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParam(
+      name = "companyId",
+      value = "Company identifier",
+      required = true,
+      dataType = "Long",
+      paramType = "path")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully retrieved company documents."),
+    @ApiResponse(code = 404, message = "Company not found.")
+  })
+  ResponseEntity<List<CompanyDocumentResponseDto>> getCompanyDocuments(Long companyId);
 }

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "540e2c64-c1f7-42b8-9503-1c71153ef20a",
+		"_postman_id": "db76bc39-a1de-4538-9ecc-87e5485e0838",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -113,6 +113,37 @@
 										"mine",
 										"documents",
 										"{{document_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/companies/{{company_id}}/documents",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"{{company_id}}",
+										"documents"
 									]
 								}
 							},
@@ -613,7 +644,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"accessLevel\": \"PUBLIC\",\r\n  \"title\": \"FIRSTDOCUMENTMODIFIED\",\r\n  \"type\": \"DOCTYPE_DUE_DILIGENCE\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
+									"raw": "{\r\n  \"accessLevel\": \"INVESTORS\",\r\n  \"title\": \"FIRSTDOCUMENTMODIFIED\",\r\n  \"type\": \"DOCTYPE_DUE_DILIGENCE\",\r\n  \"url\": \"N6UYQ3LJYOWZ4H7JHNOHOODVOOBNICEA.txt\"\r\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/campaigns/mine/documents/{{document_id}}",
@@ -626,6 +657,37 @@
 										"mine",
 										"documents",
 										"{{document_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/documents",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"documents"
 									]
 								}
 							},

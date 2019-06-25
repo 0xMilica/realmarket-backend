@@ -277,14 +277,12 @@ public interface UserController {
         name = "page",
         value = "Number of page to be returned",
         defaultValue = "20",
-        required = false,
         dataType = "Integer",
         paramType = "query"),
     @ApiImplicitParam(
         name = "size",
         value = "Page size (number of items to be returned)",
         defaultValue = "0",
-        required = false,
         dataType = "Integer",
         paramType = "query")
   })

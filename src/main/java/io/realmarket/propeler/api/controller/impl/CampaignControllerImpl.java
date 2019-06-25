@@ -126,11 +126,17 @@ public class CampaignControllerImpl implements CampaignController {
             campaignDocumentService.patchCampaignDocument(documentId, campaignDocumentDto)));
   }
 
-  @GetMapping(value = "/{campaignName}/documents")
-  public ResponseEntity<Map<String, List<CampaignDocumentResponseDto>>> getCampaignDocuments(
-      @PathVariable String campaignName) {
+  @GetMapping(value = "/{campaignName}/documentsByType")
+  public ResponseEntity<Map<String, List<CampaignDocumentResponseDto>>>
+      getCampaignDocumentsGroupedByType(@PathVariable String campaignName) {
     return ResponseEntity.ok(
-        campaignDocumentService.getAllCampaignDocumentDtoGropedByType(campaignName));
+        campaignDocumentService.getAllCampaignDocumentDtoGroupedByType(campaignName));
+  }
+
+  @GetMapping(value = "/{campaignName}/documents")
+  public ResponseEntity<List<CampaignDocumentResponseDto>> getCampaignDocuments(
+      @PathVariable String campaignName) {
+    return ResponseEntity.ok(campaignDocumentService.getCampaignDocuments(campaignName));
   }
 
   @GetMapping(value = "/mine/active")

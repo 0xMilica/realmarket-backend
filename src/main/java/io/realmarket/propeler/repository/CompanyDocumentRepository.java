@@ -11,4 +11,6 @@ import java.util.List;
 public interface CompanyDocumentRepository extends JpaRepository<CompanyDocument, Long> {
 
   List<CompanyDocument> findAllByCompany(Company company);
+
+  List<CompanyDocument> findAllByCompanyOrderByUploadDateDesc(Company company);
 }

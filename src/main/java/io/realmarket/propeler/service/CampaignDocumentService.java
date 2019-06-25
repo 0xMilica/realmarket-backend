@@ -17,7 +17,7 @@ public interface CampaignDocumentService {
 
   void deleteDocument(Long documentId);
 
-  Map<String, List<CampaignDocumentResponseDto>> getAllCampaignDocumentDtoGropedByType(
+  Map<String, List<CampaignDocumentResponseDto>> getAllCampaignDocumentDtoGroupedByType(
       String campaignName);
 
   CampaignDocument findByIdOrThrowException(Long documentId);
@@ -28,10 +28,14 @@ public interface CampaignDocumentService {
 
   Page<CampaignDocument> findAllPageableByCampaigns(List<Campaign> campaigns, Pageable pageable);
 
+  List<CampaignDocument> findAllByCampaignOrderByUploadDateDesc(Campaign campaign);
+
   CampaignDocument patchCampaignDocument(Long documentId, CampaignDocumentDto campaignDocumentDto);
 
   List<CampaignDocumentResponseDto> getUserCampaignDocuments(Long userId);
 
   Page<CampaignDocumentResponseDto> getPageableUserCampaignDocuments(
       Long userId, Pageable pageable);
+
+  List<CampaignDocumentResponseDto> getCampaignDocuments(String campaignName);
 }

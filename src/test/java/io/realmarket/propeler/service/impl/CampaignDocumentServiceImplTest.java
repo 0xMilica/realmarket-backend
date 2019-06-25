@@ -249,7 +249,7 @@ public class CampaignDocumentServiceImplTest {
         .thenReturn(CampaignDocumentUtils.TEST_CAMPAIGN_DOCUMENT_LIST);
 
     Map<String, List<CampaignDocumentResponseDto>> gropedDocs =
-        campaignDocumentService.getAllCampaignDocumentDtoGropedByType(
+        campaignDocumentService.getAllCampaignDocumentDtoGroupedByType(
             CampaignUtils.TEST_URL_FRIENDLY_NAME);
 
     assertEquals(3, gropedDocs.get(CampaignDocumentUtils.TEST_TYPE_ENUM.toString()).size());

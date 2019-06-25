@@ -186,4 +186,12 @@ public class CompanyServiceImpl implements CompanyService {
   public boolean isCompanyOwner(Auth auth) {
     return companyRepository.existsCompanyByAuth(auth);
   }
+
+  @Override
+  public boolean isOwner(Company company) {
+    return company
+        .getAuth()
+        .getId()
+        .equals(AuthenticationUtil.getAuthentication().getAuth().getId());
+  }
 }

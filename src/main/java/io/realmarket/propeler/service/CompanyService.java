@@ -39,4 +39,6 @@ public interface CompanyService {
   void throwIfNotCompanyOwner();
 
   boolean isCompanyOwner(Auth auth);
+
+  boolean isOwner(Company company);
 }
