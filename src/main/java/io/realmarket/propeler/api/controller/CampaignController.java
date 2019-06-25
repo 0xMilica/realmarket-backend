@@ -466,7 +466,8 @@ public interface CampaignController {
   @ApiOperation(
       value = "Update campaign update content",
       httpMethod = "PUT",
-      consumes = APPLICATION_JSON_VALUE)
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
     @ApiImplicitParam(
         name = "campaignUpdateId",
@@ -531,35 +532,65 @@ public interface CampaignController {
   ResponseEntity<CampaignUpdateResponseDto> getCampaignUpdate(Long campaignUpdateId);
 
   @ApiOperation(
+      value = "Get campaign updates for invested campaigns",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "page",
+        value = "Number of page to be returned",
+        defaultValue = "20",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "filter",
+        value = "State of campaign",
+        allowableValues = "all, active, post_campaign",
+        defaultValue = "all",
+        dataType = "String",
+        paramType = "query")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaign updates successfully retrieved."),
+    @ApiResponse(code = 400, message = "Invalid request.")
+  })
+  ResponseEntity<Page<CampaignUpdateResponseDto>> getCampaignUpdates(
+      Pageable pageable, String filter);
+
+  @ApiOperation(
       value = "Get updates for campaign, pageable.",
       httpMethod = "GET",
       produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
-      @ApiImplicitParam(
-          name = "page",
-          value = "Number of page to be returned",
-          defaultValue = "20",
-          required = false,
-          dataType = "Integer",
-          paramType = "query"),
-      @ApiImplicitParam(
-          name = "size",
-          value = "Page size (number of items to be returned)",
-          defaultValue = "0",
-          required = false,
-          dataType = "Integer",
-          paramType = "query"),
-      @ApiImplicitParam(
-          name = "campaignName",
-          value = "Name of the campaign that is being queried for updates.",
-          required = true,
-          dataType = "String")
+    @ApiImplicitParam(
+        name = "page",
+        value = "Number of page to be returned",
+        defaultValue = "20",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "campaignName",
+        value = "Name of the campaign that is being queried for updates.",
+        required = true,
+        dataType = "String")
   })
   @ApiResponses({
-      @ApiResponse(code = 204, message = "Campaign's updates were successfully fetched."),
-      @ApiResponse(
-          code = 403,
-          message = "Campaign state is invalid, or there is no campaign under provided name."),
+    @ApiResponse(code = 204, message = "Campaign's updates were successfully fetched."),
+    @ApiResponse(
+        code = 403,
+        message = "Campaign state is invalid, or there is no campaign under provided name."),
   })
   ResponseEntity listCampaignsUpdates(Pageable pageable, String campaignName);
 }

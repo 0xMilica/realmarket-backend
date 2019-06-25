@@ -233,7 +233,7 @@ public class CampaignControllerImpl implements CampaignController {
         campaignUpdateService.createCampaignUpdate(campaignName, campaignUpdateDto));
   }
 
-  @PutMapping(value = "/mine/updates/{id}")
+  @PutMapping(value = "/mine/updates/{campaignUpdateId}")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity<CampaignUpdateResponseDto> updateCampaignUpdate(
       @PathVariable Long campaignUpdateId,
@@ -242,22 +242,31 @@ public class CampaignControllerImpl implements CampaignController {
         campaignUpdateService.updateCampaignUpdate(campaignUpdateId, campaignUpdateDto));
   }
 
-  @PostMapping(value = "/mine/updates/{id}/images")
+  @PostMapping(value = "/mine/updates/{campaignUpdateId}/images")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity<FilenameDto> uploadCampaignUpdateImage(
       @PathVariable Long campaignUpdateId, @RequestParam("image") MultipartFile image) {
     return ResponseEntity.ok(campaignUpdateImageService.uploadImage(campaignUpdateId, image));
   }
 
-  @GetMapping(value = "/updates/{id}")
+  @GetMapping(value = "/updates/{campaignUpdateId}")
   public ResponseEntity<CampaignUpdateResponseDto> getCampaignUpdate(
       @PathVariable Long campaignUpdateId) {
     return ResponseEntity.ok(campaignUpdateService.getCampaignUpdate(campaignUpdateId));
   }
 
+  @GetMapping(value = "/updates")
+  @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
+  public ResponseEntity<Page<CampaignUpdateResponseDto>> getCampaignUpdates(
+      Pageable pageable,
+      @RequestParam(value = "filter", required = false, defaultValue = "all") String filter) {
+    return ResponseEntity.ok(campaignUpdateService.getCampaignUpdates(pageable, filter));
+  }
+
   @Override
   @GetMapping(value = "/{campaignName}/updates")
   public ResponseEntity listCampaignsUpdates(Pageable pageable, @PathVariable String campaignName) {
-    return ResponseEntity.ok(campaignUpdateService.getCampaignUpdates(campaignName, pageable));
+    return ResponseEntity.ok(
+        campaignUpdateService.getCampaignUpdatesForCampaign(campaignName, pageable));
   }
 }

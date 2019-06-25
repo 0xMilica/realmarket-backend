@@ -19,8 +19,8 @@ public interface CampaignInvestmentRepository extends JpaRepository<CampaignInve
 
   @Query(
       value =
-          "SELECT c FROM Campaign c WHERE id IN (SELECT ci.campaign FROM campaign_investment ci WHERE auth = :auth) ORDER BY modified_date DESC",
+          "SELECT c FROM Campaign c WHERE id IN (SELECT ci.campaign FROM Campaign_investment ci WHERE auth = :auth) ORDER BY modified_date DESC",
       countQuery =
-          "SELECT COUNT (c) FROM Campaign c WHERE id IN (SELECT ci.campaign FROM campaign_investment ci WHERE auth = :auth)")
+          "SELECT COUNT (c) FROM Campaign c WHERE id IN (SELECT ci.campaign FROM Campaign_investment ci WHERE auth = :auth)")
   Page<Campaign> findCampaign(@Param("auth") Auth auth, Pageable pageable);
 }

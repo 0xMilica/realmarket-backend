@@ -13,7 +13,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@Entity(name = "campaign_investment")
+@Entity(name = "Campaign_investment")
 public class CampaignInvestment {
 
   @Id

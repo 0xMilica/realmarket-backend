@@ -24,12 +24,17 @@ public class CampaignUpdateResponseDto extends CampaignUpdateDto {
 
   @ApiModelProperty(value = "Campaign name")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private String campaignName;
+
+  @ApiModelProperty(value = "Campaign url friendly name")
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String campaignUrlFriendlyName;
 
   public CampaignUpdateResponseDto(CampaignUpdate campaignUpdate) {
     super(campaignUpdate);
     this.id = campaignUpdate.getId();
     this.postDate = campaignUpdate.getPostDate();
+    this.campaignName = campaignUpdate.getCampaign().getName();
     this.campaignUrlFriendlyName = campaignUpdate.getCampaign().getUrlFriendlyName();
   }
 }
