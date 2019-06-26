@@ -173,7 +173,7 @@ public interface CampaignController {
       Long documentId, CampaignDocumentDto campaignDocumentDto);
 
   @ApiOperation(
-      value = "Get all campaign documents groped by document type.",
+      value = "Get all campaign documents grouped by document type.",
       httpMethod = "GET",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)

@@ -1,6 +1,7 @@
 package io.realmarket.propeler.api.dto;
 
 import io.realmarket.propeler.model.CampaignInvestment;
+import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,16 +27,19 @@ public class TotalCampaignInvestmentsResponseDto {
     this.equity = BigDecimal.valueOf(0);
     investments.forEach(
         investment -> {
-          this.amount = this.amount.add(investment.getInvestedAmount());
-          this.equity =
-              this.equity.add(
-                  investment
-                      .getInvestedAmount()
-                      .multiply(investment.getCampaign().getMinEquityOffered())
-                      .divide(
-                          BigDecimal.valueOf(investment.getCampaign().getFundingGoals()),
-                          2,
-                          RoundingMode.FLOOR));
+          if (investment.getInvestmentState().getName() == InvestmentStateName.PAID
+              || investment.getInvestmentState().getName() == InvestmentStateName.APPROVED) {
+            this.amount = this.amount.add(investment.getInvestedAmount());
+            this.equity =
+                this.equity.add(
+                    investment
+                        .getInvestedAmount()
+                        .multiply(investment.getCampaign().getMinEquityOffered())
+                        .divide(
+                            BigDecimal.valueOf(investment.getCampaign().getFundingGoals()),
+                            4,
+                            RoundingMode.DOWN));
+          }
         });
   }
 }

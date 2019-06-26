@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 
 @ApiModel(description = "CampaignPortfolioResponseDto")
 @Data
@@ -27,6 +28,12 @@ public class CampaignInvestmentResponseDto {
   @ApiModelProperty(value = "Campaign investment equity")
   private BigDecimal equity;
 
+  @ApiModelProperty(value = "Payment date")
+  private Instant paymentDate;
+
+  @ApiModelProperty(value = "Investment state")
+  private String investmentState;
+
   public CampaignInvestmentResponseDto(CampaignInvestment investment) {
     this.id = investment.getId();
     this.investedAmount = investment.getInvestedAmount();
@@ -36,7 +43,9 @@ public class CampaignInvestmentResponseDto {
             .multiply(investment.getCampaign().getMinEquityOffered())
             .divide(
                 BigDecimal.valueOf(investment.getCampaign().getFundingGoals()),
-                2,
-                RoundingMode.FLOOR);
+                4,
+                RoundingMode.DOWN);
+    this.paymentDate = investment.getPaymentDate();
+    this.investmentState = investment.getInvestmentState().getName().toString();
   }
 }
