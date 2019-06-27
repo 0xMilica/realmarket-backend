@@ -7,6 +7,7 @@ import io.realmarket.propeler.api.dto.TotalCampaignInvestmentsResponseDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignInvestment;
+import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.CampaignInvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -59,6 +60,15 @@ public class InvestmentServiceImpl implements InvestmentService {
   @Override
   public List<CampaignInvestment> findAllByCampaignAndAuth(Campaign campaign, Auth auth) {
     return campaignInvestmentRepository.findAllByCampaignAndAuth(campaign, auth);
+  }
+
+  public Page<Campaign> findInvestedCampaign(Auth auth, Pageable pageable) {
+    return campaignInvestmentRepository.findInvestedCampaign(auth, pageable);
+  }
+
+  public Page<Campaign> findInvestedCampaignByState(
+      Auth auth, CampaignStateName state, Pageable pageable) {
+    return campaignInvestmentRepository.findInvestedCampaignByState(auth, state, pageable);
   }
 
   @Transactional
@@ -136,10 +146,19 @@ public class InvestmentServiceImpl implements InvestmentService {
   }
 
   @Override
-  public Page<PortfolioCampaignResponseDto> getPortfolio(Pageable pageable) {
+  public Page<PortfolioCampaignResponseDto> getPortfolio(Pageable pageable, String filter) {
     Auth auth = AuthenticationUtil.getAuthentication().getAuth();
 
-    Page<Campaign> campaignPage = campaignInvestmentRepository.findCampaign(auth, pageable);
+    Page<Campaign> campaignPage;
+    if (filter.equalsIgnoreCase("all")) {
+      campaignPage = findInvestedCampaign(auth, pageable);
+    } else if (filter.equalsIgnoreCase("active") || filter.equalsIgnoreCase("post_campaign")) {
+      campaignPage =
+          findInvestedCampaignByState(
+              auth, CampaignStateName.valueOf(filter.toUpperCase()), pageable);
+    } else {
+      throw new BadRequestException(INVALID_REQUEST);
+    }
 
     List<PortfolioCampaignResponseDto> portfolio = new ArrayList<>();
     campaignPage

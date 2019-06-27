@@ -444,10 +444,20 @@ public interface CampaignController {
         value = "Page size (number of items to be returned)",
         defaultValue = "0",
         dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "filter",
+        value = "State of campaign",
+        allowableValues = "all, active, post_campaign",
+        defaultValue = "all",
+        dataType = "String",
         paramType = "query")
   })
-  @ApiResponses(@ApiResponse(code = 200, message = "OK"))
-  ResponseEntity<Page<PortfolioCampaignResponseDto>> getPortfolio(Pageable pageable);
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Portfolio successfully retrieved."),
+    @ApiResponse(code = 400, message = "Invalid request.")
+  })
+  ResponseEntity<Page<PortfolioCampaignResponseDto>> getPortfolio(Pageable pageable, String filter);
 
   @ApiOperation(
       value = "Create campaign update",

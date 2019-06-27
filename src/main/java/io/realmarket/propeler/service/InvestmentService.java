@@ -22,5 +22,5 @@ public interface InvestmentService {
 
   void rejectInvestment(Long campaignInvestmentId);
 
-  Page<PortfolioCampaignResponseDto> getPortfolio(Pageable pageable);
+  Page<PortfolioCampaignResponseDto> getPortfolio(Pageable pageable, String filter);
 }

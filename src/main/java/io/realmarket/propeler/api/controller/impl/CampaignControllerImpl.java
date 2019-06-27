@@ -227,8 +227,10 @@ public class CampaignControllerImpl implements CampaignController {
 
   @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
   @GetMapping(value = "/mine/portfolio")
-  public ResponseEntity<Page<PortfolioCampaignResponseDto>> getPortfolio(Pageable pageable) {
-    return ResponseEntity.ok(investmentService.getPortfolio(pageable));
+  public ResponseEntity<Page<PortfolioCampaignResponseDto>> getPortfolio(
+      Pageable pageable,
+      @RequestParam(value = "filter", required = false, defaultValue = "all") String filter) {
+    return ResponseEntity.ok(investmentService.getPortfolio(pageable, filter));
   }
 
   @PostMapping(value = "/{campaignName}/updates")

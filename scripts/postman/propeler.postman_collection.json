@@ -1483,7 +1483,7 @@
 							"response": []
 						},
 						{
-							"name": "/updates?page=0&size=2&filter=active",
+							"name": "/updates",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -1958,7 +1958,7 @@
 					"response": []
 				},
 				{
-					"name": "/campaigns/public?page=1&size=3",
+					"name": "/campaigns/public",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -2259,7 +2259,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{server_ip}}/api/campaigns/mine/portfolio?page=0&size=3",
+							"raw": "{{server_ip}}/api/campaigns/mine/portfolio?page=0&size=3&filter=all",
 							"host": [
 								"{{server_ip}}"
 							],
@@ -2277,6 +2277,10 @@
 								{
 									"key": "size",
 									"value": "3"
+								},
+								{
+									"key": "filter",
+									"value": "all"
 								}
 							]
 						}
