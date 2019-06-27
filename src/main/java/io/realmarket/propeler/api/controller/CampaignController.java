@@ -537,6 +537,19 @@ public interface CampaignController {
   })
   ResponseEntity<FilenameDto> uploadCampaignUpdateImage(Long campaignUpdateId, MultipartFile image);
 
+  @ApiOperation(value = "Delete campaign update", httpMethod = "DELETE")
+  @ApiImplicitParam(
+      name = "campaignUpdateId",
+      value = "Campaign update identifier",
+      required = true,
+      dataType = "Long",
+      paramType = "path")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaign update successfully deleted."),
+    @ApiResponse(code = 404, message = "Campaign update not found")
+  })
+  ResponseEntity deleteCampaignUpdate(Long campaignUpdateId);
+
   @ApiOperation(
       value = "Get campaign update",
       httpMethod = "GET",

@@ -9,4 +9,6 @@ public interface CampaignUpdateImageService {
   void removeObsoleteImages(CampaignUpdate campaignUpdate);
 
   FilenameDto uploadImage(Long campaignUpdateId, MultipartFile image);
+
+  void removeImages(CampaignUpdate campaignUpdate);
 }

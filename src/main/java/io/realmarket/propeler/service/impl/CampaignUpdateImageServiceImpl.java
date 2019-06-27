@@ -60,4 +60,15 @@ public class CampaignUpdateImageServiceImpl implements CampaignUpdateImageServic
 
     return new FilenameDto(String.join("", FileServiceImpl.PUBLIC_FILE_ENDPOINT, url));
   }
+
+  @Override
+  public void removeImages(CampaignUpdate campaignUpdate) {
+    campaignUpdateImageRepository
+        .findByCampaignUpdate(campaignUpdate)
+        .forEach(
+            campaignUpdateImage -> {
+              cloudObjectStorageService.delete(campaignUpdateImage.getUrl());
+              campaignUpdateImageRepository.delete(campaignUpdateImage);
+            });
+  }
 }

@@ -257,6 +257,13 @@ public class CampaignControllerImpl implements CampaignController {
     return ResponseEntity.ok(campaignUpdateImageService.uploadImage(campaignUpdateId, image));
   }
 
+  @DeleteMapping(value = "/mine/updates/{campaignUpdateId}")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity deleteCampaignUpdate(@PathVariable Long campaignUpdateId) {
+    campaignUpdateService.deleteCampaignUpdate(campaignUpdateId);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
   @GetMapping(value = "/updates/{campaignUpdateId}")
   public ResponseEntity<CampaignUpdateResponseDto> getCampaignUpdate(
       @PathVariable Long campaignUpdateId) {

@@ -64,4 +64,18 @@ public class CampaignUpdateImageServiceImplTest {
             "image/jpeg",
             CampaignUpdateImageUtils.TEST_EXISTING_URL.getBytes()));
   }
+
+  @Test
+  public void RemoveImages_Should_RemoveImages() {
+    when(campaignUpdateImageRepository.findByCampaignUpdate(any()))
+        .thenReturn(CampaignUpdateImageUtils.TEST_CAMPAIGN_UPDATE_IMAGE_LIST);
+    doNothing().when(cloudObjectStorageService).delete(any());
+    doNothing().when(campaignUpdateImageRepository).delete(any());
+
+    campaignUpdateImageService.removeObsoleteImages(
+        CampaignUpdate.builder().content(TEST_EXISTING_URL).build());
+
+    verify(cloudObjectStorageService, times(1)).delete(any());
+    verify(campaignUpdateImageRepository, times(1)).delete(any());
+  }
 }

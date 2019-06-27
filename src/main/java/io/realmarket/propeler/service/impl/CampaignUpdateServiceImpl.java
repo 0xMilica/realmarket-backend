@@ -41,9 +41,9 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
   }
 
   @Override
-  public CampaignUpdate findByIdOrThrowException(Long id) {
+  public CampaignUpdate findByIdOrThrowException(Long campaignUpdateId) {
     return campaignUpdateRepository
-        .findById(id)
+        .findById(campaignUpdateId)
         .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_UPDATE_NOT_FOUND));
   }
 
@@ -88,8 +88,8 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
 
   @Override
   public CampaignUpdateResponseDto updateCampaignUpdate(
-      Long id, CampaignUpdateDto campaignUpdateDto) {
-    CampaignUpdate campaignUpdate = findByIdOrThrowException(id);
+      Long campaignUpdateId, CampaignUpdateDto campaignUpdateDto) {
+    CampaignUpdate campaignUpdate = findByIdOrThrowException(campaignUpdateId);
 
     campaignService.throwIfNoAccess(campaignUpdate.getCampaign());
     campaignService.throwIfNotActive(campaignUpdate.getCampaign());
@@ -103,8 +103,19 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
   }
 
   @Override
-  public CampaignUpdateResponseDto getCampaignUpdate(Long id) {
-    return new CampaignUpdateResponseDto(findByIdOrThrowException(id));
+  public void deleteCampaignUpdate(Long campaignUpdateId) {
+    CampaignUpdate campaignUpdate = findByIdOrThrowException(campaignUpdateId);
+
+    campaignService.throwIfNoAccess(campaignUpdate.getCampaign());
+    campaignService.throwIfNotActive(campaignUpdate.getCampaign());
+
+    campaignUpdateImageService.removeImages(campaignUpdate);
+    campaignUpdateRepository.delete(campaignUpdate);
+  }
+
+  @Override
+  public CampaignUpdateResponseDto getCampaignUpdate(Long campaignUpdateId) {
+    return new CampaignUpdateResponseDto(findByIdOrThrowException(campaignUpdateId));
   }
 
   @Override

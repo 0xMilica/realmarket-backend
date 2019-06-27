@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface CampaignUpdateService {
 
-  CampaignUpdate findByIdOrThrowException(Long id);
+  CampaignUpdate findByIdOrThrowException(Long campaignUpdateId);
 
   Page<CampaignUpdate> findCampaignUpdates(Pageable pageable);
 
@@ -25,9 +25,12 @@ public interface CampaignUpdateService {
   CampaignUpdateResponseDto createCampaignUpdate(
       String campaignName, CampaignUpdateDto campaignUpdateDto);
 
-  CampaignUpdateResponseDto updateCampaignUpdate(Long id, CampaignUpdateDto campaignUpdateDto);
+  CampaignUpdateResponseDto updateCampaignUpdate(
+      Long campaignUpdateId, CampaignUpdateDto campaignUpdateDto);
 
-  CampaignUpdateResponseDto getCampaignUpdate(Long id);
+  void deleteCampaignUpdate(Long campaignUpdateId);
+
+  CampaignUpdateResponseDto getCampaignUpdate(Long campaignUpdateId);
 
   Page<CampaignUpdateResponseDto> getCampaignUpdates(Pageable pageable, String filter);
 

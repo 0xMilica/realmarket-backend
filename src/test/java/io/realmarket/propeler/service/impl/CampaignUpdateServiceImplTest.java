@@ -98,7 +98,27 @@ public class CampaignUpdateServiceImplTest {
   }
 
   @Test(expected = EntityNotFoundException.class)
-  public void GetCampaignUpdate_Throw_EntityNotFoundException() {
+  public void GetCampaignUpdate_Should_Throw_EntityNotFoundException() {
     campaignUpdateServiceImpl.getCampaignUpdate(CampaignUpdateUtils.TEST_CAMPAIGN_UPDATE_ID);
+  }
+
+  @Test
+  public void DeleteCampaignUpdate_Should_RemoveCampaignUpdate() {
+    when(campaignUpdateRepository.findById(any()))
+        .thenReturn(Optional.of(CampaignUpdateUtils.TEST_CAMPAIGN_UPDATE));
+
+    doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotActive(TEST_CAMPAIGN);
+
+    doNothing()
+        .when(campaignUpdateImageService)
+        .removeImages(CampaignUpdateUtils.TEST_CAMPAIGN_UPDATE);
+
+    campaignUpdateServiceImpl.deleteCampaignUpdate(CampaignUpdateUtils.TEST_CAMPAIGN_UPDATE_ID);
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void DeleteCampaignUpdate_Should_Throw_EntityNotFoundException() {
+    campaignUpdateServiceImpl.deleteCampaignUpdate(CampaignUpdateUtils.TEST_CAMPAIGN_UPDATE_ID);
   }
 }
