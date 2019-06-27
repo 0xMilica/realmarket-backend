@@ -563,7 +563,7 @@ public interface CampaignController {
     @ApiImplicitParam(
         name = "filter",
         value = "State of campaign",
-        allowableValues = "all, active, post_campaign",
+        allowableValues = "all, my_campaigns, active, post_campaign",
         defaultValue = "all",
         dataType = "String",
         paramType = "query")

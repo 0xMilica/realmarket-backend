@@ -48,15 +48,24 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
   }
 
   @Override
-  public Page<CampaignUpdate> findCampaignUpdates(Auth auth, Pageable pageable) {
-    return campaignUpdateRepository.findCampaignUpdates(auth, pageable);
+  public Page<CampaignUpdate> findCampaignUpdates(Pageable pageable) {
+    return campaignUpdateRepository.findCampaignUpdates(pageable);
+  }
+
+  @Override
+  public Page<CampaignUpdate> findMyCampaignUpdates(Auth auth, Pageable pageable) {
+    return campaignUpdateRepository.findMyCampaignUpdates(auth, pageable);
   }
 
   @Override
   public Page<CampaignUpdate> findCampaignUpdatesByCampaignState(
-      Auth auth, String campaignState, Pageable pageable) {
-    return campaignUpdateRepository.findCampaignUpdatesByCampaignState(
-        auth, CampaignStateName.valueOf(campaignState.toUpperCase()), pageable);
+      CampaignStateName campaignState, Pageable pageable) {
+    return campaignUpdateRepository.findCampaignUpdatesByCampaignState(campaignState, pageable);
+  }
+
+  @Override
+  public Page<CampaignUpdate> findCampaignUpdatesByCampaign(Campaign campaign, Pageable pageable) {
+    return campaignUpdateRepository.findByCampaign(campaign, pageable);
   }
 
   @Override
@@ -102,9 +111,12 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
   public Page<CampaignUpdateResponseDto> getCampaignUpdates(Pageable pageable, String filter) {
     Auth auth = AuthenticationUtil.getAuthentication().getAuth();
     if (filter.equalsIgnoreCase("all")) {
-      return findCampaignUpdates(auth, pageable).map(CampaignUpdateResponseDto::new);
+      return findCampaignUpdates(pageable).map(CampaignUpdateResponseDto::new);
+    } else if (filter.equalsIgnoreCase("my_campaigns")) {
+      return findMyCampaignUpdates(auth, pageable).map(CampaignUpdateResponseDto::new);
     } else if (filter.equalsIgnoreCase("active") || filter.equalsIgnoreCase("post_campaign")) {
-      return findCampaignUpdatesByCampaignState(auth, filter, pageable)
+      return findCampaignUpdatesByCampaignState(
+              CampaignStateName.valueOf(filter.toUpperCase()), pageable)
           .map(CampaignUpdateResponseDto::new);
     }
     throw new BadRequestException(INVALID_REQUEST);
@@ -114,8 +126,6 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
   public Page<CampaignUpdateResponseDto> getCampaignUpdatesForCampaign(
       String campaignName, Pageable pageable) {
     Campaign campaign = campaignService.getCampaignByUrlFriendlyName(campaignName);
-    return campaignUpdateRepository
-        .findByCampaign(campaign, pageable)
-        .map(CampaignUpdateResponseDto::new);
+    return findCampaignUpdatesByCampaign(campaign, pageable).map(CampaignUpdateResponseDto::new);
   }
 }
