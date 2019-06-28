@@ -1,6 +1,6 @@
 package io.realmarket.propeler.model.enums;
 
-public enum ECompanyDocumentType {
+public enum CompanyDocumentTypeName {
   DOCTYPE_APR_PAPER("DOCTYPE_APR_PAPER"),
   DOCTYPE_BUSINESS_PLAN("DOCTYPE_BUSINESS_PLAN"),
   DOCTYPE_PITCH_DECK("DOCTYPE_PITCH_DECK"),
@@ -8,7 +8,7 @@ public enum ECompanyDocumentType {
 
   private final String text;
 
-  ECompanyDocumentType(final String text) {
+  CompanyDocumentTypeName(final String text) {
     this.text = text;
   }
 

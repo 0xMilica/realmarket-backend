@@ -6,7 +6,7 @@ import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.CompanyDocument;
 import io.realmarket.propeler.model.CompanyDocumentType;
 import io.realmarket.propeler.model.DocumentAccessLevel;
-import io.realmarket.propeler.model.enums.EUserRole;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.CampaignDocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.CompanyDocumentRepository;
 import io.realmarket.propeler.repository.CompanyDocumentTypeRepository;
@@ -137,9 +137,10 @@ public class CompanyDocumentServiceImpl implements CompanyDocumentService {
     if (companyService.isOwner(companyDocument.getCompany())) {
       return true;
     }
-    EUserRole eUserRole = AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
+    UserRoleName userRoleName =
+        AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
     DocumentAccessLevel accessLevel = companyDocument.getAccessLevel();
-    return DocumentAccessLevel.hasReadAccess(accessLevel, eUserRole);
+    return DocumentAccessLevel.hasReadAccess(accessLevel, userRoleName);
   }
 
   private CompanyDocument convertDocumentDtoToDocument(

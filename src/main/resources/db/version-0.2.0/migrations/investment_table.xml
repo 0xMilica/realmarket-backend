@@ -7,21 +7,21 @@
                 endDelimiter=";"
                 splitStatements="true"
                 stripComments="true">
-            create sequence campaign_investment_seq;
-            create table if not exists campaign_investment
+            create sequence investment_seq;
+            create table if not exists investment
             (
             id bigint not null
-            constraint campaign_investment_pkey
+            constraint investment_pkey
             primary key,
             invested_amount numeric(19,2),
             auth_id bigint
-            constraint campaign_investment_fk_on_auth
+            constraint investment_fk_on_auth
             references auth,
             campaign_id bigint
-            constraint campaign_investment_fk_on_campaign
+            constraint investment_fk_on_campaign
             references campaign,
             investment_state_id bigint
-            constraint campaign_investment_fk_on_investment_state
+            constraint investment_fk_on_investment_state
             references investment_state,
             creation_date timestamp DEFAULT localtimestamp NOT NULL,
             payment_date timestamp

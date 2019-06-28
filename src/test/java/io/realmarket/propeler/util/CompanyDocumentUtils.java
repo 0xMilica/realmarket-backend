@@ -4,8 +4,8 @@ import io.realmarket.propeler.api.dto.CompanyDocumentDto;
 import io.realmarket.propeler.model.CompanyDocument;
 import io.realmarket.propeler.model.CompanyDocumentType;
 import io.realmarket.propeler.model.DocumentAccessLevel;
-import io.realmarket.propeler.model.enums.ECompanyDocumentType;
-import io.realmarket.propeler.model.enums.EDocumentAccessLevel;
+import io.realmarket.propeler.model.enums.CompanyDocumentTypeName;
+import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
 
 import java.time.Instant;
 
@@ -13,8 +13,10 @@ public class CompanyDocumentUtils {
 
   public static final Long TEST_ID = 1L;
   public static final String TEST_TITLE = "TEST_TITLE";
-  public static final EDocumentAccessLevel TEST_ACCESS_LEVEL_ENUM = EDocumentAccessLevel.PUBLIC;
-  public static final ECompanyDocumentType TEST_TYPE_ENUM = ECompanyDocumentType.DOCTYPE_APR_PAPER;
+  public static final DocumentAccessLevelName TEST_ACCESS_LEVEL_ENUM =
+      DocumentAccessLevelName.PUBLIC;
+  public static final CompanyDocumentTypeName TEST_TYPE_ENUM =
+      CompanyDocumentTypeName.DOCTYPE_APR_PAPER;
   public static final DocumentAccessLevel TEST_ACCESS_LEVEL =
       DocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM).build();
   public static final CompanyDocumentType TEST_TYPE =
@@ -24,9 +26,10 @@ public class CompanyDocumentUtils {
 
   public static final Long TEST_ID_2 = 2L;
   public static final String TEST_TITLE_2 = "TEST_TITLE_2";
-  public static final EDocumentAccessLevel TEST_ACCESS_LEVEL_ENUM_2 =
-      EDocumentAccessLevel.INVESTORS;
-  public static final ECompanyDocumentType TEST_TYPE_ENUM_2 = ECompanyDocumentType.DOCTYPE_BANK;
+  public static final DocumentAccessLevelName TEST_ACCESS_LEVEL_ENUM_2 =
+      DocumentAccessLevelName.INVESTORS;
+  public static final CompanyDocumentTypeName TEST_TYPE_ENUM_2 =
+      CompanyDocumentTypeName.DOCTYPE_BANK;
   public static final DocumentAccessLevel TEST_ACCESS_LEVEL_2 =
       DocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM_2).build();
   public static final CompanyDocumentType TEST_TYPE_2 =

@@ -20,8 +20,8 @@ public class PortfolioCampaignResponseDto {
   private CampaignResponseDto campaign;
 
   @ApiModelProperty(value = "Campaign investments")
-  private List<CampaignInvestmentResponseDto> investments;
+  private List<InvestmentResponseDto> investments;
 
   @ApiModelProperty(value = "Total investments information")
-  private TotalCampaignInvestmentsResponseDto total;
+  private TotalInvestmentsResponseDto total;
 }

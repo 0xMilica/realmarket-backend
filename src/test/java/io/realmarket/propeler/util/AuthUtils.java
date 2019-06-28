@@ -3,8 +3,8 @@ package io.realmarket.propeler.util;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.*;
-import io.realmarket.propeler.model.enums.EAuthState;
-import io.realmarket.propeler.model.enums.EUserRole;
+import io.realmarket.propeler.model.enums.AuthStateName;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.EmailServiceImpl;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -30,10 +30,10 @@ public class AuthUtils {
   public static final String TEST_PASSWORD = "TEST_PASSWORD";
   public static final String TEST_PASSWORD_NEW = "TEST_PASSWORD_NEW";
   public static final String TEST_ENCODED_SECRET = "enc_secret";
-  public static final EUserRole TEST_ROLE = EUserRole.ROLE_INVESTOR;
-  public static final EUserRole TEST_ROLE_ENTREPRENEUR = EUserRole.ROLE_ENTREPRENEUR;
-  public static final EUserRole TEST_ROLE_INVESTOR = EUserRole.ROLE_INVESTOR;
-  public static final EUserRole TEST_ROLE_FORBIDDEN = EUserRole.ROLE_ADMIN;
+  public static final UserRoleName TEST_ROLE = UserRoleName.ROLE_INVESTOR;
+  public static final UserRoleName TEST_ROLE_ENTREPRENEUR = UserRoleName.ROLE_ENTREPRENEUR;
+  public static final UserRoleName TEST_ROLE_INVESTOR = UserRoleName.ROLE_INVESTOR;
+  public static final UserRoleName TEST_ROLE_FORBIDDEN = UserRoleName.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
   public static final MailContentHolder TEST_EMAIL_DTO =
@@ -65,7 +65,7 @@ public class AuthUtils {
   public static final UserRole TEST_INVESTOR_USER_ROLE =
       UserRole.builder().name(TEST_ROLE_INVESTOR).id(102L).build();
   public static final AuthState TEST_AUTH_STATE =
-      AuthState.builder().name(EAuthState.ACTIVE).id(100L).build();
+      AuthState.builder().name(AuthStateName.ACTIVE).id(100L).build();
 
   public static final String TEST_COUNTRY_CODE = "RS";
   public static final Country TEST_COUNTRY = Country.builder().code("RS").name("Serbia").build();

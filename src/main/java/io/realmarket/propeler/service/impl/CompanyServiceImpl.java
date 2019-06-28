@@ -5,7 +5,7 @@ import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.CompanyEditRequest;
-import io.realmarket.propeler.model.enums.EUserRole;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.CompanyRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.AdministratorService;
@@ -139,9 +139,9 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Override
   public void throwIfNotOwnerOrAdmin(Company company, Auth auth) {
-    if (auth.getUserRole().getName().equals(EUserRole.ROLE_ADMIN)) {
+    if (auth.getUserRole().getName().equals(UserRoleName.ROLE_ADMIN)) {
       return;
-    } else if (auth.getUserRole().getName().equals(EUserRole.ROLE_ENTREPRENEUR)) {
+    } else if (auth.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR)) {
       if (!company.getAuth().getId().equals(auth.getId())) {
         throw new BadRequestException(NOT_COMPANY_OWNER);
       }

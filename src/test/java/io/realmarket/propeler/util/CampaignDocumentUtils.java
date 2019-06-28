@@ -4,8 +4,8 @@ import io.realmarket.propeler.api.dto.CampaignDocumentDto;
 import io.realmarket.propeler.model.CampaignDocument;
 import io.realmarket.propeler.model.CampaignDocumentType;
 import io.realmarket.propeler.model.DocumentAccessLevel;
-import io.realmarket.propeler.model.enums.ECampaignDocumentType;
-import io.realmarket.propeler.model.enums.EDocumentAccessLevel;
+import io.realmarket.propeler.model.enums.CampaignDocumentTypeName;
+import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -15,8 +15,10 @@ public class CampaignDocumentUtils {
 
   public static final Long TEST_ID = 1L;
   public static final String TEST_TITLE = "TEST_TITLE";
-  public static final EDocumentAccessLevel TEST_ACCESS_LEVEL_ENUM = EDocumentAccessLevel.PUBLIC;
-  public static final ECampaignDocumentType TEST_TYPE_ENUM = ECampaignDocumentType.DOCTYPE_LEGAL;
+  public static final DocumentAccessLevelName TEST_ACCESS_LEVEL_ENUM =
+      DocumentAccessLevelName.PUBLIC;
+  public static final CampaignDocumentTypeName TEST_TYPE_ENUM =
+      CampaignDocumentTypeName.DOCTYPE_LEGAL;
   public static final DocumentAccessLevel TEST_ACCESS_LEVEL =
       DocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM).build();
   public static final CampaignDocumentType TEST_TYPE =
@@ -25,10 +27,10 @@ public class CampaignDocumentUtils {
   public static final Instant TEST_UPLOAD_DATE = Instant.now();
 
   public static final String TEST_TITLE_2 = "TEST_TITLE_2";
-  public static final EDocumentAccessLevel TEST_ACCESS_LEVEL_ENUM_2 =
-      EDocumentAccessLevel.INVESTORS;
-  public static final ECampaignDocumentType TEST_TYPE_ENUM_2 =
-      ECampaignDocumentType.DOCTYPE_DUE_DILIGENCE;
+  public static final DocumentAccessLevelName TEST_ACCESS_LEVEL_ENUM_2 =
+      DocumentAccessLevelName.INVESTORS;
+  public static final CampaignDocumentTypeName TEST_TYPE_ENUM_2 =
+      CampaignDocumentTypeName.DOCTYPE_DUE_DILIGENCE;
   public static final DocumentAccessLevel TEST_ACCESS_LEVEL_2 =
       DocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM_2).build();
   public static final CampaignDocumentType TEST_TYPE_2 =
@@ -71,7 +73,7 @@ public class CampaignDocumentUtils {
   }
 
   public static CampaignDocument getCampaignDocumentMocked(
-      EDocumentAccessLevel documentAccessLevel) {
+      DocumentAccessLevelName documentAccessLevel) {
     return CampaignDocument.builder()
         .id(TEST_ID)
         .title(TEST_TITLE)
@@ -105,6 +107,6 @@ public class CampaignDocumentUtils {
       Arrays.asList(
           getCampaignDocumentMocked(),
           getCampaignDocumentMocked(),
-          getCampaignDocumentMocked(EDocumentAccessLevel.PLATFORM_ADMINS),
-          getCampaignDocumentMocked(EDocumentAccessLevel.INVESTORS));
+          getCampaignDocumentMocked(DocumentAccessLevelName.PLATFORM_ADMINS),
+          getCampaignDocumentMocked(DocumentAccessLevelName.INVESTORS));
 }

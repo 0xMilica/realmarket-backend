@@ -4,7 +4,7 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.TemporaryTokenType;
-import io.realmarket.propeler.model.enums.ETemporaryTokenType;
+import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.LoginIPAttemptsService;
@@ -150,7 +150,10 @@ public class TwoFactorAuthServiceImplTest {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
             .temporaryTokenType(
-                TemporaryTokenType.builder().name(ETemporaryTokenType.LOGIN_TOKEN).id(100L).build())
+                TemporaryTokenType.builder()
+                    .name(TemporaryTokenTypeName.LOGIN_TOKEN)
+                    .id(100L)
+                    .build())
             .auth(TEST_AUTH)
             .value("TEST_VALUE")
             .build();
@@ -202,7 +205,10 @@ public class TwoFactorAuthServiceImplTest {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
             .temporaryTokenType(
-                TemporaryTokenType.builder().name(ETemporaryTokenType.LOGIN_TOKEN).id(101L).build())
+                TemporaryTokenType.builder()
+                    .name(TemporaryTokenTypeName.LOGIN_TOKEN)
+                    .id(101L)
+                    .build())
             .auth(TEST_AUTH)
             .build();
 
@@ -222,7 +228,10 @@ public class TwoFactorAuthServiceImplTest {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
             .temporaryTokenType(
-                TemporaryTokenType.builder().name(ETemporaryTokenType.LOGIN_TOKEN).id(102L).build())
+                TemporaryTokenType.builder()
+                    .name(TemporaryTokenTypeName.LOGIN_TOKEN)
+                    .id(102L)
+                    .build())
             .auth(TEST_AUTH)
             .build();
 
@@ -264,7 +273,10 @@ public class TwoFactorAuthServiceImplTest {
     TemporaryToken temporaryTokenMocked =
         TemporaryToken.builder()
             .temporaryTokenType(
-                TemporaryTokenType.builder().name(ETemporaryTokenType.LOGIN_TOKEN).id(103L).build())
+                TemporaryTokenType.builder()
+                    .name(TemporaryTokenTypeName.LOGIN_TOKEN)
+                    .id(103L)
+                    .build())
             .auth(TEST_AUTH)
             .build();
 

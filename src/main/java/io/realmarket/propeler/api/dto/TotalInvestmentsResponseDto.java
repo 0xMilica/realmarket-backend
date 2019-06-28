@@ -1,6 +1,6 @@
 package io.realmarket.propeler.api.dto;
 
-import io.realmarket.propeler.model.CampaignInvestment;
+import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -12,17 +12,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-@ApiModel(description = "TotalCampaignInvestmentResponseDto")
+@ApiModel(description = "TotalInvestmentResponseDto")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TotalCampaignInvestmentsResponseDto {
+public class TotalInvestmentsResponseDto {
 
   private BigDecimal amount;
   private BigDecimal equity;
 
-  public TotalCampaignInvestmentsResponseDto(List<CampaignInvestment> investments) {
+  public TotalInvestmentsResponseDto(List<Investment> investments) {
     this.amount = BigDecimal.valueOf(0);
     this.equity = BigDecimal.valueOf(0);
     investments.forEach(

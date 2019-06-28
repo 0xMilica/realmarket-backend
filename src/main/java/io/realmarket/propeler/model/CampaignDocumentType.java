@@ -1,6 +1,6 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.ECampaignDocumentType;
+import io.realmarket.propeler.model.enums.CampaignDocumentTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,5 +28,5 @@ public class CampaignDocumentType {
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  private ECampaignDocumentType name;
+  private CampaignDocumentTypeName name;
 }

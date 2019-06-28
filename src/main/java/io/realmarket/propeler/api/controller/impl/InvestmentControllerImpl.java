@@ -21,10 +21,10 @@ public class InvestmentControllerImpl implements InvestmentController {
     this.investmentService = investmentService;
   }
 
-  @DeleteMapping("/{investID}")
+  @DeleteMapping("/{investmentId}")
   @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
-  public ResponseEntity<Void> revokeInvestment(@PathVariable Long investID) {
-    investmentService.revokeInvestment(investID);
+  public ResponseEntity<Void> revokeInvestment(@PathVariable Long investmentId) {
+    investmentService.revokeInvestment(investmentId);
     return ResponseEntity.noContent().build();
   }
 }

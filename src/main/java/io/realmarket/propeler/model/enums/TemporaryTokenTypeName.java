@@ -1,6 +1,6 @@
 package io.realmarket.propeler.model.enums;
 
-public enum ETemporaryTokenType {
+public enum TemporaryTokenTypeName {
   SETUP_2FA_TOKEN("SETUP_2FA_TOKEN"),
   LOGIN_TOKEN("LOGIN_TOKEN"),
   REGISTRATION_TOKEN("REGISTRATION_TOKEN"),
@@ -11,7 +11,7 @@ public enum ETemporaryTokenType {
 
   private final String text;
 
-  ETemporaryTokenType(final String text) {
+  TemporaryTokenTypeName(final String text) {
     this.text = text;
   }
 

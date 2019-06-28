@@ -1,8 +1,8 @@
 package io.realmarket.propeler.api.dto;
 
 import io.realmarket.propeler.model.CompanyDocument;
-import io.realmarket.propeler.model.enums.ECompanyDocumentType;
-import io.realmarket.propeler.model.enums.EDocumentAccessLevel;
+import io.realmarket.propeler.model.enums.CompanyDocumentTypeName;
+import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -26,11 +26,11 @@ public class CompanyDocumentDto {
 
   @ApiModelProperty(value = "Campaign document's access level")
   @NotNull
-  private EDocumentAccessLevel accessLevel;
+  private DocumentAccessLevelName accessLevel;
 
   @ApiModelProperty(value = "Campaign document's type")
   @NotNull
-  private ECompanyDocumentType type;
+  private CompanyDocumentTypeName type;
 
   @ApiModelProperty(value = "Campaign document's URL")
   @NotBlank

@@ -18,7 +18,7 @@ public interface CampaignUpdateRepository extends JpaRepository<CampaignUpdate, 
   Page<CampaignUpdate> findCampaignUpdates(Pageable pageable);
 
   @Query(
-      "SELECT cu FROM Campaign_update cu WHERE campaign IN (SELECT ci.campaign FROM Campaign_investment ci WHERE auth = :auth) ORDER BY post_date DESC")
+      "SELECT cu FROM Campaign_update cu WHERE campaign IN (SELECT i.campaign FROM Investment i WHERE auth = :auth) ORDER BY post_date DESC")
   Page<CampaignUpdate> findMyCampaignUpdates(@Param("auth") Auth auth, Pageable pageable);
 
   @Query(

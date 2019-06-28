@@ -1,7 +1,7 @@
 package io.realmarket.propeler.repository;
 
 import io.realmarket.propeler.model.TemporaryToken;
-import io.realmarket.propeler.model.enums.ETemporaryTokenType;
+import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,9 +14,10 @@ public interface TemporaryTokenRepository extends JpaRepository<TemporaryToken, 
   Optional<TemporaryToken> findByValueAndExpirationTimeGreaterThanEqual(String value, Instant date);
 
   Optional<TemporaryToken> findByValueAndTemporaryTokenTypeAndExpirationTimeGreaterThanEqual(
-      String value, ETemporaryTokenType type, Instant date);
+      String value, TemporaryTokenTypeName type, Instant date);
 
   void deleteAllByExpirationTimeLessThan(Instant date);
 
-  void deleteByTemporaryTokenTypeNameAndAuthId(final ETemporaryTokenType type, final Long authId);
+  void deleteByTemporaryTokenTypeNameAndAuthId(
+      final TemporaryTokenTypeName type, final Long authId);
 }

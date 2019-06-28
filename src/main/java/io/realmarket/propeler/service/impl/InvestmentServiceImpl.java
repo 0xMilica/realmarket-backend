@@ -1,15 +1,15 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.CampaignInvestmentResponseDto;
 import io.realmarket.propeler.api.dto.CampaignResponseDto;
+import io.realmarket.propeler.api.dto.InvestmentResponseDto;
 import io.realmarket.propeler.api.dto.PortfolioCampaignResponseDto;
-import io.realmarket.propeler.api.dto.TotalCampaignInvestmentsResponseDto;
+import io.realmarket.propeler.api.dto.TotalInvestmentsResponseDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.CampaignInvestment;
+import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
-import io.realmarket.propeler.repository.CampaignInvestmentRepository;
+import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.InvestmentService;
@@ -38,7 +38,7 @@ import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 public class InvestmentServiceImpl implements InvestmentService {
 
   private final CampaignService campaignService;
-  private final CampaignInvestmentRepository campaignInvestmentRepository;
+  private final InvestmentRepository investmentRepository;
   private final PaymentService paymentService;
   private final InvestmentStateService investmentStateService;
 
@@ -48,101 +48,97 @@ public class InvestmentServiceImpl implements InvestmentService {
   @Autowired
   public InvestmentServiceImpl(
       CampaignService campaignService,
-      CampaignInvestmentRepository campaignInvestmentRepository,
+      InvestmentRepository investmentRepository,
       PaymentService paymentService,
       InvestmentStateService investmentStateService) {
     this.campaignService = campaignService;
-    this.campaignInvestmentRepository = campaignInvestmentRepository;
+    this.investmentRepository = investmentRepository;
     this.paymentService = paymentService;
     this.investmentStateService = investmentStateService;
   }
 
   @Override
-  public List<CampaignInvestment> findAllByCampaignAndAuth(Campaign campaign, Auth auth) {
-    return campaignInvestmentRepository.findAllByCampaignAndAuth(campaign, auth);
+  public List<Investment> findAllByCampaignAndAuth(Campaign campaign, Auth auth) {
+    return investmentRepository.findAllByCampaignAndAuth(campaign, auth);
   }
 
   public Page<Campaign> findInvestedCampaign(Auth auth, Pageable pageable) {
-    return campaignInvestmentRepository.findInvestedCampaign(auth, pageable);
+    return investmentRepository.findInvestedCampaign(auth, pageable);
   }
 
   public Page<Campaign> findInvestedCampaignByState(
       Auth auth, CampaignStateName state, Pageable pageable) {
-    return campaignInvestmentRepository.findInvestedCampaignByState(auth, state, pageable);
+    return investmentRepository.findInvestedCampaignByState(auth, state, pageable);
   }
 
   @Transactional
   @Override
-  public CampaignInvestment invest(BigDecimal amountOfMoney, String campaignUrlFriendlyName) {
+  public Investment invest(BigDecimal amountOfMoney, String campaignUrlFriendlyName) {
     Campaign campaign = campaignService.getCampaignByUrlFriendlyName(campaignUrlFriendlyName);
     campaignService.throwIfNotActive(campaign);
     throwIfAmountNotValid(campaign, amountOfMoney);
 
-    CampaignInvestment campaignInvestment =
-        CampaignInvestment.builder()
+    Investment investment =
+        Investment.builder()
             .auth(AuthenticationUtil.getAuthentication().getAuth())
             .campaign(campaign)
             .investedAmount(amountOfMoney)
             .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
             .build();
 
-    return campaignInvestmentRepository.save(campaignInvestment);
+    return investmentRepository.save(investment);
   }
 
   @Transactional
   @Override
-  public void revokeInvestment(Long campaignInvestmentId) {
+  public void revokeInvestment(Long investmentId) {
 
-    CampaignInvestment campaignInvestment =
-        campaignInvestmentRepository.getOne(campaignInvestmentId);
-    throwIfNoAccess(campaignInvestment);
-    throwIfNotRevocable(campaignInvestment);
+    Investment investment = investmentRepository.getOne(investmentId);
+    throwIfNoAccess(investment);
+    throwIfNotRevocable(investment);
 
-    paymentService.withdrawFunds(
-        campaignInvestment.getAuth(), campaignInvestment.getInvestedAmount());
+    paymentService.withdrawFunds(investment.getAuth(), investment.getInvestedAmount());
 
-    campaignInvestment.setInvestmentState(
+    investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.REVOKED));
-    campaignInvestmentRepository.save(campaignInvestment);
+    investmentRepository.save(investment);
   }
 
   @Transactional
   @Override
-  public void approveInvestment(Long campaignInvestmentId) {
+  public void approveInvestment(Long investmentId) {
 
-    CampaignInvestment campaignInvestment =
-        campaignInvestmentRepository.getOne(campaignInvestmentId);
-    throwIfRevocable(campaignInvestment);
+    Investment investment = investmentRepository.getOne(investmentId);
+    throwIfRevocable(investment);
 
-    Campaign campaign = campaignInvestment.getCampaign();
+    Campaign campaign = investment.getCampaign();
     campaignService.throwIfNoAccess(campaign);
 
-    throwIfNotPaid(campaignInvestment);
-    campaignService.increaseCollectedAmount(campaign, campaignInvestment.getInvestedAmount());
+    throwIfNotPaid(investment);
+    campaignService.increaseCollectedAmount(campaign, investment.getInvestedAmount());
 
-    campaignInvestment.setInvestmentState(
+    investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.APPROVED));
-    campaignInvestmentRepository.save(campaignInvestment);
+    investmentRepository.save(investment);
   }
 
   @Transactional
   @Override
-  public void rejectInvestment(Long campaignInvestmentId) {
-    CampaignInvestment campaignInvestment =
-        campaignInvestmentRepository.getOne(campaignInvestmentId);
-    throwIfRevocable(campaignInvestment);
+  public void rejectInvestment(Long investmentId) {
+    Investment investment = investmentRepository.getOne(investmentId);
+    throwIfRevocable(investment);
 
-    Campaign campaign = campaignInvestment.getCampaign();
+    Campaign campaign = investment.getCampaign();
     campaignService.throwIfNoAccess(campaign);
 
-    Auth auth = campaignInvestment.getAuth();
-    BigDecimal amountOfMoney = campaignInvestment.getInvestedAmount();
+    Auth auth = investment.getAuth();
+    BigDecimal amountOfMoney = investment.getInvestedAmount();
 
     paymentService.withdrawFunds(auth, amountOfMoney);
 
-    campaignInvestment.setInvestmentState(
+    investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.REJECTED));
-    campaignInvestmentRepository.save(campaignInvestment);
+    investmentRepository.save(investment);
   }
 
   @Override
@@ -179,24 +175,24 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     portfolioCampaign.setCampaign(new CampaignResponseDto(campaign));
 
-    List<CampaignInvestment> investments = findAllByCampaignAndAuth(campaign, auth);
-    List<CampaignInvestmentResponseDto> investmentsDto =
-        investments.stream().map(CampaignInvestmentResponseDto::new).collect(Collectors.toList());
+    List<Investment> investments = findAllByCampaignAndAuth(campaign, auth);
+    List<InvestmentResponseDto> investmentsDto =
+        investments.stream().map(InvestmentResponseDto::new).collect(Collectors.toList());
     portfolioCampaign.setInvestments(investmentsDto);
 
-    portfolioCampaign.setTotal(new TotalCampaignInvestmentsResponseDto(investments));
+    portfolioCampaign.setTotal(new TotalInvestmentsResponseDto(investments));
 
     return portfolioCampaign;
   }
 
-  private void throwIfNotPaid(CampaignInvestment campaignInvestment) {
-    if (!isPaid(campaignInvestment)) {
+  private void throwIfNotPaid(Investment investment) {
+    if (!isPaid(investment)) {
       throw new BadRequestException(PAYMENT_NOT_PROCESSED);
     }
   }
 
-  private boolean isPaid(CampaignInvestment campaignInvestment) {
-    return campaignInvestment
+  private boolean isPaid(Investment investment) {
+    return investment
         .getInvestmentState()
         .equals(investmentStateService.getInvestmentState(InvestmentStateName.PAID));
   }
@@ -219,35 +215,35 @@ public class InvestmentServiceImpl implements InvestmentService {
     }
   }
 
-  private boolean isCampaignInvestor(CampaignInvestment campaignInvestment) {
-    return campaignInvestment
+  private boolean isCampaignInvestor(Investment investment) {
+    return investment
         .getAuth()
         .getId()
         .equals(AuthenticationUtil.getAuthentication().getAuth().getId());
   }
 
-  private void throwIfNoAccess(CampaignInvestment campaignInvestment) {
-    if (!isCampaignInvestor(campaignInvestment)) {
+  private void throwIfNoAccess(Investment investment) {
+    if (!isCampaignInvestor(investment)) {
       throw new ForbiddenOperationException(NOT_CAMPAIGN_INVESTOR);
     }
   }
 
-  private boolean isRevocable(CampaignInvestment campaignInvestment) {
-    if (campaignInvestment.getPaymentDate() == null) {
+  private boolean isRevocable(Investment investment) {
+    if (investment.getPaymentDate() == null) {
       return true;
     } else {
-      return campaignInvestment.getPaymentDate().plusMillis(weekInMillis).isAfter(Instant.now());
+      return investment.getPaymentDate().plusMillis(weekInMillis).isAfter(Instant.now());
     }
   }
 
-  private void throwIfNotRevocable(CampaignInvestment campaignInvestment) {
-    if (!isRevocable(campaignInvestment)) {
+  private void throwIfNotRevocable(Investment investment) {
+    if (!isRevocable(investment)) {
       throw new BadRequestException(INVESTMENT_CAN_NOT_BE_REVOKED);
     }
   }
 
-  private void throwIfRevocable(CampaignInvestment campaignInvestment) {
-    if (isRevocable(campaignInvestment)) {
+  private void throwIfRevocable(Investment investment) {
+    if (isRevocable(investment)) {
       throw new BadRequestException(INVESTMENT_CAN_BE_REVOKED);
     }
   }

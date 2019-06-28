@@ -13,32 +13,27 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@Entity(name = "Campaign_investment")
-public class CampaignInvestment {
+@Entity(name = "Investment")
+public class Investment {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CAMPAIGN_INVESTMENT_SEQ")
-  @SequenceGenerator(
-      name = "CAMPAIGN_INVESTMENT_SEQ",
-      sequenceName = "CAMPAIGN_INVESTMENT_SEQ",
-      allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "INVESTMENT_SEQ")
+  @SequenceGenerator(name = "INVESTMENT_SEQ", sequenceName = "INVESTMENT_SEQ", allocationSize = 1)
   private Long id;
 
   private BigDecimal investedAmount;
 
-  @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "campaign_investment_fk_on_auth"))
+  @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "investment_fk_on_auth"))
   @ManyToOne
   private Auth auth;
 
-  @JoinColumn(
-      name = "campaignId",
-      foreignKey = @ForeignKey(name = "campaign_investment_fk_on_campaign"))
+  @JoinColumn(name = "campaignId", foreignKey = @ForeignKey(name = "investment_fk_on_campaign"))
   @ManyToOne
   private Campaign campaign;
 
   @JoinColumn(
       name = "investmentStateId",
-      foreignKey = @ForeignKey(name = "campaign_investment_fk_on_investment_state"))
+      foreignKey = @ForeignKey(name = "investment_fk_on_investment_state"))
   @ManyToOne
   private InvestmentState investmentState;
 

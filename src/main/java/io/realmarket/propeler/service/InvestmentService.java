@@ -3,7 +3,7 @@ package io.realmarket.propeler.service;
 import io.realmarket.propeler.api.dto.PortfolioCampaignResponseDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.CampaignInvestment;
+import io.realmarket.propeler.model.Investment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,15 +12,15 @@ import java.util.List;
 
 public interface InvestmentService {
 
-  List<CampaignInvestment> findAllByCampaignAndAuth(Campaign campaign, Auth auth);
+  List<Investment> findAllByCampaignAndAuth(Campaign campaign, Auth auth);
 
-  CampaignInvestment invest(BigDecimal amountOfMoney, String campaignUrlFriendlyName);
+  Investment invest(BigDecimal amountOfMoney, String campaignUrlFriendlyName);
 
-  void revokeInvestment(Long campaignInvestmentId);
+  void revokeInvestment(Long investmentId);
 
-  void approveInvestment(Long campaignInvestmentId);
+  void approveInvestment(Long investmentId);
 
-  void rejectInvestment(Long campaignInvestmentId);
+  void rejectInvestment(Long investmentId);
 
   Page<PortfolioCampaignResponseDto> getPortfolio(Pageable pageable, String filter);
 }

@@ -1,6 +1,6 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.EUserRole;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,5 +25,5 @@ public class UserRole {
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  private EUserRole name;
+  private UserRoleName name;
 }

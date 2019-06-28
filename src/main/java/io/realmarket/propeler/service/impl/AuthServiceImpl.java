@@ -4,10 +4,10 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.E2FAStatus;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.*;
-import io.realmarket.propeler.model.enums.EAuthState;
-import io.realmarket.propeler.model.enums.EAuthorizedActionType;
-import io.realmarket.propeler.model.enums.ETemporaryTokenType;
-import io.realmarket.propeler.model.enums.EUserRole;
+import io.realmarket.propeler.model.enums.AuthStateName;
+import io.realmarket.propeler.model.enums.AuthorizedActionTypeName;
+import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.repository.AuthStateRepository;
 import io.realmarket.propeler.repository.CountryRepository;
@@ -43,7 +43,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.realmarket.propeler.model.enums.ETemporaryTokenType.PASSWORD_VERIFIED_TOKEN;
+import static io.realmarket.propeler.model.enums.TemporaryTokenTypeName.PASSWORD_VERIFIED_TOKEN;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_COUNTRY_CODE;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
 
@@ -55,8 +55,8 @@ public class AuthServiceImpl implements AuthService {
 
   public static final Long PASSWORD_CHANGE_ACTION_MILLISECONDS = 180000L;
 
-  private static final List<EUserRole> ALLOWED_ROLES =
-      Arrays.asList(EUserRole.ROLE_ENTREPRENEUR, EUserRole.ROLE_INVESTOR);
+  private static final List<UserRoleName> ALLOWED_ROLES =
+      Arrays.asList(UserRoleName.ROLE_ENTREPRENEUR, UserRoleName.ROLE_INVESTOR);
 
   private final AuthRepository authRepository;
   private final UserRoleRepository userRoleRepository;
@@ -111,7 +111,7 @@ public class AuthServiceImpl implements AuthService {
     this.request = request;
   }
 
-  public static Collection<? extends GrantedAuthority> getAuthorities(EUserRole userRole) {
+  public static Collection<? extends GrantedAuthority> getAuthorities(UserRoleName userRole) {
     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
     authorities.add(new SimpleGrantedAuthority(userRole.toString()));
     return authorities;
@@ -145,7 +145,7 @@ public class AuthServiceImpl implements AuthService {
 
     Optional<UserRole> userRole = userRoleRepository.findByName(registrationDto.getUserRole());
     Optional<AuthState> authState =
-        this.authStateRepository.findByName(EAuthState.CONFIRM_REGISTRATION);
+        this.authStateRepository.findByName(AuthStateName.CONFIRM_REGISTRATION);
 
     Country countryOfResidence =
         this.countryRepository
@@ -175,7 +175,7 @@ public class AuthServiceImpl implements AuthService {
                 .build());
 
     TemporaryToken temporaryToken =
-        temporaryTokenService.createToken(auth, ETemporaryTokenType.REGISTRATION_TOKEN);
+        temporaryTokenService.createToken(auth, TemporaryTokenTypeName.REGISTRATION_TOKEN);
 
     emailService.sendMailToUser(
         new MailContentHolder(
@@ -200,7 +200,7 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public void finalize2faInitialization(Auth auth) {
-    Optional<AuthState> authState = this.authStateRepository.findByName(EAuthState.ACTIVE);
+    Optional<AuthState> authState = this.authStateRepository.findByName(AuthStateName.ACTIVE);
 
     auth.setState(authState.get());
     authRepository.save(auth);
@@ -215,7 +215,8 @@ public class AuthServiceImpl implements AuthService {
         temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             confirmRegistrationDto.getToken());
 
-    Optional<AuthState> authState = this.authStateRepository.findByName(EAuthState.INITIALIZE_2FA);
+    Optional<AuthState> authState =
+        this.authStateRepository.findByName(AuthStateName.INITIALIZE_2FA);
 
     Auth auth = temporaryToken.getAuth();
     auth.setState(authState.get());
@@ -249,7 +250,7 @@ public class AuthServiceImpl implements AuthService {
     Auth auth = findByUsernameOrThrowException(usernameDto.getUsername());
 
     TemporaryToken temporaryToken =
-        temporaryTokenService.createToken(auth, ETemporaryTokenType.RESET_PASSWORD_TOKEN);
+        temporaryTokenService.createToken(auth, TemporaryTokenTypeName.RESET_PASSWORD_TOKEN);
 
     emailService.sendMailToUser(
         new MailContentHolder(
@@ -291,7 +292,7 @@ public class AuthServiceImpl implements AuthService {
 
     authorizedActionService.storeAuthorizationAction(
         auth.getId(),
-        EAuthorizedActionType.NEW_PASSWORD,
+        AuthorizedActionTypeName.NEW_PASSWORD,
         passwordEncoder.encode(changePasswordDto.getNewPassword()),
         PASSWORD_CHANGE_ACTION_MILLISECONDS);
   }
@@ -303,13 +304,13 @@ public class AuthServiceImpl implements AuthService {
 
     final String newPassword =
         authorizedActionService
-            .validateAuthorizationAction(auth, EAuthorizedActionType.NEW_PASSWORD, twoFACodeDto)
+            .validateAuthorizationAction(auth, AuthorizedActionTypeName.NEW_PASSWORD, twoFACodeDto)
             .orElseThrow(() -> new ForbiddenOperationException(INVALID_REQUEST));
 
     auth.setPassword(newPassword);
     auth = authRepository.save(auth);
 
-    authorizedActionService.deleteByAuthAndType(auth, EAuthorizedActionType.NEW_PASSWORD);
+    authorizedActionService.deleteByAuthAndType(auth, AuthorizedActionTypeName.NEW_PASSWORD);
     jwtService.deleteAllByAuthAndValueNot(auth, AuthenticationUtil.getAuthentication().getToken());
 
     blockchainCommunicationService.invoke(
@@ -350,14 +351,14 @@ public class AuthServiceImpl implements AuthService {
   }
 
   public List<Auth> findAllInvestors() {
-    return authRepository.findAllByUserRoleName(EUserRole.ROLE_INVESTOR);
+    return authRepository.findAllByUserRoleName(UserRoleName.ROLE_INVESTOR);
   }
 
   public void initializeEmailChange(final Long authId, final EmailDto emaildto) {
     checkIfAllowed(authId);
     authorizedActionService.storeAuthorizationAction(
         authId,
-        EAuthorizedActionType.NEW_EMAIL,
+        AuthorizedActionTypeName.NEW_EMAIL,
         emaildto.getEmail(),
         EMAIL_CHANGE_ACTION_MILLISECONDS);
   }
@@ -368,10 +369,10 @@ public class AuthServiceImpl implements AuthService {
     final Auth auth = findByIdOrThrowException(authId);
     final String newEmail =
         authorizedActionService
-            .validateAuthorizationAction(auth, EAuthorizedActionType.NEW_EMAIL, twoFACodeDto)
+            .validateAuthorizationAction(auth, AuthorizedActionTypeName.NEW_EMAIL, twoFACodeDto)
             .orElseThrow(() -> new ForbiddenOperationException(ExceptionMessages.INVALID_REQUEST));
     final TemporaryToken token =
-        temporaryTokenService.createToken(auth, ETemporaryTokenType.EMAIL_CHANGE_TOKEN);
+        temporaryTokenService.createToken(auth, TemporaryTokenTypeName.EMAIL_CHANGE_TOKEN);
 
     log.info("Token for change email {}", token.getValue());
 
@@ -390,7 +391,7 @@ public class AuthServiceImpl implements AuthService {
     final Auth currentAuth = token.getAuth();
     final AuthorizedAction authorizedAction =
         authorizedActionService.findAuthorizedActionOrThrowException(
-            currentAuth, EAuthorizedActionType.NEW_EMAIL);
+            currentAuth, AuthorizedActionTypeName.NEW_EMAIL);
     changePersonEmail(token, authorizedAction);
     temporaryTokenService.deleteToken(token);
     authorizedActionService.deleteByAuthAndType(
@@ -405,7 +406,7 @@ public class AuthServiceImpl implements AuthService {
         HttpRequestHelper.getIP(request));
   }
 
-  private Boolean isRoleAllowed(EUserRole role) {
+  private Boolean isRoleAllowed(UserRoleName role) {
     return ALLOWED_ROLES.contains(role);
   }
 
@@ -413,18 +414,20 @@ public class AuthServiceImpl implements AuthService {
     checkLoginCredentials(auth, password);
     loginIPAttemptsService.loginSucceeded(AuthenticationUtil.getClientIp());
     loginUsernameAttemptsService.loginSucceeded(auth.getUsername());
-    if (auth.getState().getName().equals(EAuthState.INITIALIZE_2FA)) {
+    if (auth.getState().getName().equals(AuthStateName.INITIALIZE_2FA)) {
       return new AuthResponseDto(
           E2FAStatus.INITIALIZE,
-          temporaryTokenService.createToken(auth, ETemporaryTokenType.SETUP_2FA_TOKEN).getValue());
+          temporaryTokenService
+              .createToken(auth, TemporaryTokenTypeName.SETUP_2FA_TOKEN)
+              .getValue());
     }
     return new AuthResponseDto(
         E2FAStatus.VALIDATE,
-        temporaryTokenService.createToken(auth, ETemporaryTokenType.LOGIN_TOKEN).getValue());
+        temporaryTokenService.createToken(auth, TemporaryTokenTypeName.LOGIN_TOKEN).getValue());
   }
 
   public void checkLoginCredentials(Auth auth, String password) {
-    if (auth.getState().getName().equals(EAuthState.CONFIRM_REGISTRATION)) {
+    if (auth.getState().getName().equals(AuthStateName.CONFIRM_REGISTRATION)) {
       log.error("User with auth id '{}' is not active ", auth.getId());
       loginIPAttemptsService.loginFailed(AuthenticationUtil.getClientIp());
       blockByUsernameIfNotBlocked(auth);

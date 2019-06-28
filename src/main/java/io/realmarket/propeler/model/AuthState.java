@@ -1,6 +1,6 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.EAuthState;
+import io.realmarket.propeler.model.enums.AuthStateName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,5 +25,5 @@ public class AuthState {
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  private EAuthState name;
+  private AuthStateName name;
 }

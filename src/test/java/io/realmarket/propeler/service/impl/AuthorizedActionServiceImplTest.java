@@ -13,8 +13,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
-import static io.realmarket.propeler.model.enums.EAuthorizedActionType.NEW_EMAIL;
-import static io.realmarket.propeler.model.enums.EAuthorizedActionType.NEW_TOTP_SECRET;
+import static io.realmarket.propeler.model.enums.AuthorizedActionTypeName.NEW_EMAIL;
+import static io.realmarket.propeler.model.enums.AuthorizedActionTypeName.NEW_TOTP_SECRET;
 import static io.realmarket.propeler.util.AuthUtils.TEST_AUTH;
 import static io.realmarket.propeler.util.AuthUtils.TEST_EMAIL;
 import static io.realmarket.propeler.util.TwoFactorAuthUtils.TEST_2FA_DTO;

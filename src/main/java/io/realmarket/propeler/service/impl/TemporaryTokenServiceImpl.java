@@ -3,7 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.TemporaryTokenType;
-import io.realmarket.propeler.model.enums.ETemporaryTokenType;
+import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
 import io.realmarket.propeler.repository.TemporaryTokenRepository;
 import io.realmarket.propeler.repository.TemporaryTokenTypeRepository;
 import io.realmarket.propeler.service.TemporaryTokenService;
@@ -36,7 +36,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
     this.temporaryTokenTypeRepository = temporaryTokenTypeRepository;
   }
 
-  private static Long getExpirationTime(ETemporaryTokenType tokenType) {
+  private static Long getExpirationTime(TemporaryTokenTypeName tokenType) {
     switch (tokenType) {
       case SETUP_2FA_TOKEN:
       case EMAIL_CHANGE_TOKEN:
@@ -54,7 +54,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   }
 
   @Transactional
-  public boolean validateTokenAndDeleteIt(String value, ETemporaryTokenType type) {
+  public boolean validateTokenAndDeleteIt(String value, TemporaryTokenTypeName type) {
     Optional<TemporaryToken> temporaryToken =
         temporaryTokenRepository.findByValueAndExpirationTimeGreaterThanEqual(value, Instant.now());
     if (!temporaryToken.isPresent() || temporaryToken.get().getTemporaryTokenType().equals(type)) {
@@ -65,7 +65,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   }
 
   @Transactional
-  public TemporaryToken createToken(Auth auth, ETemporaryTokenType type) {
+  public TemporaryToken createToken(Auth auth, TemporaryTokenTypeName type) {
 
     deleteByTemporaryTokenTypeAndAuthId(auth.getId(), type);
     Optional<TemporaryTokenType> tokenType = this.temporaryTokenTypeRepository.findByName(type);
@@ -82,7 +82,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
             .build());
   }
 
-  private void deleteByTemporaryTokenTypeAndAuthId(Long authId, ETemporaryTokenType type) {
+  private void deleteByTemporaryTokenTypeAndAuthId(Long authId, TemporaryTokenTypeName type) {
     temporaryTokenRepository.deleteByTemporaryTokenTypeNameAndAuthId(type, authId);
     temporaryTokenRepository.flush();
   }
@@ -98,7 +98,8 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   }
 
   @Override
-  public TemporaryToken findByValueAndTypeOrThrowException(String value, ETemporaryTokenType type) {
+  public TemporaryToken findByValueAndTypeOrThrowException(
+      String value, TemporaryTokenTypeName type) {
     return temporaryTokenRepository
         .findByValueAndTemporaryTokenTypeAndExpirationTimeGreaterThanEqual(
             value, type, Instant.now())

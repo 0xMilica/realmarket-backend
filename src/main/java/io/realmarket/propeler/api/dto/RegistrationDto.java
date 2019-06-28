@@ -1,7 +1,7 @@
 package io.realmarket.propeler.api.dto;
 
 import io.realmarket.propeler.api.annotations.Email;
-import io.realmarket.propeler.model.enums.EUserRole;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +30,7 @@ public class RegistrationDto {
   @Size(min = 8, message = "Password must be at least 8 characters long.")
   private String password;
 
-  @NotNull private EUserRole userRole;
+  @NotNull private UserRoleName userRole;
 
   @NotBlank(message = "Please provide first name")
   private String firstName;

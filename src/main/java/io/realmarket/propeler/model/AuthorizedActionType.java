@@ -1,6 +1,6 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.EAuthorizedActionType;
+import io.realmarket.propeler.model.enums.AuthorizedActionTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,5 +28,5 @@ public class AuthorizedActionType {
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  private EAuthorizedActionType name;
+  private AuthorizedActionTypeName name;
 }

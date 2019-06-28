@@ -3,7 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.CampaignDocumentDto;
 import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
 import io.realmarket.propeler.model.*;
-import io.realmarket.propeler.model.enums.EUserRole;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.CampaignDocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.CampaignDocumentRepository;
 import io.realmarket.propeler.repository.CampaignDocumentTypeRepository;
@@ -92,9 +92,10 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     if (campaignService.isOwner(campaignDocument.getCampaign())) {
       return true;
     }
-    EUserRole eUserRole = AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
+    UserRoleName userRoleName =
+        AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
     DocumentAccessLevel accessLevel = campaignDocument.getAccessLevel();
-    return DocumentAccessLevel.hasReadAccess(accessLevel, eUserRole);
+    return DocumentAccessLevel.hasReadAccess(accessLevel, userRoleName);
   }
 
   public Map<String, List<CampaignDocumentResponseDto>> getAllCampaignDocumentDtoGroupedByType(

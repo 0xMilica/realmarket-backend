@@ -1,6 +1,6 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.ECompanyDocumentType;
+import io.realmarket.propeler.model.enums.CompanyDocumentTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,5 +28,5 @@ public class CompanyDocumentType {
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  private ECompanyDocumentType name;
+  private CompanyDocumentTypeName name;
 }

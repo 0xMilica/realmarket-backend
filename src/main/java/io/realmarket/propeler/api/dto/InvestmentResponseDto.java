@@ -1,6 +1,6 @@
 package io.realmarket.propeler.api.dto;
 
-import io.realmarket.propeler.model.CampaignInvestment;
+import io.realmarket.propeler.model.Investment;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,15 +17,15 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CampaignInvestmentResponseDto {
+public class InvestmentResponseDto {
 
-  @ApiModelProperty(value = "Campaign investment identifier")
+  @ApiModelProperty(value = "Investment identifier")
   private Long id;
 
   @ApiModelProperty(value = "Invested amount")
   private BigDecimal investedAmount;
 
-  @ApiModelProperty(value = "Campaign investment equity")
+  @ApiModelProperty(value = "Investment equity")
   private BigDecimal equity;
 
   @ApiModelProperty(value = "Payment date")
@@ -34,7 +34,7 @@ public class CampaignInvestmentResponseDto {
   @ApiModelProperty(value = "Investment state")
   private String investmentState;
 
-  public CampaignInvestmentResponseDto(CampaignInvestment investment) {
+  public InvestmentResponseDto(Investment investment) {
     this.id = investment.getId();
     this.investedAmount = investment.getInvestedAmount();
     this.equity =

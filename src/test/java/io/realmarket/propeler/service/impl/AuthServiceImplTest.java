@@ -6,9 +6,9 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.AuthState;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.TemporaryToken;
-import io.realmarket.propeler.model.enums.EAuthState;
-import io.realmarket.propeler.model.enums.EAuthorizedActionType;
-import io.realmarket.propeler.model.enums.ETemporaryTokenType;
+import io.realmarket.propeler.model.enums.AuthStateName;
+import io.realmarket.propeler.model.enums.AuthorizedActionTypeName;
+import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
 import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.repository.AuthStateRepository;
 import io.realmarket.propeler.repository.CountryRepository;
@@ -82,7 +82,7 @@ public class AuthServiceImplTest {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
     when(personService.save(TEST_REGISTRATION_PERSON)).thenReturn(TEST_REGISTRATION_PERSON);
     when(authRepository.save(any(Auth.class))).thenReturn(TEST_AUTH);
-    when(temporaryTokenService.createToken(TEST_AUTH, ETemporaryTokenType.REGISTRATION_TOKEN))
+    when(temporaryTokenService.createToken(TEST_AUTH, TemporaryTokenTypeName.REGISTRATION_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
     when(passwordEncoder.encode(TEST_PASSWORD)).thenReturn(TEST_PASSWORD);
     when(userRoleRepository.findByName(any())).thenReturn(Optional.of(AuthUtils.TEST_USER_ROLE));
@@ -144,7 +144,7 @@ public class AuthServiceImplTest {
         .when(authorizedActionService)
         .storeAuthorizationAction(
             TEST_AUTH_ID,
-            EAuthorizedActionType.NEW_PASSWORD,
+            AuthorizedActionTypeName.NEW_PASSWORD,
             TEST_PASSWORD,
             PASSWORD_CHANGE_ACTION_MILLISECONDS);
 
@@ -153,7 +153,7 @@ public class AuthServiceImplTest {
     verify(authorizedActionService, Mockito.times(1))
         .storeAuthorizationAction(
             TEST_AUTH_ID,
-            EAuthorizedActionType.NEW_PASSWORD,
+            AuthorizedActionTypeName.NEW_PASSWORD,
             TEST_PASSWORD,
             PASSWORD_CHANGE_ACTION_MILLISECONDS);
   }
@@ -162,19 +162,19 @@ public class AuthServiceImplTest {
   public void FinalizeChangePassword_Should_UpdateUserPassword() {
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
     when(authorizedActionService.validateAuthorizationAction(
-            TEST_AUTH, EAuthorizedActionType.NEW_PASSWORD, TEST_2FA_DTO))
+            TEST_AUTH, AuthorizedActionTypeName.NEW_PASSWORD, TEST_2FA_DTO))
         .thenReturn(Optional.of(TEST_PASSWORD));
     when(authRepository.save(TEST_AUTH)).thenReturn(TEST_AUTH);
     doNothing().when(jwtService).deleteAllByAuthAndValueNot(TEST_AUTH, TEST_JWT_VALUE);
     doNothing()
         .when(authorizedActionService)
-        .deleteByAuthAndType(TEST_AUTH, EAuthorizedActionType.NEW_PASSWORD);
+        .deleteByAuthAndType(TEST_AUTH, AuthorizedActionTypeName.NEW_PASSWORD);
 
     authServiceImpl.finalizeChangePassword(TEST_AUTH_ID, TEST_2FA_DTO);
 
     verify(authRepository, times(1)).save(TEST_AUTH);
     verify(authorizedActionService, times(1))
-        .deleteByAuthAndType(TEST_AUTH, EAuthorizedActionType.NEW_PASSWORD);
+        .deleteByAuthAndType(TEST_AUTH, AuthorizedActionTypeName.NEW_PASSWORD);
     verify(jwtService, times(1)).deleteAllByAuthAndValueNot(eq(TEST_AUTH), anyString());
   }
 
@@ -182,7 +182,7 @@ public class AuthServiceImplTest {
   public void FinalizeChangePassword_Should_Throw_ForbiddenOperationException() {
     when(authRepository.findById(TEST_AUTH_ID)).thenReturn(Optional.ofNullable(TEST_AUTH));
     when(authorizedActionService.validateAuthorizationAction(
-            TEST_AUTH, EAuthorizedActionType.NEW_PASSWORD, TEST_2FA_DTO))
+            TEST_AUTH, AuthorizedActionTypeName.NEW_PASSWORD, TEST_2FA_DTO))
         .thenReturn(Optional.empty());
 
     authServiceImpl.finalizeChangePassword(TEST_AUTH_ID, TEST_2FA_DTO);
@@ -236,7 +236,7 @@ public class AuthServiceImplTest {
     verify(temporaryTokenService, Mockito.times(1))
         .findByValueAndNotExpiredOrThrowException(TEST_TEMPORARY_TOKEN_VALUE);
     verify(authRepository, Mockito.times(1)).save(any(Auth.class));
-    assertEquals(EAuthState.ACTIVE, TEST_AUTH.getState().getName());
+    assertEquals(AuthStateName.ACTIVE, TEST_AUTH.getState().getName());
   }
 
   @Test
@@ -260,7 +260,7 @@ public class AuthServiceImplTest {
   @Test
   public void InitializeResetPassword_Should_CreateResetPasswordRequest() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
-    when(temporaryTokenService.createToken(TEST_AUTH, ETemporaryTokenType.RESET_PASSWORD_TOKEN))
+    when(temporaryTokenService.createToken(TEST_AUTH, TemporaryTokenTypeName.RESET_PASSWORD_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
@@ -268,7 +268,7 @@ public class AuthServiceImplTest {
 
     verify(authRepository, Mockito.times(1)).findByUsername(TEST_USERNAME);
     verify(temporaryTokenService, Mockito.times(1))
-        .createToken(TEST_AUTH, ETemporaryTokenType.RESET_PASSWORD_TOKEN);
+        .createToken(TEST_AUTH, TemporaryTokenTypeName.RESET_PASSWORD_TOKEN);
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -299,7 +299,7 @@ public class AuthServiceImplTest {
   public void Login_Should_Return_Valid_JWT_Token() {
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     Auth auth = TEST_AUTH.toBuilder().build();
-    auth.setState(AuthState.builder().name(EAuthState.ACTIVE).id(100L).build());
+    auth.setState(AuthState.builder().name(AuthStateName.ACTIVE).id(100L).build());
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
     when(passwordEncoder.matches(TEST_LOGIN_DTO.getPassword(), auth.getPassword()))
         .thenReturn(true);
@@ -335,7 +335,7 @@ public class AuthServiceImplTest {
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
 
     Auth auth = TEST_AUTH;
-    auth.setState(AuthState.builder().name(EAuthState.ACTIVE).id(101L).build());
+    auth.setState(AuthState.builder().name(AuthStateName.ACTIVE).id(101L).build());
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
 
     authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
@@ -345,7 +345,7 @@ public class AuthServiceImplTest {
   public void Login_Should_Return_ForbiddenOperationException_Exception_When_Account_Blocked() {
     AuthServiceImpl authSpy = PowerMockito.spy(authServiceImpl);
     Auth auth = TEST_AUTH.toBuilder().build();
-    auth.setState(AuthState.builder().name(EAuthState.ACTIVE).id(102L).build());
+    auth.setState(AuthState.builder().name(AuthStateName.ACTIVE).id(102L).build());
     auth.setBlocked(true);
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(auth));
     authSpy.login(TEST_LOGIN_DTO, TEST_REQUEST);
@@ -373,7 +373,7 @@ public class AuthServiceImplTest {
     verify(authorizedActionService, times(1))
         .storeAuthorizationAction(
             auth.getId(),
-            EAuthorizedActionType.NEW_EMAIL,
+            AuthorizedActionTypeName.NEW_EMAIL,
             emailDto.getEmail(),
             EMAIL_CHANGE_ACTION_MILLISECONDS);
   }
@@ -392,16 +392,16 @@ public class AuthServiceImplTest {
   public void VerifyChangeEmailRequest_Should_Create_Token_And_Send_Mail() {
     Auth auth = TEST_AUTH;
     when(authRepository.findById(auth.getId())).thenReturn(Optional.of(auth));
-    when(temporaryTokenService.createToken(auth, ETemporaryTokenType.EMAIL_CHANGE_TOKEN))
+    when(temporaryTokenService.createToken(auth, TemporaryTokenTypeName.EMAIL_CHANGE_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
     when(authorizedActionService.validateAuthorizationAction(
-            auth, EAuthorizedActionType.NEW_EMAIL, TwoFactorAuthUtils.TEST_2FA_DTO))
+            auth, AuthorizedActionTypeName.NEW_EMAIL, TwoFactorAuthUtils.TEST_2FA_DTO))
         .thenReturn(Optional.of(TEST_EMAIL));
     authServiceImpl.verifyEmailChangeRequest(TEST_AUTH.getId(), TwoFactorAuthUtils.TEST_2FA_DTO);
 
     verify(authRepository, times(1)).findById(auth.getId());
     verify(temporaryTokenService, times(1))
-        .createToken(auth, ETemporaryTokenType.EMAIL_CHANGE_TOKEN);
+        .createToken(auth, TemporaryTokenTypeName.EMAIL_CHANGE_TOKEN);
     verify(emailService, times(1)).sendMailToUser(any());
   }
 
@@ -413,7 +413,7 @@ public class AuthServiceImplTest {
         .thenReturn(TEST_TEMPORARY_TOKEN);
     when(personService.save(any(Person.class))).thenReturn(TEST_PERSON);
     when(authorizedActionService.findAuthorizedActionOrThrowException(
-            TEST_TEMPORARY_TOKEN.getAuth(), EAuthorizedActionType.NEW_EMAIL))
+            TEST_TEMPORARY_TOKEN.getAuth(), AuthorizedActionTypeName.NEW_EMAIL))
         .thenReturn(OTPUtils.TEST_AUTH_ACTION_NEWEMAIL());
     authServiceImpl.finalizeEmailChange(TEST_CONFIRM_EMAIL_CHANGE_DTO);
     verify(temporaryTokenService, Mockito.times(1))

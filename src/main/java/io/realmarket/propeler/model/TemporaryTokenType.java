@@ -1,6 +1,6 @@
 package io.realmarket.propeler.model;
 
-import io.realmarket.propeler.model.enums.ETemporaryTokenType;
+import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,5 +28,5 @@ public class TemporaryTokenType {
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  private ETemporaryTokenType name;
+  private TemporaryTokenTypeName name;
 }

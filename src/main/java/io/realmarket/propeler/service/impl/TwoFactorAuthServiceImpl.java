@@ -4,7 +4,7 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
-import io.realmarket.propeler.model.enums.ETemporaryTokenType;
+import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
@@ -105,7 +105,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     TemporaryToken temporaryToken =
         temporaryTokenService.findByValueAndNotExpiredOrThrowException(token);
 
-    if (temporaryToken.getTemporaryTokenType().getName() != ETemporaryTokenType.LOGIN_TOKEN) {
+    if (temporaryToken.getTemporaryTokenType().getName() != TemporaryTokenTypeName.LOGIN_TOKEN) {
       throw new ForbiddenOperationException(ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION);
     }
     return temporaryToken;
@@ -120,7 +120,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     if (!temporaryToken
         .getTemporaryTokenType()
         .getName()
-        .equals(ETemporaryTokenType.SETUP_2FA_TOKEN)) {
+        .equals(TemporaryTokenTypeName.SETUP_2FA_TOKEN)) {
       throw new ForbiddenOperationException(ExceptionMessages.INVALID_TOKEN_TYPE);
     }
     String secret = otpService.generateTOTPSecret(temporaryToken.getAuth());
@@ -133,7 +133,8 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     TemporaryToken temporaryToken =
         temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             twoFASecretVerifyDto.getToken());
-    if (temporaryToken.getTemporaryTokenType().getName() != ETemporaryTokenType.SETUP_2FA_TOKEN) {
+    if (temporaryToken.getTemporaryTokenType().getName()
+        != TemporaryTokenTypeName.SETUP_2FA_TOKEN) {
       throw new ForbiddenOperationException(ExceptionMessages.INVALID_TOKEN_TYPE);
     }
     Auth auth = temporaryToken.getAuth();
@@ -150,7 +151,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
   public SecretDto generateNewSecret(TwoFATokenDto twoFATokenDto, Long userId) {
     TemporaryToken temporaryToken =
         temporaryTokenService.findByValueAndTypeOrThrowException(
-            twoFATokenDto.getToken(), ETemporaryTokenType.PASSWORD_VERIFIED_TOKEN);
+            twoFATokenDto.getToken(), TemporaryTokenTypeName.PASSWORD_VERIFIED_TOKEN);
     Auth auth = authService.findByUserIdrThrowException(userId);
 
     if (!otpService.validate(

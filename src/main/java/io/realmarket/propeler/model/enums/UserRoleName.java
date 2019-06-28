@@ -1,6 +1,6 @@
 package io.realmarket.propeler.model.enums;
 
-public enum EUserRole {
+public enum UserRoleName {
   ROLE_ADMIN("ROLE_ADMIN"),
   ROLE_INVESTOR("ROLE_INVESTOR"),
   ROLE_ENTREPRENEUR("ROLE_ENTREPRENEUR"),
@@ -8,7 +8,7 @@ public enum EUserRole {
 
   private final String text;
 
-  EUserRole(final String text) {
+  UserRoleName(final String text) {
     this.text = text;
   }
 

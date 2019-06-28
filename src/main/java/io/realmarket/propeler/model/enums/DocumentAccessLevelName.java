@@ -1,13 +1,13 @@
 package io.realmarket.propeler.model.enums;
 
-public enum EDocumentAccessLevel {
+public enum DocumentAccessLevelName {
   PLATFORM_ADMINS("PLATFORM_ADMINS"),
   INVESTORS("INVESTORS"),
   PUBLIC("PUBLIC");
 
   private final String text;
 
-  EDocumentAccessLevel(final String text) {
+  DocumentAccessLevelName(final String text) {
     this.text = text;
   }
 

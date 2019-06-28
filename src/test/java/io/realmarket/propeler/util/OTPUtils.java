@@ -8,8 +8,8 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
-import static io.realmarket.propeler.model.enums.EAuthorizedActionType.NEW_EMAIL;
-import static io.realmarket.propeler.model.enums.EAuthorizedActionType.NEW_TOTP_SECRET;
+import static io.realmarket.propeler.model.enums.AuthorizedActionTypeName.NEW_EMAIL;
+import static io.realmarket.propeler.model.enums.AuthorizedActionTypeName.NEW_TOTP_SECRET;
 import static io.realmarket.propeler.util.AuthUtils.TEST_AUTH;
 import static io.realmarket.propeler.util.AuthUtils.TEST_EMAIL;
 

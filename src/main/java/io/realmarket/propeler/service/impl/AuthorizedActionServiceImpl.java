@@ -4,7 +4,7 @@ import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.AuthorizedAction;
 import io.realmarket.propeler.model.AuthorizedActionType;
-import io.realmarket.propeler.model.enums.EAuthorizedActionType;
+import io.realmarket.propeler.model.enums.AuthorizedActionTypeName;
 import io.realmarket.propeler.repository.AuthorizedActionRepository;
 import io.realmarket.propeler.repository.AuthorizedActionTypeRepository;
 import io.realmarket.propeler.service.AuthorizedActionService;
@@ -20,7 +20,7 @@ import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.util.Optional;
 
-import static io.realmarket.propeler.model.enums.EAuthorizedActionType.NEW_TOTP_SECRET;
+import static io.realmarket.propeler.model.enums.AuthorizedActionTypeName.NEW_TOTP_SECRET;
 
 @Service
 @Slf4j
@@ -41,7 +41,7 @@ public class AuthorizedActionServiceImpl implements AuthorizedActionService {
 
   @Transactional
   public void storeAuthorizationAction(
-      Long authId, EAuthorizedActionType type, String data, Long mmTimeout) {
+      Long authId, AuthorizedActionTypeName type, String data, Long mmTimeout) {
     Auth auth = new Auth(authId);
     deleteByAuthAndType(auth, type);
     log.info("Store authorization action.");
@@ -59,13 +59,13 @@ public class AuthorizedActionServiceImpl implements AuthorizedActionService {
     authorizedActionRepository.save(authorizedAction);
   }
 
-  public void deleteByAuthAndType(Auth authId, EAuthorizedActionType type) {
+  public void deleteByAuthAndType(Auth authId, AuthorizedActionTypeName type) {
     authorizedActionRepository.deleteAllByAuthAndTypeName(authId, type);
     authorizedActionRepository.flush();
   }
 
   public AuthorizedAction findAuthorizedActionOrThrowException(
-      Auth auth, EAuthorizedActionType type) {
+      Auth auth, AuthorizedActionTypeName type) {
     Optional<AuthorizedAction> authorizedAction =
         authorizedActionRepository.findByAuthAndTypeNameAndExpirationIsAfter(
             auth, type, Instant.now());
@@ -77,7 +77,7 @@ public class AuthorizedActionServiceImpl implements AuthorizedActionService {
 
   @Transactional
   public Optional<String> validateAuthorizationAction(
-      Auth auth, EAuthorizedActionType type, TwoFADto twoFADto) {
+      Auth auth, AuthorizedActionTypeName type, TwoFADto twoFADto) {
     if (type == NEW_TOTP_SECRET) {
       return Optional.empty();
     }

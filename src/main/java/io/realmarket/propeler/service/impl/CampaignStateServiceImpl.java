@@ -3,7 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
-import io.realmarket.propeler.model.enums.EUserRole;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.CampaignStateRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignStateService;
@@ -21,7 +21,7 @@ public class CampaignStateServiceImpl implements CampaignStateService {
   private final CampaignStateRepository campaignStateRepository;
   private Map<CampaignStateName, List<CampaignStateName>> stateTransitFlow =
       createAndInitStateChangeFlow();
-  private Map<CampaignStateName, List<EUserRole>> rolesPerState = createAndInitRolesPerState();
+  private Map<CampaignStateName, List<UserRoleName>> rolesPerState = createAndInitRolesPerState();
 
   @Autowired
   public CampaignStateServiceImpl(CampaignStateRepository campaignStateRepository) {
@@ -32,16 +32,17 @@ public class CampaignStateServiceImpl implements CampaignStateService {
   public boolean changeState(
       Campaign campaign, CampaignState followingCampaignState, boolean isOwner) {
     CampaignState currentCampaignState = campaign.getCampaignState();
-    EUserRole eUserRole = AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
+    UserRoleName userRoleName =
+        AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
 
-    if (eUserRole.equals(EUserRole.ROLE_ENTREPRENEUR) && !isOwner) {
+    if (userRoleName.equals(UserRoleName.ROLE_ENTREPRENEUR) && !isOwner) {
       return false;
     }
 
     if (stateTransitFlow
             .get(currentCampaignState.getName())
             .contains(followingCampaignState.getName())
-        && rolesPerState.get(currentCampaignState.getName()).contains(eUserRole)) {
+        && rolesPerState.get(currentCampaignState.getName()).contains(userRoleName)) {
       campaign.setCampaignState(followingCampaignState);
       return true;
     }
@@ -94,22 +95,22 @@ public class CampaignStateServiceImpl implements CampaignStateService {
     return campaignStateTransitFlow;
   }
 
-  private Map<CampaignStateName, List<EUserRole>> createAndInitRolesPerState() {
-    Map<CampaignStateName, List<EUserRole>> rolesPerCampaignState =
+  private Map<CampaignStateName, List<UserRoleName>> createAndInitRolesPerState() {
+    Map<CampaignStateName, List<UserRoleName>> rolesPerCampaignState =
         new EnumMap<>(CampaignStateName.class);
     rolesPerCampaignState.put(
-        CampaignStateName.INITIAL, Collections.singletonList(EUserRole.ROLE_ENTREPRENEUR));
+        CampaignStateName.INITIAL, Collections.singletonList(UserRoleName.ROLE_ENTREPRENEUR));
     rolesPerCampaignState.put(
-        CampaignStateName.REVIEW_READY, Collections.singletonList(EUserRole.ROLE_AUDITOR));
+        CampaignStateName.REVIEW_READY, Collections.singletonList(UserRoleName.ROLE_AUDITOR));
     rolesPerCampaignState.put(
-        CampaignStateName.AUDIT, Collections.singletonList(EUserRole.ROLE_AUDITOR));
+        CampaignStateName.AUDIT, Collections.singletonList(UserRoleName.ROLE_AUDITOR));
     rolesPerCampaignState.put(
         CampaignStateName.FINANCE_PROPOSITION,
-        Collections.singletonList(EUserRole.ROLE_ENTREPRENEUR));
+        Collections.singletonList(UserRoleName.ROLE_ENTREPRENEUR));
     rolesPerCampaignState.put(
-        CampaignStateName.LEAD_INVESTMENT, Collections.singletonList(EUserRole.ROLE_ADMIN));
+        CampaignStateName.LEAD_INVESTMENT, Collections.singletonList(UserRoleName.ROLE_ADMIN));
     rolesPerCampaignState.put(
-        CampaignStateName.ACTIVE, Collections.singletonList(EUserRole.ROLE_ADMIN));
+        CampaignStateName.ACTIVE, Collections.singletonList(UserRoleName.ROLE_ADMIN));
     rolesPerCampaignState.put(CampaignStateName.POST_CAMPAIGN, Collections.emptyList());
     return rolesPerCampaignState;
   }
