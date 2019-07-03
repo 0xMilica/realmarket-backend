@@ -5,6 +5,7 @@ import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.Shareholder;
 import io.realmarket.propeler.repository.ShareholderRepository;
 import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.AuthUtils;
@@ -18,6 +19,7 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +39,10 @@ public class ShareholderServiceImplTest {
   @Mock private CompanyService companyService;
 
   @Mock private ModelMapperBlankString modelMapperBlankString;
+
+  @Mock private BlockchainCommunicationService blockchainCommunicationService;
+
+  @Mock private HttpServletRequest request;
 
   @InjectMocks private ShareholderServiceImpl shareholderService;
 
@@ -88,6 +94,7 @@ public class ShareholderServiceImplTest {
     Company company = CompanyUtils.getCompanyMocked();
 
     when(companyService.findMyCompany()).thenReturn(company);
+    when(shareholderRepository.save(any(Shareholder.class))).thenReturn(shareholder);
     when(shareholderRepository.findById(shareholder.getId())).thenReturn(Optional.of(shareholder));
     doAnswer(
             invocation -> {
