@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="milicavulic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence audit_seq;
+            create table if not exists audit
+            (
+            id bigint not null
+            constraint audit_pkey
+            primary key,
+            auditor_auth_id bigint
+            constraint audit_fk_on_auth
+            references auth,
+            campaign_id bigint
+            constraint audit_fk_on_campaign
+            references campaign,
+            request_state_id bigint
+            constraint audit_fk_on_request_state
+            references request_state,
+            content varchar(10000)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -116,6 +116,12 @@ public interface ExceptionMessages {
   // Investment can not be revoked at this stage.
   String INVESTMENT_CAN_NOT_BE_REVOKED = "INV_009";
 
+  // Auditing request not found.
+  String AUDITING_REQUEST_NOT_FOUND = "AUD_002";
+
+  // User is not auditor of this request.
+  String NOT_REQUEST_AUDITOR = "AUD_002";
+
   // Payment not processed for this investment.
   String PAYMENT_NOT_PROCESSED = "PAY_001";
 

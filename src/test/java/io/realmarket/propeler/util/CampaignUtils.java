@@ -22,6 +22,8 @@ public class CampaignUtils {
       CampaignState.builder().name(CampaignStateName.INITIAL).build();
   public static final CampaignState TEST_CAMPAIGN_ACTIVE_STATE =
       CampaignState.builder().name(CampaignStateName.ACTIVE).build();
+  public static final CampaignState TEST_CAMPAIGN_REVIEW_READY_STATE =
+      CampaignState.builder().name(CampaignStateName.REVIEW_READY).build();
   public static final String TEST_NAME = "TEST_NAME";
   public static final CampaignState TEST_CAMPAIGN_DELETED_STATE =
       CampaignState.builder().name(CampaignStateName.DELETED).build();
@@ -54,6 +56,14 @@ public class CampaignUtils {
         .marketImageUrl(TEST_MARKET_IMAGE_UTL)
         .build();
   }
+
+  public static final Campaign TEST_REVIEW_READY_CAMPAIGN =
+      Campaign.builder()
+          .company(CompanyUtils.getCompanyMocked())
+          .urlFriendlyName(TEST_ACTIVE_URL_FRIENDLY_NAME)
+          .fundingGoals(0L)
+          .campaignState(TEST_CAMPAIGN_REVIEW_READY_STATE)
+          .build();
 
   public static final Campaign TEST_ACTIVE_CAMPAIGN =
       Campaign.builder()

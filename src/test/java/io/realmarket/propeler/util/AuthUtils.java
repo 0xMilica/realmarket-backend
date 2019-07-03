@@ -33,7 +33,7 @@ public class AuthUtils {
   public static final UserRoleName TEST_ROLE = UserRoleName.ROLE_INVESTOR;
   public static final UserRoleName TEST_ROLE_ENTREPRENEUR = UserRoleName.ROLE_ENTREPRENEUR;
   public static final UserRoleName TEST_ROLE_INVESTOR = UserRoleName.ROLE_INVESTOR;
-  public static final UserRoleName TEST_ROLE_FORBIDDEN = UserRoleName.ROLE_ADMIN;
+  public static final UserRoleName TEST_ROLE_ADMIN = UserRoleName.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
   public static final MailContentHolder TEST_EMAIL_DTO =
@@ -64,6 +64,8 @@ public class AuthUtils {
       UserRole.builder().name(TEST_ROLE_ENTREPRENEUR).id(101L).build();
   public static final UserRole TEST_INVESTOR_USER_ROLE =
       UserRole.builder().name(TEST_ROLE_INVESTOR).id(102L).build();
+  public static final UserRole TEST_ADMIN_ROLE =
+      UserRole.builder().name(TEST_ROLE_ADMIN).id(103L).build();
   public static final AuthState TEST_AUTH_STATE =
       AuthState.builder().name(AuthStateName.ACTIVE).id(100L).build();
 
@@ -129,6 +131,17 @@ public class AuthUtils {
           .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
           .build();
 
+  public static final Auth TEST_AUTH_ADMIN =
+      Auth.builder()
+          .id(TEST_AUTH_ID + 2)
+          .username(TEST_USERNAME)
+          .state(TEST_AUTH_STATE)
+          .userRole(TEST_ADMIN_ROLE)
+          .password(TEST_PASSWORD)
+          .totpSecret(TEST_ENCODED_SECRET)
+          .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
+          .build();
+
   public static final Auth TEST_AUTH_OLD_SECRET =
       Auth.builder()
           .username(TEST_USERNAME)
@@ -148,6 +161,8 @@ public class AuthUtils {
   public static final UserAuthentication TEST_ENTREPRENEUR_USER_AUTH =
       new UserAuthentication(
           TEST_AUTH_ENTREPRENEUR.toBuilder().build(), TEST_TEMPORARY_TOKEN_VALUE);
+  public static final UserAuthentication TEST_ADMIN_AUTH =
+      new UserAuthentication(TEST_AUTH_ADMIN.toBuilder().build(), TEST_TEMPORARY_TOKEN_VALUE);
   public static final MockHttpServletRequest TEST_REQUEST = new MockHttpServletRequest();
   public static final MockHttpServletResponse TEST_RESPONSE = new MockHttpServletResponse();
   public static final Cookie TEST_COOKIE = new Cookie(COOKIE_NAME, TEST_VALUE);
@@ -157,7 +172,7 @@ public class AuthUtils {
           .email(TEST_EMAIL)
           .username(TEST_USERNAME)
           .password(TEST_PASSWORD)
-          .userRole(TEST_ROLE_FORBIDDEN)
+          .userRole(TEST_ROLE_ADMIN)
           .firstName(TEST_FIRST_NAME)
           .lastName(TEST_LAST_NAME)
           .countryOfResidence("TEST_COUNTRY_OF_RESIDENCE")
@@ -185,6 +200,14 @@ public class AuthUtils {
 
   public static void mockRequestAndContextEntrepreneur() {
     mockSecurityContext(TEST_ENTREPRENEUR_USER_AUTH);
+
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addHeader("X-Forwarded-For", "localhost");
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+  }
+
+  public static void mockRequestAndContextAdmin() {
+    mockSecurityContext(TEST_ADMIN_AUTH);
 
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.addHeader("X-Forwarded-For", "localhost");
