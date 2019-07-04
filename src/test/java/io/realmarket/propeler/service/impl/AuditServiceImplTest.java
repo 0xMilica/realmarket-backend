@@ -1,9 +1,11 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.model.Audit;
+import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.AuditRepository;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.CampaignService;
+import io.realmarket.propeler.service.CampaignStateService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.CampaignUtils;
@@ -15,10 +17,10 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static io.realmarket.propeler.util.AuditUtils.TEST_AUDIT;
-import static io.realmarket.propeler.util.AuditUtils.TEST_AUDIT_REQUEST_DTO;
+import static io.realmarket.propeler.util.AuditUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -33,6 +35,8 @@ public class AuditServiceImplTest {
 
   @Mock private AuditRepository auditRepository;
 
+  @Mock private CampaignStateService campaignStateService;
+
   @InjectMocks private AuditServiceImpl auditServiceImpl;
 
   @Before
@@ -46,6 +50,11 @@ public class AuditServiceImplTest {
         .thenReturn(AuthUtils.TEST_AUTH_ADMIN);
     when(campaignService.getCampaignByUrlFriendlyName(CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenReturn(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN);
+    when(campaignStateService.getCampaignState(CampaignStateName.AUDIT))
+        .thenReturn(TEST_AUDIT_CAMPAIGN_STATE);
+    doNothing()
+        .when(campaignStateService)
+        .changeState(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN, TEST_AUDIT_CAMPAIGN_STATE);
     when(auditRepository.save(any(Audit.class))).thenReturn(TEST_AUDIT);
 
     Audit actualAudit = auditServiceImpl.assignAuditRequest(TEST_AUDIT_REQUEST_DTO);

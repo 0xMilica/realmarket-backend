@@ -4,12 +4,10 @@ import io.realmarket.propeler.api.dto.AuditRequestDto;
 import io.realmarket.propeler.model.Audit;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.AuditRepository;
-import io.realmarket.propeler.service.AuditService;
-import io.realmarket.propeler.service.AuthService;
-import io.realmarket.propeler.service.CampaignService;
-import io.realmarket.propeler.service.RequestStateService;
+import io.realmarket.propeler.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,17 +18,20 @@ public class AuditServiceImpl implements AuditService {
   private final AuthService authService;
   private final RequestStateService requestStateService;
   private final CampaignService campaignService;
+  private final CampaignStateService campaignStateService;
 
   @Autowired
   public AuditServiceImpl(
       AuditRepository auditRepository,
       RequestStateService requestStateService,
       AuthService authService,
-      CampaignService campaignService) {
+      CampaignService campaignService,
+      CampaignStateService campaignStateService) {
     this.auditRepository = auditRepository;
     this.requestStateService = requestStateService;
     this.authService = authService;
     this.campaignService = campaignService;
+    this.campaignStateService = campaignStateService;
   }
 
   @Override
@@ -38,6 +39,9 @@ public class AuditServiceImpl implements AuditService {
     Auth auditorAuth = authService.findByIdOrThrowException(auditRequestDto.getAuditorId());
     Campaign campaign =
         campaignService.getCampaignByUrlFriendlyName(auditRequestDto.getCampaignUrlFriendlyName());
+    campaignStateService.changeState(
+        campaign, campaignStateService.getCampaignState(CampaignStateName.AUDIT));
+
     Audit audit =
         Audit.builder()
             .auditorAuth(auditorAuth)
