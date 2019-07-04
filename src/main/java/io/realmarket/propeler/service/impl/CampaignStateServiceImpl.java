@@ -4,9 +4,11 @@ import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
+import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.repository.CampaignStateRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignStateService;
+import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,49 +16,38 @@ import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.CAMPAIGN_STATE_NOT_FOUND;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION;
 
 @Service
 public class CampaignStateServiceImpl implements CampaignStateService {
 
   private final CampaignStateRepository campaignStateRepository;
+  private final CampaignRepository campaignRepository;
+
   private Map<CampaignStateName, List<CampaignStateName>> stateTransitFlow =
       createAndInitStateChangeFlow();
   private Map<CampaignStateName, List<UserRoleName>> rolesPerState = createAndInitRolesPerState();
 
   @Autowired
-  public CampaignStateServiceImpl(CampaignStateRepository campaignStateRepository) {
+  public CampaignStateServiceImpl(
+      CampaignStateRepository campaignStateRepository, CampaignRepository campaignRepository) {
     this.campaignStateRepository = campaignStateRepository;
+    this.campaignRepository = campaignRepository;
   }
 
   @Override
-  public boolean changeState(
-      Campaign campaign, CampaignState followingCampaignState, boolean isOwner) {
+  public void changeState(Campaign campaign, CampaignState followingCampaignState) {
     CampaignState currentCampaignState = campaign.getCampaignState();
     UserRoleName userRoleName =
         AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
-
-    if (userRoleName.equals(UserRoleName.ROLE_ENTREPRENEUR) && !isOwner) {
-      return false;
-    }
 
     if (stateTransitFlow
             .get(currentCampaignState.getName())
             .contains(followingCampaignState.getName())
         && rolesPerState.get(currentCampaignState.getName()).contains(userRoleName)) {
       campaign.setCampaignState(followingCampaignState);
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public boolean hasReadAccess() {
-    return false;
-  }
-
-  @Override
-  public boolean hasWriteAccess() {
-    return false;
+      campaignRepository.save(campaign);
+    } else throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
   }
 
   @Override
@@ -82,13 +73,9 @@ public class CampaignStateServiceImpl implements CampaignStateService {
         CampaignStateName.REVIEW_READY, Collections.singletonList(CampaignStateName.AUDIT));
     campaignStateTransitFlow.put(
         CampaignStateName.AUDIT,
-        Arrays.asList(CampaignStateName.INITIAL, CampaignStateName.FINANCE_PROPOSITION));
+        Arrays.asList(CampaignStateName.INITIAL, CampaignStateName.LAUNCH_READY));
     campaignStateTransitFlow.put(
-        CampaignStateName.FINANCE_PROPOSITION,
-        Arrays.asList(CampaignStateName.INITIAL, CampaignStateName.LEAD_INVESTMENT));
-    campaignStateTransitFlow.put(
-        CampaignStateName.LEAD_INVESTMENT,
-        Arrays.asList(CampaignStateName.INITIAL, CampaignStateName.ACTIVE));
+        CampaignStateName.LAUNCH_READY, Collections.singletonList(CampaignStateName.ACTIVE));
     campaignStateTransitFlow.put(
         CampaignStateName.ACTIVE, Collections.singletonList(CampaignStateName.POST_CAMPAIGN));
     campaignStateTransitFlow.put(CampaignStateName.POST_CAMPAIGN, Collections.emptyList());
@@ -101,14 +88,11 @@ public class CampaignStateServiceImpl implements CampaignStateService {
     rolesPerCampaignState.put(
         CampaignStateName.INITIAL, Collections.singletonList(UserRoleName.ROLE_ENTREPRENEUR));
     rolesPerCampaignState.put(
-        CampaignStateName.REVIEW_READY, Collections.singletonList(UserRoleName.ROLE_AUDITOR));
+        CampaignStateName.REVIEW_READY, Collections.singletonList(UserRoleName.ROLE_ENTREPRENEUR));
     rolesPerCampaignState.put(
-        CampaignStateName.AUDIT, Collections.singletonList(UserRoleName.ROLE_AUDITOR));
+        CampaignStateName.AUDIT, Collections.singletonList(UserRoleName.ROLE_ADMIN));
     rolesPerCampaignState.put(
-        CampaignStateName.FINANCE_PROPOSITION,
-        Collections.singletonList(UserRoleName.ROLE_ENTREPRENEUR));
-    rolesPerCampaignState.put(
-        CampaignStateName.LEAD_INVESTMENT, Collections.singletonList(UserRoleName.ROLE_ADMIN));
+        CampaignStateName.LAUNCH_READY, Collections.singletonList(UserRoleName.ROLE_ADMIN));
     rolesPerCampaignState.put(
         CampaignStateName.ACTIVE, Collections.singletonList(UserRoleName.ROLE_ADMIN));
     rolesPerCampaignState.put(CampaignStateName.POST_CAMPAIGN, Collections.emptyList());

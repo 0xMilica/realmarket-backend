@@ -6,11 +6,7 @@ import io.realmarket.propeler.model.enums.CampaignStateName;
 
 public interface CampaignStateService {
 
-  boolean changeState(Campaign campaign, CampaignState followingCampaignState, boolean isOwner);
-
-  boolean hasReadAccess();
-
-  boolean hasWriteAccess();
+  void changeState(Campaign campaign, CampaignState followingCampaignState);
 
   CampaignState getCampaignState(String name);
 

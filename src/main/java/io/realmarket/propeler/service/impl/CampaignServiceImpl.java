@@ -279,16 +279,14 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional
   public void requestReviewForCampaign(String campaignName) {
     Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
-    if (!campaignStateService.changeState(
-        campaign,
-        campaignStateService.getCampaignState(CampaignStateName.REVIEW_READY.toString()),
-        isOwner(campaign))) {
-      throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
-    }
+    throwIfNoAccess(campaign);
+
+    campaignStateService.changeState(
+        campaign, campaignStateService.getCampaignState(CampaignStateName.REVIEW_READY.toString()));
 
     // TODO: Temporary here. Remove this line when campaign could be set to active state.
     sendNewCampaignOpportunityEmail(campaign);
-    campaign = campaignRepository.save(campaign);
+    campaign = campaignRepository.getOne(campaign.getId());
 
     blockchainCommunicationService.invoke(
         BlockchainMethod.CAMPAIGN_SUBMISSION_FOR_REVIEW,
