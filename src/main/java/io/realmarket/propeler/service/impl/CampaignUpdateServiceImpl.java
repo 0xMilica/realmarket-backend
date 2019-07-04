@@ -65,7 +65,7 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
 
   @Override
   public Page<CampaignUpdate> findCampaignUpdatesByCampaign(Campaign campaign, Pageable pageable) {
-    return campaignUpdateRepository.findByCampaign(campaign, pageable);
+    return campaignUpdateRepository.findByCampaignOrderByPostDateDesc(campaign, pageable);
   }
 
   @Override

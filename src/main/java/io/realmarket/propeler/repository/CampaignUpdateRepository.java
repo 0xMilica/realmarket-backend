@@ -26,5 +26,5 @@ public interface CampaignUpdateRepository extends JpaRepository<CampaignUpdate, 
   Page<CampaignUpdate> findCampaignUpdatesByCampaignState(
       @Param("state") CampaignStateName campaignState, Pageable pageable);
 
-  Page<CampaignUpdate> findByCampaign(Campaign campaign, Pageable pageable);
+  Page<CampaignUpdate> findByCampaignOrderByPostDateDesc(Campaign campaign, Pageable pageable);
 }

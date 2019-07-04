@@ -23,6 +23,7 @@ public class CampaignDocumentResponseDto extends CampaignDocumentDto {
   private Instant uploadDate;
 
   @ApiModelProperty(value = "Campaign name")
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String campaignName;
 
   public CampaignDocumentResponseDto(CampaignDocument campaignDocument) {
