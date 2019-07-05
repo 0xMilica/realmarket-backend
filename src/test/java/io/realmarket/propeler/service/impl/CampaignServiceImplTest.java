@@ -5,6 +5,7 @@ import io.realmarket.propeler.api.dto.CampaignResponseDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -545,5 +546,15 @@ public class CampaignServiceImplTest {
     investableCampaign.setCollectedAmount(BigDecimal.valueOf(1000L));
     assertEquals(
         BigDecimal.ZERO, campaignServiceImpl.getMaximumInvestableAmount(investableCampaign));
+  }
+
+  @Test
+  public void changeCampaignStateOrThrow_ShouldChangeState() {
+    CampaignState campaignState = TEST_REVIEW_READY_CAMPAIGN_STATE;
+    Campaign campaign = TEST_CAMPAIGN;
+
+    when(campaignRepository.save(any(Campaign.class))).thenReturn(campaign);
+
+    campaignServiceImpl.changeCampaignStateOrThrow(campaign, campaignState);
   }
 }

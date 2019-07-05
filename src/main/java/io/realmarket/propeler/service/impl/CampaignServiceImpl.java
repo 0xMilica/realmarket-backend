@@ -4,6 +4,7 @@ import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
@@ -276,17 +277,25 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
+  public Campaign changeCampaignStateOrThrow(
+      Campaign campaign, CampaignState followingCampaignState) {
+    campaignStateService.changeStateOrThrow(campaign, followingCampaignState);
+    return campaignRepository.save(campaign);
+  }
+
+  @Override
   @Transactional
   public void requestReviewForCampaign(String campaignName) {
     Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
     throwIfNoAccess(campaign);
 
-    campaignStateService.changeState(
-        campaign, campaignStateService.getCampaignState(CampaignStateName.REVIEW_READY.toString()));
+    campaign =
+        changeCampaignStateOrThrow(
+            campaign,
+            campaignStateService.getCampaignState(CampaignStateName.REVIEW_READY.toString()));
 
     // TODO: Temporary here. Remove this line when campaign could be set to active state.
     sendNewCampaignOpportunityEmail(campaign);
-    campaign = campaignRepository.getOne(campaign.getId());
 
     blockchainCommunicationService.invoke(
         BlockchainMethod.CAMPAIGN_SUBMISSION_FOR_REVIEW,

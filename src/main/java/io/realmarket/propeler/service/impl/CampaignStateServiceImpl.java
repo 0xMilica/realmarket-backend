@@ -4,7 +4,6 @@ import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
-import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.repository.CampaignStateRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignStateService;
@@ -22,31 +21,31 @@ import static io.realmarket.propeler.service.exception.util.ExceptionMessages.FO
 public class CampaignStateServiceImpl implements CampaignStateService {
 
   private final CampaignStateRepository campaignStateRepository;
-  private final CampaignRepository campaignRepository;
-
   private Map<CampaignStateName, List<CampaignStateName>> stateTransitFlow =
       createAndInitStateChangeFlow();
   private Map<CampaignStateName, List<UserRoleName>> rolesPerState = createAndInitRolesPerState();
 
   @Autowired
-  public CampaignStateServiceImpl(
-      CampaignStateRepository campaignStateRepository, CampaignRepository campaignRepository) {
+  public CampaignStateServiceImpl(CampaignStateRepository campaignStateRepository) {
     this.campaignStateRepository = campaignStateRepository;
-    this.campaignRepository = campaignRepository;
   }
 
   @Override
-  public void changeState(Campaign campaign, CampaignState followingCampaignState) {
-    CampaignState currentCampaignState = campaign.getCampaignState();
+  public boolean ifStateCanBeChanged(
+      CampaignState currentCampaignState, CampaignState followingCampaignState) {
     UserRoleName userRoleName =
         AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
 
-    if (stateTransitFlow
+    return stateTransitFlow
             .get(currentCampaignState.getName())
             .contains(followingCampaignState.getName())
-        && rolesPerState.get(currentCampaignState.getName()).contains(userRoleName)) {
+        && rolesPerState.get(currentCampaignState.getName()).contains(userRoleName);
+  }
+
+  @Override
+  public void changeStateOrThrow(Campaign campaign, CampaignState followingCampaignState) {
+    if (ifStateCanBeChanged(campaign.getCampaignState(), followingCampaignState)) {
       campaign.setCampaignState(followingCampaignState);
-      campaignRepository.save(campaign);
     } else throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
   }
 
@@ -88,7 +87,7 @@ public class CampaignStateServiceImpl implements CampaignStateService {
     rolesPerCampaignState.put(
         CampaignStateName.INITIAL, Collections.singletonList(UserRoleName.ROLE_ENTREPRENEUR));
     rolesPerCampaignState.put(
-        CampaignStateName.REVIEW_READY, Collections.singletonList(UserRoleName.ROLE_ENTREPRENEUR));
+        CampaignStateName.REVIEW_READY, Collections.singletonList(UserRoleName.ROLE_ADMIN));
     rolesPerCampaignState.put(
         CampaignStateName.AUDIT, Collections.singletonList(UserRoleName.ROLE_ADMIN));
     rolesPerCampaignState.put(

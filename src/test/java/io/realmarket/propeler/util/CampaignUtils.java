@@ -20,10 +20,14 @@ public class CampaignUtils {
   public static final BigDecimal TEST_MIN_INVESTMENT = BigDecimal.valueOf(600);
   public static final CampaignState TEST_CAMPAIGN_INITIAL_STATE =
       CampaignState.builder().name(CampaignStateName.INITIAL).build();
+  public static final CampaignState TEST_REVIEW_READY_CAMPAIGN_STATE =
+      CampaignState.builder().name(CampaignStateName.REVIEW_READY).build();
+  public static final CampaignState TEST_AUDIT_CAMPAIGN_STATE =
+      CampaignState.builder().name(CampaignStateName.AUDIT).build();
+  public static final CampaignState TEST_LAUNCH_READY_CAMPAIGN_STATE =
+      CampaignState.builder().name(CampaignStateName.LAUNCH_READY).build();
   public static final CampaignState TEST_CAMPAIGN_ACTIVE_STATE =
       CampaignState.builder().name(CampaignStateName.ACTIVE).build();
-  public static final CampaignState TEST_CAMPAIGN_REVIEW_READY_STATE =
-      CampaignState.builder().name(CampaignStateName.REVIEW_READY).build();
   public static final String TEST_NAME = "TEST_NAME";
   public static final CampaignState TEST_CAMPAIGN_DELETED_STATE =
       CampaignState.builder().name(CampaignStateName.DELETED).build();
@@ -60,9 +64,14 @@ public class CampaignUtils {
   public static final Campaign TEST_REVIEW_READY_CAMPAIGN =
       Campaign.builder()
           .company(CompanyUtils.getCompanyMocked())
-          .urlFriendlyName(TEST_ACTIVE_URL_FRIENDLY_NAME)
-          .fundingGoals(0L)
-          .campaignState(TEST_CAMPAIGN_REVIEW_READY_STATE)
+          .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
+          .name(TEST_NAME)
+          .fundingGoals(TEST_FUNDING_GOALS)
+          .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
+          .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
+          .minInvestment(TEST_MIN_INVESTMENT)
+          .campaignState(TEST_REVIEW_READY_CAMPAIGN_STATE)
+          .tagLine(TEST_TAG_LINE)
           .build();
 
   public static final Campaign TEST_ACTIVE_CAMPAIGN =

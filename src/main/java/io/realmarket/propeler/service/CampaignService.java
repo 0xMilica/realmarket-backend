@@ -2,6 +2,7 @@ package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.Company;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +46,8 @@ public interface CampaignService {
   Campaign getCampaignByUrlFriendlyName(String name);
 
   void delete(String campaignName, TwoFADto twoFADto) throws AuthenticationException;
+
+  Campaign changeCampaignStateOrThrow(Campaign campaign, CampaignState followingCampaignState);
 
   void requestReviewForCampaign(String campaignName);
 

@@ -6,7 +6,10 @@ import io.realmarket.propeler.model.enums.CampaignStateName;
 
 public interface CampaignStateService {
 
-  void changeState(Campaign campaign, CampaignState followingCampaignState);
+  boolean ifStateCanBeChanged(
+      CampaignState currentCampaignState, CampaignState followingCampaignState);
+
+  void changeStateOrThrow(Campaign campaign, CampaignState followingCampaignState);
 
   CampaignState getCampaignState(String name);
 

@@ -5,5 +5,7 @@ import io.realmarket.propeler.model.Audit;
 
 public interface AuditService {
 
-  Audit assignAuditRequest(AuditRequestDto auditRequestDto);
+  Audit assignAudit(AuditRequestDto auditRequestDto);
+
+  Audit acceptCampaign(Long auditId);
 }
