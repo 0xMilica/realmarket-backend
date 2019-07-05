@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -20,7 +19,7 @@ import javax.validation.constraints.Size;
 public class CampaignUpdateDto {
 
   @ApiModelProperty(value = "Campaign update title")
-  @Nullable
+  @NotBlank(message = "Title must not be blank!")
   private String title;
 
   @ApiModelProperty(value = "Campaign update content")

@@ -94,6 +94,7 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
     campaignService.throwIfNoAccess(campaignUpdate.getCampaign());
     campaignService.throwIfNotActive(campaignUpdate.getCampaign());
 
+    campaignUpdate.setTitle(campaignUpdateDto.getTitle());
     campaignUpdate.setContent(campaignUpdateDto.getContent());
     campaignUpdate = campaignUpdateRepository.save(campaignUpdate);
 
