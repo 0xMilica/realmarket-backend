@@ -6,17 +6,18 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.RequestStateName;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.AuditRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.AUDITING_REQUEST_NOT_FOUND;
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.NOT_CAMPAIGN_AUDITOR;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
 @Service
 public class AuditServiceImpl implements AuditService {
@@ -44,6 +45,10 @@ public class AuditServiceImpl implements AuditService {
   @Override
   public Audit assignAudit(AuditRequestDto auditRequestDto) {
     Auth auditorAuth = authService.findByIdOrThrowException(auditRequestDto.getAuditorId());
+    // TODO: Change this condition when assigning become possible for other roles too
+    if (!auditorAuth.getUserRole().getName().equals(UserRoleName.ROLE_ADMIN)) {
+      throw new BadRequestException(USER_CAN_NOT_BE_AUDITOR);
+    }
     Campaign campaign =
         campaignService.getCampaignByUrlFriendlyName(auditRequestDto.getCampaignUrlFriendlyName());
     campaignService.changeCampaignStateOrThrow(
@@ -51,7 +56,7 @@ public class AuditServiceImpl implements AuditService {
 
     Audit audit =
         Audit.builder()
-            .auditorAuth(auditorAuth)
+            .auditor(auditorAuth)
             .campaign(campaign)
             .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
             .build();
@@ -96,7 +101,7 @@ public class AuditServiceImpl implements AuditService {
 
   private boolean isAuditor(Audit audit) {
     return audit
-        .getAuditorAuth()
+        .getAuditor()
         .getId()
         .equals(AuthenticationUtil.getAuthentication().getAuth().getId());
   }

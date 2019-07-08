@@ -1,5 +1,6 @@
 package io.realmarket.propeler.repository;
 
+import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.Company;
@@ -39,6 +40,10 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
   Page<Campaign> findAllByCampaignState(Pageable pageable, CampaignState state);
 
   List<Campaign> findAllByCampaignState(CampaignState state);
+
+  @Query(
+      "SELECT c FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = 'AUDIT' AND c.id IN (SELECT a.campaign FROM Audit a WHERE auditor = :auth)")
+  Page<Campaign> findAuditCampaigns(@Param("auth") Auth auth, Pageable pageable);
 
   List<Campaign> findAllByCompany(Company company);
 

@@ -39,7 +39,7 @@ public class AuditResponseDto {
 
   public AuditResponseDto(Audit audit) {
     this.auditId = audit.getId();
-    this.auditorId = audit.getAuditorAuth().getId();
+    this.auditorId = audit.getAuditor().getId();
     this.campaignUrlFriendlyName = audit.getCampaign().getUrlFriendlyName();
     this.request_state = audit.getRequestState().getName().toString();
     this.content = audit.getContent();

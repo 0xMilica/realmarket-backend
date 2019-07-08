@@ -13,8 +13,8 @@
             id bigint not null
             constraint audit_pkey
             primary key,
-            auditor_auth_id bigint
-            constraint audit_fk_on_auth
+            auditor_id bigint
+            constraint audit_fk_on_auditor
             references auth,
             campaign_id bigint
             constraint audit_fk_on_campaign

@@ -25,7 +25,7 @@ public class AuditUtils {
   public static final Audit TEST_PENDING_REQUEST_AUDIT =
       Audit.builder()
           .id(TEST_AUDIT_ID)
-          .auditorAuth(AuthUtils.TEST_AUTH_ADMIN)
+          .auditor(AuthUtils.TEST_AUTH_ADMIN)
           .campaign(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN)
           .requestState(TEST_PENDING_REQUEST_STATE)
           .build();
@@ -33,7 +33,7 @@ public class AuditUtils {
   public static final Audit TEST_APPROVED_REQUEST_AUDIT =
       Audit.builder()
           .id(TEST_AUDIT_ID)
-          .auditorAuth(AuthUtils.TEST_AUTH_ADMIN)
+          .auditor(AuthUtils.TEST_AUTH_ADMIN)
           .campaign(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN)
           .requestState(TEST_APPROVED_REQUEST_STATE)
           .build();
@@ -41,7 +41,7 @@ public class AuditUtils {
   public static final Audit TEST_DECLINED_REQUEST_AUDIT =
       Audit.builder()
           .id(TEST_AUDIT_ID)
-          .auditorAuth(AuthUtils.TEST_AUTH_ADMIN)
+          .auditor(AuthUtils.TEST_AUTH_ADMIN)
           .campaign(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN)
           .requestState(TEST_DECLINED_REQUEST_STATE)
           .build();

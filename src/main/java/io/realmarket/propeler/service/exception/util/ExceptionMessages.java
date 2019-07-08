@@ -122,6 +122,9 @@ public interface ExceptionMessages {
   // User is not auditor of this campaign.
   String NOT_CAMPAIGN_AUDITOR = "AUD_002";
 
+  // User can not be auditor
+  String USER_CAN_NOT_BE_AUDITOR = "AUD_003";
+
   // Payment not processed for this investment.
   String PAYMENT_NOT_PROCESSED = "PAY_001";
 
