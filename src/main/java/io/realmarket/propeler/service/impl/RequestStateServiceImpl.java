@@ -26,7 +26,7 @@ public class RequestStateServiceImpl implements RequestStateService {
   @Override
   public RequestState getRequestState(String name) {
     return requestStateRepository
-        .findByName(RequestStateName.fromString(name))
+        .findByName(RequestStateName.valueOf(name.toUpperCase()))
         .orElseThrow(() -> new EntityNotFoundException(REQUEST_STATE_NOT_FOUND));
   }
 

@@ -84,4 +84,25 @@ public class AuditServiceImplTest {
 
     auditServiceImpl.acceptCampaign(1L);
   }
+
+  @Test
+  public void declineCampaign_Should_Decline() {
+    Audit audit = TEST_PENDING_REQUEST_AUDIT.toBuilder().build();
+    when(auditRepository.findById(TEST_AUDIT_ID)).thenReturn(Optional.of(audit));
+    when(requestStateService.getRequestState(RequestStateName.DECLINED))
+        .thenReturn(TEST_DECLINED_REQUEST_STATE);
+    when(auditRepository.save(audit)).thenReturn(TEST_DECLINED_REQUEST_AUDIT);
+    Audit actualAudit = auditServiceImpl.declineCampaign(1L, REJECTION_REASON);
+
+    assertEquals(TEST_DECLINED_REQUEST_STATE, actualAudit.getRequestState());
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void declineCampaign_Should_Throw_When_Not_Campaign_Auditor() {
+    AuthUtils.mockRequestAndContext();
+    when(auditRepository.findById(TEST_AUDIT_ID))
+        .thenReturn(Optional.of(TEST_PENDING_REQUEST_AUDIT));
+
+    auditServiceImpl.declineCampaign(1L, REJECTION_REASON);
+  }
 }

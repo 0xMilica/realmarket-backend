@@ -52,7 +52,7 @@ public class CampaignStateServiceImpl implements CampaignStateService {
   @Override
   public CampaignState getCampaignState(String name) {
     return campaignStateRepository
-        .findByName(CampaignStateName.fromString(name))
+        .findByName(CampaignStateName.valueOf(name.toUpperCase()))
         .orElseThrow(() -> new EntityNotFoundException(CAMPAIGN_STATE_NOT_FOUND));
   }
 

@@ -15,15 +15,6 @@ public enum CampaignStateName {
     this.text = text;
   }
 
-  public static CampaignStateName fromString(String text) {
-    for (CampaignStateName campaignStateName : CampaignStateName.values()) {
-      if (campaignStateName.text.equalsIgnoreCase(text)) {
-        return campaignStateName;
-      }
-    }
-    return CampaignStateName.INITIAL;
-  }
-
   @Override
   public String toString() {
     return text;

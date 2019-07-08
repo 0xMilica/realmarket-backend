@@ -70,6 +70,18 @@ public class AuditServiceImpl implements AuditService {
     return auditRepository.save(audit);
   }
 
+  @Override
+  public Audit declineCampaign(Long auditId, String content) {
+    Audit audit = findByIdOrThrowException(auditId);
+    throwIfNoAccess(audit);
+
+    campaignService.changeCampaignStateOrThrow(
+        audit.getCampaign(), campaignStateService.getCampaignState(CampaignStateName.INITIAL));
+    audit.setContent(content);
+    audit.setRequestState(requestStateService.getRequestState(RequestStateName.DECLINED));
+    return auditRepository.save(audit);
+  }
+
   private Audit findByIdOrThrowException(Long auditId) {
     return auditRepository
         .findById(auditId)

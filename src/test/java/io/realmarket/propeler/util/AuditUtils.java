@@ -13,6 +13,9 @@ public class AuditUtils {
       RequestState.builder().name(RequestStateName.PENDING).build();
   public static final RequestState TEST_APPROVED_REQUEST_STATE =
       RequestState.builder().name(RequestStateName.APPROVED).build();
+  public static final RequestState TEST_DECLINED_REQUEST_STATE =
+      RequestState.builder().name(RequestStateName.DECLINED).build();
+  public static final String REJECTION_REASON = "Submitted campaign did not pass our standards";
 
   public static final AuditRequestDto TEST_AUDIT_REQUEST_DTO =
       AuditRequestDto.builder()
@@ -34,5 +37,13 @@ public class AuditUtils {
           .auditorAuth(AuthUtils.TEST_AUTH_ADMIN)
           .campaign(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN)
           .requestState(TEST_APPROVED_REQUEST_STATE)
+          .build();
+
+  public static final Audit TEST_DECLINED_REQUEST_AUDIT =
+      Audit.builder()
+          .id(TEST_AUDIT_ID)
+          .auditorAuth(AuthUtils.TEST_AUTH_ADMIN)
+          .campaign(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN)
+          .requestState(TEST_DECLINED_REQUEST_STATE)
           .build();
 }
