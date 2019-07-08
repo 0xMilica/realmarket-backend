@@ -300,6 +300,40 @@ public interface CampaignController {
   })
   ResponseEntity<Page<CampaignResponseDto>> getPublicCampaigns(Pageable pageable, String filter);
 
+  @ApiOperation(
+      value = "Get campaigns by state",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE,
+      consumes = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "page",
+        value = "Number of page to be returned",
+        defaultValue = "20",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "state",
+        value = "State of campaign to be returned",
+        allowableValues =
+            "initial, review_ready, audit, active, launch_ready, post_campaign, deleted",
+        defaultValue = "active",
+        required = true,
+        dataType = "String",
+        paramType = "query")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully retrieved campaigns."),
+    @ApiResponse(code = 404, message = "Campaign state not found.")
+  })
+  ResponseEntity<Page<CampaignResponseDto>> getCampaignsByState(Pageable pageable, String state);
+
   @ApiOperation(value = "List all accessible campaigns for user.", httpMethod = "GET")
   @ApiResponses({
     @ApiResponse(code = 200, message = "Campaigns found."),

@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface CampaignService {
+
   Campaign findByUrlFriendlyNameOrThrowException(String name);
 
   List<Campaign> findAllByCompany(Company company);
@@ -56,6 +57,8 @@ public interface CampaignService {
   List<CampaignResponseDto> getAllCampaignsForUser();
 
   Page<CampaignResponseDto> getPublicCampaigns(Pageable pageable, String filter);
+
+  Page<CampaignResponseDto> getCampaignsByState(Pageable pageable, String state);
 
   void sendNewCampaignOpportunityEmail(Campaign campaign);
 

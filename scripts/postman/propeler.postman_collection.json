@@ -1549,7 +1549,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"content\": \"new_content\"\n}"
+									"raw": "{\n\t\"title\": \"new_title\",\n\t\"content\": \"new_content\"\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/campaigns/mine/updates/{{update_id}}",
@@ -1648,6 +1648,49 @@
 						}
 					],
 					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/campaigns",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns?page=0&size=10&state=active",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "state",
+									"value": "active"
+								}
+							]
+						}
+					},
+					"response": []
 				},
 				{
 					"name": "/campaigns",
@@ -2005,22 +2048,27 @@
 							}
 						],
 						"url": {
-							"raw": "{{server_ip}}/api/campaigns?page=1&size=3",
+							"raw": "{{server_ip}}/api/campaigns/public?page=0&size=10&filter=all",
 							"host": [
 								"{{server_ip}}"
 							],
 							"path": [
 								"api",
-								"campaigns"
+								"campaigns",
+								"public"
 							],
 							"query": [
 								{
 									"key": "page",
-									"value": "1"
+									"value": "0"
 								},
 								{
 									"key": "size",
-									"value": "3"
+									"value": "10"
+								},
+								{
+									"key": "filter",
+									"value": "all"
 								}
 							]
 						}
@@ -3516,7 +3564,7 @@
 			"name": "investments",
 			"item": [
 				{
-					"name": "{{server_ip}}/api/investments/{{investID}}",
+					"name": "/investments/{{investID}}",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -3543,17 +3591,33 @@
 			]
 		},
 		{
+<<<<<<< HEAD
+			"name": "audits",
+			"item": [
+				{
+					"name": "/audits",
+					"request": {
+						"method": "POST",
+=======
 			"name": "admin",
 			"item": [
 				{
 					"name": "/audits/{{audit_id}}/accept",
 					"request": {
 						"method": "PATCH",
+>>>>>>> origin/develop
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "{{token}}",
 								"type": "text"
+<<<<<<< HEAD
+							},
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+=======
 							}
 						],
 						"url": {
@@ -3580,6 +3644,7 @@
 								"key": "Authorization",
 								"type": "text",
 								"value": "{{token}}"
+>>>>>>> origin/develop
 							},
 							{
 								"key": "Content-Type",
@@ -3590,18 +3655,29 @@
 						],
 						"body": {
 							"mode": "raw",
+<<<<<<< HEAD
+							"raw": "{\n    \"auditorId\": 7,\n    \"campaignUrlFriendlyName\": \"friendlyName6\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/audits",
+=======
 							"raw": "{\n\t\"content\": \"We want you to succeed! Idea seems really good but needs some improvement. Please look at these to get you going: https://www.youtube.com/watch?v=Njh3rKoGKBo, https://www.youtube.com/watch?v=IQfZPsCVbTU and a little motivational gift https://www.youtube.com/watch?v=6b5tyITSTPQ.\"\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/audits/{{audit_id}}/decline",
+>>>>>>> origin/develop
 							"host": [
 								"{{server_ip}}"
 							],
 							"path": [
 								"api",
+<<<<<<< HEAD
+								"audits"
+=======
 								"audits",
 								"{{audit_id}}",
 								"decline"
+>>>>>>> origin/develop
 							]
 						}
 					},

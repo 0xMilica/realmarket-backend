@@ -174,11 +174,18 @@ public class CampaignControllerImpl implements CampaignController {
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
-  @GetMapping
+  @GetMapping("/public")
   public ResponseEntity<Page<CampaignResponseDto>> getPublicCampaigns(
       Pageable pageable,
       @RequestParam(value = "filter", required = false, defaultValue = "active") String filter) {
     return ResponseEntity.ok(campaignService.getPublicCampaigns(pageable, filter));
+  }
+
+  @GetMapping
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  public ResponseEntity<Page<CampaignResponseDto>> getCampaignsByState(
+      Pageable pageable, @RequestParam(value = "state", defaultValue = "active") String state) {
+    return ResponseEntity.ok(campaignService.getCampaignsByState(pageable, state));
   }
 
   @GetMapping(value = "/mine")

@@ -32,6 +32,8 @@ public class CampaignUtils {
   public static final CampaignState TEST_CAMPAIGN_DELETED_STATE =
       CampaignState.builder().name(CampaignStateName.DELETED).build();
   public static final String TEST_TAG_LINE = "TAG_LINE";
+  public static final CampaignState TEST_CAMPAIGN_AUDIT_STATE =
+      CampaignState.builder().name(CampaignStateName.AUDIT).build();
 
   public static final Campaign TEST_CAMPAIGN =
       Campaign.builder()

@@ -317,6 +317,13 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
+  public Page<CampaignResponseDto> getCampaignsByState(Pageable pageable, String state) {
+    return campaignRepository
+        .findAllByCampaignState(pageable, campaignStateService.getCampaignState(state))
+        .map(CampaignResponseDto::new);
+  }
+
+  @Override
   public void sendNewCampaignOpportunityEmail(Campaign campaign) {
     CampaignTopicDto campaignTopicDto =
         campaignTopicService.getCampaignTopic(campaign.getUrlFriendlyName(), "OVERVIEW");

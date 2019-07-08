@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Size;
-
 @ApiModel
 @Data
 @NoArgsConstructor
@@ -20,7 +18,7 @@ public class AuditResponseDto {
 
   @ApiModelProperty(value = "Audit's identifier")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Long id;
+  private Long auditId;
 
   @ApiModelProperty(value = "Auditor's identifier")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -34,16 +32,16 @@ public class AuditResponseDto {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String request_state;
 
-  @ApiModelProperty(value = "Reason for transition to REJECTED state, when declining campaign audit.")
-  @Size(max = 10000, message = "Audit content cannot be longer than 10000 characters.")
+  @ApiModelProperty(
+      value = "Reason for transition to REJECTED state, when declining campaign audit.")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String content;
 
   public AuditResponseDto(Audit audit) {
-    this.id = audit.getId();
+    this.auditId = audit.getId();
     this.auditorId = audit.getAuditorAuth().getId();
     this.campaignUrlFriendlyName = audit.getCampaign().getUrlFriendlyName();
-    this.request_state = audit.getRequestState().toString();
+    this.request_state = audit.getRequestState().getName().toString();
     this.content = audit.getContent();
   }
 }

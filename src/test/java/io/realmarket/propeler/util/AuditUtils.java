@@ -7,7 +7,6 @@ import io.realmarket.propeler.model.enums.RequestStateName;
 
 public class AuditUtils {
 
-  public static final Long TEST_AUTH_ID = 12L;
   public static final Long TEST_AUDIT_ID = 1L;
   public static final RequestState TEST_PENDING_REQUEST_STATE =
       RequestState.builder().name(RequestStateName.PENDING).build();
@@ -17,9 +16,9 @@ public class AuditUtils {
       RequestState.builder().name(RequestStateName.DECLINED).build();
   public static final String REJECTION_REASON = "Submitted campaign did not pass our standards";
 
-  public static final AuditRequestDto TEST_AUDIT_REQUEST_DTO =
+  public static final AuditRequestDto AUDIT_REQUEST_DTO =
       AuditRequestDto.builder()
-          .auditorId(TEST_AUTH_ID)
+          .auditorId(AuthUtils.TEST_AUTH_ID)
           .campaignUrlFriendlyName(CampaignUtils.TEST_URL_FRIENDLY_NAME)
           .build();
 

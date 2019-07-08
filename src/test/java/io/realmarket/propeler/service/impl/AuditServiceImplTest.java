@@ -30,15 +30,11 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest(AuditServiceImpl.class)
 public class AuditServiceImplTest {
 
-  @Mock private AuthService authService;
-
-  @Mock private CampaignService campaignService;
-
-  @Mock private AuditRepository auditRepository;
-
-  @Mock private CampaignStateService campaignStateService;
-
   @Mock private RequestStateService requestStateService;
+  @Mock private AuthService authService;
+  @Mock private CampaignService campaignService;
+  @Mock private CampaignStateService campaignStateService;
+  @Mock private AuditRepository auditRepository;
 
   @InjectMocks private AuditServiceImpl auditServiceImpl;
 
@@ -49,17 +45,18 @@ public class AuditServiceImplTest {
 
   @Test
   public void assignAudit_Should_Assign() {
-    when(authService.findByIdOrThrowException(AuthUtils.TEST_AUTH_ID + 2))
+    when(authService.findByIdOrThrowException(AuthUtils.TEST_AUTH_ID))
         .thenReturn(AuthUtils.TEST_AUTH_ADMIN);
     when(campaignService.getCampaignByUrlFriendlyName(CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenReturn(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN);
+
     when(campaignStateService.getCampaignState(CampaignStateName.AUDIT))
         .thenReturn(CampaignUtils.TEST_AUDIT_CAMPAIGN_STATE);
     when(requestStateService.getRequestState(RequestStateName.PENDING))
         .thenReturn(TEST_PENDING_REQUEST_STATE);
     when(auditRepository.save(any(Audit.class))).thenReturn(TEST_PENDING_REQUEST_AUDIT);
 
-    Audit actualAudit = auditServiceImpl.assignAudit(TEST_AUDIT_REQUEST_DTO);
+    Audit actualAudit = auditServiceImpl.assignAudit(AUDIT_REQUEST_DTO);
 
     assertEquals(TEST_PENDING_REQUEST_AUDIT, actualAudit);
   }

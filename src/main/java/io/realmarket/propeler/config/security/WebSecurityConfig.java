@@ -74,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(
             HttpMethod.GET,
             "/files/public/**",
-            "/campaigns",
+            "/campaigns/public",
             "/campaigns/{campaignName}/convertMoney",
             "/campaigns/{campaignName}/convertPercentage")
         .antMatchers(

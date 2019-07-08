@@ -1,8 +1,8 @@
 package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.AuditDeclineDto;
+import io.realmarket.propeler.api.dto.AuditRequestDto;
 import io.realmarket.propeler.api.dto.AuditResponseDto;
-import io.realmarket.propeler.model.Audit;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 
@@ -10,6 +10,25 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Api(value = "/audits")
 public interface AuditController {
+
+  @ApiOperation(
+      value = "Audit campaign",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "auditRequestDto",
+        value = "Dto that contains information about audit request",
+        dataType = "AuditRequestDto",
+        paramType = "body",
+        required = true),
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaign successfully audit."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+  })
+  ResponseEntity<AuditResponseDto> assignAudit(AuditRequestDto auditRequestDto);
 
   @ApiOperation(
       value = "Accept a pending campaign's audit.",
