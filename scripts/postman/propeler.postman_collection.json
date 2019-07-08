@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "db76bc39-a1de-4538-9ecc-87e5485e0838",
+		"_postman_id": "85d15a5e-1f2c-44c0-ab5f-f0317ae76645",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -3535,6 +3535,73 @@
 								"api",
 								"investments",
 								"{{investID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "/audits/{{audit_id}}/accept",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/audits/{{audit_id}}/accept",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"audits",
+								"{{audit_id}}",
+								"accept"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/audits/{{audit_id}}/decline",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"content\": \"We want you to succeed! Idea seems really good but needs some improvement. Please look at these to get you going: https://www.youtube.com/watch?v=Njh3rKoGKBo, https://www.youtube.com/watch?v=IQfZPsCVbTU and a little motivational gift https://www.youtube.com/watch?v=6b5tyITSTPQ.\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/audits/{{audit_id}}/decline",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"audits",
+								"{{audit_id}}",
+								"decline"
 							]
 						}
 					},

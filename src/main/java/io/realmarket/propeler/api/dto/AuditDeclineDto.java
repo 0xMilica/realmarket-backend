@@ -15,12 +15,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuditRequestDto {
-
-  @ApiModelProperty(value = "Auditor's identifier")
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Long auditorId;
-
-  @ApiModelProperty(value = "Url friendly version of campaign name")
-  private String campaignUrlFriendlyName;
+public class AuditDeclineDto {
+  @ApiModelProperty(value = "Reason for transition to REJECTED state.")
+  @Size(max = 10000, message = "Audit content cannot be longer than 10000 characters.")
+  private String content;
 }

@@ -120,7 +120,7 @@ INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_sec
 /*password is testPASS123 */
 INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 3, false, 'secret', 'adonis', 5);
 INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 2, false, 'secret', 'radovan', 6);
-INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 3, false, 'secret', 'ognjen', 7);
+INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 1, false, 'secret', 'ognjen', 7);
 
 -- remember me cookie
 INSERT INTO public.remember_me_cookie (id, expiration_time, value, auth_id) VALUES (1, TO_DATE('01/05/2022', 'DD/MM/YYYY'), '1234', 5);
@@ -172,3 +172,5 @@ INSERT INTO public.investment(id, invested_amount, auth_id, campaign_id, investm
 INSERT INTO public.investment(id, invested_amount, auth_id, campaign_id, investment_state_id, creation_date, payment_date) VALUES (NEXTVAL('investment_seq'), 105000, 1, 3, 5, '2019-06-26 16:41:45.15652', '2019-06-27 16:41:45.15652');
 INSERT INTO public.investment(id, invested_amount, auth_id, campaign_id, investment_state_id, creation_date, payment_date) VALUES (NEXTVAL('investment_seq'), 15000, 3, 2, 4, '2019-06-26 13:41:45.15652', '2019-06-27 13:41:45.15652');
 INSERT INTO public.investment(id, invested_amount, auth_id, campaign_id, investment_state_id, creation_date, payment_date) VALUES (NEXTVAL('investment_seq'), 1000, 6, 7, 4, '2019-06-26 13:41:45.15652', '2019-06-27 13:41:45.15652');
+
+INSERT INTO public.audit(id, auditor_auth_id, campaign_id, request_state_id, content) VALUES (NEXTVAL('audit_seq'), 7, 5, 1, NULL);

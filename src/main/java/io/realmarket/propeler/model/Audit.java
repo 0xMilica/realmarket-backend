@@ -21,10 +21,14 @@ public class Audit {
   @SequenceGenerator(name = "AUDIT_SEQ", sequenceName = "AUDIT_SEQ", allocationSize = 1)
   private Long id;
 
+
+  @JoinColumn(name = "auditorAuthId", foreignKey = @ForeignKey(name = "audit_fk_on_auth"))
   @NotNull @ManyToOne private Auth auditorAuth;
 
+  @JoinColumn(name = "campaignId", foreignKey = @ForeignKey(name = "audit_fk_on_campaign"))
   @NotNull @ManyToOne private Campaign campaign;
 
+  @JoinColumn(name = "requestStateId", foreignKey = @ForeignKey(name = "audit_fk_on_request_state"))
   @NotNull @ManyToOne private RequestState requestState;
 
   @Column(length = 10000)

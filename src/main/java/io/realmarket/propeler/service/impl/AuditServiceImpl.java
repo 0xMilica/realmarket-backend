@@ -95,6 +95,6 @@ public class AuditServiceImpl implements AuditService {
   }
 
   private boolean isAuditor(Audit audit) {
-    return audit.getAuditorAuth().equals(AuthenticationUtil.getAuthentication().getAuth());
+    return audit.getAuditorAuth().getId().equals(AuthenticationUtil.getAuthentication().getAuth().getId());
   }
 }
