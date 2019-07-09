@@ -20,6 +20,9 @@ public class PersonUtils {
   public static final Long TEST_PERSON_ID = 1L;
   public static final byte[] TEST_PROFILE_PICTURE = "TEST_PROFILE_PICTURE".getBytes();
   public static final String TEST_NEW_EMAIL = "TEST_NEW_EMAIL";
+  public static final String TEST_PERSON_LAST_NAME = "TEST_LAST_NAME";
+  public static final String TEST_PERSON_FIRST_NAME = "TEST_FIRST_NAME";
+  public static final String TEST_PERSON_PHONE_NUMBER = "TEST_PHONE_NUMBER";
 
   public static final Person TEST_PERSON =
       Person.builder()
@@ -40,8 +43,6 @@ public class PersonUtils {
 
   public static final List<Person> TEST_PERSON_LIST =
       Arrays.asList(TEST_PERSON, TEST_PERSON, TEST_PERSON);
-
-  public static final String TEST_PERSON_LAST_NAME = "LAST_NAME";
 
   public static PersonPatchDto TEST_PERSON_PATCH_DTO_LAST_NAME() {
     return PersonPatchDto.builder().firstName(TEST_PERSON_LAST_NAME).build();
