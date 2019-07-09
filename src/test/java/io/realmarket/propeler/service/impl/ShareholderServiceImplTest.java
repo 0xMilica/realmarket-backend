@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +40,6 @@ public class ShareholderServiceImplTest {
   @Mock private ModelMapperBlankString modelMapperBlankString;
 
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
-
-  @Mock private HttpServletRequest request;
 
   @InjectMocks private ShareholderServiceImpl shareholderService;
 

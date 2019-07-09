@@ -2,6 +2,7 @@ package io.realmarket.propeler.security.util;
 
 import io.realmarket.propeler.security.UserAuthentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -18,7 +19,7 @@ public class AuthenticationUtil {
     final HttpServletRequest request =
         ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     final String xfHeader = request.getHeader("X-Forwarded-For");
-    if (xfHeader == null) {
+    if (StringUtils.isEmpty(xfHeader)) {
       return request.getRemoteAddr();
     }
     return xfHeader.split(",")[0];

@@ -75,8 +75,6 @@ public class AuthServiceImpl implements AuthService {
   private final RememberMeCookieService rememberMeCookieService;
   private final BlockchainCommunicationService blockchainCommunicationService;
 
-  private final HttpServletRequest request;
-
   @Autowired
   public AuthServiceImpl(
       PasswordEncoder passwordEncoder,
@@ -92,8 +90,7 @@ public class AuthServiceImpl implements AuthService {
       AuthorizedActionService authorizedActionService,
       LoginIPAttemptsService loginAttemptsService,
       LoginUsernameAttemptsService loginUsernameAttemptsService,
-      BlockchainCommunicationService blockchainCommunicationService,
-      HttpServletRequest request) {
+      BlockchainCommunicationService blockchainCommunicationService) {
     this.passwordEncoder = passwordEncoder;
     this.personService = personService;
     this.emailService = emailService;
@@ -108,7 +105,6 @@ public class AuthServiceImpl implements AuthService {
     this.loginIPAttemptsService = loginAttemptsService;
     this.loginUsernameAttemptsService = loginUsernameAttemptsService;
     this.blockchainCommunicationService = blockchainCommunicationService;
-    this.request = request;
   }
 
   public static Collection<? extends GrantedAuthority> getAuthorities(UserRoleName userRole) {
@@ -227,7 +223,7 @@ public class AuthServiceImpl implements AuthService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_REGISTRATION,
         new io.realmarket.propeler.service.blockchain.dto.user.RegistrationDto(auth),
-        HttpRequestHelper.getIP(request));
+        AuthenticationUtil.getClientIp());
   }
 
   public void recoverUsername(EmailDto emailDto) {
@@ -316,7 +312,7 @@ public class AuthServiceImpl implements AuthService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_PASSWORD_CHANGE,
         PasswordChangeDto.builder().userId(authId).build(),
-        HttpRequestHelper.getIP(request));
+        AuthenticationUtil.getClientIp());
   }
 
   @Override
@@ -403,7 +399,7 @@ public class AuthServiceImpl implements AuthService {
             .userId(currentAuth.getId())
             .newEmailHash(HashingHelper.hash(authorizedAction.getData()))
             .build(),
-        HttpRequestHelper.getIP(request));
+        AuthenticationUtil.getClientIp());
   }
 
   private Boolean isRoleAllowed(UserRoleName role) {

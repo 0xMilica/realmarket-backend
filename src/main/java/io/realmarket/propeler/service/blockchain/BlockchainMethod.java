@@ -8,6 +8,7 @@ public class BlockchainMethod {
   public static final String CAMPAIGN_SUBMISSION_FOR_REVIEW = "CampaignSubmissionForReview";
   public static final String COMPANY_REGISTRATION = "CompanyRegistration";
   public static final String COMPANY_EDIT_REQUEST = "CompanyEditRequest";
+  public static final String CAMPAIGN_STATE_CHANGE = "CampaignStateChange";
   public static final String SUBMIT_SHAREHOLDERS = "CompanyShareholderSubmission";
 
   private BlockchainMethod() {}

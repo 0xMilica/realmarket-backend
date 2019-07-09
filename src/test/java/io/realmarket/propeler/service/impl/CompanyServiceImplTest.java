@@ -20,7 +20,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static io.realmarket.propeler.util.CompanyUtils.*;
@@ -36,7 +35,6 @@ public class CompanyServiceImplTest {
 
   @Mock private CompanyRepository companyRepository;
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
-  @Mock private HttpServletRequest request;
   @Mock private CloudObjectStorageService cloudObjectStorageService;
 
   @InjectMocks private CompanyServiceImpl companyService;

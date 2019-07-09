@@ -18,7 +18,6 @@ import io.realmarket.propeler.service.blockchain.dto.company.RegistrationDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.FileUtils;
-import io.realmarket.propeler.service.util.HttpRequestHelper;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
@@ -41,7 +39,6 @@ public class CompanyServiceImpl implements CompanyService {
   private final CloudObjectStorageService cloudObjectStorageService;
   private final ModelMapperBlankString modelMapperBlankString;
   private final BlockchainCommunicationService blockchainCommunicationService;
-  private final HttpServletRequest request;
 
   @Value(value = "${cos.file_prefix.company_logo}")
   private String companyLogoPrefix;
@@ -55,14 +52,12 @@ public class CompanyServiceImpl implements CompanyService {
       AdministratorService administratorService,
       CloudObjectStorageService cloudObjectStorageService,
       ModelMapperBlankString modelMapperBlankString,
-      BlockchainCommunicationService blockchainCommunicationService,
-      HttpServletRequest request) {
+      BlockchainCommunicationService blockchainCommunicationService) {
     this.companyRepository = companyRepository;
     this.administratorService = administratorService;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.blockchainCommunicationService = blockchainCommunicationService;
-    this.request = request;
   }
 
   public void throwIfNoAccess(Company company) {
@@ -83,7 +78,7 @@ public class CompanyServiceImpl implements CompanyService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.COMPANY_REGISTRATION,
         new RegistrationDto(company),
-        HttpRequestHelper.getIP(request));
+        AuthenticationUtil.getClientIp());
 
     return company;
   }
@@ -98,7 +93,7 @@ public class CompanyServiceImpl implements CompanyService {
       blockchainCommunicationService.invoke(
           BlockchainMethod.COMPANY_EDIT_REQUEST,
           new EditRequestDto(editRequest),
-          HttpRequestHelper.getIP(request));
+          AuthenticationUtil.getClientIp());
 
       return company;
     }

@@ -12,7 +12,10 @@ import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.user.RegenerationOfRecoveryDto;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
-import io.realmarket.propeler.service.util.*;
+import io.realmarket.propeler.service.util.LoginIPAttemptsService;
+import io.realmarket.propeler.service.util.LoginUsernameAttemptsService;
+import io.realmarket.propeler.service.util.MailContentHolder;
+import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +41,6 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
   private final LoginIPAttemptsService loginIPAttemptsService;
   private final LoginUsernameAttemptsService loginUsernameAttemptsService;
   private final BlockchainCommunicationService blockchainCommunicationService;
-
-  @Autowired private HttpServletRequest request;
 
   @Autowired
   TwoFactorAuthServiceImpl(
@@ -174,7 +175,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_REGENERATION_OF_RECOVERY,
         RegenerationOfRecoveryDto.builder().userId(authId).build(),
-        HttpRequestHelper.getIP(request));
+        AuthenticationUtil.getClientIp());
 
     return new OTPWildcardResponseDto(otpService.generateRecoveryCodes(auth));
   }

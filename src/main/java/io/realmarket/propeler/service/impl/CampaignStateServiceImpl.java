@@ -7,6 +7,7 @@ import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.CampaignStateRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignStateService;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,9 @@ public class CampaignStateServiceImpl implements CampaignStateService {
   private Map<CampaignStateName, List<UserRoleName>> rolesPerState = createAndInitRolesPerState();
 
   @Autowired
-  public CampaignStateServiceImpl(CampaignStateRepository campaignStateRepository) {
+  public CampaignStateServiceImpl(
+      CampaignStateRepository campaignStateRepository,
+      BlockchainCommunicationService blockchainCommunicationService) {
     this.campaignStateRepository = campaignStateRepository;
   }
 

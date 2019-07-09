@@ -19,7 +19,6 @@ import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsExcepti
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.FileUtils;
-import io.realmarket.propeler.service.util.HttpRequestHelper;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.AbstractMap;
@@ -60,7 +58,6 @@ public class CampaignServiceImpl implements CampaignService {
   private final EmailService emailService;
   private final AuthService authService;
   private final BlockchainCommunicationService blockchainCommunicationService;
-  private final HttpServletRequest request;
 
   @Value(value = "${cos.file_prefix.campaign_market_image}")
   private String companyFeaturedImage;
@@ -80,8 +77,7 @@ public class CampaignServiceImpl implements CampaignService {
       OTPService otpService,
       EmailService emailService,
       AuthService authService,
-      BlockchainCommunicationService blockchainCommunicationService,
-      HttpServletRequest request) {
+      BlockchainCommunicationService blockchainCommunicationService) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
     this.campaignTopicService = campaignTopicService;
@@ -93,7 +89,6 @@ public class CampaignServiceImpl implements CampaignService {
     this.emailService = emailService;
     this.authService = authService;
     this.blockchainCommunicationService = blockchainCommunicationService;
-    this.request = request;
   }
 
   public Campaign findByUrlFriendlyNameOrThrowException(String urlFriendlyName) {
@@ -300,7 +295,7 @@ public class CampaignServiceImpl implements CampaignService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.CAMPAIGN_SUBMISSION_FOR_REVIEW,
         new SubmissionForReviewDto(campaign),
-        HttpRequestHelper.getIP(request));
+        AuthenticationUtil.getClientIp());
   }
 
   @Override

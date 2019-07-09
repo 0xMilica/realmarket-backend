@@ -10,6 +10,9 @@ import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.AuditRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.BlockchainMethod;
+import io.realmarket.propeler.service.blockchain.dto.campaign.ChangeStateDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,7 @@ public class AuditServiceImpl implements AuditService {
   private final RequestStateService requestStateService;
   private final CampaignService campaignService;
   private final CampaignStateService campaignStateService;
+  private final BlockchainCommunicationService blockchainCommunicationService;
 
   @Autowired
   public AuditServiceImpl(
@@ -34,12 +38,14 @@ public class AuditServiceImpl implements AuditService {
       RequestStateService requestStateService,
       AuthService authService,
       CampaignService campaignService,
-      CampaignStateService campaignStateService) {
+      CampaignStateService campaignStateService,
+      BlockchainCommunicationService blockchainCommunicationService) {
     this.auditRepository = auditRepository;
     this.requestStateService = requestStateService;
     this.authService = authService;
     this.campaignService = campaignService;
     this.campaignStateService = campaignStateService;
+    this.blockchainCommunicationService = blockchainCommunicationService;
   }
 
   @Override
@@ -61,7 +67,7 @@ public class AuditServiceImpl implements AuditService {
             .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
             .build();
 
-    return auditRepository.save(audit);
+    return saveAndSendToBlockchain(audit);
   }
 
   @Override
@@ -72,7 +78,7 @@ public class AuditServiceImpl implements AuditService {
     campaignService.changeCampaignStateOrThrow(
         audit.getCampaign(), campaignStateService.getCampaignState(CampaignStateName.LAUNCH_READY));
     audit.setRequestState(requestStateService.getRequestState(RequestStateName.APPROVED));
-    return auditRepository.save(audit);
+    return saveAndSendToBlockchain(audit);
   }
 
   @Override
@@ -84,7 +90,7 @@ public class AuditServiceImpl implements AuditService {
         audit.getCampaign(), campaignStateService.getCampaignState(CampaignStateName.INITIAL));
     audit.setContent(content);
     audit.setRequestState(requestStateService.getRequestState(RequestStateName.DECLINED));
-    return auditRepository.save(audit);
+    return saveAndSendToBlockchain(audit);
   }
 
   private Audit findByIdOrThrowException(Long auditId) {
@@ -104,5 +110,17 @@ public class AuditServiceImpl implements AuditService {
         .getAuditor()
         .getId()
         .equals(AuthenticationUtil.getAuthentication().getAuth().getId());
+  }
+
+  private Audit saveAndSendToBlockchain(Audit audit) {
+    audit = auditRepository.save(audit);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.CAMPAIGN_STATE_CHANGE,
+        new ChangeStateDto(
+            audit.getCampaign(), AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getClientIp());
+
+    return audit;
   }
 }

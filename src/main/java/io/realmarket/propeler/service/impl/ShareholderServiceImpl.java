@@ -16,7 +16,6 @@ import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.company.UpdateShareholdersDto;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.FileUtils;
-import io.realmarket.propeler.service.util.HttpRequestHelper;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
@@ -40,7 +38,6 @@ public class ShareholderServiceImpl implements ShareholderService {
   private ModelMapperBlankString modelMapperBlankString;
   private CloudObjectStorageService cloudObjectStorageService;
   private BlockchainCommunicationService blockchainCommunicationService;
-  private HttpServletRequest request;
 
   @Value(value = "${cos.file_prefix.shareholder_picture}")
   private String shareholderPicturePrefix;
@@ -51,14 +48,12 @@ public class ShareholderServiceImpl implements ShareholderService {
       CompanyService companyService,
       ModelMapperBlankString modelMapperBlankString,
       CloudObjectStorageService cloudObjectStorageService,
-      BlockchainCommunicationService blockchainCommunicationService,
-      HttpServletRequest request) {
+      BlockchainCommunicationService blockchainCommunicationService) {
     this.shareholderRepository = shareholderRepository;
     this.companyService = companyService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.blockchainCommunicationService = blockchainCommunicationService;
-    this.request = request;
   }
 
   public Shareholder findByIdOrThrowException(Long shareholderId) {
@@ -79,7 +74,7 @@ public class ShareholderServiceImpl implements ShareholderService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
         new UpdateShareholdersDto(company, getShareholders()),
-        HttpRequestHelper.getIP(request));
+        AuthenticationUtil.getClientIp());
 
     return shareholder;
   }
@@ -125,7 +120,7 @@ public class ShareholderServiceImpl implements ShareholderService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
         new UpdateShareholdersDto(shareholder.getCompany(), getShareholders()),
-        HttpRequestHelper.getIP(request));
+        AuthenticationUtil.getClientIp());
 
     return shareholder;
   }
@@ -139,7 +134,7 @@ public class ShareholderServiceImpl implements ShareholderService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
         new UpdateShareholdersDto(shareholder.getCompany(), getShareholders()),
-        HttpRequestHelper.getIP(request));
+        AuthenticationUtil.getClientIp());
   }
 
   @Override
