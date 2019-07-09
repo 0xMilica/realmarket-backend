@@ -1,7 +1,7 @@
 package io.realmarket.propeler.api.dto;
 
 import io.realmarket.propeler.api.annotations.Email;
-import io.realmarket.propeler.model.CampaignApplication;
+import io.realmarket.propeler.model.FundraisingProposal;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -13,12 +13,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-@ApiModel(value = "Campaign fundraising application")
+@ApiModel(value = "Fundraising proposal")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CampaignApplicationDto {
+public class FundraisingProposalDto {
 
   @NotBlank(message = "Please provide first name")
   private String firstName;
@@ -48,14 +48,14 @@ public class CampaignApplicationDto {
   @NotNull(message = "Please provide funding goals")
   private Long fundingGoals;
 
-  public CampaignApplicationDto(CampaignApplication campaignApplication) {
-    this.firstName = campaignApplication.getFirstName();
-    this.lastName = campaignApplication.getLastName();
-    this.companyName = campaignApplication.getCompanyName();
-    this.website = campaignApplication.getWebsite();
-    this.email = campaignApplication.getEmail();
-    this.phoneNumber = campaignApplication.getPhoneNumber();
-    this.previouslyRaised = campaignApplication.getPreviouslyRaised();
-    this.fundingGoals = campaignApplication.getFundingGoals();
+  public FundraisingProposalDto(FundraisingProposal fundraisingProposal) {
+    this.firstName = fundraisingProposal.getFirstName();
+    this.lastName = fundraisingProposal.getLastName();
+    this.companyName = fundraisingProposal.getCompanyName();
+    this.website = fundraisingProposal.getWebsite();
+    this.email = fundraisingProposal.getEmail();
+    this.phoneNumber = fundraisingProposal.getPhoneNumber();
+    this.previouslyRaised = fundraisingProposal.getPreviouslyRaised();
+    this.fundingGoals = fundraisingProposal.getFundingGoals();
   }
 }

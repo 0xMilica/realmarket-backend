@@ -1,15 +1,15 @@
 package io.realmarket.propeler.util;
 
-import io.realmarket.propeler.api.dto.CampaignApplicationDto;
-import io.realmarket.propeler.model.CampaignApplication;
+import io.realmarket.propeler.api.dto.FundraisingProposalDto;
+import io.realmarket.propeler.model.FundraisingProposal;
 
 import java.math.BigDecimal;
 
-public class CampaignApplicationUtil {
+public class FundraisingProposalUtil {
   public static final BigDecimal TEST_PREVIOUSLY_RAISED = BigDecimal.valueOf(150000);
 
-  public static CampaignApplication TEST_PENDING_CAMPAIGN_APPLICATION =
-      CampaignApplication.builder()
+  public static FundraisingProposal TEST_PENDING_FUNDRAISING_PROPOSAL =
+      FundraisingProposal.builder()
           .firstName(PersonUtils.TEST_PERSON_FIRST_NAME)
           .lastName(PersonUtils.TEST_PERSON_LAST_NAME)
           .companyName(CompanyUtils.TEST_NAME)
@@ -21,8 +21,8 @@ public class CampaignApplicationUtil {
           .requestState(AuditUtils.TEST_PENDING_REQUEST_STATE)
           .build();
 
-  public static CampaignApplicationDto TEST_CAMPAIGN_APPLICATION_DTO =
-      CampaignApplicationDto.builder()
+  public static FundraisingProposalDto TEST_FUNDRAISING_PROPOSAL_DTO =
+      FundraisingProposalDto.builder()
           .firstName(PersonUtils.TEST_PERSON_FIRST_NAME)
           .lastName(PersonUtils.TEST_PERSON_LAST_NAME)
           .companyName(CompanyUtils.TEST_NAME)

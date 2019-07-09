@@ -7,11 +7,11 @@
                 endDelimiter=";"
                 splitStatements="true"
                 stripComments="true">
-            create sequence campaign_application_seq;
-            create table if not exists campaign_application
+            create sequence fundraising_proposal_seq;
+            create table if not exists fundraising_proposal
             (
             id bigint not null
-            constraint campaign_application_pkey
+            constraint fundraising_proposal_pkey
             primary key,
             first_name varchar(255),
             last_name varchar(255),
@@ -23,7 +23,7 @@
             funding_goals bigint,
             content varchar(10000),
             request_state_id bigint
-            constraint campaign_application_fk_on_request_state
+            constraint fundraising_proposal_fk_on_request_state
             references request_state
             );
         </sql>

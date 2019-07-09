@@ -1,8 +1,8 @@
 package io.realmarket.propeler.repository;
 
-import io.realmarket.propeler.model.CampaignApplication;
+import io.realmarket.propeler.model.FundraisingProposal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CampaignApplicationRepository extends JpaRepository<CampaignApplication, Long> {}
+public interface FundraisingProposalRepository extends JpaRepository<FundraisingProposal, Long> {}
