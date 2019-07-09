@@ -89,6 +89,9 @@ public interface ExceptionMessages {
   // Campaign update for provided id not found.
   String CAMPAIGN_UPDATE_NOT_FOUND = "CAM_012";
 
+  // User is not auditor of campaign
+  String USER_IS_NOT_AUDITOR_OF_CAMPAIGN = "CAM_013";
+
   // User is not investor in this campaign.
   String NOT_CAMPAIGN_INVESTOR = "INV_001";
 
@@ -124,6 +127,9 @@ public interface ExceptionMessages {
 
   // User can not be auditor
   String USER_CAN_NOT_BE_AUDITOR = "AUD_003";
+
+  // Pending audit for campaign not found
+  String PENDING_AUDIT_NOT_FOUND = "AUD_004";
 
   // Payment not processed for this investment.
   String PAYMENT_NOT_PROCESSED = "PAY_001";

@@ -16,6 +16,7 @@ import io.realmarket.propeler.service.blockchain.dto.campaign.ChangeStateDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -37,7 +38,7 @@ public class AuditServiceImpl implements AuditService {
       AuditRepository auditRepository,
       RequestStateService requestStateService,
       AuthService authService,
-      CampaignService campaignService,
+      @Lazy CampaignService campaignService,
       CampaignStateService campaignStateService,
       BlockchainCommunicationService blockchainCommunicationService) {
     this.auditRepository = auditRepository;
@@ -46,6 +47,13 @@ public class AuditServiceImpl implements AuditService {
     this.campaignService = campaignService;
     this.campaignStateService = campaignStateService;
     this.blockchainCommunicationService = blockchainCommunicationService;
+  }
+
+  @Override
+  public Audit findPendingAuditByCampaignOrThrowException(Campaign campaign) {
+    return auditRepository
+        .findPendingAuditByCampaign(campaign)
+        .orElseThrow(() -> new EntityNotFoundException(PENDING_AUDIT_NOT_FOUND));
   }
 
   @Override

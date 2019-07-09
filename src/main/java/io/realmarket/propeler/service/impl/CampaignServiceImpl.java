@@ -2,10 +2,7 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EEmailType;
-import io.realmarket.propeler.model.Auth;
-import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.CampaignState;
-import io.realmarket.propeler.model.Company;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -57,6 +54,7 @@ public class CampaignServiceImpl implements CampaignService {
   private final OTPService otpService;
   private final EmailService emailService;
   private final AuthService authService;
+  private final AuditService auditService;
   private final BlockchainCommunicationService blockchainCommunicationService;
 
   @Value(value = "${cos.file_prefix.campaign_market_image}")
@@ -77,6 +75,7 @@ public class CampaignServiceImpl implements CampaignService {
       OTPService otpService,
       EmailService emailService,
       AuthService authService,
+      AuditService auditService,
       BlockchainCommunicationService blockchainCommunicationService) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
@@ -88,6 +87,7 @@ public class CampaignServiceImpl implements CampaignService {
     this.otpService = otpService;
     this.emailService = emailService;
     this.authService = authService;
+    this.auditService = auditService;
     this.blockchainCommunicationService = blockchainCommunicationService;
   }
 
@@ -148,6 +148,18 @@ public class CampaignServiceImpl implements CampaignService {
     CampaignResponseDto campaignDto = new CampaignResponseDto(campaign);
     campaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
     return campaignDto;
+  }
+
+  public AuditCampaignResponseDto getAuditCampaign(String campaignName) {
+    Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
+    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+    Audit audit = auditService.findPendingAuditByCampaignOrThrowException(campaign);
+    if (!audit.getAuditor().getId().equals(auth.getId())) {
+      throw new BadRequestException(USER_IS_NOT_AUDITOR_OF_CAMPAIGN);
+    }
+    AuditCampaignResponseDto auditCampaignDto = new AuditCampaignResponseDto(audit, campaign);
+    auditCampaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
+    return auditCampaignDto;
   }
 
   public Campaign getCampaignByUrlFriendlyName(String name) {

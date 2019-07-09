@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "85d15a5e-1f2c-44c0-ab5f-f0317ae76645",
+		"_postman_id": "db76bc39-a1de-4538-9ecc-87e5485e0838",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2365,6 +2365,37 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/campaigns/auditCampaign/{{campaing_fname}}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/campaigns/auditCampaign/friendlyName6",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"auditCampaign",
+								"friendlyName6"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"description": "Folder for campaigns"
@@ -3591,33 +3622,56 @@
 			]
 		},
 		{
-<<<<<<< HEAD
 			"name": "audits",
 			"item": [
 				{
 					"name": "/audits",
 					"request": {
 						"method": "POST",
-=======
-			"name": "admin",
-			"item": [
-				{
-					"name": "/audits/{{audit_id}}/accept",
-					"request": {
-						"method": "PATCH",
->>>>>>> origin/develop
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "{{token}}",
 								"type": "text"
-<<<<<<< HEAD
 							},
 							{
 								"key": "Accept",
 								"value": "*/*, application/json",
 								"type": "text"
-=======
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"auditorId\": 7,\n    \"campaignUrlFriendlyName\": \"friendlyName6\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/audits",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"audits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/audits/{{audit_id}}/accept",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -3644,7 +3698,6 @@
 								"key": "Authorization",
 								"type": "text",
 								"value": "{{token}}"
->>>>>>> origin/develop
 							},
 							{
 								"key": "Content-Type",
@@ -3655,29 +3708,18 @@
 						],
 						"body": {
 							"mode": "raw",
-<<<<<<< HEAD
-							"raw": "{\n    \"auditorId\": 7,\n    \"campaignUrlFriendlyName\": \"friendlyName6\"\n}"
-						},
-						"url": {
-							"raw": "{{server_ip}}/api/audits",
-=======
 							"raw": "{\n\t\"content\": \"We want you to succeed! Idea seems really good but needs some improvement. Please look at these to get you going: https://www.youtube.com/watch?v=Njh3rKoGKBo, https://www.youtube.com/watch?v=IQfZPsCVbTU and a little motivational gift https://www.youtube.com/watch?v=6b5tyITSTPQ.\"\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/audits/{{audit_id}}/decline",
->>>>>>> origin/develop
 							"host": [
 								"{{server_ip}}"
 							],
 							"path": [
 								"api",
-<<<<<<< HEAD
-								"audits"
-=======
 								"audits",
 								"{{audit_id}}",
 								"decline"
->>>>>>> origin/develop
 							]
 						}
 					},
