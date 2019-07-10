@@ -44,8 +44,6 @@ public interface CampaignService {
 
   CampaignResponseDto getCampaignDtoByUrlFriendlyName(String name);
 
-  AuditCampaignResponseDto getAuditCampaign(String campaignName);
-
   Campaign getCampaignByUrlFriendlyName(String name);
 
   void delete(String campaignName, TwoFADto twoFADto) throws AuthenticationException;

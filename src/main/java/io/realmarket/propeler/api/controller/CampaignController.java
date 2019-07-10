@@ -50,9 +50,11 @@ public interface CampaignController {
       name = "campaignName",
       value = "Campaign's name",
       required = true,
-      dataType = "String")
+      dataType = "String",
+      paramType = "path")
   @ApiResponses({
     @ApiResponse(code = 200, message = "Campaign successfully retrieved."),
+    @ApiResponse(code = 400, message = "Invalid request."),
     @ApiResponse(code = 404, message = "Campaign does not exists.")
   })
   ResponseEntity<CampaignResponseDto> getCampaign(String campaignName);
@@ -211,26 +213,6 @@ public interface CampaignController {
     @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve campaign.")
   })
   ResponseEntity<CampaignResponseDto> getActiveCampaign();
-
-  @ApiOperation(
-      value = "Get audit campaign",
-      httpMethod = "GET",
-      consumes = APPLICATION_JSON_VALUE,
-      produces = APPLICATION_JSON_VALUE)
-  @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "campaignName",
-        value = "Campaign's url friendly name",
-        dataType = "String",
-        paramType = "path",
-        required = true)
-  })
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Campaign successfully retrieved."),
-    @ApiResponse(code = 400, message = "Invalid request."),
-    @ApiResponse(code = 404, message = "Campaign not found.")
-  })
-  ResponseEntity<AuditCampaignResponseDto> getAuditCampaign(String campaignName);
 
   @ApiOperation(
       value = "Upload team member picture",

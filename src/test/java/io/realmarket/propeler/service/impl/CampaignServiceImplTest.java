@@ -1,6 +1,9 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.*;
+import io.realmarket.propeler.api.dto.CampaignPatchDto;
+import io.realmarket.propeler.api.dto.CampaignResponseDto;
+import io.realmarket.propeler.api.dto.FileDto;
+import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
@@ -317,36 +320,40 @@ public class CampaignServiceImplTest {
   }
 
   @Test
-  public void GetAuditCampaign_Should_Return_AuditCampaignResponseDto() {
+  public void GetCampaignDtoByUrlFriendlyName_Should_Return_Campaign() {
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(Optional.of(TEST_CAMPAIGN));
+
+    CampaignResponseDto campaignDto =
+        campaignServiceImpl.getCampaignDtoByUrlFriendlyName(TEST_URL_FRIENDLY_NAME);
+
+    assertEquals(TEST_URL_FRIENDLY_NAME, campaignDto.getUrlFriendlyName());
+  }
+
+  @Test
+  public void GetCampaignDtoByUrlFriendlyName_Should_Return_AuditCampaign() {
     AuthUtils.mockRequestAndContextAdmin();
 
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
-        .thenReturn(Optional.of(TEST_CAMPAIGN));
-    when(auditService.findPendingAuditByCampaignOrThrowException(TEST_CAMPAIGN))
+        .thenReturn(Optional.of(TEST_AUDIT_CAMPAIGN));
+    when(auditService.findPendingAuditByCampaignOrThrowException(TEST_AUDIT_CAMPAIGN))
         .thenReturn(AuditUtils.TEST_PENDING_REQUEST_AUDIT);
-    AuditCampaignResponseDto auditCampaignDto =
-        campaignServiceImpl.getAuditCampaign(TEST_URL_FRIENDLY_NAME);
 
-    assertEquals(TEST_URL_FRIENDLY_NAME, auditCampaignDto.getUrlFriendlyName());
-  }
+    CampaignResponseDto campaignDto =
+        campaignServiceImpl.getCampaignDtoByUrlFriendlyName(TEST_URL_FRIENDLY_NAME);
 
-  @Test(expected = EntityNotFoundException.class)
-  public void
-      GetAuditCampaign_Should_Throw_EntityNotFoundException_When_No_Pending_Audit_For_Campaign() {
-    AuthUtils.mockRequestAndContextAdmin();
-
-    campaignServiceImpl.getAuditCampaign(TEST_URL_FRIENDLY_NAME);
+    assertEquals(TEST_URL_FRIENDLY_NAME, campaignDto.getUrlFriendlyName());
   }
 
   @Test(expected = BadRequestException.class)
   public void
-      GetAuditCampaign_Should_Throw_BadRequestException_When_AuthenticationAuth_Not_Auditor_Of_Campaign() {
+      GetCampaignDtoByUrlFriendlyName_Should_Throw_BadRequestException_When_AuthenticationAuth_Not_Auditor_Of_Campaign() {
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
-        .thenReturn(Optional.of(TEST_CAMPAIGN));
-    when(auditService.findPendingAuditByCampaignOrThrowException(TEST_CAMPAIGN))
+        .thenReturn(Optional.of(TEST_AUDIT_CAMPAIGN));
+    when(auditService.findPendingAuditByCampaignOrThrowException(TEST_AUDIT_CAMPAIGN))
         .thenReturn(AuditUtils.TEST_PENDING_REQUEST_AUDIT);
 
-    campaignServiceImpl.getAuditCampaign(TEST_URL_FRIENDLY_NAME);
+    campaignServiceImpl.getCampaignDtoByUrlFriendlyName(TEST_URL_FRIENDLY_NAME);
   }
 
   @Test

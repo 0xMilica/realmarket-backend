@@ -1,6 +1,7 @@
 package io.realmarket.propeler.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.realmarket.propeler.model.Audit;
 import io.realmarket.propeler.model.Campaign;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,6 +25,14 @@ import java.util.Map;
 @Builder
 public class CampaignResponseDto {
 
+  @ApiModelProperty(value = "Campaign auditor id")
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Long auditorId;
+
+  @ApiModelProperty(value = "Audit id")
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Long auditId;
+
   @ApiModelProperty(value = "Campaign company id")
   private Long companyId;
 
@@ -37,9 +46,11 @@ public class CampaignResponseDto {
   private Long fundingGoals;
 
   @ApiModelProperty(value = "Campaign collected amount")
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   private BigDecimal collectedAmount;
 
   @ApiModelProperty(value = "Campaign funded percentage")
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   private BigDecimal fundedPercentage;
 
   @ApiModelProperty(value = "Campaign time to raise funds (in days)")
@@ -56,6 +67,7 @@ public class CampaignResponseDto {
   private BigDecimal maxEquityOffered;
 
   @ApiModelProperty(value = "Campaign price per share")
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   private BigDecimal pricePerShare;
 
   @ApiModelProperty(value = "Campaign minimal investment")
@@ -116,5 +128,24 @@ public class CampaignResponseDto {
       LocalDateTime end = start.plusDays(campaign.getTimeToRaiseFunds());
       this.timeLeft = now.until(end, ChronoUnit.MILLIS);
     }
+  }
+
+  public CampaignResponseDto(Campaign campaign, Audit audit) {
+    this.auditorId = audit.getAuditor().getId();
+    this.auditId = audit.getId();
+    this.companyId = campaign.getCompany().getId();
+    this.name = campaign.getName();
+    this.urlFriendlyName = campaign.getUrlFriendlyName();
+    this.fundingGoals = campaign.getFundingGoals();
+    this.timeToRaiseFunds = campaign.getTimeToRaiseFunds();
+    this.minEquityOffered = campaign.getMinEquityOffered();
+    this.maxEquityOffered = campaign.getMaxEquityOffered();
+    this.minInvestment = campaign.getMinInvestment();
+    this.marketImageUrl = campaign.getMarketImageUrl();
+    this.companyLogoUrl = campaign.getCompany().getLogoUrl();
+    this.tagLine = campaign.getTagLine();
+    this.tag = campaign.getCompany().getCompanyCategory().getName();
+    this.location = campaign.getCompany().getCity() + ", " + campaign.getCompany().getCounty();
+    this.state = campaign.getCampaignState().getName().toString();
   }
 }

@@ -48,6 +48,19 @@ public class CampaignUtils {
           .tagLine(TEST_TAG_LINE)
           .build();
 
+  public static final Campaign TEST_AUDIT_CAMPAIGN =
+      Campaign.builder()
+          .company(CompanyUtils.getCompanyMocked())
+          .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
+          .name(TEST_NAME)
+          .fundingGoals(TEST_FUNDING_GOALS)
+          .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
+          .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
+          .minInvestment(TEST_MIN_INVESTMENT)
+          .campaignState(TEST_CAMPAIGN_AUDIT_STATE)
+          .tagLine(TEST_TAG_LINE)
+          .build();
+
   public static final CampaignDto TEST_CAMPAIGN_DTO = new CampaignDto(TEST_CAMPAIGN);
 
   public static Campaign getCampaignMocked() {

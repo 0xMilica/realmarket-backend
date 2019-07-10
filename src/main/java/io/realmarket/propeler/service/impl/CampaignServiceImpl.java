@@ -145,21 +145,23 @@ public class CampaignServiceImpl implements CampaignService {
 
   public CampaignResponseDto getCampaignDtoByUrlFriendlyName(String name) {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(name);
-    CampaignResponseDto campaignDto = new CampaignResponseDto(campaign);
+    CampaignResponseDto campaignDto;
+    if (campaign.getCampaignState().getName().equals(CampaignStateName.AUDIT)) {
+      campaignDto = getAuditCampaign(campaign);
+    } else {
+      campaignDto = new CampaignResponseDto(campaign);
+    }
     campaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
     return campaignDto;
   }
 
-  public AuditCampaignResponseDto getAuditCampaign(String campaignName) {
-    Campaign campaign = findByUrlFriendlyNameOrThrowException(campaignName);
+  private CampaignResponseDto getAuditCampaign(Campaign campaign) {
     Auth auth = AuthenticationUtil.getAuthentication().getAuth();
     Audit audit = auditService.findPendingAuditByCampaignOrThrowException(campaign);
     if (!audit.getAuditor().getId().equals(auth.getId())) {
       throw new BadRequestException(USER_IS_NOT_AUDITOR_OF_CAMPAIGN);
     }
-    AuditCampaignResponseDto auditCampaignDto = new AuditCampaignResponseDto(audit, campaign);
-    auditCampaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
-    return auditCampaignDto;
+    return new CampaignResponseDto(campaign, audit);
   }
 
   public Campaign getCampaignByUrlFriendlyName(String name) {

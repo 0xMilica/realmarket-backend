@@ -2239,7 +2239,7 @@
 					"response": []
 				},
 				{
-					"name": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableEquity",
+					"name": "/campaigns/{{campaign_fname}}/availableEquity",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -2265,7 +2265,7 @@
 					"response": []
 				},
 				{
-					"name": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableInvestableAmount",
+					"name": "/campaigns/{{campaign_fname}}/availableInvestableAmount",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -2291,7 +2291,7 @@
 					"response": []
 				},
 				{
-					"name": "{{server_ip}}/api/campaigns/{{campaign_fname}}/availableInvestment",
+					"name": "/campaigns/{{campaign_fname}}/availableInvestment",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -2361,37 +2361,6 @@
 									"key": "filter",
 									"value": "all"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/campaigns/auditCampaign/{{campaing_fname}}",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}",
-								"type": "text"
-							},
-							{
-								"key": "Accept",
-								"value": "*/*, application/json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{server_ip}}/api/campaigns/auditCampaign/friendlyName6",
-							"host": [
-								"{{server_ip}}"
-							],
-							"path": [
-								"api",
-								"campaigns",
-								"auditCampaign",
-								"friendlyName6"
 							]
 						}
 					},

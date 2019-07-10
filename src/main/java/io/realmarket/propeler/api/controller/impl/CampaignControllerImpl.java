@@ -145,13 +145,6 @@ public class CampaignControllerImpl implements CampaignController {
     return ResponseEntity.ok(campaignService.getActiveCampaignDto());
   }
 
-  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-  @GetMapping(value = "/auditCampaign/{campaignName}")
-  public ResponseEntity<AuditCampaignResponseDto> getAuditCampaign(
-      @PathVariable String campaignName) {
-    return ResponseEntity.ok(campaignService.getAuditCampaign(campaignName));
-  }
-
   @PostMapping("/{campaignName}/team/{teamMemberId}/picture")
   public ResponseEntity uploadPicture(
       @PathVariable String campaignName,
