@@ -6,11 +6,11 @@ import io.realmarket.propeler.api.dto.FundraisingProposalDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalResponseDto;
 import io.realmarket.propeler.service.FundraisingProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/fundraisingProposals")
@@ -31,5 +31,17 @@ public class FundraisingProposalControllerImpl implements FundraisingProposalCon
     return ResponseEntity.ok(
         new FundraisingProposalResponseDto(
             fundraisingProposalService.applyForFundraising(fundraisingProposalDto)));
+  }
+
+  @Override
+  @GetMapping
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  public ResponseEntity<Page<FundraisingProposalResponseDto>> getFundraisingProposals(
+      Pageable pageable,
+      @RequestParam(value = "filter", required = false, defaultValue = "all") String filter) {
+    return ResponseEntity.ok(
+        fundraisingProposalService
+            .getFundraisingProposalsByState(pageable, filter)
+            .map(FundraisingProposalResponseDto::new));
   }
 }

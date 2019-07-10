@@ -4,10 +4,14 @@ import io.realmarket.propeler.api.dto.AuditDeclineDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalResponseDto;
 import io.realmarket.propeler.model.FundraisingProposal;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface FundraisingProposalService {
   FundraisingProposal applyForFundraising(FundraisingProposalDto fundraisingProposalDto);
-
+  Page<FundraisingProposal> getFundraisingProposalsByState(Pageable pageable, String filter);
   FundraisingProposalResponseDto getFundraisingProposal(Long fundraisingProposalId);
 
   void approveFundraisingProposal(Long fundraisingProposalId);

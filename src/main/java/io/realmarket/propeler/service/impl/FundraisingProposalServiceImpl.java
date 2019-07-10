@@ -12,6 +12,8 @@ import io.realmarket.propeler.service.FundraisingProposalService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION;
@@ -36,6 +38,14 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
     fundraisingProposal.setRequestState(
         requestStateService.getRequestState(RequestStateName.PENDING));
     return fundraisingProposalRepository.save(fundraisingProposal);
+  }
+
+  @Override
+  public Page<FundraisingProposal> getFundraisingProposalsByState(
+      Pageable pageable, String filter) {
+    if (filter.equals("all")) return fundraisingProposalRepository.findAll(pageable);
+    return fundraisingProposalRepository.findByRequestState(
+        pageable, requestStateService.getRequestState(filter.toUpperCase()));
   }
 
   @Override

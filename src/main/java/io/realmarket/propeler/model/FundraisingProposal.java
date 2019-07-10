@@ -4,11 +4,13 @@ import io.realmarket.propeler.api.dto.FundraisingProposalDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Entity
