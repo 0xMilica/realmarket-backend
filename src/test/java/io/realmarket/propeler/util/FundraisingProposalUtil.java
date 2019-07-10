@@ -26,6 +26,19 @@ public class FundraisingProposalUtil {
           .requestState(AuditUtils.TEST_PENDING_REQUEST_STATE)
           .build();
 
+  public static FundraisingProposal TEST_APPROVED_FUNDRAISING_PROPOSAL =
+      FundraisingProposal.builder()
+          .firstName(PersonUtils.TEST_PERSON_FIRST_NAME)
+          .lastName(PersonUtils.TEST_PERSON_LAST_NAME)
+          .companyName(CompanyUtils.TEST_NAME)
+          .website(CompanyUtils.TEST_WEBSITE)
+          .email(PersonUtils.TEST_NEW_EMAIL)
+          .phoneNumber(PersonUtils.TEST_PERSON_PHONE_NUMBER)
+          .previouslyRaised(TEST_PREVIOUSLY_RAISED)
+          .fundingGoals(CampaignUtils.TEST_FUNDING_GOALS)
+          .requestState(AuditUtils.TEST_APPROVED_REQUEST_STATE)
+          .build();
+
   public static final FundraisingProposal TEST_DECLINED_FUNDRAISING_PROPOSAL =
       FundraisingProposal.builder()
           .firstName(PersonUtils.TEST_PERSON_FIRST_NAME)

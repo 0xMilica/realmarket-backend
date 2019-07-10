@@ -58,17 +58,29 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
     fundraisingProposalRepository.save(fundraisingProposal);
   }
 
-  private boolean isAdmin() {
-    return AuthenticationUtil.getAuthentication()
-        .getAuth()
-        .getUserRole()
-        .getName()
-        .equals(UserRoleName.ROLE_ADMIN);
+  @Override
+  public void approveFundraisingProposal(Long fundraisingProposalId) {
+    throwIfNotAdmin();
+    FundraisingProposal fundraisingProposal =
+        fundraisingProposalRepository.getOne(fundraisingProposalId);
+
+    fundraisingProposal.setRequestState(
+        requestStateService.getRequestState(RequestStateName.APPROVED));
+
+    fundraisingProposalRepository.save(fundraisingProposal);
   }
 
   private void throwIfNotAdmin() {
     if (!isAdmin()) {
       throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
     }
+  }
+
+  private boolean isAdmin() {
+    return AuthenticationUtil.getAuthentication()
+        .getAuth()
+        .getUserRole()
+        .getName()
+        .equals(UserRoleName.ROLE_ADMIN);
   }
 }

@@ -15,8 +15,8 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static io.realmarket.propeler.util.AuditUtils.TEST_PENDING_REQUEST_STATE;
 import static io.realmarket.propeler.util.FundraisingProposalUtil.*;
+import static io.realmarket.propeler.util.AuditUtils.TEST_PENDING_REQUEST_STATE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -45,8 +45,28 @@ public class FundraisingProposalServiceImplTest {
 
     FundraisingProposal actualFundraisingProposal =
         fundraisingProposalServiceImpl.applyForFundraising(TEST_FUNDRAISING_PROPOSAL_DTO);
+    fundraisingProposalServiceImpl.applyForFundraising(TEST_FUNDRAISING_PROPOSAL_DTO);
 
     assertEquals(TEST_PENDING_REQUEST_STATE, actualFundraisingProposal.getRequestState());
+  }
+
+  @Test
+  public void approveFundraisingProposal_Should_Approve() {
+    when(fundraisingProposalRepository.getOne(TEST_FUNDRAISING_PROPOSAL_ID))
+        .thenReturn(TEST_PENDING_FUNDRAISING_PROPOSAL.toBuilder().build());
+    when(requestStateService.getRequestState(RequestStateName.APPROVED))
+        .thenReturn(AuditUtils.TEST_APPROVED_REQUEST_STATE);
+    when(fundraisingProposalRepository.save(any(FundraisingProposal.class)))
+        .thenReturn(TEST_APPROVED_FUNDRAISING_PROPOSAL);
+
+    fundraisingProposalServiceImpl.approveFundraisingProposal(TEST_FUNDRAISING_PROPOSAL_ID);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void approveFundraisingProposal_Should_Throw_If_Not_Admin() {
+    AuthUtils.mockRequestAndContext();
+
+    fundraisingProposalServiceImpl.approveFundraisingProposal(TEST_FUNDRAISING_PROPOSAL_ID);
   }
 
   @Test
