@@ -59,7 +59,7 @@ public class InvestmentServiceImplTest {
     Investment investment =
         investmentService.invest(BigDecimal.valueOf(100), TEST_URL_FRIENDLY_NAME);
 
-    assertEquals(TEST_INVESTMENT_INITIAL, investment);
+    assertEquals(TEST_INVESTMENT_INITIAL_STATE, investment.getInvestmentState());
   }
 
   @Test(expected = BadRequestException.class)
@@ -102,8 +102,6 @@ public class InvestmentServiceImplTest {
     Auth auth = AuthenticationUtil.getAuthentication().getAuth();
     Investment actualInvestment = TEST_INVESTMENT_PAID_REVOCABLE.toBuilder().build();
     actualInvestment.setAuth(auth);
-    Investment expectedInvestment = TEST_INVESTMENT_REVOKED.toBuilder().build();
-    expectedInvestment.setAuth(auth);
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(actualInvestment);
     doNothing().when(paymentService).withdrawFunds(auth, actualInvestment.getInvestedAmount());
@@ -111,7 +109,7 @@ public class InvestmentServiceImplTest {
         .thenReturn(TEST_INVESTMENT_REVOKED_STATE);
 
     investmentService.revokeInvestment(INVESTMENT_ID);
-    assertEquals(expectedInvestment, actualInvestment);
+    assertEquals(TEST_INVESTMENT_REVOKED_STATE, actualInvestment.getInvestmentState());
   }
 
   @Test(expected = ForbiddenOperationException.class)
@@ -144,7 +142,7 @@ public class InvestmentServiceImplTest {
         .thenReturn(TEST_INVESTMENT_APPROVED_STATE);
 
     investmentService.approveInvestment(INVESTMENT_ID);
-    assertEquals(TEST_INVESTMENT_APPROVED, investment);
+    assertEquals(TEST_INVESTMENT_APPROVED_STATE, investment.getInvestmentState());
   }
 
   @Test(expected = BadRequestException.class)
@@ -194,7 +192,7 @@ public class InvestmentServiceImplTest {
         .thenReturn(TEST_INVESTMENT_REJECTED_STATE);
 
     investmentService.rejectInvestment(INVESTMENT_ID);
-    assertEquals(TEST_INVESTMENT_REJECTED, investment);
+    assertEquals(TEST_INVESTMENT_REJECTED_STATE, investment.getInvestmentState());
   }
 
   @Test(expected = BadRequestException.class)
