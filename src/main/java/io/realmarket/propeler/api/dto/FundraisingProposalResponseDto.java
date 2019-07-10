@@ -23,10 +23,10 @@ public class FundraisingProposalResponseDto {
   @ApiModelProperty(value = "Fundraising proposal's id")
   private Long id;
 
-  @NotBlank(message = "Please provide first name")
+  @NotBlank(message = "First name")
   private String firstName;
 
-  @NotBlank(message = "Please provide last name")
+  @NotBlank(message = "Last name")
   private String lastName;
 
   @ApiModelProperty(value = "Company's name")
@@ -37,7 +37,7 @@ public class FundraisingProposalResponseDto {
   private String website;
 
   @Email
-  @NotBlank(message = "Please provide e-mail address")
+  @NotBlank(message = "E-mail address")
   private String email;
 
   @ApiModelProperty(value = "Person's phone number")
@@ -48,7 +48,7 @@ public class FundraisingProposalResponseDto {
   private BigDecimal previouslyRaised;
 
   @ApiModelProperty(value = "Funding goals")
-  @NotNull(message = "Please provide funding goals")
+  @NotNull(message = "Funding goals")
   private Long fundingGoals;
 
   private String proposalState;

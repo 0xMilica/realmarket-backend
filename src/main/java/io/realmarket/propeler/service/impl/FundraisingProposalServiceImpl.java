@@ -1,6 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.FundraisingProposalDto;
+import io.realmarket.propeler.api.dto.FundraisingProposalResponseDto;
 import io.realmarket.propeler.model.FundraisingProposal;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.FundraisingProposalRepository;
@@ -29,5 +30,11 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
     fundraisingProposal.setRequestState(
         requestStateService.getRequestState(RequestStateName.PENDING));
     return fundraisingProposalRepository.save(fundraisingProposal);
+  }
+
+  @Override
+  public FundraisingProposalResponseDto getFundraisingProposal(Long fundraisingProposalId) {
+    return new FundraisingProposalResponseDto(
+        fundraisingProposalRepository.getOne(fundraisingProposalId));
   }
 }
