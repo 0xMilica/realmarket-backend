@@ -44,7 +44,7 @@ public class AuditControllerImpl implements AuditController {
   @PatchMapping(value = "/{auditId}/decline")
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public ResponseEntity<AuditResponseDto> declineAudit(
-      @PathVariable Long auditId, AuditDeclineDto auditDeclineDto) {
+      @PathVariable Long auditId, @RequestBody AuditDeclineDto auditDeclineDto) {
     return ResponseEntity.ok(
         new AuditResponseDto(auditService.declineCampaign(auditId, auditDeclineDto.getContent())));
   }

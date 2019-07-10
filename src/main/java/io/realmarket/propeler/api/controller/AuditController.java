@@ -33,7 +33,6 @@ public interface AuditController {
   @ApiOperation(
       value = "Accept a pending campaign's audit.",
       httpMethod = "PATCH",
-      consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
     @ApiImplicitParam(
@@ -44,7 +43,21 @@ public interface AuditController {
         paramType = "path")
   })
   @ApiResponses({
-    @ApiResponse(code = 200, message = "Campaign accepted."),
+    @ApiResponse(
+        code = 200,
+        message = "Campaign accepted.",
+        examples =
+            @Example(
+                @ExampleProperty(
+                    mediaType = APPLICATION_JSON_VALUE,
+                    value =
+                        "{"
+                            + "      \"auditId\": \"1\",\n"
+                            + "      \"auditorId\": \"1\",\n"
+                            + "      \"campaignUrlFriendlyName\": \"Параћинке\",\n"
+                            + "      \"request_state\": \"APPROVED\",\n"
+                            + "      \"content\": null"
+                            + "}"))),
     @ApiResponse(code = 403, message = "Access is denied."),
     @ApiResponse(code = 404, message = "Audit not found."),
     @ApiResponse(code = 400, message = "Audit state cannot be changed.")
@@ -64,10 +77,10 @@ public interface AuditController {
         dataType = "Long",
         paramType = "path"),
     @ApiImplicitParam(
-        name = "auditRequestDto",
+        name = "auditDeclineDto",
         value = "Audits's ID",
         required = true,
-        dataType = "AuditRequestDto",
+        dataType = "AuditDeclineDto",
         paramType = "body",
         example =
             "{\"content\":\"We want you to succeed! Idea seems really good but needs some improvement. "
@@ -76,7 +89,25 @@ public interface AuditController {
                 + "https://www.youtube.com/watch?v=6b5tyITSTPQ.\"}")
   })
   @ApiResponses({
-    @ApiResponse(code = 200, message = "Campaign rejected."),
+    @ApiResponse(
+        code = 200,
+        message = "Campaign rejected.",
+        examples =
+            @Example(
+                @ExampleProperty(
+                    mediaType = APPLICATION_JSON_VALUE,
+                    value =
+                        "{"
+                            + "      \"auditId\": \"1\",\n"
+                            + "      \"auditorId\": \"1\",\n"
+                            + "      \"campaignUrlFriendlyName\": \"Палачинке\",\n"
+                            + "      \"request_state\": \"DECLINED\",\n"
+                            + "      \"content\": \"We want you to succeed! Idea seems really good but needs some "
+                            + "                   improvement. Please look at these to get you going: "
+                            + "                   https://www.youtube.com/watch?v=Njh3rKoGKBo, "
+                            + "                   https://www.youtube.com/watch?v=IQfZPsCVbTU and a little motivational"
+                            + "                   gift https://www.youtube.com/watch?v=6b5tyITSTPQ.\""
+                            + "}"))),
     @ApiResponse(code = 403, message = "Access is denied."),
     @ApiResponse(code = 404, message = "Audit not found."),
     @ApiResponse(code = 400, message = "Audit state cannot be changed.")

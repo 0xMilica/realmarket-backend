@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "db76bc39-a1de-4538-9ecc-87e5485e0838",
+		"_postman_id": "ca668900-5d50-45f5-8676-c32771a18fd5",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -3690,6 +3690,33 @@
 								"{{audit_id}}",
 								"decline"
 							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "funding_proposal",
+			"item": [
+				{
+					"name": "/fundingProposals",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"firstName\": \"Мићо\",\r\n\t\"lastName\": \"Јовић\",\r\n\t\"companyName\": \"Бачка тамница\",\r\n\t\"website\": \"https://trs.ai\",\r\n\t\"email\": \"gazda@trs.ai\",\r\n\t\"phoneNumber\": \"+381212233369\",\r\n\t\"previouslyRaised\": \"-25.00\",\r\n\t\"fundingGoals\":\"1000000\"\r\n}"
+						},
+						"url": {
+							"raw": ""
 						}
 					},
 					"response": []
