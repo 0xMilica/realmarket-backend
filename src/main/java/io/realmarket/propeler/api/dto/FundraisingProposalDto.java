@@ -1,7 +1,6 @@
 package io.realmarket.propeler.api.dto;
 
 import io.realmarket.propeler.api.annotations.Email;
-import io.realmarket.propeler.model.FundraisingProposal;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 @ApiModel(value = "Fundraising proposal")
 @Data
@@ -42,20 +40,9 @@ public class FundraisingProposalDto {
 
   @NotNull
   @ApiModelProperty(value = "Previously raised amount of money")
-  private BigDecimal previouslyRaised;
+  private String previouslyRaised;
 
   @ApiModelProperty(value = "Funding goals")
   @NotNull(message = "Please provide funding goals")
-  private Long fundingGoals;
-
-  public FundraisingProposalDto(FundraisingProposal fundraisingProposal) {
-    this.firstName = fundraisingProposal.getFirstName();
-    this.lastName = fundraisingProposal.getLastName();
-    this.companyName = fundraisingProposal.getCompanyName();
-    this.website = fundraisingProposal.getWebsite();
-    this.email = fundraisingProposal.getEmail();
-    this.phoneNumber = fundraisingProposal.getPhoneNumber();
-    this.previouslyRaised = fundraisingProposal.getPreviouslyRaised();
-    this.fundingGoals = fundraisingProposal.getFundingGoals();
-  }
+  private String fundingGoals;
 }

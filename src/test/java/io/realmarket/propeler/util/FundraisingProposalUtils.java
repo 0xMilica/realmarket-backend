@@ -4,13 +4,12 @@ import io.realmarket.propeler.api.dto.AuditDeclineDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalDto;
 import io.realmarket.propeler.model.FundraisingProposal;
 
-import java.math.BigDecimal;
-
 public class FundraisingProposalUtils {
   public static final Long TEST_ID = 1L;
   public static final Long TEST_FUNDRAISING_PROPOSAL_ID = 1L;
   public static final String TEST_CONTENT = "TEST_CONTENT";
-  public static final BigDecimal TEST_PREVIOUSLY_RAISED = BigDecimal.valueOf(150000);
+  public static final String TEST_PREVIOUSLY_RAISED = "150000";
+  public static final String TEST_FUNDING_GOALS = "200000";
   public static final AuditDeclineDto TEST_AUDIT_DECLINE_DTO =
       AuditDeclineDto.builder().content(TEST_CONTENT).build();
 
@@ -23,7 +22,7 @@ public class FundraisingProposalUtils {
           .email(PersonUtils.TEST_NEW_EMAIL)
           .phoneNumber(PersonUtils.TEST_PERSON_PHONE_NUMBER)
           .previouslyRaised(TEST_PREVIOUSLY_RAISED)
-          .fundingGoals(CampaignUtils.TEST_FUNDING_GOALS)
+          .fundingGoals(TEST_FUNDING_GOALS)
           .requestState(AuditUtils.TEST_PENDING_REQUEST_STATE)
           .build();
 
@@ -36,7 +35,7 @@ public class FundraisingProposalUtils {
           .email(PersonUtils.TEST_NEW_EMAIL)
           .phoneNumber(PersonUtils.TEST_PERSON_PHONE_NUMBER)
           .previouslyRaised(TEST_PREVIOUSLY_RAISED)
-          .fundingGoals(CampaignUtils.TEST_FUNDING_GOALS)
+          .fundingGoals(TEST_FUNDING_GOALS)
           .requestState(AuditUtils.TEST_APPROVED_REQUEST_STATE)
           .build();
 
@@ -49,7 +48,7 @@ public class FundraisingProposalUtils {
           .email(PersonUtils.TEST_NEW_EMAIL)
           .phoneNumber(PersonUtils.TEST_PERSON_PHONE_NUMBER)
           .previouslyRaised(TEST_PREVIOUSLY_RAISED)
-          .fundingGoals(CampaignUtils.TEST_FUNDING_GOALS)
+          .fundingGoals(TEST_FUNDING_GOALS)
           .requestState(AuditUtils.TEST_DECLINED_REQUEST_STATE)
           .build();
 
@@ -62,6 +61,6 @@ public class FundraisingProposalUtils {
           .email(PersonUtils.TEST_NEW_EMAIL)
           .phoneNumber(PersonUtils.TEST_PERSON_PHONE_NUMBER)
           .previouslyRaised(TEST_PREVIOUSLY_RAISED)
-          .fundingGoals(CampaignUtils.TEST_FUNDING_GOALS)
+          .fundingGoals(TEST_FUNDING_GOALS)
           .build();
 }

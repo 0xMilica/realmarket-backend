@@ -15,8 +15,6 @@ public interface FundraisingProposalService {
 
   Page<FundraisingProposal> getFundraisingProposalsByState(Pageable pageable, String filter);
 
-  FundraisingProposalResponseDto getFundraisingProposal(Long fundraisingProposalId);
-
   FundraisingProposalResponseDto approveFundraisingProposal(Long fundraisingProposalId);
 
   void declineFundraisingProposal(Long fundraisingProposalId, AuditDeclineDto auditDeclineDto);

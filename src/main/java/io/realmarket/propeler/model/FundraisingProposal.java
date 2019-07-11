@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -30,8 +29,8 @@ public class FundraisingProposal {
   private String website;
   private String email;
   private String phoneNumber;
-  private BigDecimal previouslyRaised;
-  private Long fundingGoals;
+  private String previouslyRaised;
+  private String fundingGoals;
 
   @JoinColumn(
       name = "requestStateId",

@@ -113,7 +113,7 @@ INSERT INTO public.user_role (id, name) VALUES (NEXTVAL('user_role_seq'), 'ROLE_
 INSERT INTO public.user_role (id, name) VALUES (NEXTVAL('user_role_seq'), 'ROLE_AUDITOR');
 
 -- fundraising proposal
-INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, content, request_state_id) VALUES (nextval('fundraising_proposal_seq'), 'Мићо', 'Јовић', 'Параћинка Ваљево', 'https://zutisokodsljive.rs', 'backimornar@zutisokodsljive.rs','+381212233369',-25.00, 1000000, null, 1);
+INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, content, request_state_id) VALUES (nextval('fundraising_proposal_seq'), 'Мићо', 'Јовић', 'Параћинка Ваљево', 'https://zutisokodsljive.rs', 'backimornar@zutisokodsljive.rs','+381212233369', '-25.00', '1000000', null, 1);
 
 -- auth
 INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$E6Pwa0HnLWOoZIBBuZVyV.TodJ88sb.iBin.U2e9YSp7Z0ZaPXck2', 2, false, 'CYFMMB56QFIVKUFG', 'mark', 1);

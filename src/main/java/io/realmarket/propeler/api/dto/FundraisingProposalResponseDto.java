@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 @ApiModel(value = "Fundraising proposal")
 @Data
@@ -45,11 +44,11 @@ public class FundraisingProposalResponseDto {
 
   @NotNull
   @ApiModelProperty(value = "Previously raised amount of money")
-  private BigDecimal previouslyRaised;
+  private String previouslyRaised;
 
   @ApiModelProperty(value = "Funding goals")
   @NotNull(message = "Funding goals")
-  private Long fundingGoals;
+  private String fundingGoals;
 
   private String proposalState;
 

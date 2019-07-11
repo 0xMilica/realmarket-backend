@@ -68,12 +68,6 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
   }
 
   @Override
-  public FundraisingProposalResponseDto getFundraisingProposal(Long fundraisingProposalId) {
-    return new FundraisingProposalResponseDto(
-        fundraisingProposalRepository.getOne(fundraisingProposalId));
-  }
-
-  @Override
   public void declineFundraisingProposal(
       Long fundraisingProposalId, AuditDeclineDto auditDeclineDto) {
     throwIfNotAdmin();
