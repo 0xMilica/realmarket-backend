@@ -42,7 +42,6 @@ public class CampaignTopicControllerImpl implements CampaignTopicController {
   }
 
   @GetMapping
-  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity<CampaignTopicDto> getCampaignTopic(
       @PathVariable String campaignName, @PathVariable String topicType) {
     return ResponseEntity.ok(campaignTopicService.getCampaignTopic(campaignName, topicType));

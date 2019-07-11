@@ -51,7 +51,7 @@ public class CampaignTopicImageServiceImplTest {
     when(campaignTopicService.findByTopicTypeOrThrowException(any()))
         .thenReturn(TEST_CAMPAIGN_TOPIC_TYPE);
     when(campaignService.findByUrlFriendlyNameOrThrowException(any())).thenReturn(TEST_CAMPAIGN);
-    doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_CAMPAIGN);
 
     when(campaignTopicService.findByCampaignAndCampaignTopicTypeOrThrowException(any(), any()))
         .thenReturn(TEST_CAMPAIGN_TOPIC);

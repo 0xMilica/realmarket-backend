@@ -41,7 +41,7 @@ public class CampaignTopicServiceImplTest {
     when(campaignTopicTypeRepository.findByNameIgnoreCase(any()))
         .thenReturn(Optional.of(TEST_CAMPAIGN_TOPIC_TYPE));
     when(campaignService.findByUrlFriendlyNameOrThrowException(any())).thenReturn(TEST_CAMPAIGN);
-    doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_CAMPAIGN);
     when(campaignTopicRepository.save(any())).thenReturn(TEST_CAMPAIGN_TOPIC);
 
     campaignTopicService.createCampaignTopic(
@@ -103,7 +103,7 @@ public class CampaignTopicServiceImplTest {
     when(campaignTopicTypeRepository.findByNameIgnoreCase(any()))
         .thenReturn(Optional.of(TEST_CAMPAIGN_TOPIC_TYPE));
     when(campaignService.findByUrlFriendlyNameOrThrowException(any())).thenReturn(TEST_CAMPAIGN);
-    doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_CAMPAIGN);
     when(campaignTopicRepository.findByCampaignAndCampaignTopicType(any(), any()))
         .thenReturn(Optional.of(TEST_CAMPAIGN_TOPIC));
     when(campaignTopicRepository.save(any())).thenReturn(TEST_CAMPAIGN_TOPIC);

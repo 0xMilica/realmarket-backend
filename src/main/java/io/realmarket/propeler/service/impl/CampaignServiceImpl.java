@@ -146,6 +146,7 @@ public class CampaignServiceImpl implements CampaignService {
   public CampaignResponseDto getCampaignDtoByUrlFriendlyName(String name) {
     Campaign campaign = findByUrlFriendlyNameOrThrowException(name);
     CampaignResponseDto campaignDto;
+    throwIfNoAccess(campaign);
     if (campaign.getCampaignState().getName().equals(CampaignStateName.AUDIT)) {
       campaignDto = getAuditCampaign(campaign);
     } else {
@@ -199,9 +200,27 @@ public class CampaignServiceImpl implements CampaignService {
     throwIfNotEditable(campaign);
   }
 
-  public void throwIfNoAccess(Campaign campaign) {
+  public void throwIfNotOwner(Campaign campaign) {
     if (!isOwner(campaign)) {
       throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_CAMPAIGN);
+    }
+  }
+
+  public void throwIfNoAccess(Campaign campaign) {
+    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+    switch (auth.getUserRole().getName()) {
+      case ROLE_ADMIN:
+        break;
+      case ROLE_ENTREPRENEUR:
+        if (isOwner(campaign)) {
+          break;
+        }
+      default:
+        if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)
+            && !campaign.getCampaignState().getName().equals(CampaignStateName.POST_CAMPAIGN)) {
+          throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_CAMPAIGN);
+        }
+        break;
     }
   }
 
@@ -296,7 +315,7 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional
   public void requestReviewForCampaign(String campaignName) {
     Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
-    throwIfNoAccess(campaign);
+    throwIfNotOwner(campaign);
 
     campaign =
         changeCampaignStateOrThrow(
@@ -343,7 +362,9 @@ public class CampaignServiceImpl implements CampaignService {
     CampaignEmailDto campaignEmailDto =
         new CampaignEmailDto(campaign, frontendServiceUrlPath, campaignTopicDto.getContent());
     List<String> emails =
-        authService.findAllInvestors().stream()
+        authService
+            .findAllInvestors()
+            .stream()
             .map(auth -> auth.getPerson().getEmail())
             .collect(Collectors.toList());
 
@@ -362,12 +383,15 @@ public class CampaignServiceImpl implements CampaignService {
   @Override
   public void sendNewCampaignOpportunitiesEmail() {
     List<CampaignEmailDto> campaignEmailList =
-        findActiveCampaigns().stream()
+        findActiveCampaigns()
+            .stream()
             .map(campaign -> new CampaignEmailDto(campaign, frontendServiceUrlPath, ""))
             .collect(Collectors.toList());
 
     List<String> emails =
-        authService.findAllInvestors().stream()
+        authService
+            .findAllInvestors()
+            .stream()
             .map(auth -> auth.getPerson().getEmail())
             .collect(Collectors.toList());
 
@@ -414,7 +438,8 @@ public class CampaignServiceImpl implements CampaignService {
     switch (user.getUserRole().getName()) {
       case ROLE_ENTREPRENEUR:
         Company company = companyService.findMyCompany();
-        return findByCompany(company).stream()
+        return findByCompany(company)
+            .stream()
             .map(CampaignResponseDto::new)
             .collect(Collectors.toList());
       default:

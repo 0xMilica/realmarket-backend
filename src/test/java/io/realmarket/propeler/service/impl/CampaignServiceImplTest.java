@@ -93,6 +93,7 @@ public class CampaignServiceImplTest {
 
   @Test
   public void PatchCampaign_Should_CallModelMapper() {
+    AuthUtils.mockRequestAndContextEntrepreneur();
     Campaign testCampaign = TEST_CAMPAIGN.toBuilder().build();
     CampaignPatchDto campaignPatchDto = CampaignUtils.TEST_CAMPAIGN_PATCH_DTO_FUNDING_GOALS();
     PowerMockito.when(
@@ -201,6 +202,7 @@ public class CampaignServiceImplTest {
 
   @Test
   public void UploadMarketImage_Should_DeleteOldMarketImage_And_SaveToRepository() {
+    AuthUtils.mockRequestAndContextEntrepreneur();
     Campaign campaign = getCampaignMocked();
     campaign.setMarketImageUrl(TEST_FEATURED_IMAGE_URL);
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
@@ -260,6 +262,7 @@ public class CampaignServiceImplTest {
 
   @Test
   public void DeleteMarketImage_Should_DeleteMarketImage() {
+    AuthUtils.mockRequestAndContextEntrepreneur();
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.of(getCampaignMocked()));
     doNothing().when(cloudObjectStorageService).delete(TEST_MARKET_IMAGE_UTL);
@@ -321,6 +324,8 @@ public class CampaignServiceImplTest {
 
   @Test
   public void GetCampaignDtoByUrlFriendlyName_Should_Return_Campaign() {
+    AuthUtils.mockRequestAndContextEntrepreneur();
+
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.of(TEST_CAMPAIGN));
 
@@ -345,9 +350,9 @@ public class CampaignServiceImplTest {
     assertEquals(TEST_URL_FRIENDLY_NAME, campaignDto.getUrlFriendlyName());
   }
 
-  @Test(expected = BadRequestException.class)
+  @Test(expected = ForbiddenOperationException.class)
   public void
-      GetCampaignDtoByUrlFriendlyName_Should_Throw_BadRequestException_When_AuthenticationAuth_Not_Auditor_Of_Campaign() {
+      GetCampaignDtoByUrlFriendlyName_Should_Throw_ForbiddenOperationException_When_AuthenticationAuth_Not_Auditor_Of_Campaign() {
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
         .thenReturn(Optional.of(TEST_AUDIT_CAMPAIGN));
     when(auditService.findPendingAuditByCampaignOrThrowException(TEST_AUDIT_CAMPAIGN))
@@ -358,6 +363,7 @@ public class CampaignServiceImplTest {
 
   @Test
   public void DeleteCampaign_Should_SetStateDeleted() {
+    AuthUtils.mockRequestAndContextEntrepreneur();
     Campaign testCampaign = getCampaignMocked();
     when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
         .thenReturn(Optional.of(testCampaign));

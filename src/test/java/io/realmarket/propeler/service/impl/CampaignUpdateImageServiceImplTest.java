@@ -49,7 +49,7 @@ public class CampaignUpdateImageServiceImplTest {
   public void uploadImage_Should_UploadImageToCloud() {
     when(campaignUpdateService.findByIdOrThrowException(any()))
         .thenReturn(CampaignUpdateUtils.TEST_CAMPAIGN_UPDATE);
-    doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_CAMPAIGN);
     doNothing().when(campaignService).throwIfNotActive(TEST_CAMPAIGN);
 
     when(campaignUpdateImageRepository.save(any()))

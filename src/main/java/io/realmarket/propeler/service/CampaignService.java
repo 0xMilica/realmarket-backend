@@ -32,6 +32,8 @@ public interface CampaignService {
 
   void throwIfNotOwnerOrNotEditable(Campaign campaign);
 
+  void throwIfNotOwner(Campaign campaign);
+
   void throwIfNoAccess(Campaign campaign);
 
   void throwIfNotEditable(Campaign campaign);

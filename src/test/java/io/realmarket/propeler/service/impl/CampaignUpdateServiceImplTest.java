@@ -36,7 +36,7 @@ public class CampaignUpdateServiceImplTest {
     when(campaignService.findByUrlFriendlyNameOrThrowException(any()))
         .thenReturn(CampaignUtils.TEST_CAMPAIGN);
 
-    doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_CAMPAIGN);
     doNothing().when(campaignService).throwIfNotActive(TEST_CAMPAIGN);
 
     when(campaignUpdateRepository.save(any())).thenReturn(CampaignUpdateUtils.TEST_CAMPAIGN_UPDATE);
@@ -64,7 +64,7 @@ public class CampaignUpdateServiceImplTest {
     when(campaignUpdateRepository.findById(any()))
         .thenReturn(Optional.of(CampaignUpdateUtils.TEST_CAMPAIGN_UPDATE));
 
-    doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_CAMPAIGN);
     doNothing().when(campaignService).throwIfNotActive(TEST_CAMPAIGN);
 
     when(campaignUpdateRepository.save(any())).thenReturn(CampaignUpdateUtils.TEST_CAMPAIGN_UPDATE);
@@ -107,7 +107,7 @@ public class CampaignUpdateServiceImplTest {
     when(campaignUpdateRepository.findById(any()))
         .thenReturn(Optional.of(CampaignUpdateUtils.TEST_CAMPAIGN_UPDATE));
 
-    doNothing().when(campaignService).throwIfNoAccess(TEST_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_CAMPAIGN);
     doNothing().when(campaignService).throwIfNotActive(TEST_CAMPAIGN);
 
     doNothing()

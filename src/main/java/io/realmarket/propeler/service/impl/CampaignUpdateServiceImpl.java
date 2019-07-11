@@ -73,7 +73,7 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
       String campaignName, CampaignUpdateDto campaignUpdateDto) {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
 
-    campaignService.throwIfNoAccess(campaign);
+    campaignService.throwIfNotOwner(campaign);
     campaignService.throwIfNotActive(campaign);
 
     return new CampaignUpdateResponseDto(
@@ -91,7 +91,7 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
       Long campaignUpdateId, CampaignUpdateDto campaignUpdateDto) {
     CampaignUpdate campaignUpdate = findByIdOrThrowException(campaignUpdateId);
 
-    campaignService.throwIfNoAccess(campaignUpdate.getCampaign());
+    campaignService.throwIfNotOwner(campaignUpdate.getCampaign());
     campaignService.throwIfNotActive(campaignUpdate.getCampaign());
 
     campaignUpdate.setTitle(campaignUpdateDto.getTitle());
@@ -107,7 +107,7 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
   public void deleteCampaignUpdate(Long campaignUpdateId) {
     CampaignUpdate campaignUpdate = findByIdOrThrowException(campaignUpdateId);
 
-    campaignService.throwIfNoAccess(campaignUpdate.getCampaign());
+    campaignService.throwIfNotOwner(campaignUpdate.getCampaign());
     campaignService.throwIfNotActive(campaignUpdate.getCampaign());
 
     campaignUpdateImageService.removeImages(campaignUpdate);

@@ -51,7 +51,7 @@ public class CampaignUpdateImageServiceImpl implements CampaignUpdateImageServic
     CampaignUpdate campaignUpdate =
         campaignUpdateService.findByIdOrThrowException(campaignUpdateId);
 
-    campaignService.throwIfNoAccess(campaignUpdate.getCampaign());
+    campaignService.throwIfNotOwner(campaignUpdate.getCampaign());
     campaignService.throwIfNotActive(campaignUpdate.getCampaign());
 
     String url = cloudObjectStorageService.uploadPublic(image);

@@ -111,7 +111,7 @@ public class AuthUtils {
 
   public static final Auth TEST_AUTH_ENTREPRENEUR =
       Auth.builder()
-          .id(TEST_AUTH_ID + 1)
+          .id(TEST_AUTH_ID)
           .username(TEST_USERNAME)
           .state(TEST_AUTH_STATE)
           .userRole(TEST_ENTREPRENEUR_USER_ROLE)

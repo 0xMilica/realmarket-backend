@@ -110,7 +110,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     throwIfRevocable(investment);
 
     Campaign campaign = investment.getCampaign();
-    campaignService.throwIfNoAccess(campaign);
+    campaignService.throwIfNotOwner(campaign);
 
     throwIfNotPaid(investment);
     campaignService.increaseCollectedAmount(campaign, investment.getInvestedAmount());
@@ -127,7 +127,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     throwIfRevocable(investment);
 
     Campaign campaign = investment.getCampaign();
-    campaignService.throwIfNoAccess(campaign);
+    campaignService.throwIfNotOwner(campaign);
 
     Auth auth = investment.getAuth();
     BigDecimal amountOfMoney = investment.getInvestedAmount();

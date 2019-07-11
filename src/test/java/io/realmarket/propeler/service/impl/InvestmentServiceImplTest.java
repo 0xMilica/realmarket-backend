@@ -135,7 +135,7 @@ public class InvestmentServiceImplTest {
     Investment investment = TEST_INVESTMENT_PAID_NOT_REVOCABLE.toBuilder().build();
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
-    doNothing().when(campaignService).throwIfNoAccess(TEST_INVESTABLE_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
     when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
         .thenReturn(TEST_INVESTMENT_PAID_STATE);
     when(investmentStateService.getInvestmentState(InvestmentStateName.APPROVED))
@@ -151,7 +151,7 @@ public class InvestmentServiceImplTest {
     Investment investment = TEST_INVESTMENT_PAID_REVOCABLE.toBuilder().build();
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
-    doNothing().when(campaignService).throwIfNoAccess(TEST_INVESTABLE_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
     when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
         .thenReturn(TEST_INVESTMENT_PAID_STATE);
 
@@ -163,7 +163,7 @@ public class InvestmentServiceImplTest {
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(TEST_INVESTMENT_PAID_NOT_REVOCABLE);
     doThrow(ForbiddenOperationException.class)
         .when(campaignService)
-        .throwIfNoAccess(TEST_INVESTABLE_CAMPAIGN);
+        .throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
 
     investmentService.approveInvestment(INVESTMENT_ID);
   }
@@ -173,7 +173,7 @@ public class InvestmentServiceImplTest {
     Investment investment = TEST_INVESTMENT_NOT_PAID_REVOCABLE.toBuilder().build();
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
-    doNothing().when(campaignService).throwIfNoAccess(TEST_INVESTABLE_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
     when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
         .thenReturn(TEST_INVESTMENT_PAID_STATE);
 
@@ -186,7 +186,7 @@ public class InvestmentServiceImplTest {
     Investment investment = TEST_INVESTMENT_PAID_NOT_REVOCABLE.toBuilder().build();
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
-    doNothing().when(campaignService).throwIfNoAccess(TEST_INVESTABLE_CAMPAIGN);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
     doNothing().when(paymentService).withdrawFunds(auth, investment.getInvestedAmount());
     when(investmentStateService.getInvestmentState(InvestmentStateName.REJECTED))
         .thenReturn(TEST_INVESTMENT_REJECTED_STATE);
@@ -210,7 +210,7 @@ public class InvestmentServiceImplTest {
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(TEST_INVESTMENT_PAID_NOT_REVOCABLE);
     doThrow(ForbiddenOperationException.class)
         .when(campaignService)
-        .throwIfNoAccess(TEST_INVESTABLE_CAMPAIGN);
+        .throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
 
     investmentService.rejectInvestment(INVESTMENT_ID);
   }
