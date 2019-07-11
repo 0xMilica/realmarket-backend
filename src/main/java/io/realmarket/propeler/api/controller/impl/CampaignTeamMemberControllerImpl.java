@@ -45,7 +45,6 @@ public class CampaignTeamMemberControllerImpl implements CampaignTeamMemberContr
   }
 
   @GetMapping
-  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity<List<CampaignTeamMemberDto>> getAllTeamMembers(
       @PathVariable String campaignName) {
     return ResponseEntity.ok(campaignTeamMemberService.getTeamForCampaign(campaignName));

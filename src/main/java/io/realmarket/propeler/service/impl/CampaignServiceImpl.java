@@ -362,9 +362,7 @@ public class CampaignServiceImpl implements CampaignService {
     CampaignEmailDto campaignEmailDto =
         new CampaignEmailDto(campaign, frontendServiceUrlPath, campaignTopicDto.getContent());
     List<String> emails =
-        authService
-            .findAllInvestors()
-            .stream()
+        authService.findAllInvestors().stream()
             .map(auth -> auth.getPerson().getEmail())
             .collect(Collectors.toList());
 
@@ -383,15 +381,12 @@ public class CampaignServiceImpl implements CampaignService {
   @Override
   public void sendNewCampaignOpportunitiesEmail() {
     List<CampaignEmailDto> campaignEmailList =
-        findActiveCampaigns()
-            .stream()
+        findActiveCampaigns().stream()
             .map(campaign -> new CampaignEmailDto(campaign, frontendServiceUrlPath, ""))
             .collect(Collectors.toList());
 
     List<String> emails =
-        authService
-            .findAllInvestors()
-            .stream()
+        authService.findAllInvestors().stream()
             .map(auth -> auth.getPerson().getEmail())
             .collect(Collectors.toList());
 
@@ -438,8 +433,7 @@ public class CampaignServiceImpl implements CampaignService {
     switch (user.getUserRole().getName()) {
       case ROLE_ENTREPRENEUR:
         Company company = companyService.findMyCompany();
-        return findByCompany(company)
-            .stream()
+        return findByCompany(company).stream()
             .map(CampaignResponseDto::new)
             .collect(Collectors.toList());
       default:

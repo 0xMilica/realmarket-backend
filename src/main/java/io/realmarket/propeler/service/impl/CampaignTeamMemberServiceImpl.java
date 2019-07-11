@@ -69,6 +69,8 @@ public class CampaignTeamMemberServiceImpl implements CampaignTeamMemberService 
 
   @Override
   public List<CampaignTeamMemberDto> getTeamForCampaign(String campaignName) {
+    final Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
+    campaignService.throwIfNoAccess(campaign);
     return modelMapperBlankString.map(
         campaignTeamMemberRepository.findAllByCampaignUrlFriendlyNameOrderByOrderNumberAsc(
             campaignName),

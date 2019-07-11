@@ -20,10 +20,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collections;
-
-import javax.persistence.EntityNotFoundException;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION;
 
@@ -89,16 +88,18 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
   }
 
   @Override
-  public void approveFundraisingProposal(Long fundraisingProposalId) {
+  public FundraisingProposalResponseDto approveFundraisingProposal(Long fundraisingProposalId) {
     throwIfNotAdmin();
     FundraisingProposal fundraisingProposal =
         fundraisingProposalRepository.getOne(fundraisingProposalId);
 
     fundraisingProposal.setRequestState(
         requestStateService.getRequestState(RequestStateName.APPROVED));
-    sendApprovalEmail(fundraisingProposal.getEmail());
 
-    fundraisingProposalRepository.save(fundraisingProposal);
+    fundraisingProposal = fundraisingProposalRepository.save(fundraisingProposal);
+    sendApprovalEmail(fundraisingProposal.getEmail());
+    
+    return new FundraisingProposalResponseDto(fundraisingProposal);
   }
 
   private void throwIfNotAdmin() {

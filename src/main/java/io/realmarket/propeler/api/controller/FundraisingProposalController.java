@@ -17,7 +17,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public interface FundraisingProposalController {
 
   @ApiOperation(
-      value = "Propose fundraising campaign idea.",
+      value = "Propose fundraising campaign idea",
       httpMethod = "POST",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
@@ -35,38 +35,6 @@ public interface FundraisingProposalController {
   })
   ResponseEntity<FundraisingProposalResponseDto> makeFundraisingProposal(
       FundraisingProposalDto fundraisingProposalDto);
-
-  @ApiOperation(
-      value = "List pending fundraising proposals.",
-      httpMethod = "GET",
-      produces = APPLICATION_JSON_VALUE)
-  @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "page",
-        value = "Number of page to be returned",
-        defaultValue = "20",
-        dataType = "Integer",
-        paramType = "query"),
-    @ApiImplicitParam(
-        name = "size",
-        value = "Page size (number of items to be returned)",
-        defaultValue = "0",
-        dataType = "Integer",
-        paramType = "query"),
-    @ApiImplicitParam(
-        name = "filter",
-        value = "State of fundraising proposal to be returned",
-        allowableValues = "all, pending, approved, declined",
-        defaultValue = "active",
-        dataType = "String",
-        paramType = "query")
-  })
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Fundraising proposal successfully made."),
-    @ApiResponse(code = 401, message = "LOG_005.")
-  })
-  ResponseEntity<Page<FundraisingProposalResponseDto>> getFundraisingProposals(
-      Pageable pageable, String filter);
 
   @ApiOperation(
       value = "Submit fundraising proposal document",
@@ -116,5 +84,56 @@ public interface FundraisingProposalController {
     @ApiResponse(code = 404, message = "Fundraising proposal not found.")
   })
   ResponseEntity<List<FundraisingProposalDocumentResponseDto>> getFundraisingProposalDocuments(
+      Long fundraisingProposalId);
+
+  @ApiOperation(
+      value = "List pending fundraising proposals",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "page",
+        value = "Number of page to be returned",
+        defaultValue = "20",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "filter",
+        value = "State of fundraising proposal to be returned",
+        allowableValues = "all, pending, approved, declined",
+        defaultValue = "active",
+        dataType = "String",
+        paramType = "query")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Fundraising proposal successfully made."),
+    @ApiResponse(code = 401, message = "LOG_005.")
+  })
+  ResponseEntity<Page<FundraisingProposalResponseDto>> getFundraisingProposals(
+      Pageable pageable, String filter);
+
+  @ApiOperation(
+      value = "Accept fundraising proposal",
+      httpMethod = "PATCH",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "fundraisingProposalId",
+        value = "Fundraising proposal identifier",
+        dataType = "Long",
+        paramType = "path",
+        required = true)
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully accepted fundraising proposal."),
+    @ApiResponse(code = 404, message = "Fundraising proposal not found.")
+  })
+  ResponseEntity<FundraisingProposalResponseDto> acceptFundraisingProposal(
       Long fundraisingProposalId);
 }

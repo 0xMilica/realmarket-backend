@@ -44,18 +44,6 @@ public class FundraisingProposalControllerImpl implements FundraisingProposalCon
   }
 
   @Override
-  @GetMapping
-  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-  public ResponseEntity<Page<FundraisingProposalResponseDto>> getFundraisingProposals(
-      Pageable pageable,
-      @RequestParam(value = "filter", required = false, defaultValue = "all") String filter) {
-    return ResponseEntity.ok(
-        fundraisingProposalService
-            .getFundraisingProposalsByState(pageable, filter)
-            .map(FundraisingProposalResponseDto::new));
-  }
-
-  @Override
   @PostMapping(value = "/{fundraisingProposalId}/documents")
   public ResponseEntity<FundraisingProposalDocumentResponseDto> submitFundraisingProposalDocument(
       @RequestBody @Valid FundraisingProposalDocumentDto fundraisingProposalDocumentDto,
@@ -73,5 +61,26 @@ public class FundraisingProposalControllerImpl implements FundraisingProposalCon
       getFundraisingProposalDocuments(@PathVariable Long fundraisingProposalId) {
     return ResponseEntity.ok(
         fundraisingProposalDocumentService.getFundraisingProposalDocuments(fundraisingProposalId));
+  }
+
+  @Override
+  @GetMapping
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  public ResponseEntity<Page<FundraisingProposalResponseDto>> getFundraisingProposals(
+      Pageable pageable,
+      @RequestParam(value = "filter", required = false, defaultValue = "all") String filter) {
+    return ResponseEntity.ok(
+        fundraisingProposalService
+            .getFundraisingProposalsByState(pageable, filter)
+            .map(FundraisingProposalResponseDto::new));
+  }
+
+  @Override
+  @PatchMapping("/{fundraisingProposalId}/accept")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  public ResponseEntity<FundraisingProposalResponseDto> acceptFundraisingProposal(
+      @PathVariable Long fundraisingProposalId) {
+    return ResponseEntity.ok(
+        fundraisingProposalService.approveFundraisingProposal(fundraisingProposalId));
   }
 }

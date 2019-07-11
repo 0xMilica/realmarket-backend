@@ -3703,7 +3703,7 @@
 					"name": "docs",
 					"item": [
 						{
-							"name": "/fundraisingProposals/{{proposal_id}}/documents",
+							"name": "/documents",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -3738,7 +3738,7 @@
 							"response": []
 						},
 						{
-							"name": "/fundraisingProposals/{{proposal_id}}/documents",
+							"name": "/documents",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -3868,6 +3868,37 @@
 									"key": "filter",
 									"value": "all"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/fundraisingProposals/{{proposal_id}}/accept",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/fundraisingProposals/{{proposal_id}}/accept",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"fundraisingProposals",
+								"{{proposal_id}}",
+								"accept"
 							]
 						}
 					},
