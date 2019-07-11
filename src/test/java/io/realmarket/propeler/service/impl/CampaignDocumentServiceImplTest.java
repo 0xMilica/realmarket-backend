@@ -5,9 +5,9 @@ import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignDocument;
 import io.realmarket.propeler.model.Company;
-import io.realmarket.propeler.repository.CampaignDocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.CampaignDocumentRepository;
 import io.realmarket.propeler.repository.CampaignDocumentTypeRepository;
+import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
@@ -48,7 +48,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class CampaignDocumentServiceImplTest {
 
   @Mock private CampaignDocumentRepository campaignDocumentRepository;
-  @Mock private CampaignDocumentAccessLevelRepository campaignDocumentAccessLevelRepository;
+  @Mock private DocumentAccessLevelRepository documentAccessLevelRepository;
   @Mock private CampaignDocumentTypeRepository campaignDocumentTypeRepository;
   @Mock private CampaignService campaignService;
   @Mock private CompanyService companyService;
@@ -71,8 +71,7 @@ public class CampaignDocumentServiceImplTest {
     when(campaignService.findByUrlFriendlyNameOrThrowException(
             CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenReturn(CampaignUtils.TEST_CAMPAIGN);
-    when(campaignDocumentAccessLevelRepository.findByName(
-            CampaignDocumentUtils.TEST_ACCESS_LEVEL_ENUM))
+    when(documentAccessLevelRepository.findByName(CampaignDocumentUtils.TEST_ACCESS_LEVEL_ENUM))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL));
     when(campaignDocumentTypeRepository.findByName(CampaignDocumentUtils.TEST_TYPE_ENUM))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE));
@@ -114,7 +113,7 @@ public class CampaignDocumentServiceImplTest {
         .when(campaignService)
         .throwIfNotOwnerOrNotEditable(CampaignUtils.TEST_CAMPAIGN);
 
-    when(campaignDocumentAccessLevelRepository.findByName(any()))
+    when(documentAccessLevelRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL));
     when(campaignDocumentTypeRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE));
@@ -137,7 +136,7 @@ public class CampaignDocumentServiceImplTest {
     when(campaignService.findByUrlFriendlyNameOrThrowException(
             CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenReturn(CampaignUtils.TEST_CAMPAIGN);
-    when(campaignDocumentAccessLevelRepository.findByName(any()))
+    when(documentAccessLevelRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL));
     when(campaignDocumentTypeRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE));
@@ -271,7 +270,7 @@ public class CampaignDocumentServiceImplTest {
 
     when(campaignDocumentRepository.findById(CampaignDocumentUtils.TEST_ID))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_CAMPAIGN_DOCUMENT));
-    when(campaignDocumentAccessLevelRepository.findByName(any()))
+    when(documentAccessLevelRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL_2));
     when(campaignDocumentTypeRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE_2));

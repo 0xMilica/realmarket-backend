@@ -1,0 +1,28 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="ovlajic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence fundraising_proposal_document_seq;
+            create table if not exists fundraising_proposal_document
+            (
+            id bigint not null
+            constraint fundraising_proposal_document_pkey
+            primary key,
+            title varchar(255),
+            type_id bigint
+            constraint fundraising_proposal_document_fk_on_type
+            references company_document_type,
+            upload_date timestamp,
+            url varchar(255),
+            fundraising_proposal_id bigint
+            constraint fundraising_proposal_document_fk_on_fundraising_proposal
+            references fundraising_proposal
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

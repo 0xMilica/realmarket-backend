@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "08f00714-a8c4-4fb7-a800-e1ead9509217",
+		"_postman_id": "5c4c9a5f-2b7a-4036-bdc0-a5f86d461c44",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -3700,6 +3700,78 @@
 			"name": "fundraising_proposals",
 			"item": [
 				{
+					"name": "docs",
+					"item": [
+						{
+							"name": "/fundraisingProposals/{{proposal_id}}/documents",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"type": "text",
+										"value": "*/*, application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"FIRSTPROPOSALDOCUMENT\",\r\n  \"type\": \"DOCTYPE_PITCH_DECK\",\r\n  \"url\": \"X5BHXYEBWT55IRI63NDLOELTN5WYFM6Z.txt\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/fundraisingProposals/{{proposal_id}}/documents",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"fundraisingProposals",
+										"{{proposal_id}}",
+										"documents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/fundraisingProposals/{{proposal_id}}/documents",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/fundraisingProposals/{{proposal_id}}/documents",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"fundraisingProposals",
+										"{{proposal_id}}",
+										"documents"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
 					"name": "/fundraisingProposals",
 					"request": {
 						"method": "POST",
@@ -3708,6 +3780,11 @@
 								"key": "Content-Type",
 								"name": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "captcha_response",
+								"value": "captcha",
 								"type": "text"
 							}
 						],
@@ -3723,6 +3800,36 @@
 							"path": [
 								"api",
 								"fundraisingProposals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/fundraisingProposals/{{proposal_id}}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/fundraisingProposals/{{proposal_id}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"fundraisingProposals",
+								"{{proposal_id}}"
 							]
 						}
 					},

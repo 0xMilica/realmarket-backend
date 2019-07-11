@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CampaignDocumentAccessLevelRepository
-    extends JpaRepository<DocumentAccessLevel, Long> {
+public interface DocumentAccessLevelRepository extends JpaRepository<DocumentAccessLevel, Long> {
   Optional<DocumentAccessLevel> findByName(DocumentAccessLevelName name);
 }

@@ -11,14 +11,18 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.FundraisingProposalService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION;
 
 @Service
+@Slf4j
 public class FundraisingProposalServiceImpl implements FundraisingProposalService {
 
   private final FundraisingProposalRepository fundraisingProposalRepository;
@@ -30,6 +34,13 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
       RequestStateService requestStateService) {
     this.fundraisingProposalRepository = fundraisingProposalRepository;
     this.requestStateService = requestStateService;
+  }
+
+  @Override
+  public FundraisingProposal findByIdOrThrowException(Long proposalId) {
+    return fundraisingProposalRepository
+        .findById(proposalId)
+        .orElseThrow(EntityNotFoundException::new);
   }
 
   @Override

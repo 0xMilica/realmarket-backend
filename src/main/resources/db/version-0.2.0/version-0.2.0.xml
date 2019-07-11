@@ -30,6 +30,7 @@
     <include file="migrations/platform_settings_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/audit_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/fundraising_proposal_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/fundraising_proposal_document_table.xml" relativeToChangelogFile="true"/>
 
     <include file="migrations/country_table_init.xml" relativeToChangelogFile="true"/>
     <include file="migrations/tables_init.xml" relativeToChangelogFile="true"/>

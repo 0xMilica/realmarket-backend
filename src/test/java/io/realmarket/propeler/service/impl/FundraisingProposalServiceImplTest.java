@@ -15,8 +15,8 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static io.realmarket.propeler.util.FundraisingProposalUtil.*;
 import static io.realmarket.propeler.util.AuditUtils.TEST_PENDING_REQUEST_STATE;
+import static io.realmarket.propeler.util.FundraisingProposalUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.when;

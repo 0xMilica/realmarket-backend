@@ -3,9 +3,9 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.CompanyDocumentDto;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.CompanyDocument;
-import io.realmarket.propeler.repository.CampaignDocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.CompanyDocumentRepository;
 import io.realmarket.propeler.repository.CompanyDocumentTypeRepository;
+import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.exception.BadRequestException;
@@ -37,7 +37,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class CompanyDocumentServiceImplTest {
 
   @Mock private CompanyDocumentRepository companyDocumentRepository;
-  @Mock private CampaignDocumentAccessLevelRepository campaignDocumentAccessLevelRepository;
+  @Mock private DocumentAccessLevelRepository documentAccessLevelRepository;
   @Mock private CompanyDocumentTypeRepository companyDocumentTypeRepository;
   @Mock private CompanyService companyService;
   @Mock private CloudObjectStorageService cloudObjectStorageService;
@@ -79,8 +79,7 @@ public class CompanyDocumentServiceImplTest {
 
     when(companyService.findByIdOrThrowException(CompanyUtils.TEST_ID))
         .thenReturn(CompanyUtils.TEST_COMPANY);
-    when(campaignDocumentAccessLevelRepository.findByName(
-            CompanyDocumentUtils.TEST_ACCESS_LEVEL_ENUM))
+    when(documentAccessLevelRepository.findByName(CompanyDocumentUtils.TEST_ACCESS_LEVEL_ENUM))
         .thenReturn(Optional.of(CompanyDocumentUtils.TEST_ACCESS_LEVEL));
     when(companyDocumentTypeRepository.findByName(CompanyDocumentUtils.TEST_TYPE_ENUM))
         .thenReturn(Optional.of(CompanyDocumentUtils.TEST_TYPE));
@@ -123,8 +122,7 @@ public class CompanyDocumentServiceImplTest {
 
     when(companyService.findByIdOrThrowException(CompanyUtils.TEST_ID))
         .thenReturn(CompanyUtils.TEST_COMPANY);
-    when(campaignDocumentAccessLevelRepository.findByName(
-            CompanyDocumentUtils.TEST_ACCESS_LEVEL_ENUM))
+    when(documentAccessLevelRepository.findByName(CompanyDocumentUtils.TEST_ACCESS_LEVEL_ENUM))
         .thenReturn(Optional.of(CompanyDocumentUtils.TEST_ACCESS_LEVEL));
     when(companyDocumentTypeRepository.findByName(CompanyDocumentUtils.TEST_TYPE_ENUM))
         .thenReturn(Optional.of(CompanyDocumentUtils.TEST_TYPE));
@@ -192,7 +190,7 @@ public class CompanyDocumentServiceImplTest {
 
     when(companyDocumentRepository.findById(CompanyDocumentUtils.TEST_ID))
         .thenReturn(Optional.of(CompanyDocumentUtils.TEST_COMPANY_DOCUMENT));
-    when(campaignDocumentAccessLevelRepository.findByName(any()))
+    when(documentAccessLevelRepository.findByName(any()))
         .thenReturn(Optional.of(CompanyDocumentUtils.TEST_ACCESS_LEVEL_2));
     when(companyDocumentTypeRepository.findByName(any()))
         .thenReturn(Optional.of(CompanyDocumentUtils.TEST_TYPE_2));

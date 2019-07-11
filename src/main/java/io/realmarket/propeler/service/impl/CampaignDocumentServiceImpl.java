@@ -4,9 +4,9 @@ import io.realmarket.propeler.api.dto.CampaignDocumentDto;
 import io.realmarket.propeler.api.dto.CampaignDocumentResponseDto;
 import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.UserRoleName;
-import io.realmarket.propeler.repository.CampaignDocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.CampaignDocumentRepository;
 import io.realmarket.propeler.repository.CampaignDocumentTypeRepository;
+import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignDocumentService;
 import io.realmarket.propeler.service.CampaignService;
@@ -36,7 +36,7 @@ import static java.util.stream.Collectors.toList;
 public class CampaignDocumentServiceImpl implements CampaignDocumentService {
 
   private final CampaignDocumentRepository campaignDocumentRepository;
-  private final CampaignDocumentAccessLevelRepository campaignDocumentAccessLevelRepository;
+  private final DocumentAccessLevelRepository documentAccessLevelRepository;
   private final CampaignDocumentTypeRepository campaignDocumentTypeRepository;
   private final CampaignService campaignService;
   private final CompanyService companyService;
@@ -46,14 +46,14 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   @Autowired
   public CampaignDocumentServiceImpl(
       CampaignDocumentRepository campaignDocumentRepository,
-      CampaignDocumentAccessLevelRepository campaignDocumentAccessLevelRepository,
+      DocumentAccessLevelRepository documentAccessLevelRepository,
       CampaignDocumentTypeRepository campaignDocumentTypeRepository,
       CampaignService campaignService,
       CompanyService companyService,
       CloudObjectStorageService cloudObjectStorageService,
       ModelMapperBlankString modelMapperBlankString) {
     this.campaignDocumentRepository = campaignDocumentRepository;
-    this.campaignDocumentAccessLevelRepository = campaignDocumentAccessLevelRepository;
+    this.documentAccessLevelRepository = documentAccessLevelRepository;
     this.campaignDocumentTypeRepository = campaignDocumentTypeRepository;
     this.campaignService = campaignService;
     this.companyService = companyService;
@@ -197,7 +197,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   private CampaignDocument convertDocumentDtoToDocument(
       CampaignDocumentDto campaignDocumentDto, Campaign campaign) {
     Optional<DocumentAccessLevel> accessLevel =
-        this.campaignDocumentAccessLevelRepository.findByName(campaignDocumentDto.getAccessLevel());
+        this.documentAccessLevelRepository.findByName(campaignDocumentDto.getAccessLevel());
     Optional<CampaignDocumentType> type =
         this.campaignDocumentTypeRepository.findByName(campaignDocumentDto.getType());
     if (!accessLevel.isPresent() || !type.isPresent()) {

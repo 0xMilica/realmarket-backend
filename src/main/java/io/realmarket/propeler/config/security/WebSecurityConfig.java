@@ -88,7 +88,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/auth/2fa",
             "/auth/2fa/remember_me",
             "/auth/2fa/secret",
-            "/auth/2fa/verify")
+            "/auth/2fa/verify",
+            "/files",
+            "/fundraisingProposals/**")
         .antMatchers(HttpMethod.PATCH, "/auth/email_confirm");
     /*
     .antMatchers(HttpMethod.POST, "**")

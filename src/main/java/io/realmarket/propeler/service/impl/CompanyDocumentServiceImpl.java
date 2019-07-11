@@ -7,9 +7,9 @@ import io.realmarket.propeler.model.CompanyDocument;
 import io.realmarket.propeler.model.CompanyDocumentType;
 import io.realmarket.propeler.model.DocumentAccessLevel;
 import io.realmarket.propeler.model.enums.UserRoleName;
-import io.realmarket.propeler.repository.CampaignDocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.CompanyDocumentRepository;
 import io.realmarket.propeler.repository.CompanyDocumentTypeRepository;
+import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyDocumentService;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class CompanyDocumentServiceImpl implements CompanyDocumentService {
 
   private final CompanyDocumentRepository companyDocumentRepository;
-  private final CampaignDocumentAccessLevelRepository campaignDocumentAccessLevelRepository;
+  private final DocumentAccessLevelRepository documentAccessLevelRepository;
   private final CompanyDocumentTypeRepository companyDocumentTypeRepository;
   private final CompanyService companyService;
   private final CloudObjectStorageService cloudObjectStorageService;
@@ -41,13 +41,13 @@ public class CompanyDocumentServiceImpl implements CompanyDocumentService {
   @Autowired
   public CompanyDocumentServiceImpl(
       CompanyDocumentRepository companyDocumentRepository,
-      CampaignDocumentAccessLevelRepository campaignDocumentAccessLevelRepository,
+      DocumentAccessLevelRepository documentAccessLevelRepository,
       CompanyDocumentTypeRepository companyDocumentTypeRepository,
       CompanyService companyService,
       CloudObjectStorageService cloudObjectStorageService,
       ModelMapperBlankString modelMapperBlankString) {
     this.companyDocumentRepository = companyDocumentRepository;
-    this.campaignDocumentAccessLevelRepository = campaignDocumentAccessLevelRepository;
+    this.documentAccessLevelRepository = documentAccessLevelRepository;
     this.companyDocumentTypeRepository = companyDocumentTypeRepository;
     this.companyService = companyService;
     this.cloudObjectStorageService = cloudObjectStorageService;
@@ -146,7 +146,7 @@ public class CompanyDocumentServiceImpl implements CompanyDocumentService {
   private CompanyDocument convertDocumentDtoToDocument(
       CompanyDocumentDto companyDocumentDto, Company company) {
     Optional<DocumentAccessLevel> accessLevel =
-        this.campaignDocumentAccessLevelRepository.findByName(companyDocumentDto.getAccessLevel());
+        this.documentAccessLevelRepository.findByName(companyDocumentDto.getAccessLevel());
     Optional<CompanyDocumentType> type =
         this.companyDocumentTypeRepository.findByName(companyDocumentDto.getType());
     if (!accessLevel.isPresent() || !type.isPresent()) {

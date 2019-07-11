@@ -2,8 +2,11 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.annotations.RequireCaptcha;
 import io.realmarket.propeler.api.controller.FundraisingProposalController;
+import io.realmarket.propeler.api.dto.FundraisingProposalDocumentDto;
+import io.realmarket.propeler.api.dto.FundraisingProposalDocumentResponseDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalResponseDto;
+import io.realmarket.propeler.service.FundraisingProposalDocumentService;
 import io.realmarket.propeler.service.FundraisingProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,15 +15,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
+
 @RestController
 @RequestMapping("/fundraisingProposals")
 public class FundraisingProposalControllerImpl implements FundraisingProposalController {
 
   private final FundraisingProposalService fundraisingProposalService;
+  private final FundraisingProposalDocumentService fundraisingProposalDocumentService;
 
   @Autowired
-  public FundraisingProposalControllerImpl(FundraisingProposalService fundraisingProposalService) {
+  public FundraisingProposalControllerImpl(
+      FundraisingProposalService fundraisingProposalService,
+      FundraisingProposalDocumentService fundraisingProposalDocumentService) {
     this.fundraisingProposalService = fundraisingProposalService;
+    this.fundraisingProposalDocumentService = fundraisingProposalDocumentService;
   }
 
   @Override
@@ -43,5 +53,25 @@ public class FundraisingProposalControllerImpl implements FundraisingProposalCon
         fundraisingProposalService
             .getFundraisingProposalsByState(pageable, filter)
             .map(FundraisingProposalResponseDto::new));
+  }
+
+  @Override
+  @PostMapping(value = "/{fundraisingProposalId}/documents")
+  public ResponseEntity<FundraisingProposalDocumentResponseDto> submitFundraisingProposalDocument(
+      @RequestBody @Valid FundraisingProposalDocumentDto fundraisingProposalDocumentDto,
+      @PathVariable Long fundraisingProposalId) {
+    return ResponseEntity.ok(
+        new FundraisingProposalDocumentResponseDto(
+            fundraisingProposalDocumentService.submitDocument(
+                fundraisingProposalDocumentDto, fundraisingProposalId)));
+  }
+
+  @Override
+  @GetMapping(value = "/{fundraisingProposalId}/documents")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  public ResponseEntity<List<FundraisingProposalDocumentResponseDto>>
+      getFundraisingProposalDocuments(@PathVariable Long fundraisingProposalId) {
+    return ResponseEntity.ok(
+        fundraisingProposalDocumentService.getFundraisingProposalDocuments(fundraisingProposalId));
   }
 }

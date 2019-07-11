@@ -6,7 +6,8 @@ import io.realmarket.propeler.model.FundraisingProposal;
 
 import java.math.BigDecimal;
 
-public class FundraisingProposalUtil {
+public class FundraisingProposalUtils {
+  public static final Long TEST_ID = 1L;
   public static final Long TEST_FUNDRAISING_PROPOSAL_ID = 1L;
   public static final String TEST_CONTENT = "TEST_CONTENT";
   public static final BigDecimal TEST_PREVIOUSLY_RAISED = BigDecimal.valueOf(150000);
