@@ -98,7 +98,7 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
 
     fundraisingProposal = fundraisingProposalRepository.save(fundraisingProposal);
     sendApprovalEmail(fundraisingProposal.getEmail());
-    
+
     return new FundraisingProposalResponseDto(fundraisingProposal);
   }
 
