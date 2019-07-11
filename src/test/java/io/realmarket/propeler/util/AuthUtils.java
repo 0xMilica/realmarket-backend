@@ -1,7 +1,7 @@
 package io.realmarket.propeler.util;
 
 import io.realmarket.propeler.api.dto.*;
-import io.realmarket.propeler.api.dto.enums.EEmailType;
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.AuthStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
@@ -39,7 +39,7 @@ public class AuthUtils {
   public static final MailContentHolder TEST_EMAIL_DTO =
       new MailContentHolder(
           Arrays.asList(TEST_EMAIL),
-          EEmailType.REGISTER,
+          EmailType.REGISTER,
           new HashMap<String, Object>() {
             {
               put(EmailServiceImpl.USERNAME, TEST_USERNAME);

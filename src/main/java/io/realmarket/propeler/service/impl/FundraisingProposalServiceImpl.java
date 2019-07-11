@@ -3,19 +3,25 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.AuditDeclineDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalResponseDto;
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.FundraisingProposal;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.FundraisingProposalRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
+import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.FundraisingProposalService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -27,13 +33,16 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
 
   private final FundraisingProposalRepository fundraisingProposalRepository;
   private final RequestStateService requestStateService;
+  private final EmailService emailService;
 
   @Autowired
   public FundraisingProposalServiceImpl(
       FundraisingProposalRepository fundraisingProposalRepository,
-      RequestStateService requestStateService) {
+      RequestStateService requestStateService,
+      EmailService emailService) {
     this.fundraisingProposalRepository = fundraisingProposalRepository;
     this.requestStateService = requestStateService;
+    this.emailService = emailService;
   }
 
   @Override
@@ -87,6 +96,7 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
 
     fundraisingProposal.setRequestState(
         requestStateService.getRequestState(RequestStateName.APPROVED));
+    sendApprovalEmail(fundraisingProposal.getEmail());
 
     fundraisingProposalRepository.save(fundraisingProposal);
   }
@@ -103,5 +113,13 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
         .getUserRole()
         .getName()
         .equals(UserRoleName.ROLE_ADMIN);
+  }
+
+  private void sendApprovalEmail(String email) {
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            Arrays.asList(email),
+            EmailType.FUNDRAISING_PROPOSAL,
+            Collections.singletonMap(EmailServiceImpl.FUNDRAISING_PROPOSAL, "")));
   }
 }

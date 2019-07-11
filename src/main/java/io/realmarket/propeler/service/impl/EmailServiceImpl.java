@@ -32,6 +32,7 @@ public class EmailServiceImpl implements EmailService {
   public static final String EMAIL_CHANGE_TOKEN = "changeEmailToken";
   public static final String CAMPAIGN = "campaign";
   public static final String CAMPAIGNS = "campaigns";
+  public static final String FUNDRAISING_PROPOSAL = "fundraisingProposal";
 
   private static final String CONTACT_US_EMAIL = "contactUsEmail";
   private static final String LOGO = "logo";
@@ -126,6 +127,12 @@ public class EmailServiceImpl implements EmailService {
         templateName = "newCampaignOpportunitiesEmailTemplate";
         break;
 
+      case FUNDRAISING_PROPOSAL:
+        subject = "Propeler - Fundraising approval";
+        data = getFundraisingApproval(mailContentHolder);
+        templateName = "fundraisingApprovalTemplate";
+        break;
+
       default:
         data = new HashMap<>();
         break;
@@ -214,6 +221,12 @@ public class EmailServiceImpl implements EmailService {
   private Map<String, Object> getNewCampaignOpportunities(MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
     data.put(CAMPAIGNS, mailContentHolder.getContent().get(CAMPAIGNS));
+    return data;
+  }
+
+  private Map<String, Object> getFundraisingApproval(MailContentHolder mailContentHolder) {
+    Map<String, Object> data = getBasicEmailData();
+    data.put(FUNDRAISING_PROPOSAL, mailContentHolder.getContent().get(FUNDRAISING_PROPOSAL));
     return data;
   }
 

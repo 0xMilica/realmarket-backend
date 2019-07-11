@@ -3,8 +3,10 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.model.FundraisingProposal;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.FundraisingProposalRepository;
+import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.util.AuditUtils;
 import io.realmarket.propeler.util.AuthUtils;
 import org.junit.Before;
@@ -19,6 +21,7 @@ import static io.realmarket.propeler.util.AuditUtils.TEST_PENDING_REQUEST_STATE;
 import static io.realmarket.propeler.util.FundraisingProposalUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -28,6 +31,8 @@ public class FundraisingProposalServiceImplTest {
   @Mock private RequestStateService requestStateService;
 
   @Mock private FundraisingProposalRepository fundraisingProposalRepository;
+
+  @Mock private EmailService emailService;
 
   @InjectMocks private FundraisingProposalServiceImpl fundraisingProposalServiceImpl;
 
@@ -56,6 +61,7 @@ public class FundraisingProposalServiceImplTest {
         .thenReturn(TEST_PENDING_FUNDRAISING_PROPOSAL.toBuilder().build());
     when(requestStateService.getRequestState(RequestStateName.APPROVED))
         .thenReturn(AuditUtils.TEST_APPROVED_REQUEST_STATE);
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
     when(fundraisingProposalRepository.save(any(FundraisingProposal.class)))
         .thenReturn(TEST_APPROVED_FUNDRAISING_PROPOSAL);
 

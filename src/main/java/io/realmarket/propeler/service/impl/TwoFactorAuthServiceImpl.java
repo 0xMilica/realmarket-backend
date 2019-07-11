@@ -1,7 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
-import io.realmarket.propeler.api.dto.enums.EEmailType;
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.TemporaryToken;
 import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
@@ -187,6 +187,6 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     }
     emailService.sendMailToUser(
         new MailContentHolder(
-            Arrays.asList(auth.getPerson().getEmail()), EEmailType.SECRET_CHANGE, null));
+            Arrays.asList(auth.getPerson().getEmail()), EmailType.SECRET_CHANGE, null));
   }
 }

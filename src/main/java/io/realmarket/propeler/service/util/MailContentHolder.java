@@ -1,6 +1,6 @@
 package io.realmarket.propeler.service.util;
 
-import io.realmarket.propeler.api.dto.enums.EEmailType;
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +14,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class MailContentHolder {
   private List<String> emails;
-  @NotNull private EEmailType type;
+  @NotNull private EmailType type;
   private Map<String, Object> content;
 }

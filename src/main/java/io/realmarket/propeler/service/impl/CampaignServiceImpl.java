@@ -1,7 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
-import io.realmarket.propeler.api.dto.enums.EEmailType;
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
@@ -350,7 +350,7 @@ public class CampaignServiceImpl implements CampaignService {
     emailService.sendMailToUser(
         new MailContentHolder(
             emails,
-            EEmailType.NEW_CAMPAIGN_OPPORTUNITY,
+            EmailType.NEW_CAMPAIGN_OPPORTUNITY,
             Collections.unmodifiableMap(
                 Stream.of(
                         new AbstractMap.SimpleEntry<>(EmailServiceImpl.CAMPAIGN, campaignEmailDto))
@@ -374,7 +374,7 @@ public class CampaignServiceImpl implements CampaignService {
     emailService.sendMailToUser(
         new MailContentHolder(
             emails,
-            EEmailType.NEW_CAMPAIGN_OPPORTUNITIES,
+            EmailType.NEW_CAMPAIGN_OPPORTUNITIES,
             Collections.unmodifiableMap(
                 Stream.of(
                         new AbstractMap.SimpleEntry<>(

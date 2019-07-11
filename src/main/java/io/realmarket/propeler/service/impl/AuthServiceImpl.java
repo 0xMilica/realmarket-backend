@@ -2,7 +2,7 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.E2FAStatus;
-import io.realmarket.propeler.api.dto.enums.EEmailType;
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.AuthStateName;
 import io.realmarket.propeler.model.enums.AuthorizedActionTypeName;
@@ -176,7 +176,7 @@ public class AuthServiceImpl implements AuthService {
     emailService.sendMailToUser(
         new MailContentHolder(
             Arrays.asList(registrationDto.getEmail()),
-            EEmailType.REGISTER,
+            EmailType.REGISTER,
             Collections.unmodifiableMap(
                 Stream.of(
                         new SimpleEntry<>(EmailServiceImpl.USERNAME, registrationDto.getUsername()),
@@ -238,7 +238,7 @@ public class AuthServiceImpl implements AuthService {
     emailService.sendMailToUser(
         new MailContentHolder(
             Arrays.asList(emailDto.getEmail()),
-            EEmailType.RECOVER_USERNAME,
+            EmailType.RECOVER_USERNAME,
             Collections.singletonMap(EmailServiceImpl.USERNAME_LIST, usernameList)));
   }
 
@@ -251,7 +251,7 @@ public class AuthServiceImpl implements AuthService {
     emailService.sendMailToUser(
         new MailContentHolder(
             Arrays.asList(auth.getPerson().getEmail()),
-            EEmailType.RESET_PASSWORD,
+            EmailType.RESET_PASSWORD,
             Collections.singletonMap(EmailServiceImpl.RESET_TOKEN, temporaryToken.getValue())));
   }
 
@@ -375,7 +375,7 @@ public class AuthServiceImpl implements AuthService {
     emailService.sendMailToUser(
         new MailContentHolder(
             Arrays.asList(newEmail),
-            EEmailType.CHANGE_EMAIL,
+            EmailType.CHANGE_EMAIL,
             Collections.singletonMap(EmailServiceImpl.EMAIL_CHANGE_TOKEN, token.getValue())));
   }
 
@@ -475,7 +475,7 @@ public class AuthServiceImpl implements AuthService {
         emailService.sendMailToUser(
             new MailContentHolder(
                 Arrays.asList(auth.getPerson().getEmail()),
-                EEmailType.ACCOUNT_BLOCKED,
+                EmailType.ACCOUNT_BLOCKED,
                 Collections.singletonMap(EmailServiceImpl.USERNAME, auth.getUsername())));
       }
     }
