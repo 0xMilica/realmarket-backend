@@ -133,6 +133,12 @@ public class EmailServiceImpl implements EmailService {
         templateName = "fundraisingApprovalTemplate";
         break;
 
+      case FUNDRAISING_PROPOSAL_REJECTION:
+        subject = "Propeler - Fundraising proposal rejection";
+        data = getFundraisingApproval(mailContentHolder);
+        templateName = "fundraisingRejectionTemplate";
+        break;
+
       default:
         data = new HashMap<>();
         break;

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5c4c9a5f-2b7a-4036-bdc0-a5f86d461c44",
+		"_postman_id": "621bfc46-9ee3-49e9-83e7-050118b53d3a",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -3899,6 +3899,42 @@
 								"fundraisingProposals",
 								"{{proposal_id}}",
 								"accept"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/fundraisingProposals/{{proposal_id}}/reject",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"content\": \"We want you to succeed! Idea seems really good but needs some improvement. Please look at these to get you going: https://www.youtube.com/watch?v=Njh3rKoGKBo, https://www.youtube.com/watch?v=IQfZPsCVbTU and a little motivational gift https://www.youtube.com/watch?v=6b5tyITSTPQ.\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/fundraisingProposals/{{proposal_id}}/reject",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"fundraisingProposals",
+								"{{proposal_id}}",
+								"reject"
 							]
 						}
 					},

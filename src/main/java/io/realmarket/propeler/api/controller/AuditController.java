@@ -64,7 +64,7 @@ public interface AuditController {
         paramType = "path"),
     @ApiImplicitParam(
         name = "auditDeclineDto",
-        value = "Audits's ID",
+        value = "Campaign's rejection reason",
         required = true,
         dataType = "AuditDeclineDto",
         paramType = "body")

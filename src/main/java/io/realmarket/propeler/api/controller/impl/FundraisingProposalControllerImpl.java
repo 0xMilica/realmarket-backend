@@ -2,10 +2,7 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.annotations.RequireCaptcha;
 import io.realmarket.propeler.api.controller.FundraisingProposalController;
-import io.realmarket.propeler.api.dto.FundraisingProposalDocumentDto;
-import io.realmarket.propeler.api.dto.FundraisingProposalDocumentResponseDto;
-import io.realmarket.propeler.api.dto.FundraisingProposalDto;
-import io.realmarket.propeler.api.dto.FundraisingProposalResponseDto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.FundraisingProposalDocumentService;
 import io.realmarket.propeler.service.FundraisingProposalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +89,16 @@ public class FundraisingProposalControllerImpl implements FundraisingProposalCon
       @PathVariable Long fundraisingProposalId) {
     return ResponseEntity.ok(
         fundraisingProposalService.approveFundraisingProposal(fundraisingProposalId));
+  }
+
+  @Override
+  @PatchMapping("/{fundraisingProposalId}/reject")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  public ResponseEntity<FundraisingProposalResponseDto> rejectFundraisingProposal(
+      @PathVariable Long fundraisingProposalId, @RequestBody AuditDeclineDto auditDeclineDto) {
+    return ResponseEntity.ok(
+        new FundraisingProposalResponseDto(
+            fundraisingProposalService.declineFundraisingProposal(
+                fundraisingProposalId, auditDeclineDto)));
   }
 }

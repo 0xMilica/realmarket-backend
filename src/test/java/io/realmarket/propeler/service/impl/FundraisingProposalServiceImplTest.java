@@ -50,7 +50,6 @@ public class FundraisingProposalServiceImplTest {
 
     FundraisingProposal actualFundraisingProposal =
         fundraisingProposalServiceImpl.applyForFundraising(TEST_FUNDRAISING_PROPOSAL_DTO);
-    fundraisingProposalServiceImpl.applyForFundraising(TEST_FUNDRAISING_PROPOSAL_DTO);
 
     assertEquals(TEST_PENDING_REQUEST_STATE, actualFundraisingProposal.getRequestState());
   }

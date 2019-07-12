@@ -17,5 +17,5 @@ public interface FundraisingProposalService {
 
   FundraisingProposalResponseDto approveFundraisingProposal(Long fundraisingProposalId);
 
-  void declineFundraisingProposal(Long fundraisingProposalId, AuditDeclineDto auditDeclineDto);
+  FundraisingProposal declineFundraisingProposal(Long fundraisingProposalId, AuditDeclineDto auditDeclineDto);
 }

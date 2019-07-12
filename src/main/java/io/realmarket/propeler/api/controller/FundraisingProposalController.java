@@ -1,9 +1,6 @@
 package io.realmarket.propeler.api.controller;
 
-import io.realmarket.propeler.api.dto.FundraisingProposalDocumentDto;
-import io.realmarket.propeler.api.dto.FundraisingProposalDocumentResponseDto;
-import io.realmarket.propeler.api.dto.FundraisingProposalDto;
-import io.realmarket.propeler.api.dto.FundraisingProposalResponseDto;
+import io.realmarket.propeler.api.dto.*;
 import io.swagger.annotations.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -135,6 +132,32 @@ public interface FundraisingProposalController {
   })
   ResponseEntity<List<FundraisingProposalDocumentResponseDto>> getFundraisingProposalDocuments(
       Long fundraisingProposalId);
+
+  @ApiOperation(
+      value = "Reject fundraising proposal",
+      httpMethod = "PATCH",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "fundraisingProposalId",
+        value = "Fundraising proposal identifier",
+        dataType = "Long",
+        paramType = "path",
+        required = true),
+      @ApiImplicitParam(
+          name = "auditDeclineDto",
+          value = "Fundraising proposal's rejection reason",
+          required = true,
+          dataType = "AuditDeclineDto",
+          paramType = "body")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully rejected fundraising proposal."),
+    @ApiResponse(code = 404, message = "Fundraising proposal not found.")
+  })
+  ResponseEntity<FundraisingProposalResponseDto> rejectFundraisingProposal(
+      Long fundraisingProposalId, AuditDeclineDto auditDeclineDto);
 
   @ApiOperation(
       value = "Accept fundraising proposal",

@@ -21,8 +21,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION;
 
@@ -68,20 +69,6 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
   }
 
   @Override
-  public void declineFundraisingProposal(
-      Long fundraisingProposalId, AuditDeclineDto auditDeclineDto) {
-    throwIfNotAdmin();
-    FundraisingProposal fundraisingProposal =
-        fundraisingProposalRepository.getOne(fundraisingProposalId);
-
-    fundraisingProposal.setRequestState(
-        requestStateService.getRequestState(RequestStateName.DECLINED));
-    fundraisingProposal.setContent(auditDeclineDto.getContent());
-
-    fundraisingProposalRepository.save(fundraisingProposal);
-  }
-
-  @Override
   public FundraisingProposalResponseDto approveFundraisingProposal(Long fundraisingProposalId) {
     throwIfNotAdmin();
     FundraisingProposal fundraisingProposal =
@@ -94,6 +81,23 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
     sendApprovalEmail(fundraisingProposal.getEmail());
 
     return new FundraisingProposalResponseDto(fundraisingProposal);
+  }
+
+  @Override
+  public FundraisingProposal declineFundraisingProposal(
+      Long fundraisingProposalId, AuditDeclineDto auditDeclineDto) {
+    throwIfNotAdmin();
+    FundraisingProposal fundraisingProposal =
+        fundraisingProposalRepository.getOne(fundraisingProposalId);
+
+    fundraisingProposal.setRequestState(
+        requestStateService.getRequestState(RequestStateName.DECLINED));
+    fundraisingProposal.setContent(auditDeclineDto.getContent());
+
+    fundraisingProposal = fundraisingProposalRepository.save(fundraisingProposal);
+    //sendRejectionEmail(fundraisingProposal);
+
+    return fundraisingProposal;
   }
 
   private void throwIfNotAdmin() {
@@ -113,8 +117,21 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
   private void sendApprovalEmail(String email) {
     emailService.sendMailToUser(
         new MailContentHolder(
-            Arrays.asList(email),
+            Collections.singletonList(email),
             EmailType.FUNDRAISING_PROPOSAL,
             Collections.singletonMap(EmailServiceImpl.FUNDRAISING_PROPOSAL, "")));
+  }
+
+  private void sendRejectionEmail(FundraisingProposal fundraisingProposal) {
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put(EmailServiceImpl.FUNDRAISING_PROPOSAL, "");
+    parameters.put("firstName", fundraisingProposal.getFirstName());
+    parameters.put("lastName", fundraisingProposal.getLastName());
+    parameters.put("rejectionReason", fundraisingProposal.getContent());
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            Collections.singletonList(fundraisingProposal.getEmail()),
+            EmailType.FUNDRAISING_PROPOSAL_REJECTION,
+            parameters));
   }
 }
