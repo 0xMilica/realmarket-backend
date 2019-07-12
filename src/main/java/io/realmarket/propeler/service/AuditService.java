@@ -15,4 +15,6 @@ public interface AuditService {
   void sendAcceptCampaignEmail(Audit audit);
 
   Audit declineCampaign(Long auditId, String content);
+
+  void sendDeclineCampaignEmail(Audit audit);
 }

@@ -22,9 +22,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -129,7 +127,24 @@ public class AuditServiceImpl implements AuditService {
         audit.getCampaign(), campaignStateService.getCampaignState(CampaignStateName.INITIAL));
     audit.setContent(content);
     audit.setRequestState(requestStateService.getRequestState(RequestStateName.DECLINED));
-    return saveAndSendToBlockchain(audit);
+    audit = saveAndSendToBlockchain(audit);
+    sendDeclineCampaignEmail(audit);
+    return audit;
+  }
+
+  @Override
+  public void sendDeclineCampaignEmail(Audit audit) {
+    Auth campaignOwner = audit.getCampaign().getCompany().getAuth();
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put(EmailServiceImpl.USERNAME, campaignOwner.getUsername());
+    parameters.put(EmailServiceImpl.CAMPAIGN, audit.getCampaign().getName());
+    parameters.put(EmailServiceImpl.REJECTION_REASON, audit.getContent());
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            Arrays.asList(campaignOwner.getPerson().getEmail()),
+            EmailType.REJECT_CAMPAIGN,
+            parameters));
   }
 
   private Audit findByIdOrThrowException(Long auditId) {

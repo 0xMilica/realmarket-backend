@@ -133,22 +133,22 @@
                             <tr>
                                 <td>
                                     <h1 style="color: #39316c; font-size: 30px; font-weight: 600; line-height: 45px;">
-                                        Fundraising proposal rejected</h1>
+                                        Campaign rejected</h1>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; color: #39316c;">
-                                        Dear <span th:text="${firstName}"></span> <span th:text="${lastName}"></span>,
+                                        Dear <b><span th:text="${username}"></span></b>,
                                     </p>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; color: #39316c; margin-bottom: 0">
-                                        Unfortunately, your fundraising proposal has been rejected in it's current state!
-                                        Please, read reviewers notes so you can boost the quality
-                                        of your fundraising proposal:
+                                        Unfortunately, your campaing <b><span th:text="${campaign}"></span></b>
+                                        has been rejected in it's current state! Please, read reviewers notes
+                                        so you can boost the quality of your campaign:
                                     </p>
                                 </td>
                             </tr>
@@ -156,13 +156,6 @@
                                 <td>
                                     <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; color: #39316c; margin-bottom: 0">
                                         <span th:text="${rejectionReason}"></span>
-                                    </p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; color: #39316c; margin-bottom: 0">
-                                        We look forward to hearing from you again!
                                     </p>
                                 </td>
                             </tr>

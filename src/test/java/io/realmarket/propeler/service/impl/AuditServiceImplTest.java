@@ -93,6 +93,8 @@ public class AuditServiceImplTest {
     when(requestStateService.getRequestState(RequestStateName.DECLINED))
         .thenReturn(TEST_DECLINED_REQUEST_STATE);
     when(auditRepository.save(audit)).thenReturn(TEST_DECLINED_REQUEST_AUDIT);
+    doNothing().when(emailService).sendMailToUser(any());
+
     Audit actualAudit = auditServiceImpl.declineCampaign(1L, REJECTION_REASON);
 
     assertEquals(TEST_DECLINED_REQUEST_STATE, actualAudit.getRequestState());

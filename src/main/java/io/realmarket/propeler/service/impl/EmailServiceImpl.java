@@ -135,6 +135,12 @@ public class EmailServiceImpl implements EmailService {
         templateName = "acceptCampaignTemplate";
         break;
 
+      case REJECT_CAMPAIGN:
+        subject = "Propeler - Campaign rejected";
+        data = getData(mailContentHolder);
+        templateName = "rejectCampaignTemplate";
+        break;
+
       case FUNDRAISING_PROPOSAL:
         subject = "Propeler - Fundraising approval";
         data = getData(mailContentHolder);
