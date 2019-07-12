@@ -145,12 +145,12 @@ public interface FundraisingProposalController {
         dataType = "Long",
         paramType = "path",
         required = true),
-      @ApiImplicitParam(
-          name = "auditDeclineDto",
-          value = "Fundraising proposal's rejection reason",
-          required = true,
-          dataType = "AuditDeclineDto",
-          paramType = "body")
+    @ApiImplicitParam(
+        name = "auditDeclineDto",
+        value = "Fundraising proposal's rejection reason",
+        required = true,
+        dataType = "AuditDeclineDto",
+        paramType = "body")
   })
   @ApiResponses({
     @ApiResponse(code = 200, message = "Successfully rejected fundraising proposal."),

@@ -32,7 +32,9 @@ public class EmailServiceImpl implements EmailService {
   public static final String EMAIL_CHANGE_TOKEN = "changeEmailToken";
   public static final String CAMPAIGN = "campaign";
   public static final String CAMPAIGNS = "campaigns";
-  public static final String FUNDRAISING_PROPOSAL = "fundraisingProposal";
+  public static final String FIRST_NAME = "firstName";
+  public static final String LAST_NAME = "lastName";
+  public static final String REJECTION_REASON = "rejectionReason";
 
   private static final String CONTACT_US_EMAIL = "contactUsEmail";
   private static final String LOGO = "logo";
@@ -117,25 +119,31 @@ public class EmailServiceImpl implements EmailService {
 
       case NEW_CAMPAIGN_OPPORTUNITY:
         subject = "Propeler - New campaign opportunity";
-        data = getNewCampaignOpportunity(mailContentHolder);
+        data = getNewCampaignOpportunityData(mailContentHolder);
         templateName = "newCampaignEmailTemplate";
         break;
 
       case NEW_CAMPAIGN_OPPORTUNITIES:
         subject = "Propeler - New campaign opportunities";
-        data = getNewCampaignOpportunities(mailContentHolder);
+        data = getNewCampaignOpportunitiesData(mailContentHolder);
         templateName = "newCampaignOpportunitiesEmailTemplate";
         break;
 
       case FUNDRAISING_PROPOSAL:
         subject = "Propeler - Fundraising approval";
-        data = getFundraisingApproval(mailContentHolder);
+        data = getFundraisingApprovalData(mailContentHolder);
+        templateName = "fundraisingApprovalTemplate";
+        break;
+
+      case FUNDRAISING_PROPOSAL_APPROVAL:
+        subject = "Propoler - Fundraising proposal approval";
+        data = getFundraisingApprovalData(mailContentHolder);
         templateName = "fundraisingApprovalTemplate";
         break;
 
       case FUNDRAISING_PROPOSAL_REJECTION:
         subject = "Propeler - Fundraising proposal rejection";
-        data = getFundraisingApproval(mailContentHolder);
+        data = getFundraisingRejectionData(mailContentHolder);
         templateName = "fundraisingRejectionTemplate";
         break;
 
@@ -218,21 +226,27 @@ public class EmailServiceImpl implements EmailService {
     return data;
   }
 
-  private Map<String, Object> getNewCampaignOpportunity(MailContentHolder mailContentHolder) {
+  private Map<String, Object> getNewCampaignOpportunityData(MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
     data.put(CAMPAIGN, mailContentHolder.getContent().get(CAMPAIGN));
     return data;
   }
 
-  private Map<String, Object> getNewCampaignOpportunities(MailContentHolder mailContentHolder) {
+  private Map<String, Object> getNewCampaignOpportunitiesData(MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
     data.put(CAMPAIGNS, mailContentHolder.getContent().get(CAMPAIGNS));
     return data;
   }
 
-  private Map<String, Object> getFundraisingApproval(MailContentHolder mailContentHolder) {
+  private Map<String, Object> getFundraisingApprovalData(MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
-    data.put(FUNDRAISING_PROPOSAL, mailContentHolder.getContent().get(FUNDRAISING_PROPOSAL));
+    data.putAll(mailContentHolder.getContent());
+    return data;
+  }
+
+  private Map<String, Object> getFundraisingRejectionData(MailContentHolder mailContentHolder) {
+    Map<String, Object> data = getBasicEmailData();
+    data.putAll(mailContentHolder.getContent());
     return data;
   }
 

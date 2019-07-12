@@ -88,7 +88,8 @@ public class FundraisingProposalControllerImpl implements FundraisingProposalCon
   public ResponseEntity<FundraisingProposalResponseDto> acceptFundraisingProposal(
       @PathVariable Long fundraisingProposalId) {
     return ResponseEntity.ok(
-        fundraisingProposalService.approveFundraisingProposal(fundraisingProposalId));
+        new FundraisingProposalResponseDto(
+            fundraisingProposalService.approveFundraisingProposal(fundraisingProposalId)));
   }
 
   @Override

@@ -2,7 +2,6 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.AuditDeclineDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalDto;
-import io.realmarket.propeler.api.dto.FundraisingProposalResponseDto;
 import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.FundraisingProposal;
 import io.realmarket.propeler.model.enums.RequestStateName;
@@ -69,7 +68,7 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
   }
 
   @Override
-  public FundraisingProposalResponseDto approveFundraisingProposal(Long fundraisingProposalId) {
+  public FundraisingProposal approveFundraisingProposal(Long fundraisingProposalId) {
     throwIfNotAdmin();
     FundraisingProposal fundraisingProposal =
         fundraisingProposalRepository.getOne(fundraisingProposalId);
@@ -78,9 +77,9 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
         requestStateService.getRequestState(RequestStateName.APPROVED));
 
     fundraisingProposal = fundraisingProposalRepository.save(fundraisingProposal);
-    sendApprovalEmail(fundraisingProposal.getEmail());
+    sendApprovalEmail(fundraisingProposal);
 
-    return new FundraisingProposalResponseDto(fundraisingProposal);
+    return fundraisingProposal;
   }
 
   @Override
@@ -95,7 +94,7 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
     fundraisingProposal.setContent(auditDeclineDto.getContent());
 
     fundraisingProposal = fundraisingProposalRepository.save(fundraisingProposal);
-    //sendRejectionEmail(fundraisingProposal);
+    sendRejectionEmail(fundraisingProposal);
 
     return fundraisingProposal;
   }
@@ -114,20 +113,22 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
         .equals(UserRoleName.ROLE_ADMIN);
   }
 
-  private void sendApprovalEmail(String email) {
+  private void sendApprovalEmail(FundraisingProposal fundraisingProposal) {
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put(EmailServiceImpl.FIRST_NAME, fundraisingProposal.getFirstName());
+    parameters.put(EmailServiceImpl.LAST_NAME, fundraisingProposal.getLastName());
     emailService.sendMailToUser(
         new MailContentHolder(
-            Collections.singletonList(email),
+            Collections.singletonList(fundraisingProposal.getEmail()),
             EmailType.FUNDRAISING_PROPOSAL,
-            Collections.singletonMap(EmailServiceImpl.FUNDRAISING_PROPOSAL, "")));
+            parameters));
   }
 
   private void sendRejectionEmail(FundraisingProposal fundraisingProposal) {
     Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.FUNDRAISING_PROPOSAL, "");
-    parameters.put("firstName", fundraisingProposal.getFirstName());
-    parameters.put("lastName", fundraisingProposal.getLastName());
-    parameters.put("rejectionReason", fundraisingProposal.getContent());
+    parameters.put(EmailServiceImpl.FIRST_NAME, fundraisingProposal.getFirstName());
+    parameters.put(EmailServiceImpl.LAST_NAME, fundraisingProposal.getLastName());
+    parameters.put(EmailServiceImpl.REJECTION_REASON, fundraisingProposal.getContent());
     emailService.sendMailToUser(
         new MailContentHolder(
             Collections.singletonList(fundraisingProposal.getEmail()),
