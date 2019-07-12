@@ -18,7 +18,7 @@
             unique,
             campaign_update_id bigint
             constraint campaign_update_image_fk_on_campaign_update
-            references campaign_update
+            references campaign_update on delete cascade
             );
         </sql>
     </changeSet>
