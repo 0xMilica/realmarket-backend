@@ -1,6 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.AuditRequestDto;
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.Audit;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
@@ -15,11 +16,17 @@ import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.campaign.ChangeStateDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
@@ -31,6 +38,7 @@ public class AuditServiceImpl implements AuditService {
   private final RequestStateService requestStateService;
   private final CampaignService campaignService;
   private final CampaignStateService campaignStateService;
+  private final EmailService emailService;
   private final BlockchainCommunicationService blockchainCommunicationService;
 
   @Autowired
@@ -40,12 +48,14 @@ public class AuditServiceImpl implements AuditService {
       AuthService authService,
       @Lazy CampaignService campaignService,
       CampaignStateService campaignStateService,
+      EmailService emailService,
       BlockchainCommunicationService blockchainCommunicationService) {
     this.auditRepository = auditRepository;
     this.requestStateService = requestStateService;
     this.authService = authService;
     this.campaignService = campaignService;
     this.campaignStateService = campaignStateService;
+    this.emailService = emailService;
     this.blockchainCommunicationService = blockchainCommunicationService;
   }
 
@@ -86,7 +96,28 @@ public class AuditServiceImpl implements AuditService {
     campaignService.changeCampaignStateOrThrow(
         audit.getCampaign(), campaignStateService.getCampaignState(CampaignStateName.LAUNCH_READY));
     audit.setRequestState(requestStateService.getRequestState(RequestStateName.APPROVED));
-    return saveAndSendToBlockchain(audit);
+    audit = saveAndSendToBlockchain(audit);
+    sendAcceptCampaignEmail(audit);
+    return audit;
+  }
+
+  @Override
+  public void sendAcceptCampaignEmail(Audit audit) {
+    Auth campaignOwner = audit.getCampaign().getCompany().getAuth();
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            Arrays.asList(campaignOwner.getPerson().getEmail()),
+            EmailType.ACCEPT_CAMPAIGN,
+            Collections.unmodifiableMap(
+                Stream.of(
+                        new AbstractMap.SimpleEntry<>(
+                            EmailServiceImpl.USERNAME, campaignOwner.getUsername()),
+                        new AbstractMap.SimpleEntry<>(
+                            EmailServiceImpl.CAMPAIGN, audit.getCampaign().getName()))
+                    .collect(
+                        Collectors.toMap(
+                            AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)))));
   }
 
   @Override
