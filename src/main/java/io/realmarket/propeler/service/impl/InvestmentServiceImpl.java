@@ -9,12 +9,10 @@ import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
+import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
-import io.realmarket.propeler.service.CampaignService;
-import io.realmarket.propeler.service.InvestmentService;
-import io.realmarket.propeler.service.InvestmentStateService;
-import io.realmarket.propeler.service.PaymentService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +39,7 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final InvestmentRepository investmentRepository;
   private final PaymentService paymentService;
   private final InvestmentStateService investmentStateService;
+  private final RequestStateService requestStateService;
 
   @Value("${app.investment.weekInMillis}")
   private long weekInMillis;
@@ -50,11 +49,13 @@ public class InvestmentServiceImpl implements InvestmentService {
       CampaignService campaignService,
       InvestmentRepository investmentRepository,
       PaymentService paymentService,
-      InvestmentStateService investmentStateService) {
+      InvestmentStateService investmentStateService,
+      RequestStateService requestStateService) {
     this.campaignService = campaignService;
     this.investmentRepository = investmentRepository;
     this.paymentService = paymentService;
     this.investmentStateService = investmentStateService;
+    this.requestStateService = requestStateService;
   }
 
   @Override
@@ -84,6 +85,7 @@ public class InvestmentServiceImpl implements InvestmentService {
             .campaign(campaign)
             .investedAmount(amountOfMoney)
             .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
+            .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
             .build();
 
     return investmentRepository.save(investment);

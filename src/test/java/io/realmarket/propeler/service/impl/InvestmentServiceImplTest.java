@@ -3,13 +3,16 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
+import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.InvestmentStateService;
 import io.realmarket.propeler.service.PaymentService;
+import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.util.AuditUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +43,8 @@ public class InvestmentServiceImplTest {
 
   @Mock private InvestmentStateService investmentStateService;
 
+  @Mock private RequestStateService requestStateService;
+
   @Mock private PaymentService paymentService;
 
   @Before
@@ -54,6 +59,8 @@ public class InvestmentServiceImplTest {
         .thenReturn(TEST_INVESTABLE_CAMPAIGN);
     when(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
         .thenReturn(TEST_INVESTMENT_INITIAL_STATE);
+    when(requestStateService.getRequestState(RequestStateName.PENDING))
+        .thenReturn(AuditUtils.TEST_PENDING_REQUEST_STATE);
     when(investmentRepository.save(any(Investment.class))).thenReturn(TEST_INVESTMENT_INITIAL);
 
     Investment investment =
