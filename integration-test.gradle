@@ -19,6 +19,7 @@ configurations {
 
 dependencies {
     integrationTestImplementation "io.rest-assured:rest-assured:$restAssured"
+    integrationTestImplementation "io.rest-assured:spring-mock-mvc:$restAssured"
 }
 
 task integrationTest(type: Test) {

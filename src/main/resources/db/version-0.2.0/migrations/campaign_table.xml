@@ -23,7 +23,7 @@
             time_to_raise_funds int check (time_to_raise_funds > 0),
             min_investment numeric(19,2),
             tag_line varchar(255),
-            creation_date timestamp DEFAULT localtimestamp NOT NULL,
+            creation_date timestamp NOT NULL,
             activation_date timestamp,
             modified_date timestamp,
             company_id bigint

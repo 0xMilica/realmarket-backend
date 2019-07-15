@@ -55,6 +55,7 @@ dependencies {
     implementation "org.modelmapper:modelmapper:$modelMapperVersion"
 
     runtimeOnly "org.postgresql:postgresql"
+    runtimeOnly "com.h2database:h2"
     compileOnly "org.projectlombok:lombok:$lombokVersion"
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"

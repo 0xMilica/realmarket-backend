@@ -11,12 +11,15 @@ import static io.restassured.RestAssured.given;
 public class LoginUtil {
 
   public static String getJWTToken() {
+    return getJWTToken("entrepreneur", "testPASS123");
+  }
 
+  public static String getJWTToken(String username, String password) {
     Response response =
         given()
             .cookie("remember-me", "1234")
             .contentType("application/json")
-            .body(LoginDto.builder().username("entrepreneur").password("testPASS123").build())
+            .body(LoginDto.builder().username(username).password(password).build())
             .when()
             .post("/api/auth");
 
