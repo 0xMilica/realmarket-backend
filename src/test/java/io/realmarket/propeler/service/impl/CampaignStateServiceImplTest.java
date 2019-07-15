@@ -1,8 +1,8 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
+import io.realmarket.propeler.repository.CampaignStateRepository;
 import io.realmarket.propeler.service.CampaignStateService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.util.CampaignUtils;
@@ -10,16 +10,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.Optional;
 
 import static io.realmarket.propeler.util.AuthUtils.mockRequestAndContext;
 import static io.realmarket.propeler.util.AuthUtils.mockRequestAndContextEntrepreneur;
 import static org.junit.Assert.*;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(CampaignStateService.class)
 public class CampaignStateServiceImplTest {
+
+  @Mock private CampaignStateRepository campaignStateRepository;
 
   @InjectMocks private CampaignStateServiceImpl campaignStateServiceImpl;
 
@@ -32,8 +38,7 @@ public class CampaignStateServiceImplTest {
   public void ifStateCanBeChanged_Success() {
     boolean isValid =
         campaignStateServiceImpl.ifStateCanBeChanged(
-            CampaignState.builder().name(CampaignStateName.INITIAL).build(),
-            CampaignState.builder().name(CampaignStateName.REVIEW_READY).build());
+            CampaignStateName.INITIAL, CampaignStateName.REVIEW_READY);
 
     assertTrue(isValid);
   }
@@ -42,8 +47,7 @@ public class CampaignStateServiceImplTest {
   public void ifStateCanBeChanged_Invalid_State() {
     boolean isValid =
         campaignStateServiceImpl.ifStateCanBeChanged(
-            CampaignState.builder().name(CampaignStateName.INITIAL).build(),
-            CampaignState.builder().name(CampaignStateName.ACTIVE).build());
+            CampaignStateName.INITIAL, CampaignStateName.ACTIVE);
 
     assertFalse(isValid);
   }
@@ -53,8 +57,7 @@ public class CampaignStateServiceImplTest {
     mockRequestAndContext();
     boolean isValid =
         campaignStateServiceImpl.ifStateCanBeChanged(
-            CampaignState.builder().name(CampaignStateName.INITIAL).build(),
-            CampaignState.builder().name(CampaignStateName.REVIEW_READY).build());
+            CampaignStateName.INITIAL, CampaignStateName.REVIEW_READY);
 
     assertFalse(isValid);
   }
@@ -64,8 +67,7 @@ public class CampaignStateServiceImplTest {
     mockRequestAndContext();
     boolean isValid =
         campaignStateServiceImpl.ifStateCanBeChanged(
-            CampaignState.builder().name(CampaignStateName.INITIAL).build(),
-            CampaignState.builder().name(CampaignStateName.ACTIVE).build());
+            CampaignStateName.INITIAL, CampaignStateName.ACTIVE);
 
     assertFalse(isValid);
   }
@@ -74,8 +76,10 @@ public class CampaignStateServiceImplTest {
   public void changeStateOrThrow_Should_Change_State() {
 
     Campaign campaign = CampaignUtils.TEST_CAMPAIGN.toBuilder().build();
-    campaignStateServiceImpl.changeStateOrThrow(
-        campaign, CampaignUtils.TEST_REVIEW_READY_CAMPAIGN_STATE);
+    when(campaignStateRepository.findByName(CampaignStateName.REVIEW_READY))
+        .thenReturn(Optional.of(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN_STATE));
+
+    campaignStateServiceImpl.changeStateOrThrow(campaign, CampaignStateName.REVIEW_READY);
 
     assertEquals(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN_STATE, campaign.getCampaignState());
   }
@@ -84,13 +88,13 @@ public class CampaignStateServiceImplTest {
   public void changeStateOrThrow_Should_Throw_When_Role_Has_No_Permission() {
 
     Campaign campaign = CampaignUtils.TEST_REVIEW_READY_CAMPAIGN.toBuilder().build();
-    campaignStateServiceImpl.changeStateOrThrow(campaign, CampaignUtils.TEST_CAMPAIGN_ACTIVE_STATE);
+    campaignStateServiceImpl.changeStateOrThrow(campaign, CampaignStateName.ACTIVE);
   }
 
   @Test(expected = ForbiddenOperationException.class)
   public void changeStateOrThrow_Should_Throw_When_Invalid_State() {
 
     Campaign campaign = CampaignUtils.TEST_CAMPAIGN.toBuilder().build();
-    campaignStateServiceImpl.changeStateOrThrow(campaign, CampaignUtils.TEST_CAMPAIGN_ACTIVE_STATE);
+    campaignStateServiceImpl.changeStateOrThrow(campaign, CampaignStateName.ACTIVE);
   }
 }

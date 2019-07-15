@@ -1,10 +1,12 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.model.Audit;
-import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.AuditRepository;
-import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.AuthService;
+import io.realmarket.propeler.service.CampaignService;
+import io.realmarket.propeler.service.EmailService;
+import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.util.AuthUtils;
@@ -32,7 +34,6 @@ public class AuditServiceImplTest {
   @Mock private RequestStateService requestStateService;
   @Mock private AuthService authService;
   @Mock private CampaignService campaignService;
-  @Mock private CampaignStateService campaignStateService;
   @Mock private EmailService emailService;
   @Mock private AuditRepository auditRepository;
 
@@ -51,9 +52,6 @@ public class AuditServiceImplTest {
         .thenReturn(AuthUtils.TEST_AUTH_ADMIN);
     when(campaignService.getCampaignByUrlFriendlyName(CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenReturn(CampaignUtils.TEST_REVIEW_READY_CAMPAIGN);
-
-    when(campaignStateService.getCampaignState(CampaignStateName.AUDIT))
-        .thenReturn(CampaignUtils.TEST_AUDIT_CAMPAIGN_STATE);
     when(requestStateService.getRequestState(RequestStateName.PENDING))
         .thenReturn(TEST_PENDING_REQUEST_STATE);
     when(auditRepository.save(any(Audit.class))).thenReturn(TEST_PENDING_REQUEST_AUDIT);

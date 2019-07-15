@@ -35,20 +35,18 @@ public class CampaignStateServiceImpl implements CampaignStateService {
 
   @Override
   public boolean ifStateCanBeChanged(
-      CampaignState currentCampaignState, CampaignState followingCampaignState) {
+      CampaignStateName currentCampaignState, CampaignStateName followingCampaignState) {
     UserRoleName userRoleName =
         AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
 
-    return stateTransitFlow
-            .get(currentCampaignState.getName())
-            .contains(followingCampaignState.getName())
-        && rolesPerState.get(currentCampaignState.getName()).contains(userRoleName);
+    return stateTransitFlow.get(currentCampaignState).contains(followingCampaignState)
+        && rolesPerState.get(currentCampaignState).contains(userRoleName);
   }
 
   @Override
-  public void changeStateOrThrow(Campaign campaign, CampaignState followingCampaignState) {
-    if (ifStateCanBeChanged(campaign.getCampaignState(), followingCampaignState)) {
-      campaign.setCampaignState(followingCampaignState);
+  public void changeStateOrThrow(Campaign campaign, CampaignStateName followingCampaignState) {
+    if (ifStateCanBeChanged(campaign.getCampaignState().getName(), followingCampaignState)) {
+      campaign.setCampaignState(getCampaignState(followingCampaignState));
     } else throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
   }
 

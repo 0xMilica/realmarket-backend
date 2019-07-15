@@ -73,8 +73,7 @@ public class AuditServiceImpl implements AuditService {
     }
     Campaign campaign =
         campaignService.getCampaignByUrlFriendlyName(auditRequestDto.getCampaignUrlFriendlyName());
-    campaignService.changeCampaignStateOrThrow(
-        campaign, campaignStateService.getCampaignState(CampaignStateName.AUDIT));
+    campaignService.changeCampaignStateOrThrow(campaign, CampaignStateName.AUDIT);
 
     Audit audit =
         Audit.builder()
@@ -91,8 +90,7 @@ public class AuditServiceImpl implements AuditService {
     Audit audit = findByIdOrThrowException(auditId);
     throwIfNoAccess(audit);
 
-    campaignService.changeCampaignStateOrThrow(
-        audit.getCampaign(), campaignStateService.getCampaignState(CampaignStateName.LAUNCH_READY));
+    campaignService.changeCampaignStateOrThrow(audit.getCampaign(), CampaignStateName.LAUNCH_READY);
     audit.setRequestState(requestStateService.getRequestState(RequestStateName.APPROVED));
     audit = saveAndSendToBlockchain(audit);
     sendAcceptCampaignEmail(audit);
@@ -123,8 +121,7 @@ public class AuditServiceImpl implements AuditService {
     Audit audit = findByIdOrThrowException(auditId);
     throwIfNoAccess(audit);
 
-    campaignService.changeCampaignStateOrThrow(
-        audit.getCampaign(), campaignStateService.getCampaignState(CampaignStateName.INITIAL));
+    campaignService.changeCampaignStateOrThrow(audit.getCampaign(), CampaignStateName.INITIAL);
     audit.setContent(content);
     audit.setRequestState(requestStateService.getRequestState(RequestStateName.DECLINED));
     audit = saveAndSendToBlockchain(audit);

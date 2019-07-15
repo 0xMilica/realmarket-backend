@@ -5,7 +5,6 @@ import io.realmarket.propeler.api.dto.CampaignResponseDto;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.TwoFADto;
 import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -26,6 +25,7 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
@@ -70,6 +70,8 @@ public class CampaignServiceImplTest {
   @Before
   public void createAuthContext() {
     mockRequestAndContext();
+    ReflectionTestUtils.setField(
+        campaignServiceImpl, "frontendServiceUrlPath", "http://localhost:3000/propeler");
   }
 
   @Test
@@ -595,11 +597,39 @@ public class CampaignServiceImplTest {
 
   @Test
   public void changeCampaignStateOrThrow_ShouldChangeState() {
-    CampaignState campaignState = TEST_REVIEW_READY_CAMPAIGN_STATE;
     Campaign campaign = TEST_CAMPAIGN;
 
     when(campaignRepository.save(any(Campaign.class))).thenReturn(campaign);
 
-    campaignServiceImpl.changeCampaignStateOrThrow(campaign, campaignState);
+    campaignServiceImpl.changeCampaignStateOrThrow(campaign, CampaignStateName.REVIEW_READY);
+  }
+
+  @Test
+  public void launchCampaign_Should_Launch_Campaign() {
+    mockRequestAndContextAdmin();
+    Campaign campaign = TEST_READY_FOR_LAUNCH_CAMPAIGN.toBuilder().build();
+
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(Optional.of(campaign));
+    doNothing().when(campaignStateService).changeStateOrThrow(campaign, CampaignStateName.ACTIVE);
+    when(campaignRepository.save(any(Campaign.class)))
+        .thenReturn(TEST_ACTIVE_CAMPAIGN.toBuilder().build());
+    when(campaignTopicService.getCampaignTopic(
+            TEST_ACTIVE_URL_FRIENDLY_NAME, CampaignTopicUtil.TEST_CAMPAIGN_OVERVIEW_TOPIC_TYPE))
+        .thenReturn(CampaignTopicUtil.TEST_CAMPAIGN_TOPIC_DTO);
+
+    Campaign actualCampaign = campaignServiceImpl.launchCampaign(TEST_URL_FRIENDLY_NAME);
+
+    assertEquals(TEST_CAMPAIGN_ACTIVE_STATE, actualCampaign.getCampaignState());
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void launchCampaign_Should_Throw_Forbidden_Operation() {
+    Campaign campaign = TEST_READY_FOR_LAUNCH_CAMPAIGN.toBuilder().build();
+
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(Optional.of(campaign));
+
+    campaignServiceImpl.launchCampaign(TEST_URL_FRIENDLY_NAME);
   }
 }

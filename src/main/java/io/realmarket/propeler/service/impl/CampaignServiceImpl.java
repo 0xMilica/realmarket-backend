@@ -2,7 +2,10 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EmailType;
-import io.realmarket.propeler.model.*;
+import io.realmarket.propeler.model.Audit;
+import io.realmarket.propeler.model.Auth;
+import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -305,30 +308,34 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  public Campaign changeCampaignStateOrThrow(
-      Campaign campaign, CampaignState followingCampaignState) {
-    campaignStateService.changeStateOrThrow(campaign, followingCampaignState);
-    return campaignRepository.save(campaign);
-  }
-
-  @Override
   @Transactional
   public void requestReviewForCampaign(String campaignName) {
     Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
     throwIfNotOwner(campaign);
 
-    campaign =
-        changeCampaignStateOrThrow(
-            campaign,
-            campaignStateService.getCampaignState(CampaignStateName.REVIEW_READY.toString()));
-
-    // TODO: Temporary here. Remove this line when campaign could be set to active state.
-    sendNewCampaignOpportunityEmail(campaign);
+    campaign = changeCampaignStateOrThrow(campaign, CampaignStateName.REVIEW_READY);
 
     blockchainCommunicationService.invoke(
         BlockchainMethod.CAMPAIGN_SUBMISSION_FOR_REVIEW,
         new SubmissionForReviewDto(campaign),
         AuthenticationUtil.getClientIp());
+  }
+
+  @Override
+  @Transactional
+  public Campaign launchCampaign(String campaignName) {
+    Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
+    throwIfNoAccess(campaign);
+    campaign = changeCampaignStateOrThrow(campaign, CampaignStateName.ACTIVE);
+    sendNewCampaignOpportunityEmail(campaign);
+    return campaign;
+  }
+
+  @Override
+  public Campaign changeCampaignStateOrThrow(
+      Campaign campaign, CampaignStateName followingCampaignState) {
+    campaignStateService.changeStateOrThrow(campaign, followingCampaignState);
+    return campaignRepository.save(campaign);
   }
 
   @Override

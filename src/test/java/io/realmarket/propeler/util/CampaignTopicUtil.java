@@ -14,6 +14,8 @@ public class CampaignTopicUtil {
   public static final String TEST_CAMPAIGN_TOPIC_TYPE_NAME = "TEST_CAMPAIGN_TOPIC_TYPE_NAME";
   public static final Long TEST_CAMPAIGN_TOPIC_TYPE_ID_2 = 12L;
   public static final String TEST_CAMPAIGN_TOPIC_TYPE_NAME_2 = "TEST_CAMPAIGN_TOPIC_TYPE_NAME_2";
+  public static final String TEST_CAMPAIGN_OVERVIEW_TOPIC_TYPE = "OVERVIEW";
+
   public static final CampaignTopicType TEST_CAMPAIGN_TOPIC_TYPE =
       CampaignTopicType.builder()
           .id(TEST_CAMPAIGN_TOPIC_TYPE_ID)

@@ -2,8 +2,8 @@ package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.CampaignState;
 import io.realmarket.propeler.model.Company;
+import io.realmarket.propeler.model.enums.CampaignStateName;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,9 +50,11 @@ public interface CampaignService {
 
   void delete(String campaignName, TwoFADto twoFADto) throws AuthenticationException;
 
-  Campaign changeCampaignStateOrThrow(Campaign campaign, CampaignState followingCampaignState);
-
   void requestReviewForCampaign(String campaignName);
+
+  Campaign launchCampaign(String campaignName);
+
+  Campaign changeCampaignStateOrThrow(Campaign campaign, CampaignStateName followingCampaignState);
 
   List<Campaign> findByCompany(Company company);
 
