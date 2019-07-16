@@ -34,6 +34,8 @@ spring:
     mode: LEGACYHTML5
     cache: false
     view-names: userWildcardsPdf
+  liquibase:
+    contexts: local
 
 frontend.service.url: http://localhost:3000/propeler
 hmac.secret: s3cr3t

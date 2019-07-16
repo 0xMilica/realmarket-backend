@@ -24,6 +24,8 @@ spring:
       mode: LEGACYHTML5
       cache: false
       view-names: userWildcardsPdf
+  liquibase:
+    contexts: development
 
   jpa: #hibernate
     hibernate.ddl-auto: none
