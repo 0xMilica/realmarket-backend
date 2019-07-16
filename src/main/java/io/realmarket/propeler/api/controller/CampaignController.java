@@ -664,4 +664,19 @@ public interface CampaignController {
         message = "Campaign state is invalid, or there is no campaign under provided name."),
   })
   ResponseEntity listCampaignsUpdates(Pageable pageable, String campaignName);
+
+  @ApiOperation(value = "Launch campaign", httpMethod = "PATCH", produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignName",
+        dataType = "String",
+        value = "Campaign's url friendly name",
+        paramType = "path",
+        required = true)
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Campaign successfully launched."),
+    @ApiResponse(code = 404, message = "Campaign not found")
+  })
+  ResponseEntity launchCampaign(String campaignName);
 }

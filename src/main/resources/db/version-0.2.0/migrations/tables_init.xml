@@ -7,7 +7,7 @@
                  stripComments="true"/>
     </changeSet>
     <changeSet author="ртуровић" id="2" context="local, development, testing">
-        <sqlFile encoding="utf8" path="../data/seed/projects/propeler/seed.sql" relativeToChangelogFile="true" splitStatements="true"
+        <sqlFile encoding="utf8" path="../data/seed.sql" relativeToChangelogFile="true" splitStatements="true"
                  stripComments="true" />
     </changeSet>
 </databaseChangeLog>

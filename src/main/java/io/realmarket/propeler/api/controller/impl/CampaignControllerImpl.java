@@ -291,4 +291,10 @@ public class CampaignControllerImpl implements CampaignController {
     return ResponseEntity.ok(
         campaignUpdateService.getCampaignUpdatesForCampaign(campaignName, pageable));
   }
+
+  @PatchMapping(value = "/{campaignName}/launch")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  public ResponseEntity<CampaignResponseDto> launchCampaign(@PathVariable String campaignName) {
+    return ResponseEntity.ok(new CampaignResponseDto(campaignService.launchCampaign(campaignName)));
+  }
 }
