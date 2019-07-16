@@ -2,10 +2,12 @@ package io.realmarket.propeler.model.enums;
 
 public enum InvestmentStateName {
   INITIAL("INITIAL"),
+  OWNER_APPROVED("OWNER_APPROVED"),
+  OWNER_REJECTED("OWNER_REJECTED"),
   PAID("PAID"),
   REVOKED("REVOKED"),
-  APPROVED("APPROVED"),
-  REJECTED("REJECTED");
+  AUDIT_APPROVED("AUDIT_APPROVED"),
+  AUDIT_REJECTED("AUDIT_REJECTED");
 
   private final String text;
 

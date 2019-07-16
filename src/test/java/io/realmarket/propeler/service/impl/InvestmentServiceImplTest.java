@@ -3,16 +3,14 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
-import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.InvestmentStateService;
 import io.realmarket.propeler.service.PaymentService;
-import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.util.AuditUtils;
+import io.realmarket.propeler.util.AuthUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.math.BigDecimal;
 
 import static io.realmarket.propeler.util.AuthUtils.mockRequestAndContext;
+import static io.realmarket.propeler.util.AuthUtils.mockRequestAndContextAdmin;
 import static io.realmarket.propeler.util.CampaignUtils.*;
 import static io.realmarket.propeler.util.InvestmentUtils.*;
 import static org.junit.Assert.assertEquals;
@@ -43,8 +42,6 @@ public class InvestmentServiceImplTest {
 
   @Mock private InvestmentStateService investmentStateService;
 
-  @Mock private RequestStateService requestStateService;
-
   @Mock private PaymentService paymentService;
 
   @Before
@@ -59,8 +56,6 @@ public class InvestmentServiceImplTest {
         .thenReturn(TEST_INVESTABLE_CAMPAIGN);
     when(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
         .thenReturn(TEST_INVESTMENT_INITIAL_STATE);
-    when(requestStateService.getRequestState(RequestStateName.PENDING))
-        .thenReturn(AuditUtils.TEST_PENDING_REQUEST_STATE);
     when(investmentRepository.save(any(Investment.class))).thenReturn(TEST_INVESTMENT_INITIAL);
 
     Investment investment =
@@ -138,87 +133,112 @@ public class InvestmentServiceImplTest {
   }
 
   @Test
-  public void approveInvestment_Should_Approve_Investment() {
-    Investment investment = TEST_INVESTMENT_PAID_NOT_REVOCABLE.toBuilder().build();
+  public void ownerApproveInvestment_Should_Approve_Investment() {
+    Investment investment = TEST_INVESTMENT_INITIAL.toBuilder().build();
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
     doNothing().when(campaignService).throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
-    when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
-        .thenReturn(TEST_INVESTMENT_PAID_STATE);
-    when(investmentStateService.getInvestmentState(InvestmentStateName.APPROVED))
-        .thenReturn(TEST_INVESTMENT_APPROVED_STATE);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
+        .thenReturn(TEST_INVESTMENT_INITIAL_STATE);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED))
+        .thenReturn(TEST_INVESTMENT_OWNER_APPROVED_STATE);
 
-    investmentService.approveInvestment(INVESTMENT_ID);
-    assertEquals(TEST_INVESTMENT_APPROVED_STATE, investment.getInvestmentState());
-  }
-
-  @Test(expected = BadRequestException.class)
-  public void approveInvestment_Should_Throw_Exception_When_Investment_Revocable() {
-
-    Investment investment = TEST_INVESTMENT_PAID_REVOCABLE.toBuilder().build();
-
-    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
-    doNothing().when(campaignService).throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
-    when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
-        .thenReturn(TEST_INVESTMENT_PAID_STATE);
-
-    investmentService.approveInvestment(INVESTMENT_ID);
+    investmentService.ownerApproveInvestment(INVESTMENT_ID);
+    assertEquals(TEST_INVESTMENT_OWNER_APPROVED_STATE, investment.getInvestmentState());
   }
 
   @Test(expected = ForbiddenOperationException.class)
-  public void approveInvestment_Should_Throw_Exception_When_Not_Campaign_Owner() {
-    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(TEST_INVESTMENT_PAID_NOT_REVOCABLE);
+  public void ownerApproveInvestment_Should_Throw_Exception_When_Not_Campaign_Owner() {
+    Investment investment = TEST_INVESTMENT_INITIAL.toBuilder().build();
+
+    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
     doThrow(ForbiddenOperationException.class)
         .when(campaignService)
         .throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
 
-    investmentService.approveInvestment(INVESTMENT_ID);
-  }
-
-  @Test(expected = BadRequestException.class)
-  public void approveInvestment_Should_Throw_Exception_When_Not_Paid() {
-    Investment investment = TEST_INVESTMENT_NOT_PAID_REVOCABLE.toBuilder().build();
-
-    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
-    doNothing().when(campaignService).throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
-    when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
-        .thenReturn(TEST_INVESTMENT_PAID_STATE);
-
-    investmentService.approveInvestment(INVESTMENT_ID);
+    investmentService.ownerApproveInvestment(INVESTMENT_ID);
   }
 
   @Test
-  public void rejectInvestment_Should_Reject_Investment() {
-    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+  public void auditApproveInvestment_Should_Approve_Investment() {
+    mockRequestAndContextAdmin();
     Investment investment = TEST_INVESTMENT_PAID_NOT_REVOCABLE.toBuilder().build();
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
-    doNothing().when(campaignService).throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
-    doNothing().when(paymentService).withdrawFunds(auth, investment.getInvestedAmount());
-    when(investmentStateService.getInvestmentState(InvestmentStateName.REJECTED))
-        .thenReturn(TEST_INVESTMENT_REJECTED_STATE);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
+        .thenReturn(TEST_INVESTMENT_PAID_STATE);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_APPROVED))
+        .thenReturn(TEST_INVESTMENT_AUDIT_APPROVED_STATE);
 
-    investmentService.rejectInvestment(INVESTMENT_ID);
-    assertEquals(TEST_INVESTMENT_REJECTED_STATE, investment.getInvestmentState());
+    investmentService.auditApproveInvestment(INVESTMENT_ID);
+    assertEquals(TEST_INVESTMENT_AUDIT_APPROVED_STATE, investment.getInvestmentState());
   }
 
   @Test(expected = BadRequestException.class)
-  public void rejectInvestment_Should_Throw_Exception_When_Investment_Revocable() {
+  public void auditApproveInvestment_Should_Throw_Exception_When_Investment_Revocable() {
+    mockRequestAndContextAdmin();
+    Investment investment = TEST_INVESTMENT_PAID_REVOCABLE.toBuilder().build();
+
+    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
+        .thenReturn(TEST_INVESTMENT_PAID_STATE);
+
+    investmentService.auditApproveInvestment(INVESTMENT_ID);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void auditApproveInvestment_Should_Throw_Exception_When_Not_Admin() {
+    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(TEST_INVESTMENT_PAID_NOT_REVOCABLE);
+
+    investmentService.auditApproveInvestment(INVESTMENT_ID);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void auditApproveInvestment_Should_Throw_Exception_When_Not_Paid() {
+    mockRequestAndContextAdmin();
+    Investment investment = TEST_INVESTMENT_NOT_PAID_REVOCABLE.toBuilder().build();
+
+    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
+        .thenReturn(TEST_INVESTMENT_PAID_STATE);
+
+    investmentService.auditApproveInvestment(INVESTMENT_ID);
+  }
+
+  @Test
+  public void auditRejectInvestment_Should_Reject_Investment() {
+    mockRequestAndContextAdmin();
+    Investment investment = TEST_INVESTMENT_PAID_NOT_REVOCABLE.toBuilder().build();
+
+    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
+    doNothing()
+        .when(paymentService)
+        .withdrawFunds(AuthUtils.TEST_AUTH_INVESTOR, investment.getInvestedAmount());
+    when(investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_REJECTED))
+        .thenReturn(TEST_INVESTMENT_AUDIT_REJECTED_STATE);
+
+    investmentService.auditRejectInvestment(INVESTMENT_ID);
+    assertEquals(TEST_INVESTMENT_AUDIT_REJECTED_STATE, investment.getInvestmentState());
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void auditRejectInvestment_Should_Throw_Exception_When_Investment_Revocable() {
+    mockRequestAndContextAdmin();
     Investment investment = TEST_INVESTMENT_PAID_REVOCABLE.toBuilder().build();
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
 
-    investmentService.rejectInvestment(INVESTMENT_ID);
+    investmentService.auditRejectInvestment(INVESTMENT_ID);
   }
 
   @Test(expected = ForbiddenOperationException.class)
-  public void rejectInvestment_Should_Throw_Exception_When_Not_Campaign_Owner() {
+  public void auditRejectInvestment_Should_Throw_Exception_When_Not_Admin() {
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(TEST_INVESTMENT_PAID_NOT_REVOCABLE);
     doThrow(ForbiddenOperationException.class)
         .when(campaignService)
         .throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
 
-    investmentService.rejectInvestment(INVESTMENT_ID);
+    investmentService.auditRejectInvestment(INVESTMENT_ID);
   }
 }

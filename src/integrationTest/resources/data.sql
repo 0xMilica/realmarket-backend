@@ -319,10 +319,12 @@ INSERT INTO public.request_state (id, name) VALUES (NEXTVAL('request_state_seq')
 
 -- investment state
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'INITIAL');
+INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'OWNER_APPROVED');
+INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'OWNER_REJECTED');
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'PAID');
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'REVOKED');
-INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'APPROVED');
-INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'REJECTED');
+INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'AUDIT_APPROVED');
+INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'AUDIT_REJECTED');
 
 -- campaign topic type
 INSERT INTO public.campaign_topic_type (id, name) VALUES (NEXTVAL('campaign_topic_type_seq'), 'PROBLEM');

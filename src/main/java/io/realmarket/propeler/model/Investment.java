@@ -37,12 +37,6 @@ public class Investment {
   @ManyToOne
   private InvestmentState investmentState;
 
-  @JoinColumn(
-      name = "requestStateId",
-      foreignKey = @ForeignKey(name = "investment_fk_on_request_state"))
-  @ManyToOne
-  private RequestState requestState;
-
   @Builder.Default
   @Column(name = "creation_date")
   private Instant creationDate = Instant.now();

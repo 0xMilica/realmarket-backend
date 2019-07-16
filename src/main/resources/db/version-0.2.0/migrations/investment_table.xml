@@ -23,9 +23,6 @@
             investment_state_id bigint
             constraint investment_fk_on_investment_state
             references investment_state,
-            request_state_id bigint
-            constraint investment_fk_on_request_state
-            references request_state,
             creation_date timestamp NOT NULL,
             payment_date timestamp
             );

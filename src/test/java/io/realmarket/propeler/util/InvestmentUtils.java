@@ -13,14 +13,18 @@ public class InvestmentUtils {
   public static final long INVESTMENT_ID = 1L;
   public static final InvestmentState TEST_INVESTMENT_INITIAL_STATE =
       InvestmentState.builder().name(InvestmentStateName.INITIAL).build();
+  public static final InvestmentState TEST_INVESTMENT_OWNER_APPROVED_STATE =
+      InvestmentState.builder().name(InvestmentStateName.OWNER_APPROVED).build();
+  public static final InvestmentState TEST_INVESTMENT_OWNER_REJECTED_STATE =
+      InvestmentState.builder().name(InvestmentStateName.OWNER_REJECTED).build();
   public static final InvestmentState TEST_INVESTMENT_PAID_STATE =
       InvestmentState.builder().name(InvestmentStateName.PAID).build();
   public static final InvestmentState TEST_INVESTMENT_REVOKED_STATE =
       InvestmentState.builder().name(InvestmentStateName.REVOKED).build();
-  public static final InvestmentState TEST_INVESTMENT_APPROVED_STATE =
-      InvestmentState.builder().name(InvestmentStateName.APPROVED).build();
-  public static final InvestmentState TEST_INVESTMENT_REJECTED_STATE =
-      InvestmentState.builder().name(InvestmentStateName.REJECTED).build();
+  public static final InvestmentState TEST_INVESTMENT_AUDIT_APPROVED_STATE =
+      InvestmentState.builder().name(InvestmentStateName.AUDIT_APPROVED).build();
+  public static final InvestmentState TEST_INVESTMENT_AUDIT_REJECTED_STATE =
+      InvestmentState.builder().name(InvestmentStateName.AUDIT_REJECTED).build();
   public static final Instant TEST_INVESTMENT_PAYMENT_DATE = Instant.now().minusMillis(WEEK);
 
   public static final Investment TEST_INVESTMENT_INITIAL =
@@ -67,19 +71,19 @@ public class InvestmentUtils {
           .paymentDate(Instant.now())
           .build();
 
-  public static final Investment TEST_INVESTMENT_APPROVED =
+  public static final Investment TEST_INVESTMENT_AUDIT_APPROVED =
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
-          .investmentState(TEST_INVESTMENT_APPROVED_STATE)
+          .investmentState(TEST_INVESTMENT_AUDIT_APPROVED_STATE)
           .auth(AuthUtils.TEST_AUTH_INVESTOR)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
           .build();
 
-  public static final Investment TEST_INVESTMENT_REJECTED =
+  public static final Investment TEST_INVESTMENT_AUDIT_REJECTED =
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
-          .investmentState(TEST_INVESTMENT_REJECTED_STATE)
+          .investmentState(TEST_INVESTMENT_AUDIT_REJECTED_STATE)
           .auth(AuthUtils.TEST_AUTH_INVESTOR)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)

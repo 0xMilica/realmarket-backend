@@ -9,7 +9,7 @@ import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
-import io.realmarket.propeler.model.enums.RequestStateName;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
@@ -39,7 +39,6 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final InvestmentRepository investmentRepository;
   private final PaymentService paymentService;
   private final InvestmentStateService investmentStateService;
-  private final RequestStateService requestStateService;
 
   @Value("${app.investment.weekInMillis}")
   private long weekInMillis;
@@ -49,13 +48,11 @@ public class InvestmentServiceImpl implements InvestmentService {
       CampaignService campaignService,
       InvestmentRepository investmentRepository,
       PaymentService paymentService,
-      InvestmentStateService investmentStateService,
-      RequestStateService requestStateService) {
+      InvestmentStateService investmentStateService) {
     this.campaignService = campaignService;
     this.investmentRepository = investmentRepository;
     this.paymentService = paymentService;
     this.investmentStateService = investmentStateService;
-    this.requestStateService = requestStateService;
   }
 
   @Override
@@ -85,10 +82,22 @@ public class InvestmentServiceImpl implements InvestmentService {
             .campaign(campaign)
             .investedAmount(amountOfMoney)
             .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
-            .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
             .build();
 
     return investmentRepository.save(investment);
+  }
+
+  @Transactional
+  @Override
+  public void ownerApproveInvestment(Long investmentId) {
+    Investment investment = investmentRepository.getOne(investmentId);
+
+    Campaign campaign = investment.getCampaign();
+    campaignService.throwIfNotOwner(campaign);
+
+    investment.setInvestmentState(
+        investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED));
+    investmentRepository.save(investment);
   }
 
   @Transactional
@@ -107,37 +116,34 @@ public class InvestmentServiceImpl implements InvestmentService {
 
   @Transactional
   @Override
-  public void approveInvestment(Long investmentId) {
+  public void auditApproveInvestment(Long investmentId) {
+    throwIfNotAdmin();
     Investment investment = investmentRepository.getOne(investmentId);
     throwIfRevocable(investment);
 
     Campaign campaign = investment.getCampaign();
-    campaignService.throwIfNotOwner(campaign);
 
     throwIfNotPaid(investment);
     campaignService.increaseCollectedAmount(campaign, investment.getInvestedAmount());
 
     investment.setInvestmentState(
-        investmentStateService.getInvestmentState(InvestmentStateName.APPROVED));
+        investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_APPROVED));
     investmentRepository.save(investment);
   }
 
   @Transactional
   @Override
-  public void rejectInvestment(Long investmentId) {
+  public void auditRejectInvestment(Long investmentId) {
+    throwIfNotAdmin();
     Investment investment = investmentRepository.getOne(investmentId);
     throwIfRevocable(investment);
 
-    Campaign campaign = investment.getCampaign();
-    campaignService.throwIfNotOwner(campaign);
-
-    Auth auth = investment.getAuth();
     BigDecimal amountOfMoney = investment.getInvestedAmount();
 
-    paymentService.withdrawFunds(auth, amountOfMoney);
+    paymentService.withdrawFunds(investment.getAuth(), amountOfMoney);
 
     investment.setInvestmentState(
-        investmentStateService.getInvestmentState(InvestmentStateName.REJECTED));
+        investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_REJECTED));
     investmentRepository.save(investment);
   }
 
@@ -228,12 +234,18 @@ public class InvestmentServiceImpl implements InvestmentService {
     }
   }
 
-  private boolean isRevocable(Investment investment) {
-    if (investment.getPaymentDate() == null) {
-      return true;
-    } else {
-      return investment.getPaymentDate().plusMillis(weekInMillis).isAfter(Instant.now());
+  private void throwIfNotAdmin() {
+    if (!isAdmin()) {
+      throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
     }
+  }
+
+  private boolean isAdmin() {
+    return (AuthenticationUtil.getAuthentication()
+        .getAuth()
+        .getUserRole()
+        .getName()
+        .equals(UserRoleName.ROLE_ADMIN));
   }
 
   private void throwIfNotRevocable(Investment investment) {
@@ -245,6 +257,14 @@ public class InvestmentServiceImpl implements InvestmentService {
   private void throwIfRevocable(Investment investment) {
     if (isRevocable(investment)) {
       throw new BadRequestException(INVESTMENT_CAN_BE_REVOKED);
+    }
+  }
+
+  private boolean isRevocable(Investment investment) {
+    if (investment.getPaymentDate() == null) {
+      return true;
+    } else {
+      return investment.getPaymentDate().plusMillis(weekInMillis).isAfter(Instant.now());
     }
   }
 }

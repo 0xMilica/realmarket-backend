@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Builder
 public class AuditDeclineDto {
-  @ApiModelProperty(value = "Reason for transition to REJECTED state.")
+  @ApiModelProperty(value = "Reason for transition to AUDIT_REJECTED state.")
   @Size(max = 10000, message = "Audit content cannot be longer than 10000 characters.")
   private String content;
 }

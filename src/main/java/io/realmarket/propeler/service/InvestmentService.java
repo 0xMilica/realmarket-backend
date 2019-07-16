@@ -16,11 +16,13 @@ public interface InvestmentService {
 
   Investment invest(BigDecimal amountOfMoney, String campaignUrlFriendlyName);
 
+  void ownerApproveInvestment(Long investmentId);
+
   void revokeInvestment(Long investmentId);
 
-  void approveInvestment(Long investmentId);
+  void auditApproveInvestment(Long investmentId);
 
-  void rejectInvestment(Long investmentId);
+  void auditRejectInvestment(Long investmentId);
 
   Page<PortfolioCampaignResponseDto> getPortfolio(Pageable pageable, String filter);
 }

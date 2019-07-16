@@ -33,7 +33,7 @@ public class AuditResponseDto {
   private String request_state;
 
   @ApiModelProperty(
-      value = "Reason for transition to REJECTED state, when declining campaign audit.")
+      value = "Reason for transition to AUDIT_REJECTED state, when declining campaign audit.")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String content;
 

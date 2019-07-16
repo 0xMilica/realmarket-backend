@@ -75,10 +75,12 @@ INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_ac
 
 -- investment state
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'INITIAL');
+INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'OWNER_APPROVED');
+INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'OWNER_REJECTED');
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'PAID');
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'REVOKED');
-INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'APPROVED');
-INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'REJECTED');
+INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'AUDIT_APPROVED');
+INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'AUDIT_REJECTED');
 
 -- platform settings
 INSERT INTO public.platform_settings (id, platform_min_investment) VALUES (NEXTVAL('platform_settings_seq'), 500);

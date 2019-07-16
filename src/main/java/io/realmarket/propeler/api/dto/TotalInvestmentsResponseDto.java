@@ -28,7 +28,7 @@ public class TotalInvestmentsResponseDto {
     investments.forEach(
         investment -> {
           if (investment.getInvestmentState().getName() == InvestmentStateName.PAID
-              || investment.getInvestmentState().getName() == InvestmentStateName.APPROVED) {
+              || investment.getInvestmentState().getName() == InvestmentStateName.AUDIT_APPROVED) {
             this.amount = this.amount.add(investment.getInvestedAmount());
             this.equity =
                 this.equity.add(
