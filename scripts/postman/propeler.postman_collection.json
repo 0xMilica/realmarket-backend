@@ -3646,7 +3646,7 @@
 					"response": []
 				},
 				{
-					"name": "/investments/{{investID}}/auditApprove",
+					"name": "/investments/{{investID}}/ownerReject",
 					"request": {
 						"method": "PATCH",
 						"header": [
@@ -3657,7 +3657,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{server_ip}}/api/investments/{{investID}}/auditApprove",
+							"raw": "{{server_ip}}/api/investments/{{investID}}/ownerReject",
 							"host": [
 								"{{server_ip}}"
 							],
@@ -3665,7 +3665,59 @@
 								"api",
 								"investments",
 								"{{investID}}",
-								"auditApprove"
+								"ownerReject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/investments/{{investID}}/auditorApprove",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/investments/{{investID}}/auditorApprove",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"investments",
+								"{{investID}}",
+								"auditorApprove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/investments/{{investID}}/auditorReject",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/investments/{{investID}}/auditorReject",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"investments",
+								"{{investID}}",
+								"auditorReject"
 							]
 						}
 					},

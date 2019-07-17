@@ -1,6 +1,5 @@
 package io.realmarket.propeler.api.controller;
 
-import io.realmarket.propeler.api.dto.InvestmentResponseDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 
@@ -44,4 +43,30 @@ public interface InvestmentController {
       @ApiResponse(code = 404, message = "Investment does not exists.")
   })
   ResponseEntity<Void> auditorApproveInvestment(Long investmentId);
+
+  @ApiOperation(value = "Reject investment as owner", httpMethod = "PATCH")
+  @ApiImplicitParam(
+      name = "investID",
+      value = "Investment's id",
+      required = true,
+      dataType = "Long")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Investment successfully rejected."),
+      @ApiResponse(code = 400, message = "Insufficient privileges."),
+      @ApiResponse(code = 404, message = "Investment does not exists.")
+  })
+  ResponseEntity<Void> ownerRejectInvestment(Long investmentId);
+
+  @ApiOperation(value = "Reject investment as auditor", httpMethod = "PATCH")
+  @ApiImplicitParam(
+      name = "investID",
+      value = "Investment's id",
+      required = true,
+      dataType = "Long")
+  @ApiResponses({
+      @ApiResponse(code = 200, message = "Investment successfully rejected."),
+      @ApiResponse(code = 400, message = "Insufficient privileges."),
+      @ApiResponse(code = 404, message = "Investment does not exists.")
+  })
+  ResponseEntity<Void> auditorRejectInvestment(Long investmentId);
 }

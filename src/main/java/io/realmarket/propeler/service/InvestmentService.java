@@ -22,9 +22,9 @@ public interface InvestmentService {
 
   void revokeInvestment(Long investmentId);
 
-  void auditApproveInvestment(Long investmentId);
+  void auditorApproveInvestment(Long investmentId);
 
-  void auditRejectInvestment(Long investmentId);
+  void auditorRejectInvestment(Long investmentId);
 
   Page<PortfolioCampaignResponseDto> getPortfolio(Pageable pageable, String filter);
 }

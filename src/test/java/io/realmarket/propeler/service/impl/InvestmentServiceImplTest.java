@@ -197,7 +197,7 @@ public class InvestmentServiceImplTest {
     when(investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_APPROVED))
         .thenReturn(TEST_INVESTMENT_AUDIT_APPROVED_STATE);
 
-    investmentService.auditApproveInvestment(INVESTMENT_ID);
+    investmentService.auditorApproveInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_AUDIT_APPROVED_STATE, investment.getInvestmentState());
   }
 
@@ -210,14 +210,14 @@ public class InvestmentServiceImplTest {
     when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
         .thenReturn(TEST_INVESTMENT_PAID_STATE);
 
-    investmentService.auditApproveInvestment(INVESTMENT_ID);
+    investmentService.auditorApproveInvestment(INVESTMENT_ID);
   }
 
   @Test(expected = ForbiddenOperationException.class)
   public void auditApproveInvestment_Should_Throw_Exception_When_Not_Admin() {
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(TEST_INVESTMENT_PAID_NOT_REVOCABLE);
 
-    investmentService.auditApproveInvestment(INVESTMENT_ID);
+    investmentService.auditorApproveInvestment(INVESTMENT_ID);
   }
 
   @Test(expected = BadRequestException.class)
@@ -229,7 +229,7 @@ public class InvestmentServiceImplTest {
     when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
         .thenReturn(TEST_INVESTMENT_PAID_STATE);
 
-    investmentService.auditApproveInvestment(INVESTMENT_ID);
+    investmentService.auditorApproveInvestment(INVESTMENT_ID);
   }
 
   @Test
@@ -244,7 +244,7 @@ public class InvestmentServiceImplTest {
     when(investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_REJECTED))
         .thenReturn(TEST_INVESTMENT_AUDIT_REJECTED_STATE);
 
-    investmentService.auditRejectInvestment(INVESTMENT_ID);
+    investmentService.auditorRejectInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_AUDIT_REJECTED_STATE, investment.getInvestmentState());
   }
 
@@ -255,7 +255,7 @@ public class InvestmentServiceImplTest {
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
 
-    investmentService.auditRejectInvestment(INVESTMENT_ID);
+    investmentService.auditorRejectInvestment(INVESTMENT_ID);
   }
 
   @Test(expected = ForbiddenOperationException.class)
@@ -266,6 +266,6 @@ public class InvestmentServiceImplTest {
         .when(campaignService)
         .throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
 
-    investmentService.auditRejectInvestment(INVESTMENT_ID);
+    investmentService.auditorRejectInvestment(INVESTMENT_ID);
   }
 }

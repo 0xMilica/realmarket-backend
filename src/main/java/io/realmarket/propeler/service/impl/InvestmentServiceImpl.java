@@ -132,7 +132,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
   @Transactional
   @Override
-  public void auditApproveInvestment(Long investmentId) {
+  public void auditorApproveInvestment(Long investmentId) {
     throwIfNotAdmin();
     Investment investment = investmentRepository.getOne(investmentId);
     throwIfRevocable(investment);
@@ -149,7 +149,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
   @Transactional
   @Override
-  public void auditRejectInvestment(Long investmentId) {
+  public void auditorRejectInvestment(Long investmentId) {
     throwIfNotAdmin();
     Investment investment = investmentRepository.getOne(investmentId);
     throwIfRevocable(investment);
