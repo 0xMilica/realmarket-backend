@@ -3618,6 +3618,58 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/investments/{{investID}}/ownerApprove",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/investments/{{investID}}/ownerApprove",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"investments",
+								"{{investID}}",
+								"ownerApprove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/investments/{{investID}}/auditApprove",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/investments/{{investID}}/auditApprove",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"investments",
+								"{{investID}}",
+								"auditApprove"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
