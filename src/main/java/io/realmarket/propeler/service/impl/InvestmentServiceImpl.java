@@ -12,7 +12,10 @@ import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
-import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.CampaignService;
+import io.realmarket.propeler.service.InvestmentService;
+import io.realmarket.propeler.service.InvestmentStateService;
+import io.realmarket.propeler.service.PaymentService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +100,19 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED));
+    investmentRepository.save(investment);
+  }
+
+  @Transactional
+  @Override
+  public void ownerRejectInvestment(Long investmentId) {
+    Investment investment = investmentRepository.getOne(investmentId);
+
+    Campaign campaign = investment.getCampaign();
+    campaignService.throwIfNotOwner(campaign);
+
+    investment.setInvestmentState(
+        investmentStateService.getInvestmentState(InvestmentStateName.OWNER_REJECTED));
     investmentRepository.save(investment);
   }
 

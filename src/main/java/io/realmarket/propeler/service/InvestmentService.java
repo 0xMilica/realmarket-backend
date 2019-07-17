@@ -18,6 +18,8 @@ public interface InvestmentService {
 
   void ownerApproveInvestment(Long investmentId);
 
+  void ownerRejectInvestment(Long investmentId);
+
   void revokeInvestment(Long investmentId);
 
   void auditApproveInvestment(Long investmentId);

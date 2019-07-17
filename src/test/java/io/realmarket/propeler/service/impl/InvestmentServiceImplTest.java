@@ -160,6 +160,33 @@ public class InvestmentServiceImplTest {
   }
 
   @Test
+  public void ownerRejectInvestment_Should_Reject_Investment() {
+    Investment investment = TEST_INVESTMENT_INITIAL.toBuilder().build();
+
+    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
+    doNothing().when(campaignService).throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
+        .thenReturn(TEST_INVESTMENT_INITIAL_STATE);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_REJECTED))
+        .thenReturn(TEST_INVESTMENT_OWNER_REJECTED_STATE);
+
+    investmentService.ownerRejectInvestment(INVESTMENT_ID);
+    assertEquals(TEST_INVESTMENT_OWNER_REJECTED_STATE, investment.getInvestmentState());
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void ownerRejectInvestment_Should_Throw_Exception_When_Not_Campaign_Owner() {
+    Investment investment = TEST_INVESTMENT_INITIAL.toBuilder().build();
+
+    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
+    doThrow(ForbiddenOperationException.class)
+        .when(campaignService)
+        .throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
+
+    investmentService.ownerRejectInvestment(INVESTMENT_ID);
+  }
+
+  @Test
   public void auditApproveInvestment_Should_Approve_Investment() {
     mockRequestAndContextAdmin();
     Investment investment = TEST_INVESTMENT_PAID_NOT_REVOCABLE.toBuilder().build();
