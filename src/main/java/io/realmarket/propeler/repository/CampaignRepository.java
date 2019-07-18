@@ -39,6 +39,8 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
 
   Page<Campaign> findAllByCampaignState(Pageable pageable, CampaignState state);
 
+  Page<Campaign> findAllByCampaignStateAndCompany(Pageable pageable, CampaignState state, Company company);
+
   List<Campaign> findAllByCampaignState(CampaignState state);
 
   @Query(
@@ -46,6 +48,8 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
   Page<Campaign> findAuditCampaigns(@Param("auth") Auth auth, Pageable pageable);
 
   List<Campaign> findAllByCompany(Company company);
+
+  Page<Campaign> findAllByCompany(Pageable pageable, Company company);
 
   @Query(
       "select c, s from Campaign c join fetch c.campaignState s where c.company = :company and s.name <> 'DELETED' order by c.creationDate desc")

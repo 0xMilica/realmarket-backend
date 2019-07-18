@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service;
 
+import io.realmarket.propeler.api.dto.InvestmentWithPersonResponseDto;
 import io.realmarket.propeler.api.dto.PortfolioCampaignResponseDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
@@ -11,6 +12,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface InvestmentService {
+
+  List<Investment> findAllByCampaign(Campaign campaign);
+
+  List<InvestmentWithPersonResponseDto> findAllByCampaignWithInvestors(Campaign campaign);
 
   List<Investment> findAllByCampaignAndAuth(Campaign campaign, Auth auth);
 

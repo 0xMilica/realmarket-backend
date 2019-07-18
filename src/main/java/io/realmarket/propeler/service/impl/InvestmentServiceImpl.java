@@ -1,9 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.CampaignResponseDto;
-import io.realmarket.propeler.api.dto.InvestmentResponseDto;
-import io.realmarket.propeler.api.dto.PortfolioCampaignResponseDto;
-import io.realmarket.propeler.api.dto.TotalInvestmentsResponseDto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Investment;
@@ -61,6 +58,18 @@ public class InvestmentServiceImpl implements InvestmentService {
   @Override
   public List<Investment> findAllByCampaignAndAuth(Campaign campaign, Auth auth) {
     return investmentRepository.findAllByCampaignAndAuth(campaign, auth);
+  }
+
+  @Override
+  public List<Investment> findAllByCampaign(Campaign campaign) {
+    return investmentRepository.findAllByCampaign(campaign);
+  }
+
+  @Override
+  public List<InvestmentWithPersonResponseDto> findAllByCampaignWithInvestors(Campaign campaign) {
+    return findAllByCampaign(campaign).stream()
+        .map(i -> new InvestmentWithPersonResponseDto(i, new PersonDto(i.getAuth().getPerson())))
+        .collect(Collectors.toList());
   }
 
   public Page<Campaign> findInvestedCampaign(Auth auth, Pageable pageable) {

@@ -85,4 +85,7 @@ public interface CampaignService {
   BigDecimal getAvailableInvestableAmount(String campaignName);
 
   AvailableInvestmentDto getAvailableInvestment(String campaignName);
+
+  Page<CampaignWithInvestmentsWithPersonResponseDto> getCampaignsByStateWithInvestments(
+      Pageable pageable, String state);
 }

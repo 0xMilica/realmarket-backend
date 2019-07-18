@@ -16,6 +16,8 @@ import java.util.List;
 @Repository
 public interface InvestmentRepository extends JpaRepository<Investment, Long> {
 
+  List<Investment> findAllByCampaign(Campaign campaign);
+
   List<Investment> findAllByCampaignAndAuth(Campaign campaign, Auth auth);
 
   @Query(

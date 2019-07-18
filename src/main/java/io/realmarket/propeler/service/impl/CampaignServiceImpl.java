@@ -2,10 +2,7 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EmailType;
-import io.realmarket.propeler.model.Audit;
-import io.realmarket.propeler.model.Auth;
-import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.Company;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -59,6 +56,7 @@ public class CampaignServiceImpl implements CampaignService {
   private final AuthService authService;
   private final AuditService auditService;
   private final BlockchainCommunicationService blockchainCommunicationService;
+  private final InvestmentService investmentService;
 
   @Value(value = "${cos.file_prefix.campaign_market_image}")
   private String companyFeaturedImage;
@@ -79,7 +77,8 @@ public class CampaignServiceImpl implements CampaignService {
       EmailService emailService,
       AuthService authService,
       AuditService auditService,
-      BlockchainCommunicationService blockchainCommunicationService) {
+      BlockchainCommunicationService blockchainCommunicationService,
+      @Lazy InvestmentService investmentService) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
     this.campaignTopicService = campaignTopicService;
@@ -92,6 +91,7 @@ public class CampaignServiceImpl implements CampaignService {
     this.authService = authService;
     this.auditService = auditService;
     this.blockchainCommunicationService = blockchainCommunicationService;
+    this.investmentService = investmentService;
   }
 
   public Campaign findByUrlFriendlyNameOrThrowException(String urlFriendlyName) {
@@ -533,5 +533,30 @@ public class CampaignServiceImpl implements CampaignService {
         .amount(getMaximumInvestableAmount(campaign))
         .equity(getMaximumAcquirableEquity(campaign))
         .build();
+  }
+
+  @Override
+  public Page<CampaignWithInvestmentsWithPersonResponseDto> getCampaignsByStateWithInvestments(
+      Pageable pageable, String state) {
+    if (state.equalsIgnoreCase("all")) {
+      return campaignRepository
+          .findAllByCompany(pageable, companyService.findMyCompany())
+          .map(
+              c ->
+                  new CampaignWithInvestmentsWithPersonResponseDto(
+                      c, investmentService.findAllByCampaignWithInvestors(c)));
+    } else if (!state.equalsIgnoreCase("delete")) {
+      CampaignState campaignState = campaignStateService.getCampaignState(state);
+      return campaignRepository
+          .findAllByCampaignStateAndCompany(
+              pageable,
+              campaignStateService.getCampaignState(campaignState.getName().toString()),
+              companyService.findMyCompany())
+          .map(
+              c ->
+                  new CampaignWithInvestmentsWithPersonResponseDto(
+                      c, investmentService.findAllByCampaignWithInvestors(c)));
+    }
+    throw new BadRequestException(INVALID_REQUEST);
   }
 }
