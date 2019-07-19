@@ -8,6 +8,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.InvestmentStateService;
 import io.realmarket.propeler.service.PaymentService;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.util.AuthUtils;
@@ -43,6 +44,8 @@ public class InvestmentServiceImplTest {
   @Mock private InvestmentStateService investmentStateService;
 
   @Mock private PaymentService paymentService;
+
+  @Mock private BlockchainCommunicationService blockchainCommunicationService;
 
   @Before
   public void createAuthContext() {
@@ -109,6 +112,7 @@ public class InvestmentServiceImplTest {
     doNothing().when(paymentService).withdrawFunds(auth, actualInvestment.getInvestedAmount());
     when(investmentStateService.getInvestmentState(InvestmentStateName.REVOKED))
         .thenReturn(TEST_INVESTMENT_REVOKED_STATE);
+    when(investmentRepository.save(actualInvestment)).thenReturn(actualInvestment);
 
     investmentService.revokeInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_REVOKED_STATE, actualInvestment.getInvestmentState());
@@ -142,6 +146,7 @@ public class InvestmentServiceImplTest {
         .thenReturn(TEST_INVESTMENT_INITIAL_STATE);
     when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED))
         .thenReturn(TEST_INVESTMENT_OWNER_APPROVED_STATE);
+    when(investmentRepository.save(investment)).thenReturn(investment);
 
     investmentService.ownerApproveInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_OWNER_APPROVED_STATE, investment.getInvestmentState());
@@ -169,6 +174,7 @@ public class InvestmentServiceImplTest {
         .thenReturn(TEST_INVESTMENT_INITIAL_STATE);
     when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_REJECTED))
         .thenReturn(TEST_INVESTMENT_OWNER_REJECTED_STATE);
+    when(investmentRepository.save(investment)).thenReturn(investment);
 
     investmentService.ownerRejectInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_OWNER_REJECTED_STATE, investment.getInvestmentState());
@@ -196,6 +202,7 @@ public class InvestmentServiceImplTest {
         .thenReturn(TEST_INVESTMENT_PAID_STATE);
     when(investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_APPROVED))
         .thenReturn(TEST_INVESTMENT_AUDIT_APPROVED_STATE);
+    when(investmentRepository.save(investment)).thenReturn(investment);
 
     investmentService.auditorApproveInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_AUDIT_APPROVED_STATE, investment.getInvestmentState());
@@ -243,6 +250,7 @@ public class InvestmentServiceImplTest {
         .withdrawFunds(AuthUtils.TEST_AUTH_INVESTOR, investment.getInvestedAmount());
     when(investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_REJECTED))
         .thenReturn(TEST_INVESTMENT_AUDIT_REJECTED_STATE);
+    when(investmentRepository.save(investment)).thenReturn(investment);
 
     investmentService.auditorRejectInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_AUDIT_REJECTED_STATE, investment.getInvestmentState());

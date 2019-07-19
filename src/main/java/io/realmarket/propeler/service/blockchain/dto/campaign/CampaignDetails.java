@@ -3,8 +3,6 @@ package io.realmarket.propeler.service.blockchain.dto.campaign;
 import io.realmarket.propeler.model.Campaign;
 import lombok.Data;
 
-import java.time.Instant;
-
 @Data
 public class CampaignDetails {
   private Long campaignId;
@@ -17,29 +15,29 @@ public class CampaignDetails {
   private Double minInvestmentLevel;
   private String state;
   private String tagLine;
-  private Instant activationTime;
+  private String activationTime;
   private Double collectedAmount;
 
   public CampaignDetails(Campaign campaign) {
-    this.setCampaignId(campaign.getId());
-    this.setCompanyId(campaign.getCompany().getId());
-    this.setName(campaign.getName());
-    this.setFriendlyUrl(campaign.getUrlFriendlyName());
-    this.setTimeToRaiseFunds(campaign.getTimeToRaiseFunds());
-    this.setMinEquityOffered(
+    this.campaignId = campaign.getId();
+    this.companyId = campaign.getCompany().getId();
+    this.name = campaign.getName();
+    this.friendlyUrl = campaign.getUrlFriendlyName();
+    this.timeToRaiseFunds = campaign.getTimeToRaiseFunds();
+    this.minEquityOffered =
         campaign.getMinEquityOffered() == null
             ? null
-            : campaign.getMinEquityOffered().doubleValue());
-    this.setMaxEquityOffered(
+            : campaign.getMinEquityOffered().doubleValue();
+    this.maxEquityOffered =
         campaign.getMaxEquityOffered() == null
             ? null
-            : campaign.getMaxEquityOffered().doubleValue());
-    this.setMinInvestmentLevel(
-        campaign.getMinInvestment() == null ? null : campaign.getMinInvestment().doubleValue());
-    this.setState(campaign.getCampaignState().getName().toString());
-    this.setTagLine(campaign.getTagLine());
-    this.setActivationTime(campaign.getActivationDate());
-    this.setCollectedAmount(
-        campaign.getCollectedAmount() == null ? null : campaign.getCollectedAmount().doubleValue());
+            : campaign.getMaxEquityOffered().doubleValue();
+    this.minInvestmentLevel =
+        campaign.getMinInvestment() == null ? null : campaign.getMinInvestment().doubleValue();
+    this.state = campaign.getCampaignState().getName().toString();
+    this.tagLine = campaign.getTagLine();
+    this.activationTime = campaign.getActivationDate().toString();
+    this.collectedAmount =
+        campaign.getCollectedAmount() == null ? null : campaign.getCollectedAmount().doubleValue();
   }
 }

@@ -13,6 +13,10 @@ import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.InvestmentService;
 import io.realmarket.propeler.service.InvestmentStateService;
 import io.realmarket.propeler.service.PaymentService;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.BlockchainMethod;
+import io.realmarket.propeler.service.blockchain.dto.investment.ChangeStateDto;
+import io.realmarket.propeler.service.blockchain.dto.investment.InvestmentDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +43,7 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final InvestmentRepository investmentRepository;
   private final PaymentService paymentService;
   private final InvestmentStateService investmentStateService;
+  private final BlockchainCommunicationService blockchainCommunicationService;
 
   @Value("${app.investment.weekInMillis}")
   private long weekInMillis;
@@ -48,11 +53,13 @@ public class InvestmentServiceImpl implements InvestmentService {
       CampaignService campaignService,
       InvestmentRepository investmentRepository,
       PaymentService paymentService,
-      InvestmentStateService investmentStateService) {
+      InvestmentStateService investmentStateService,
+      BlockchainCommunicationService blockchainCommunicationService) {
     this.campaignService = campaignService;
     this.investmentRepository = investmentRepository;
     this.paymentService = paymentService;
     this.investmentStateService = investmentStateService;
+    this.blockchainCommunicationService = blockchainCommunicationService;
   }
 
   @Override
@@ -96,7 +103,14 @@ public class InvestmentServiceImpl implements InvestmentService {
             .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
             .build();
 
-    return investmentRepository.save(investment);
+    investment = investmentRepository.save(investment);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.INVESTMENT_INTENT,
+        new InvestmentDto(investment),
+        AuthenticationUtil.getClientIp());
+
+    return investment;
   }
 
   @Transactional
@@ -109,7 +123,12 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED));
-    investmentRepository.save(investment);
+    investment = investmentRepository.save(investment);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.INVESTMENT_STATE_CHANGE,
+        new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getClientIp());
   }
 
   @Transactional
@@ -122,7 +141,12 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.OWNER_REJECTED));
-    investmentRepository.save(investment);
+    investment = investmentRepository.save(investment);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.INVESTMENT_STATE_CHANGE,
+        new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getClientIp());
   }
 
   @Transactional
@@ -136,7 +160,12 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.REVOKED));
-    investmentRepository.save(investment);
+    investment = investmentRepository.save(investment);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.INVESTMENT_STATE_CHANGE,
+        new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getClientIp());
   }
 
   @Transactional
@@ -153,7 +182,12 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_APPROVED));
-    investmentRepository.save(investment);
+    investment = investmentRepository.save(investment);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.INVESTMENT_STATE_CHANGE,
+        new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getClientIp());
   }
 
   @Transactional
@@ -169,7 +203,12 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_REJECTED));
-    investmentRepository.save(investment);
+    investment = investmentRepository.save(investment);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.INVESTMENT_STATE_CHANGE,
+        new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getClientIp());
   }
 
   @Override
