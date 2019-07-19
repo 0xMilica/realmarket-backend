@@ -1,17 +1,19 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Investment;
+import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.InvestmentStateService;
 import io.realmarket.propeler.service.PaymentService;
+import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.util.AuthUtils;
+import io.realmarket.propeler.service.util.ModelMapperBlankString;
+import io.realmarket.propeler.util.PersonUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +25,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 
-import static io.realmarket.propeler.util.AuthUtils.mockRequestAndContext;
-import static io.realmarket.propeler.util.AuthUtils.mockRequestAndContextAdmin;
+import static io.realmarket.propeler.util.AuthUtils.*;
 import static io.realmarket.propeler.util.CampaignUtils.*;
 import static io.realmarket.propeler.util.InvestmentUtils.*;
+import static io.realmarket.propeler.util.PersonUtils.TEST_PERSON;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -44,6 +46,10 @@ public class InvestmentServiceImplTest {
   @Mock private InvestmentStateService investmentStateService;
 
   @Mock private PaymentService paymentService;
+
+  @Mock private PersonService personService;
+
+  @Mock private ModelMapperBlankString modelMapperBlankString;
 
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
 
@@ -64,7 +70,7 @@ public class InvestmentServiceImplTest {
     Investment investment =
         investmentService.invest(BigDecimal.valueOf(100), TEST_URL_FRIENDLY_NAME);
 
-    assertEquals(TEST_INVESTMENT_INITIAL_STATE, investment.getInvestmentState());
+    assertEquals(InvestmentStateName.INITIAL, investment.getInvestmentState().getName());
   }
 
   @Test(expected = BadRequestException.class)
@@ -87,7 +93,7 @@ public class InvestmentServiceImplTest {
   }
 
   @Test(expected = BadRequestException.class)
-  public void invest_Should_Throw_Exception_When_Investment_Smaller_Than_Campaign_Minimum() {
+  public void invest_Should_Throw_Exception_When_Investment_Lesser_Than_Campaign_Minimum() {
     when(campaignService.getCampaignByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
         .thenReturn(TEST_INVESTABLE_CAMPAIGN);
 
@@ -103,13 +109,81 @@ public class InvestmentServiceImplTest {
   }
 
   @Test
+  public void offPlatformInvest_Should_Create_Investment() {
+    mockRequestAndContextAdmin();
+    Person testPerson = TEST_PERSON.toBuilder().build();
+
+    when(campaignService.getCampaignByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(TEST_INVESTABLE_CAMPAIGN);
+    doNothing().when(modelMapperBlankString).map(TEST_OFFPLATFORM_INVESTMENT, testPerson);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
+        .thenReturn(TEST_INVESTMENT_INITIAL_STATE);
+    when(investmentRepository.save(any(Investment.class))).thenReturn(TEST_INVESTMENT_INITIAL);
+
+    Investment investment =
+        investmentService.offPlatformInvest(TEST_OFFPLATFORM_INVESTMENT, TEST_URL_FRIENDLY_NAME);
+
+    assertEquals(InvestmentStateName.INITIAL, investment.getInvestmentState().getName());
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void offPlatformInvest_Should_Throw_Exception_When_Not_Admin() {
+    investmentService.offPlatformInvest(
+        TEST_OFFPLATFORM_INVESTMENT_AMOUNT_GREATER_THAN_MAXIMUM, TEST_URL_FRIENDLY_NAME);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void offPlatformInvest_Should_Throw_Exception_When_Campaign_Not_Active() {
+    mockRequestAndContextAdmin();
+    when(campaignService.getCampaignByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(TEST_CAMPAIGN);
+    doThrow(BadRequestException.class)
+        .when(campaignService)
+        .throwIfNotActive(TEST_INVESTABLE_CAMPAIGN);
+
+    investmentService.offPlatformInvest(TEST_OFFPLATFORM_INVESTMENT, TEST_URL_FRIENDLY_NAME);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void offPlatformInvest_Should_Throw_Exception_When_Negative_Value() {
+    mockRequestAndContextAdmin();
+    when(campaignService.getCampaignByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(TEST_INVESTABLE_CAMPAIGN);
+
+    investmentService.offPlatformInvest(
+        TEST_OFFPLATFORM_INVESTMENT_NEGATIVE_AMOUNT, TEST_URL_FRIENDLY_NAME);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void
+      offPlatformInvest_Should_Throw_Exception_When_Investment_Lesser_Than_Campaign_Minimum() {
+    mockRequestAndContextAdmin();
+    when(campaignService.getCampaignByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(TEST_INVESTABLE_CAMPAIGN);
+
+    investmentService.offPlatformInvest(
+        TEST_OFFPLATFORM_INVESTMENT_AMOUNT_LESSER_THAN_MINIMUM, TEST_URL_FRIENDLY_NAME);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void
+      offPlatformInvest_Should_Throw_Exception_When_Investment_Greater_Than_Campaign_Max_Investment() {
+    mockRequestAndContextAdmin();
+    when(campaignService.getCampaignByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
+        .thenReturn(TEST_INVESTABLE_CAMPAIGN);
+
+    investmentService.offPlatformInvest(
+        TEST_OFFPLATFORM_INVESTMENT_AMOUNT_GREATER_THAN_MAXIMUM, TEST_URL_FRIENDLY_NAME);
+  }
+
+  @Test
   public void revokeInvestment_Should_Revoke_Investment() {
-    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+    Person person = PersonUtils.TEST_PERSON;
     Investment actualInvestment = TEST_INVESTMENT_PAID_REVOCABLE.toBuilder().build();
-    actualInvestment.setAuth(auth);
+    actualInvestment.setPerson(person);
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(actualInvestment);
-    doNothing().when(paymentService).withdrawFunds(auth, actualInvestment.getInvestedAmount());
+    doNothing().when(paymentService).withdrawFunds(person, actualInvestment.getInvestedAmount());
     when(investmentStateService.getInvestmentState(InvestmentStateName.REVOKED))
         .thenReturn(TEST_INVESTMENT_REVOKED_STATE);
     when(investmentRepository.save(actualInvestment)).thenReturn(actualInvestment);
@@ -120,6 +194,7 @@ public class InvestmentServiceImplTest {
 
   @Test(expected = ForbiddenOperationException.class)
   public void revokeInvestment_Should_Throw_Exception_When_Not_Campaign_Investor() {
+    mockRequestAndContextEntrepreneur();
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(TEST_INVESTMENT_INITIAL);
 
     investmentService.revokeInvestment(INVESTMENT_ID);
@@ -127,9 +202,9 @@ public class InvestmentServiceImplTest {
 
   @Test(expected = BadRequestException.class)
   public void revokeInvestment_Should_Throw_Exception_When_Investment_Not_Revocable() {
-    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+    Person person = AuthenticationUtil.getAuthentication().getAuth().getPerson();
     Investment actualInvestment = TEST_INVESTMENT_PAID_NOT_REVOCABLE.toBuilder().build();
-    actualInvestment.setAuth(auth);
+    actualInvestment.setPerson(person);
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(actualInvestment);
 
@@ -247,7 +322,7 @@ public class InvestmentServiceImplTest {
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
     doNothing()
         .when(paymentService)
-        .withdrawFunds(AuthUtils.TEST_AUTH_INVESTOR, investment.getInvestedAmount());
+        .withdrawFunds(PersonUtils.TEST_PERSON, investment.getInvestedAmount());
     when(investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_REJECTED))
         .thenReturn(TEST_INVESTMENT_AUDIT_REJECTED_STATE);
     when(investmentRepository.save(investment)).thenReturn(investment);

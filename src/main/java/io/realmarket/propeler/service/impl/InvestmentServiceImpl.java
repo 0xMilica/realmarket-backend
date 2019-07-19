@@ -1,9 +1,9 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
-import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Investment;
+import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
@@ -17,8 +17,10 @@ import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.investment.ChangeStateDto;
 import io.realmarket.propeler.service.blockchain.dto.investment.InvestmentDto;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -43,6 +45,8 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final InvestmentRepository investmentRepository;
   private final PaymentService paymentService;
   private final InvestmentStateService investmentStateService;
+  private final ModelMapperBlankString modelMapperBlankString;
+  private final PersonService personService;
   private final BlockchainCommunicationService blockchainCommunicationService;
 
   @Value("${app.investment.weekInMillis}")
@@ -54,39 +58,17 @@ public class InvestmentServiceImpl implements InvestmentService {
       InvestmentRepository investmentRepository,
       PaymentService paymentService,
       InvestmentStateService investmentStateService,
+      ModelMapperBlankString modelMapperBlankString,
+      PersonService personService,
       BlockchainCommunicationService blockchainCommunicationService) {
     this.campaignService = campaignService;
     this.investmentRepository = investmentRepository;
     this.paymentService = paymentService;
     this.investmentStateService = investmentStateService;
+    this.modelMapperBlankString = modelMapperBlankString;
+    this.personService = personService;
     this.blockchainCommunicationService = blockchainCommunicationService;
-  }
-
-  @Override
-  public List<Investment> findAllByCampaignAndAuth(Campaign campaign, Auth auth) {
-    return investmentRepository.findAllByCampaignAndAuth(campaign, auth);
-  }
-
-  @Override
-  public List<Investment> findAllByCampaign(Campaign campaign) {
-    return investmentRepository.findAllByCampaign(campaign);
-  }
-
-  @Override
-  public List<InvestmentWithPersonResponseDto> findAllByCampaignWithInvestors(Campaign campaign) {
-    return findAllByCampaign(campaign).stream()
-        .map(i -> new InvestmentWithPersonResponseDto(i, new PersonDto(i.getAuth().getPerson())))
-        .collect(Collectors.toList());
-  }
-
-  public Page<Campaign> findInvestedCampaign(Auth auth, Pageable pageable) {
-    return investmentRepository.findInvestedCampaign(auth, pageable);
-  }
-
-  public Page<Campaign> findInvestedCampaignByState(
-      Auth auth, CampaignStateName state, Pageable pageable) {
-    return investmentRepository.findInvestedCampaignByState(auth, state, pageable);
-  }
+    }
 
   @Transactional
   @Override
@@ -97,7 +79,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     Investment investment =
         Investment.builder()
-            .auth(AuthenticationUtil.getAuthentication().getAuth())
+            .person(AuthenticationUtil.getAuthentication().getAuth().getPerson())
             .campaign(campaign)
             .investedAmount(amountOfMoney)
             .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
@@ -111,6 +93,31 @@ public class InvestmentServiceImpl implements InvestmentService {
         AuthenticationUtil.getClientIp());
 
     return investment;
+  }
+
+  @Transactional
+  @Override
+  public Investment offPlatformInvest(
+      OffPlatformInvestmentRequestDto offPlatformInvestmentRequestDto,
+      String campaignUrlFriendlyName) {
+    throwIfNotAdmin();
+    Campaign campaign = campaignService.getCampaignByUrlFriendlyName(campaignUrlFriendlyName);
+    campaignService.throwIfNotActive(campaign);
+    throwIfAmountNotValid(campaign, offPlatformInvestmentRequestDto.getInvestedAmount());
+
+    Person person = new Person();
+    modelMapperBlankString.map(offPlatformInvestmentRequestDto, person);
+    personService.save(person);
+
+    Investment investment =
+        Investment.builder()
+            .person(person)
+            .campaign(campaign)
+            .investedAmount(offPlatformInvestmentRequestDto.getInvestedAmount())
+            .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
+            .build();
+
+    return investmentRepository.save(investment);
   }
 
   @Transactional
@@ -156,7 +163,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     throwIfNoAccess(investment);
     throwIfNotRevocable(investment);
 
-    paymentService.withdrawFunds(investment.getAuth(), investment.getInvestedAmount());
+    paymentService.withdrawFunds(investment.getPerson(), investment.getInvestedAmount());
 
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.REVOKED));
@@ -199,7 +206,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     BigDecimal amountOfMoney = investment.getInvestedAmount();
 
-    paymentService.withdrawFunds(investment.getAuth(), amountOfMoney);
+    paymentService.withdrawFunds(investment.getPerson(), amountOfMoney);
 
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_REJECTED));
@@ -213,15 +220,15 @@ public class InvestmentServiceImpl implements InvestmentService {
 
   @Override
   public Page<PortfolioCampaignResponseDto> getPortfolio(Pageable pageable, String filter) {
-    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+    Person person = AuthenticationUtil.getAuthentication().getAuth().getPerson();
 
     Page<Campaign> campaignPage;
     if (filter.equalsIgnoreCase("all")) {
-      campaignPage = findInvestedCampaign(auth, pageable);
+      campaignPage = findInvestedCampaign(person, pageable);
     } else if (filter.equalsIgnoreCase("active") || filter.equalsIgnoreCase("post_campaign")) {
       campaignPage =
           findInvestedCampaignByState(
-              auth, CampaignStateName.valueOf(filter.toUpperCase()), pageable);
+              person, CampaignStateName.valueOf(filter.toUpperCase()), pageable);
     } else {
       throw new BadRequestException(INVALID_REQUEST);
     }
@@ -232,7 +239,7 @@ public class InvestmentServiceImpl implements InvestmentService {
         .forEach(
             campaign -> {
               PortfolioCampaignResponseDto portfolioCampaign =
-                  convertCampaignToPortfolioCampaign(campaign, auth);
+                  convertCampaignToPortfolioCampaign(campaign, person);
               portfolio.add(portfolioCampaign);
             });
 
@@ -240,12 +247,12 @@ public class InvestmentServiceImpl implements InvestmentService {
   }
 
   private PortfolioCampaignResponseDto convertCampaignToPortfolioCampaign(
-      Campaign campaign, Auth auth) {
+      Campaign campaign, Person person) {
     PortfolioCampaignResponseDto portfolioCampaign = new PortfolioCampaignResponseDto();
 
     portfolioCampaign.setCampaign(new CampaignResponseDto(campaign));
 
-    List<Investment> investments = findAllByCampaignAndAuth(campaign, auth);
+    List<Investment> investments = findAllByCampaignAndPerson(campaign, person);
     List<InvestmentResponseDto> investmentsDto =
         investments.stream().map(InvestmentResponseDto::new).collect(Collectors.toList());
     portfolioCampaign.setInvestments(investmentsDto);
@@ -253,6 +260,32 @@ public class InvestmentServiceImpl implements InvestmentService {
     portfolioCampaign.setTotal(new TotalInvestmentsResponseDto(investments));
 
     return portfolioCampaign;
+  }
+
+  @Override
+  public List<Investment> findAllByCampaignAndPerson(Campaign campaign, Person person) {
+    return investmentRepository.findAllByCampaignAndPerson(campaign, person);
+  }
+
+  @Override
+  public List<Investment> findAllByCampaign(Campaign campaign) {
+    return investmentRepository.findAllByCampaign(campaign);
+  }
+
+  @Override
+  public List<InvestmentWithPersonResponseDto> findAllByCampaignWithInvestors(Campaign campaign) {
+    return findAllByCampaign(campaign).stream()
+        .map(i -> new InvestmentWithPersonResponseDto(i, new PersonDto(i.getPerson())))
+        .collect(Collectors.toList());
+  }
+
+  private Page<Campaign> findInvestedCampaign(Person person, Pageable pageable) {
+    return investmentRepository.findInvestedCampaign(person, pageable);
+  }
+
+  private Page<Campaign> findInvestedCampaignByState(
+      Person person, CampaignStateName state, Pageable pageable) {
+    return investmentRepository.findInvestedCampaignByState(person, state, pageable);
   }
 
   private void throwIfNotPaid(Investment investment) {
@@ -287,9 +320,9 @@ public class InvestmentServiceImpl implements InvestmentService {
 
   private boolean isCampaignInvestor(Investment investment) {
     return investment
-        .getAuth()
+        .getPerson()
         .getId()
-        .equals(AuthenticationUtil.getAuthentication().getAuth().getId());
+        .equals(AuthenticationUtil.getAuthentication().getAuth().getPerson().getId());
   }
 
   private void throwIfNoAccess(Investment investment) {

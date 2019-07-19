@@ -14,7 +14,7 @@ public class InvestmentDetails {
 
   public InvestmentDetails(Investment investment) {
     this.investmentId = investment.getId();
-    this.investorId = investment.getAuth().getId();
+    this.investorId = investment.getPerson().getId();
     this.campaignId = investment.getCampaign().getId();
     this.investedAmount = investment.getInvestedAmount().doubleValue();
     this.investmentState = investment.getInvestmentState().getName().toString();

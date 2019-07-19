@@ -23,9 +23,9 @@ public class Investment {
 
   private BigDecimal investedAmount;
 
-  @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "investment_fk_on_auth"))
+  @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "investment_fk_on_person"))
   @ManyToOne
-  private Auth auth;
+  private Person person;
 
   @JoinColumn(name = "campaignId", foreignKey = @ForeignKey(name = "investment_fk_on_campaign"))
   @ManyToOne

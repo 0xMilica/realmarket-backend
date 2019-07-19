@@ -1,11 +1,15 @@
 package io.realmarket.propeler.util;
 
+import io.realmarket.propeler.api.dto.OffPlatformInvestmentRequestDto;
 import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.InvestmentState;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+
+import static io.realmarket.propeler.util.AuthUtils.TEST_EMAIL;
+import static io.realmarket.propeler.util.PersonUtils.*;
 
 public class InvestmentUtils {
 
@@ -31,7 +35,7 @@ public class InvestmentUtils {
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
           .investmentState(TEST_INVESTMENT_INITIAL_STATE)
-          .auth(AuthUtils.TEST_AUTH_INVESTOR)
+          .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .build();
 
@@ -39,7 +43,7 @@ public class InvestmentUtils {
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
           .investmentState(TEST_INVESTMENT_PAID_STATE)
-          .auth(AuthUtils.TEST_AUTH_INVESTOR)
+          .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
           .build();
@@ -48,7 +52,7 @@ public class InvestmentUtils {
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
           .investmentState(TEST_INVESTMENT_PAID_STATE)
-          .auth(AuthUtils.TEST_AUTH_INVESTOR)
+          .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(Instant.now())
           .build();
@@ -57,7 +61,7 @@ public class InvestmentUtils {
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
           .investmentState(TEST_INVESTMENT_INITIAL_STATE)
-          .auth(AuthUtils.TEST_AUTH_INVESTOR)
+          .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
           .build();
@@ -66,7 +70,7 @@ public class InvestmentUtils {
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
           .investmentState(TEST_INVESTMENT_REVOKED_STATE)
-          .auth(AuthUtils.TEST_AUTH_INVESTOR)
+          .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(Instant.now())
           .build();
@@ -75,7 +79,7 @@ public class InvestmentUtils {
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
           .investmentState(TEST_INVESTMENT_AUDIT_APPROVED_STATE)
-          .auth(AuthUtils.TEST_AUTH_INVESTOR)
+          .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
           .build();
@@ -84,8 +88,46 @@ public class InvestmentUtils {
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
           .investmentState(TEST_INVESTMENT_AUDIT_REJECTED_STATE)
-          .auth(AuthUtils.TEST_AUTH_INVESTOR)
+          .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
           .build();
+
+  public static OffPlatformInvestmentRequestDto TEST_OFFPLATFORM_INVESTMENT =
+      OffPlatformInvestmentRequestDto.builder()
+          .id(TEST_PERSON_ID)
+          .email(TEST_EMAIL)
+          .profilePictureUrl(TEST_PROFILE_PICTURE_URL)
+          .countryOfResidence(TEST_COUNTRY.toString())
+          .investedAmount(BigDecimal.valueOf(100))
+          .build();
+
+  public static OffPlatformInvestmentRequestDto TEST_OFFPLATFORM_INVESTMENT_NEGATIVE_AMOUNT =
+      OffPlatformInvestmentRequestDto.builder()
+          .id(TEST_PERSON_ID)
+          .email(TEST_EMAIL)
+          .profilePictureUrl(TEST_PROFILE_PICTURE_URL)
+          .countryOfResidence(TEST_COUNTRY.toString())
+          .investedAmount(BigDecimal.valueOf(-100))
+          .build();
+
+  public static OffPlatformInvestmentRequestDto
+      TEST_OFFPLATFORM_INVESTMENT_AMOUNT_LESSER_THAN_MINIMUM =
+          OffPlatformInvestmentRequestDto.builder()
+              .id(TEST_PERSON_ID)
+              .email(TEST_EMAIL)
+              .profilePictureUrl(TEST_PROFILE_PICTURE_URL)
+              .countryOfResidence(TEST_COUNTRY.toString())
+              .investedAmount(BigDecimal.valueOf(0))
+              .build();
+
+  public static OffPlatformInvestmentRequestDto
+      TEST_OFFPLATFORM_INVESTMENT_AMOUNT_GREATER_THAN_MAXIMUM =
+          OffPlatformInvestmentRequestDto.builder()
+              .id(TEST_PERSON_ID)
+              .email(TEST_EMAIL)
+              .profilePictureUrl(TEST_PROFILE_PICTURE_URL)
+              .countryOfResidence(TEST_COUNTRY.toString())
+              .investedAmount(BigDecimal.valueOf(1000))
+              .build();
 }

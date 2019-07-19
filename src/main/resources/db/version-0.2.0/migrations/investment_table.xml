@@ -14,9 +14,9 @@
             constraint investment_pkey
             primary key,
             invested_amount numeric(19,2),
-            auth_id bigint
-            constraint investment_fk_on_auth
-            references auth,
+            person_id bigint
+            constraint investment_fk_on_person
+            references person,
             campaign_id bigint
             constraint investment_fk_on_campaign
             references campaign,

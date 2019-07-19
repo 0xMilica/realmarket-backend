@@ -94,7 +94,7 @@ public class AuthUtils {
           .userRole(TEST_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
-          .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
+          .person(PersonUtils.TEST_PERSON)
           .blocked(false)
           .build();
 
