@@ -16,9 +16,6 @@ import java.math.BigDecimal;
 @Builder
 public class OffPlatformInvestmentRequestDto {
 
-  @ApiModelProperty(value = "Person's identifier")
-  private Long id;
-
   @ApiModelProperty(value = "Person's email")
   private String email;
 

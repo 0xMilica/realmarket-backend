@@ -1,6 +1,8 @@
 package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.InvestmentController;
+import io.realmarket.propeler.api.dto.InvestmentResponseDto;
+import io.realmarket.propeler.api.dto.OffPlatformInvestmentRequestDto;
 import io.realmarket.propeler.service.InvestmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -55,5 +57,16 @@ public class InvestmentControllerImpl implements InvestmentController {
   public ResponseEntity<Void> auditorRejectInvestment(@PathVariable Long investmentId) {
     investmentService.auditorRejectInvestment(investmentId);
     return ResponseEntity.ok().build();
+  }
+
+  @Override
+  @PostMapping("/offPlatform/{campaignName}")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  public ResponseEntity<InvestmentResponseDto> registerOffPlatformInvestment(
+      @RequestBody OffPlatformInvestmentRequestDto offPlatformInvestmentRequestDto,
+      @PathVariable String campaignName) {
+    return ResponseEntity.ok(
+        new InvestmentResponseDto(
+            investmentService.offPlatformInvest(offPlatformInvestmentRequestDto, campaignName)));
   }
 }

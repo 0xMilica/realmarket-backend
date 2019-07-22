@@ -95,7 +95,6 @@ public class InvestmentUtils {
 
   public static OffPlatformInvestmentRequestDto TEST_OFFPLATFORM_INVESTMENT =
       OffPlatformInvestmentRequestDto.builder()
-          .id(TEST_PERSON_ID)
           .email(TEST_EMAIL)
           .profilePictureUrl(TEST_PROFILE_PICTURE_URL)
           .countryOfResidence(TEST_COUNTRY.toString())
@@ -104,7 +103,6 @@ public class InvestmentUtils {
 
   public static OffPlatformInvestmentRequestDto TEST_OFFPLATFORM_INVESTMENT_NEGATIVE_AMOUNT =
       OffPlatformInvestmentRequestDto.builder()
-          .id(TEST_PERSON_ID)
           .email(TEST_EMAIL)
           .profilePictureUrl(TEST_PROFILE_PICTURE_URL)
           .countryOfResidence(TEST_COUNTRY.toString())
@@ -114,7 +112,6 @@ public class InvestmentUtils {
   public static OffPlatformInvestmentRequestDto
       TEST_OFFPLATFORM_INVESTMENT_AMOUNT_LESSER_THAN_MINIMUM =
           OffPlatformInvestmentRequestDto.builder()
-              .id(TEST_PERSON_ID)
               .email(TEST_EMAIL)
               .profilePictureUrl(TEST_PROFILE_PICTURE_URL)
               .countryOfResidence(TEST_COUNTRY.toString())
@@ -124,7 +121,6 @@ public class InvestmentUtils {
   public static OffPlatformInvestmentRequestDto
       TEST_OFFPLATFORM_INVESTMENT_AMOUNT_GREATER_THAN_MAXIMUM =
           OffPlatformInvestmentRequestDto.builder()
-              .id(TEST_PERSON_ID)
               .email(TEST_EMAIL)
               .profilePictureUrl(TEST_PROFILE_PICTURE_URL)
               .countryOfResidence(TEST_COUNTRY.toString())
