@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "87ace3a8-15b4-46d4-8cb4-21e4e9e63233",
+		"_postman_id": "f5a76220-3d36-4147-bbd5-99cd497c94be",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2618,40 +2618,70 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"name": "/auth/register",
+					"name": "/auth/register/entrepreneur",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
-								"key": "token",
-								"type": "text",
-								"value": "test"
-							},
-							{
 								"key": "Content-Type",
-								"name": "Content-Type",
 								"value": "application/json",
 								"type": "text"
 							},
 							{
 								"key": "captcha_response",
-								"value": "dwada",
+								"value": "captcha",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"address\": \"string\",\r\n  \"city\": \"string\",\r\n  \"countryForTaxation\": \"RS\",\r\n  \"countryOfResidence\": \"RS\",\r\n  \"email\": \"dragan.rakita@realmarket.io\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"password\": \"testPASS123\",\r\n  \"phoneNumber\": \"strwdding\",\r\n  \"userRole\": \"ROLE_ENTREPRENEUR\",\r\n  \"username\": \"user\"\r\n}"
+							"raw": "{\r\n  \"registrationToken\": \"token\",\r\n  \"address\": \"string\",\r\n  \"city\": \"string\",\r\n  \"countryForTaxation\": \"RS\",\r\n  \"countryOfResidence\": \"BB\",\r\n  \"email\": \"ognjen.vlajic@realmarket.io\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"password\": \"testPASS123\",\r\n  \"phoneNumber\": \"02122333\",\r\n  \"userRole\": \"ROLE_ENTREPRENEUR\",\r\n  \"username\": \"user\"\r\n}"
 						},
 						"url": {
-							"raw": "{{server_ip}}/api/auth/register",
+							"raw": "{{server_ip}}/api/auth/register/entrepreneur",
 							"host": [
 								"{{server_ip}}"
 							],
 							"path": [
 								"api",
 								"auth",
-								"register"
+								"register",
+								"entrepreneur"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/register/investor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "captcha_response",
+								"value": "captcha",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"address\": \"string\",\r\n  \"city\": \"string\",\r\n  \"countryForTaxation\": \"RS\",\r\n  \"countryOfResidence\": \"BB\",\r\n  \"email\": \"ognjen.vlajic@realmarket.io\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"password\": \"testPASS123\",\r\n  \"phoneNumber\": \"02122333\",\r\n  \"username\": \"user\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/auth/register/investor",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register",
+								"investor"
 							]
 						}
 					},

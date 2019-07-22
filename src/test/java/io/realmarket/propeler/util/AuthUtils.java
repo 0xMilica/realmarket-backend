@@ -79,7 +79,6 @@ public class AuthUtils {
           .email(TEST_EMAIL)
           .username(TEST_USERNAME)
           .password(TEST_PASSWORD)
-          .userRole(TEST_ROLE)
           .firstName(TEST_FIRST_NAME)
           .lastName(TEST_LAST_NAME)
           .countryOfResidence("RS")
@@ -167,22 +166,22 @@ public class AuthUtils {
   public static final MockHttpServletResponse TEST_RESPONSE = new MockHttpServletResponse();
   public static final Cookie TEST_COOKIE = new Cookie(COOKIE_NAME, TEST_VALUE);
 
-  public static final RegistrationDto TEST_REGISTRATION_DTO_ROLE_NOT_ALLOWED =
-      RegistrationDto.builder()
-          .email(TEST_EMAIL)
-          .username(TEST_USERNAME)
-          .password(TEST_PASSWORD)
-          .userRole(TEST_ROLE_ADMIN)
-          .firstName(TEST_FIRST_NAME)
-          .lastName(TEST_LAST_NAME)
-          .countryOfResidence("TEST_COUNTRY_OF_RESIDENCE")
-          .city("TEST_CITY")
-          .address("TEST_ADDRESS")
-          .build();
-
   static {
     TEST_REQUEST.setCookies(TEST_COOKIE);
   }
+
+  public static final EntrepreneurRegistrationDto TEST_REGISTRATION_ENTREPRENEUR_DTO =
+      EntrepreneurRegistrationDto.entrepreneurRegistrationDtoBuilder()
+          .registrationToken(RegistrationTokenUtils.TEST_VALUE)
+          .email(TEST_EMAIL)
+          .username(TEST_USERNAME)
+          .password(TEST_PASSWORD)
+          .firstName(TEST_FIRST_NAME)
+          .lastName(TEST_LAST_NAME)
+          .countryOfResidence(TEST_COUNTRY_CODE)
+          .city("TEST_CITY")
+          .address("TEST_ADDRESS")
+          .build();
 
   public static void mockSecurityContext(UserAuthentication userAuthentication) {
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);

@@ -9,7 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuthService {
-  void register(RegistrationDto registrationDto);
+  void registerEntrepreneur(EntrepreneurRegistrationDto entrepreneurRegistrationDto);
+
+  void registerInvestor(RegistrationDto registrationDto);
+
+  RegistrationTokenInfoDto validateToken(RegistrationTokenDto registrationTokenDto);
 
   void initializeChangePassword(Long userId, ChangePasswordDto changePasswordDto);
 

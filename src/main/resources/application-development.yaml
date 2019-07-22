@@ -59,6 +59,7 @@ cos:
 frontend.service.url: ${FRONTEND_URL_PATH}
 hmac.secret: ${HMAC_SECRET}
 access-token.expiration-time: 3600000
+registration-token.expiration-time: 604800000
 
 
 logging:

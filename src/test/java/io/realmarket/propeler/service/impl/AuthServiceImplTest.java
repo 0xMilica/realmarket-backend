@@ -16,13 +16,13 @@ import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.util.LoginIPAttemptsService;
 import io.realmarket.propeler.service.util.LoginUsernameAttemptsService;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.OTPUtils;
+import io.realmarket.propeler.util.RegistrationTokenUtils;
 import io.realmarket.propeler.util.TwoFactorAuthUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,6 +61,7 @@ public class AuthServiceImplTest {
   @Mock private RememberMeCookieService rememberMeCookieService;
   @Mock private PersonService personService;
   @Mock private TemporaryTokenService temporaryTokenService;
+  @Mock private RegistrationTokenService registrationTokenService;
   @Mock private AuthorizedActionService authorizedActionService;
   @Mock private LoginIPAttemptsService loginIPAttemptsService;
   @Mock private LoginUsernameAttemptsService loginUsernameAttemptsService;
@@ -68,6 +69,7 @@ public class AuthServiceImplTest {
   @Mock private AuthStateRepository authStateRepository;
   @Mock private CountryRepository countryRepository;
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
+
   @InjectMocks private AuthServiceImpl authServiceImpl;
 
   @Before
@@ -76,7 +78,27 @@ public class AuthServiceImplTest {
   }
 
   @Test
-  public void Register_Should_RegisterUser() {
+  public void RegisterEntrepreneur_Should_RegisterEntrepreneur() {
+    when(registrationTokenService.findByValueAndNotExpiredOrThrowException(
+            RegistrationTokenUtils.TEST_VALUE))
+        .thenReturn(RegistrationTokenUtils.TEST_REGISTRATION_TOKEN);
+    when(userRoleRepository.findByName(any())).thenReturn(Optional.of(AuthUtils.TEST_USER_ROLE));
+    when(authStateRepository.findByName(any())).thenReturn(Optional.of(TEST_AUTH_STATE));
+    when(countryRepository.findByCode(TEST_COUNTRY_CODE))
+        .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY));
+    when(personService.save(TEST_REGISTRATION_PERSON)).thenReturn(TEST_REGISTRATION_PERSON);
+    when(authRepository.save(any(Auth.class))).thenReturn(TEST_AUTH);
+    when(temporaryTokenService.createToken(TEST_AUTH, TemporaryTokenTypeName.REGISTRATION_TOKEN))
+        .thenReturn(TEST_TEMPORARY_TOKEN);
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+
+    authServiceImpl.registerEntrepreneur(TEST_REGISTRATION_ENTREPRENEUR_DTO);
+
+    verify(authRepository, Mockito.times(1)).save(any(Auth.class));
+  }
+
+  @Test
+  public void RegisterInvestor_Should_RegisterInvestor() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
     when(personService.save(TEST_REGISTRATION_PERSON)).thenReturn(TEST_REGISTRATION_PERSON);
     when(authRepository.save(any(Auth.class))).thenReturn(TEST_AUTH);
@@ -91,12 +113,24 @@ public class AuthServiceImplTest {
         .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY2));
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
-    authServiceImpl.register(AuthUtils.TEST_REGISTRATION_DTO);
+    authServiceImpl.registerInvestor(AuthUtils.TEST_REGISTRATION_DTO);
 
     verify(authRepository, Mockito.times(1)).findByUsername(TEST_USERNAME);
     verify(personService, Mockito.times(1)).save(TEST_REGISTRATION_PERSON);
     verify(authRepository, Mockito.times(1)).save(any(Auth.class));
     verify(passwordEncoder, Mockito.times(1)).encode(TEST_PASSWORD);
+  }
+
+  @Test
+  public void ValidateToken_Should_ReturnTokenInformation() {
+    when(registrationTokenService.findByValueAndNotExpiredOrThrowException(
+            RegistrationTokenUtils.TEST_VALUE))
+        .thenReturn(RegistrationTokenUtils.TEST_REGISTRATION_TOKEN);
+
+    authServiceImpl.validateToken(RegistrationTokenUtils.TEST_REGISTRATION_TOKEN_DTO);
+
+    verify(registrationTokenService, Mockito.times(1))
+        .findByValueAndNotExpiredOrThrowException(RegistrationTokenUtils.TEST_VALUE);
   }
 
   @Test
@@ -112,17 +146,10 @@ public class AuthServiceImplTest {
   }
 
   @Test(expected = UsernameAlreadyExistsException.class)
-  public void Register_Should_Throw_UsernameAlreadyExistsException_WhenUsernameExists() {
+  public void RegisterInvestor_Should_Throw_UsernameAlreadyExistsException_WhenUsernameExists() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
 
-    authServiceImpl.register(AuthUtils.TEST_REGISTRATION_DTO);
-  }
-
-  @Test(expected = ForbiddenRoleException.class)
-  public void Register_Should_Throw_BadRequestException_WhenRoleNotAllowed() {
-    when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
-
-    authServiceImpl.register(AuthUtils.TEST_REGISTRATION_DTO_ROLE_NOT_ALLOWED);
+    authServiceImpl.registerInvestor(AuthUtils.TEST_REGISTRATION_DTO);
   }
 
   @Test(expected = BadCredentialsException.class)

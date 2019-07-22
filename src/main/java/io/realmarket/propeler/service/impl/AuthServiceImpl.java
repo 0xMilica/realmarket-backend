@@ -20,7 +20,6 @@ import io.realmarket.propeler.service.blockchain.dto.user.EmailChangeDto;
 import io.realmarket.propeler.service.blockchain.dto.user.PasswordChangeDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.service.exception.ForbiddenRoleException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.*;
@@ -55,9 +54,6 @@ public class AuthServiceImpl implements AuthService {
 
   public static final Long PASSWORD_CHANGE_ACTION_MILLISECONDS = 180000L;
 
-  private static final List<UserRoleName> ALLOWED_ROLES =
-      Arrays.asList(UserRoleName.ROLE_ENTREPRENEUR, UserRoleName.ROLE_INVESTOR);
-
   private final AuthRepository authRepository;
   private final UserRoleRepository userRoleRepository;
   private final AuthStateRepository authStateRepository;
@@ -66,6 +62,7 @@ public class AuthServiceImpl implements AuthService {
   private final PersonService personService;
   private final EmailService emailService;
   private final TemporaryTokenService temporaryTokenService;
+  private final RegistrationTokenService registrationTokenService;
   private final JWTService jwtService;
   private final AuthorizedActionService authorizedActionService;
   private final LoginIPAttemptsService loginIPAttemptsService;
@@ -85,6 +82,7 @@ public class AuthServiceImpl implements AuthService {
       AuthStateRepository authStateRepository,
       CountryRepository countryRepository,
       TemporaryTokenService temporaryTokenService,
+      RegistrationTokenService registrationTokenService,
       RememberMeCookieService rememberMeCookieService,
       JWTService jwtService,
       AuthorizedActionService authorizedActionService,
@@ -99,6 +97,7 @@ public class AuthServiceImpl implements AuthService {
     this.authStateRepository = authStateRepository;
     this.countryRepository = countryRepository;
     this.temporaryTokenService = temporaryTokenService;
+    this.registrationTokenService = registrationTokenService;
     this.jwtService = jwtService;
     this.rememberMeCookieService = rememberMeCookieService;
     this.authorizedActionService = authorizedActionService;
@@ -128,32 +127,47 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Transactional
-  public void register(RegistrationDto registrationDto) {
+  public void registerEntrepreneur(EntrepreneurRegistrationDto entrepreneurRegistrationDto) {
+    RegistrationToken registrationToken =
+        registrationTokenService.findByValueAndNotExpiredOrThrowException(
+            entrepreneurRegistrationDto.getRegistrationToken());
+
+    if (!registrationToken
+            .getFundraisingProposal()
+            .getFirstName()
+            .equals(entrepreneurRegistrationDto.getFirstName())
+        || !registrationToken
+            .getFundraisingProposal()
+            .getLastName()
+            .equals(entrepreneurRegistrationDto.getLastName())) {
+      throw new BadRequestException(INVALID_REQUEST);
+    }
+
+    register(entrepreneurRegistrationDto, UserRoleName.ROLE_ENTREPRENEUR);
+    registrationTokenService.deleteToken(registrationToken);
+  }
+
+  @Transactional
+  public void registerInvestor(RegistrationDto registrationDto) {
+    register(registrationDto, UserRoleName.ROLE_INVESTOR);
+  }
+
+  private void register(RegistrationDto registrationDto, UserRoleName userRoleName) {
     if (authRepository.findByUsername(registrationDto.getUsername()).isPresent()) {
       log.error(
           "User with the provided username '{}' already exists!", registrationDto.getUsername());
       throw new UsernameAlreadyExistsException(ExceptionMessages.USERNAME_ALREADY_EXISTS);
     }
 
-    if (!isRoleAllowed(registrationDto.getUserRole())) {
-      throw new ForbiddenRoleException(INVALID_REQUEST);
-    }
-
-    Optional<UserRole> userRole = userRoleRepository.findByName(registrationDto.getUserRole());
+    Optional<UserRole> userRole = userRoleRepository.findByName(userRoleName);
     Optional<AuthState> authState =
         this.authStateRepository.findByName(AuthStateName.CONFIRM_REGISTRATION);
 
     Country countryOfResidence =
-        this.countryRepository
-            .findByCode(registrationDto.getCountryOfResidence())
-            .orElseThrow(() -> new BadRequestException(INVALID_COUNTRY_CODE));
+        findCountryByCodeOrThrowException(registrationDto.getCountryOfResidence());
 
     Country countryForTaxation =
-        (StringUtils.isNotEmpty(registrationDto.getCountryForTaxation()))
-            ? this.countryRepository
-                .findByCode(registrationDto.getCountryForTaxation())
-                .orElseThrow(() -> new BadRequestException(INVALID_COUNTRY_CODE))
-            : null;
+        findCountryByCodeOrReturnNull(registrationDto.getCountryForTaxation());
 
     Person person =
         this.personService.save(
@@ -170,6 +184,33 @@ public class AuthServiceImpl implements AuthService {
                 .blocked(false)
                 .build());
 
+    createTokenAndSendMail(auth, registrationDto);
+  }
+
+  public RegistrationTokenInfoDto validateToken(RegistrationTokenDto registrationTokenDto) {
+    RegistrationToken registrationToken =
+        registrationTokenService.findByValueAndNotExpiredOrThrowException(
+            registrationTokenDto.getValue());
+    return new RegistrationTokenInfoDto(
+        registrationToken.getFundraisingProposal().getFirstName(),
+        registrationToken.getFundraisingProposal().getLastName());
+  }
+
+  private Country findCountryByCodeOrThrowException(String code) {
+    return this.countryRepository
+        .findByCode(code)
+        .orElseThrow(() -> new BadRequestException(INVALID_COUNTRY_CODE));
+  }
+
+  private Country findCountryByCodeOrReturnNull(String code) {
+    return (StringUtils.isNotEmpty(code))
+        ? this.countryRepository
+            .findByCode(code)
+            .orElseThrow(() -> new BadRequestException(INVALID_COUNTRY_CODE))
+        : null;
+  }
+
+  private void createTokenAndSendMail(Auth auth, RegistrationDto registrationDto) {
     TemporaryToken temporaryToken =
         temporaryTokenService.createToken(auth, TemporaryTokenTypeName.REGISTRATION_TOKEN);
 
@@ -400,10 +441,6 @@ public class AuthServiceImpl implements AuthService {
             .newEmailHash(HashingHelper.hash(authorizedAction.getData()))
             .build(),
         AuthenticationUtil.getClientIp());
-  }
-
-  private Boolean isRoleAllowed(UserRoleName role) {
-    return ALLOWED_ROLES.contains(role);
   }
 
   private AuthResponseDto validateLogin(Auth auth, String password) {

@@ -3,7 +3,6 @@ package io.realmarket.propeler.e2e;
 import io.realmarket.propeler.api.controller.impl.AuthControllerImpl;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.e2e.util.LoginUtil;
-import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.service.AuthService;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Before;
@@ -33,13 +32,57 @@ public class AuthTest {
   }
 
   @Test
-  public void register() {
+  public void validateToken() {
+    RegistrationTokenDto registrationTokenDto =
+        RegistrationTokenDto.builder().value("tokenValidateValue").build();
+
+    given()
+        .contentType("application/json")
+        .accept("*/*, application/json")
+        .header("captcha_response", "captcha")
+        .body(registrationTokenDto)
+        .when()
+        .get("/api/auth/register/validateToken")
+        .then()
+        .statusCode(200)
+        .body("firstName", equalTo("testFirstName"))
+        .body("lastName", equalTo("testLastName"));
+  }
+
+  @Test
+  public void registerEntrepreneur() {
+    EntrepreneurRegistrationDto entrepreneurRegistrationDto =
+        EntrepreneurRegistrationDto.entrepreneurRegistrationDtoBuilder()
+            .registrationToken("tokenValue")
+            .email("test@mail.com")
+            .username("testEntrepreneur")
+            .password("testPassword")
+            .firstName("testFirstName")
+            .lastName("testLastName")
+            .countryOfResidence("RS")
+            .countryForTaxation("BB")
+            .city("Novi Sad")
+            .address("Modene 1")
+            .build();
+
+    given()
+        .contentType("application/json")
+        .accept("*/*, application/json")
+        .header("captcha_response", "captcha")
+        .body(entrepreneurRegistrationDto)
+        .when()
+        .post("/api/auth/register/entrepreneur")
+        .then()
+        .statusCode(201);
+  }
+
+  @Test
+  public void registerInvestor() {
     RegistrationDto registrationDto =
         RegistrationDto.builder()
             .email("test@mail.com")
-            .username("testRegistration")
+            .username("testInvestor")
             .password("testPassword")
-            .userRole(UserRoleName.ROLE_ENTREPRENEUR)
             .firstName("testFirstName")
             .lastName("testLastName")
             .countryOfResidence("RS")
@@ -54,7 +97,7 @@ public class AuthTest {
         .header("captcha_response", "captcha")
         .body(registrationDto)
         .when()
-        .post("/api/auth/register")
+        .post("/api/auth/register/investor")
         .then()
         .statusCode(201);
   }
@@ -66,7 +109,6 @@ public class AuthTest {
             .email("test@mail.com")
             .username("entrepreneur")
             .password("testPassword")
-            .userRole(UserRoleName.ROLE_INVESTOR)
             .firstName("testFirstName")
             .lastName("testLastName")
             .countryOfResidence("RS")
@@ -80,37 +122,10 @@ public class AuthTest {
         .header("captcha_response", "captcha")
         .body(registrationDto)
         .when()
-        .post("/api/auth/register")
+        .post("/api/auth/register/investor")
         .then()
         .statusCode(400)
         .body("message", equalTo("REG_001"));
-  }
-
-  @Test
-  public void register_failed_roleNotAllowed() {
-    RegistrationDto registrationDto =
-        RegistrationDto.builder()
-            .email("test@mail.com")
-            .username("test123")
-            .password("testPassword")
-            .userRole(UserRoleName.ROLE_ADMIN)
-            .firstName("testFirstName")
-            .lastName("testLastName")
-            .countryOfResidence("RS")
-            .city("Novi Sad")
-            .address("Modene 1")
-            .build();
-
-    given()
-        .contentType("application/json")
-        .accept("*/*, application/json")
-        .header("captcha_response", "captcha")
-        .body(registrationDto)
-        .when()
-        .post("/api/auth/register")
-        .then()
-        .statusCode(400)
-        .body("message", equalTo("REQ_001"));
   }
 
   @Test
@@ -120,7 +135,6 @@ public class AuthTest {
             .email("test@mail.com")
             .username("test123")
             .password("testPassword")
-            .userRole(UserRoleName.ROLE_ENTREPRENEUR)
             .firstName("testFirstName")
             .lastName("testLastName")
             .countryOfResidence("RSA")
@@ -134,7 +148,7 @@ public class AuthTest {
         .header("captcha_response", "captcha")
         .body(registrationDto)
         .when()
-        .post("/api/auth/register")
+        .post("/api/auth/register/investor")
         .then()
         .statusCode(400)
         .body("message", equalTo("CTR_001"));

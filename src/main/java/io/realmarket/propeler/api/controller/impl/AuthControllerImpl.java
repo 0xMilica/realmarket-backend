@@ -27,11 +27,26 @@ public class AuthControllerImpl implements AuthController {
     this.authService = authService;
   }
 
-  @PostMapping(value = "/register")
+  @PostMapping(value = "/register/entrepreneur")
   @RequireCaptcha
-  public ResponseEntity register(@RequestBody @Valid RegistrationDto registrationDto) {
-    authService.register(registrationDto);
+  public ResponseEntity registerEntrepreneur(
+      @RequestBody @Valid EntrepreneurRegistrationDto entrepreneurRegistrationDto) {
+    authService.registerEntrepreneur(entrepreneurRegistrationDto);
     return new ResponseEntity(CREATED);
+  }
+
+  @PostMapping(value = "/register/investor")
+  @RequireCaptcha
+  public ResponseEntity registerInvestor(@RequestBody @Valid RegistrationDto registrationDto) {
+    authService.registerInvestor(registrationDto);
+    return new ResponseEntity(CREATED);
+  }
+
+  @Override
+  @GetMapping(value = "/register/validateToken")
+  public ResponseEntity<RegistrationTokenInfoDto> validateToken(
+      @RequestBody @Valid RegistrationTokenDto registrationTokenDto) {
+    return new ResponseEntity(authService.validateToken(registrationTokenDto), OK);
   }
 
   @PostMapping(value = "/confirm_registration")

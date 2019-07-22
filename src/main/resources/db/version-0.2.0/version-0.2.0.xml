@@ -31,6 +31,7 @@
     <include file="migrations/audit_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/fundraising_proposal_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/fundraising_proposal_document_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/registration_token_table.xml" relativeToChangelogFile="true"/>
 
     <include file="migrations/country_table_init.xml" relativeToChangelogFile="true"/>
     <include file="migrations/tables_init.xml" relativeToChangelogFile="true"/>

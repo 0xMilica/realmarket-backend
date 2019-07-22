@@ -362,10 +362,10 @@ INSERT INTO public.person (id, address, city, country_for_taxation, country_of_r
 INSERT INTO public.person (id, address, city, country_for_taxation, country_of_residence, email, first_name, last_name, phone_number, profile_picture_url) VALUES (NEXTVAL('person_seq'), 'Modene 1', 'Novi Sad', null, 'BB', 'ari.rm@mailinator.com', 'Adminiana', 'Grande', null, null);
 
 -- auth
-INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$E6Pwa0HnLWOoZIBBuZVyV.TodJ88sb.iBin.U2e9YSp7Z0ZaPXck2', 3, false, 'CYFMMB56QFIVKUFG', 'marina', 1);
-INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$Nd8uSgyw8fYxUqMNET.TruoaYI.te6D3f5YPVVIm0QqRhzJVCGgma', 3, false, '7O2LOBXXCYHK4GJ4', 'angelina', 2);
-INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$Nd8uSgyw8fYxUqMNET.TruoaYI.te6D3f5YPVVIm0QqRhzJVCGgma', 3, false, '7O2LOBXXCYHK4GJ4', 'nikola', 3);
-INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$E6Pwa0HnLWOoZIBBuZVyV.TodJ88sb.iBin.U2e9YSp7Z0ZaPXck2', 3, false, 'CYFMMB56QFIVKUFG', 'vladimir', 4);
+INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$E6Pwa0HnLWOoZIBBuZVyV.TodJ88sb.iBin.U2e9YSp7Z0ZaPXck2', 3, false, 'secret', 'marina', 1);
+INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$Nd8uSgyw8fYxUqMNET.TruoaYI.te6D3f5YPVVIm0QqRhzJVCGgma', 3, false, 'secret', 'angelina', 2);
+INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$Nd8uSgyw8fYxUqMNET.TruoaYI.te6D3f5YPVVIm0QqRhzJVCGgma', 3, false, 'secret', 'nikola', 3);
+INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$E6Pwa0HnLWOoZIBBuZVyV.TodJ88sb.iBin.U2e9YSp7Z0ZaPXck2', 3, false, 'secret', 'vladimir', 4);
 /*password is testPASS123 */
 INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 3, false, 'secret', 'entrepreneur', 5);
 INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 2, false, 'secret', 'investor', 6);
@@ -392,6 +392,11 @@ INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_sec
 INSERT INTO public.temporary_token (id, expiration_time, temporary_token_type_id, value, auth_id) VALUES (NEXTVAL('temporary_token_seq'), TO_DATE('01/05/2050', 'DD/MM/YYYY'), 6, 'confirmEmailChangeToken', 13);
 INSERT INTO public.authorized_action (id, auth_id, data, expiration, type_id) VALUES (NEXTVAL('authorized_action_seq'), 13, 'authAction', TO_DATE('01/05/2050', 'DD/MM/YYYY'), 3);
 
+INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, content, request_state_id) VALUES (NEXTVAL('fundraising_proposal_seq'), 'testFirstName', 'testLastName', 'testCompany', 'testWebsite','test.fundraising1@malinator.com', '+3812122333', '<100K', '100K-500K', null, 1);
+INSERT INTO public.registration_token (id, value, expiration_time, fundraising_proposal_id) VALUES (NEXTVAL('registration_token_seq'), 'tokenValue', TO_DATE('01/05/2050', 'DD/MM/YYYY'), 1);
+INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, content, request_state_id) VALUES (NEXTVAL('fundraising_proposal_seq'), 'testFirstName', 'testLastName', 'testCompany', 'testWebsite','test.fundraising1@malinator.com', '+3812122333', '<100K', '100K-500K', null, 1);
+INSERT INTO public.registration_token (id, value, expiration_time, fundraising_proposal_id) VALUES (NEXTVAL('registration_token_seq'), 'tokenValidateValue', TO_DATE('01/05/2050', 'DD/MM/YYYY'), 2);
+
 -- used in TwoFactorAuthTest
 INSERT INTO public.person (id, address, city, country_for_taxation, country_of_residence, email, first_name, last_name, phone_number, profile_picture_url) VALUES (NEXTVAL('person_seq'), 'Modene 1', 'Novi Sad', null, 'BB', 'test.2fa@mailinator.com', 'Entepreneur', 'Entrepreneur', null, null);
 INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_secret, username, person_id) VALUES (NEXTVAL('auth_seq'), 3, '$2a$10$nTWQERaNUio88aEHzSVhrOmzsH6XRCfrftpJDxNqwsEdDjh8Y4PFi', 3, false, 'secret', 'test2fa', 14);
@@ -402,4 +407,3 @@ INSERT INTO public.authorized_action (id, auth_id, data, expiration, type_id) VA
 INSERT INTO public.remember_me_cookie (id, expiration_time, value, auth_id) VALUES (2, TO_DATE('01/05/2022', 'DD/MM/YYYY'), '1234', 6);
 INSERT INTO public.remember_me_cookie (id, expiration_time, value, auth_id) VALUES (3, TO_DATE('01/05/2022', 'DD/MM/YYYY'), '1234', 7);
 INSERT INTO public.remember_me_cookie (id, expiration_time, value, auth_id) VALUES (4, TO_DATE('01/05/2022', 'DD/MM/YYYY'), '1234', 8);
-

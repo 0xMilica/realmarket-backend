@@ -4,13 +4,16 @@ import io.realmarket.propeler.api.dto.AuditDeclineDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalDto;
 import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.FundraisingProposal;
+import io.realmarket.propeler.model.RegistrationToken;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.FundraisingProposalRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.FundraisingProposalService;
+import io.realmarket.propeler.service.RegistrationTokenService;
 import io.realmarket.propeler.service.RequestStateService;
+import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -25,21 +28,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
 
 @Service
 @Slf4j
 public class FundraisingProposalServiceImpl implements FundraisingProposalService {
 
   private final FundraisingProposalRepository fundraisingProposalRepository;
+  private final RegistrationTokenService registrationTokenService;
   private final RequestStateService requestStateService;
   private final EmailService emailService;
 
   @Autowired
   public FundraisingProposalServiceImpl(
       FundraisingProposalRepository fundraisingProposalRepository,
+      RegistrationTokenService registrationTokenService,
       RequestStateService requestStateService,
       EmailService emailService) {
     this.fundraisingProposalRepository = fundraisingProposalRepository;
+    this.registrationTokenService = registrationTokenService;
     this.requestStateService = requestStateService;
     this.emailService = emailService;
   }
@@ -72,12 +79,15 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
     throwIfNotAdmin();
     FundraisingProposal fundraisingProposal =
         fundraisingProposalRepository.getOne(fundraisingProposalId);
+    throwIfNotPending(fundraisingProposal);
 
     fundraisingProposal.setRequestState(
         requestStateService.getRequestState(RequestStateName.APPROVED));
 
     fundraisingProposal = fundraisingProposalRepository.save(fundraisingProposal);
-    sendApprovalEmail(fundraisingProposal);
+
+    RegistrationToken registrationToken = registrationTokenService.createToken(fundraisingProposal);
+    sendApprovalEmail(fundraisingProposal, registrationToken);
 
     return fundraisingProposal;
   }
@@ -88,6 +98,7 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
     throwIfNotAdmin();
     FundraisingProposal fundraisingProposal =
         fundraisingProposalRepository.getOne(fundraisingProposalId);
+    throwIfNotPending(fundraisingProposal);
 
     fundraisingProposal.setRequestState(
         requestStateService.getRequestState(RequestStateName.DECLINED));
@@ -113,14 +124,22 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
         .equals(UserRoleName.ROLE_ADMIN);
   }
 
-  private void sendApprovalEmail(FundraisingProposal fundraisingProposal) {
+  private void throwIfNotPending(FundraisingProposal fundraisingProposal) {
+    if (!fundraisingProposal.getRequestState().getName().equals(RequestStateName.PENDING)) {
+      throw new BadRequestException(INVALID_REQUEST);
+    }
+  }
+
+  private void sendApprovalEmail(
+      FundraisingProposal fundraisingProposal, RegistrationToken registrationToken) {
     Map<String, Object> parameters = new HashMap<>();
     parameters.put(EmailServiceImpl.FIRST_NAME, fundraisingProposal.getFirstName());
     parameters.put(EmailServiceImpl.LAST_NAME, fundraisingProposal.getLastName());
+    parameters.put(EmailServiceImpl.REGISTRATION_TOKEN, registrationToken.getValue());
     emailService.sendMailToUser(
         new MailContentHolder(
             Collections.singletonList(fundraisingProposal.getEmail()),
-            EmailType.FUNDRAISING_PROPOSAL,
+            EmailType.FUNDRAISING_PROPOSAL_APPROVAL,
             parameters));
   }
 

@@ -4,11 +4,13 @@ import io.realmarket.propeler.model.FundraisingProposal;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.FundraisingProposalRepository;
 import io.realmarket.propeler.service.EmailService;
+import io.realmarket.propeler.service.RegistrationTokenService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.util.AuditUtils;
 import io.realmarket.propeler.util.AuthUtils;
+import io.realmarket.propeler.util.RegistrationTokenUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +33,8 @@ public class FundraisingProposalServiceImplTest {
   @Mock private RequestStateService requestStateService;
 
   @Mock private FundraisingProposalRepository fundraisingProposalRepository;
+
+  @Mock private RegistrationTokenService registrationTokenService;
 
   @Mock private EmailService emailService;
 
@@ -63,6 +67,8 @@ public class FundraisingProposalServiceImplTest {
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
     when(fundraisingProposalRepository.save(any(FundraisingProposal.class)))
         .thenReturn(TEST_APPROVED_FUNDRAISING_PROPOSAL);
+    when(registrationTokenService.createToken(TEST_APPROVED_FUNDRAISING_PROPOSAL))
+        .thenReturn(RegistrationTokenUtils.TEST_REGISTRATION_TOKEN);
 
     fundraisingProposalServiceImpl.approveFundraisingProposal(TEST_FUNDRAISING_PROPOSAL_ID);
   }

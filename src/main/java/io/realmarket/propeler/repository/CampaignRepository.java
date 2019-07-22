@@ -39,7 +39,8 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
 
   Page<Campaign> findAllByCampaignState(Pageable pageable, CampaignState state);
 
-  Page<Campaign> findAllByCampaignStateAndCompany(Pageable pageable, CampaignState state, Company company);
+  Page<Campaign> findAllByCampaignStateAndCompany(
+      Pageable pageable, CampaignState state, Company company);
 
   List<Campaign> findAllByCampaignState(CampaignState state);
 

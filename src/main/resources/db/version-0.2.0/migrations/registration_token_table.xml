@@ -1,0 +1,24 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="ovlajic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence registration_token_seq;
+            create table if not exists registration_token
+            (
+            id bigint not null
+            constraint registration_token_pkey
+            primary key,
+            expiration_time timestamp,
+            value varchar(255),
+            fundraising_proposal_id bigint
+            constraint registration_token_fk_on_fundraising_proposal
+            references fundraising_proposal
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

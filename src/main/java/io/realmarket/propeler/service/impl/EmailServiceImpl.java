@@ -34,13 +34,28 @@ public class EmailServiceImpl implements EmailService {
   public static final String CAMPAIGNS = "campaigns";
   public static final String FIRST_NAME = "firstName";
   public static final String LAST_NAME = "lastName";
+  public static final String REGISTRATION_TOKEN = "registrationToken";
   public static final String REJECTION_REASON = "rejectionReason";
 
   private static final String CONTACT_US_EMAIL = "contactUsEmail";
-  private static final String LOGO = "logo";
+  private static final String REGISTRATION_LINK = "registrationLink";
   private static final String ACTIVATION_LINK = "activationLink";
   private static final String RESET_PASSWORD_LINK = "resetPasswordLink";
+
+  private static final String LOGO = "logo";
   private static final String LOGO_PATH = "/static/images/logo.png";
+  private static final String CHECK_CIRCLE = "check_circle";
+  private static final String CHECK_CIRCLE_PATH = "/static/images/check_circle.png";
+  private static final String WARNING = "warning";
+  private static final String WARNING_PATH = "/static/images/warning.png";
+  private static final String TWITTER = "twitter";
+  private static final String TWITTER_PATH = "/static/images/twitter.png";
+  private static final String FACEBOOK = "facebook";
+  private static final String FACEBOOK_PATH = "/static/images/facebook.png";
+  private static final String YOUTUBE = "youtube";
+  private static final String YOUTUBE_PATH = "/static/images/youtube.png";
+  private static final String LINKEDIN = "linkedin";
+  private static final String LINKEDIN_PATH = "/static/images/linkedin.png";
 
   private static final String CONTACT_US_SUBJECT = "Realmarket team would like to hear from you!";
 
@@ -77,9 +92,10 @@ public class EmailServiceImpl implements EmailService {
     emailMessageDto.setReceivers(emails.toArray(new String[emails.size()]));
     String subject = "";
 
-    Map<String, Object> data = null;
+    Map<String, Object> data;
     String templateName = null;
 
+    emailMessageDto.setType(mailContentHolder.getType());
     switch (mailContentHolder.getType()) {
       case REGISTER:
         subject = "Propeler - Welcome";
@@ -89,7 +105,7 @@ public class EmailServiceImpl implements EmailService {
 
       case RESET_PASSWORD:
         subject = "Propeler - Reset Password";
-        data = getResetTokenEmailData(mailContentHolder);
+        data = getResetPasswordEmailData(mailContentHolder);
         templateName = "resetPasswordMailTemplate";
         break;
 
@@ -119,14 +135,27 @@ public class EmailServiceImpl implements EmailService {
 
       case NEW_CAMPAIGN_OPPORTUNITY:
         subject = "Propeler - New campaign opportunity";
-        data = getNewCampaignOpportunityData(mailContentHolder);
+        data = getData(mailContentHolder);
         templateName = "newCampaignEmailTemplate";
         break;
 
       case NEW_CAMPAIGN_OPPORTUNITIES:
         subject = "Propeler - New campaign opportunities";
-        data = getNewCampaignOpportunitiesData(mailContentHolder);
+        data = getData(mailContentHolder);
         templateName = "newCampaignOpportunitiesEmailTemplate";
+        break;
+
+      case FUNDRAISING_PROPOSAL_APPROVAL:
+        subject = "Propoler - Fundraising proposal approval";
+        data = getFundraisingProposalApprovalData(mailContentHolder);
+        templateName = "fundraisingApprovalTemplate";
+        break;
+
+      case FUNDRAISING_PROPOSAL_REJECTION:
+        subject = "Propeler - Fundraising proposal rejection";
+        data = getFundraisingProposalRejectionData(mailContentHolder);
+        data.put(WARNING, WARNING);
+        templateName = "fundraisingRejectionTemplate";
         break;
 
       case ACCEPT_CAMPAIGN:
@@ -141,24 +170,6 @@ public class EmailServiceImpl implements EmailService {
         templateName = "rejectCampaignTemplate";
         break;
 
-      case FUNDRAISING_PROPOSAL:
-        subject = "Propeler - Fundraising approval";
-        data = getData(mailContentHolder);
-        templateName = "fundraisingApprovalTemplate";
-        break;
-
-      case FUNDRAISING_PROPOSAL_APPROVAL:
-        subject = "Propoler - Fundraising proposal approval";
-        data = getData(mailContentHolder);
-        templateName = "fundraisingApprovalTemplate";
-        break;
-
-      case FUNDRAISING_PROPOSAL_REJECTION:
-        subject = "Propeler - Fundraising proposal rejection";
-        data = getData(mailContentHolder);
-        templateName = "fundraisingRejectionTemplate";
-        break;
-
       default:
         data = new HashMap<>();
         break;
@@ -169,6 +180,21 @@ public class EmailServiceImpl implements EmailService {
     emailMessageDto.setText(mailContentBuilder.build(data, templateName));
 
     return emailMessageDto;
+  }
+
+  private Map<String, Object> getBasicEmailData() {
+    Map<String, Object> data = new HashMap<>();
+    data.put(LOGO, LOGO);
+    return data;
+  }
+
+  private Map<String, Object> getSocialMediaData() {
+    Map<String, Object> data = new HashMap<>();
+    data.put(TWITTER, TWITTER);
+    data.put(FACEBOOK, FACEBOOK);
+    data.put(YOUTUBE, YOUTUBE);
+    data.put(LINKEDIN, LINKEDIN);
+    return data;
   }
 
   private Map<String, Object> getRegistrationEmailData(MailContentHolder mailContentHolder) {
@@ -189,7 +215,7 @@ public class EmailServiceImpl implements EmailService {
     return data;
   }
 
-  private Map<String, Object> getResetTokenEmailData(MailContentHolder mailContentHolder) {
+  private Map<String, Object> getResetPasswordEmailData(MailContentHolder mailContentHolder) {
     String resetToken = (String) mailContentHolder.getContent().get(RESET_TOKEN);
     if (resetToken == null) {
       throw new IllegalArgumentException(ExceptionMessages.INVALID_TOKEN_PROVIDED);
@@ -226,27 +252,37 @@ public class EmailServiceImpl implements EmailService {
     return data;
   }
 
-  private Map<String, Object> getBasicEmailData() {
-    Map<String, Object> data = new HashMap<>();
-    data.put(LOGO, LOGO);
-    return data;
-  }
-
   private Map<String, Object> getBlockedAccountData(MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
     data.put(USERNAME, mailContentHolder.getContent().get(USERNAME));
     return data;
   }
 
-  private Map<String, Object> getNewCampaignOpportunityData(MailContentHolder mailContentHolder) {
+  private Map<String, Object> getFundraisingProposalApprovalData(
+      MailContentHolder mailContentHolder) {
+    String registrationToken = (String) mailContentHolder.getContent().get(REGISTRATION_TOKEN);
+    if (registrationToken == null) {
+      throw new IllegalArgumentException(ExceptionMessages.INVALID_TOKEN_PROVIDED);
+    }
+
+    String registrationLink =
+        String.format("%s/auth/register/%s", frontendServiceUrlPath, registrationToken);
     Map<String, Object> data = getBasicEmailData();
-    data.put(CAMPAIGN, mailContentHolder.getContent().get(CAMPAIGN));
+    data.putAll(mailContentHolder.getContent());
+    data.putAll(getSocialMediaData());
+    data.put(CHECK_CIRCLE, CHECK_CIRCLE);
+    data.put(REGISTRATION_LINK, registrationLink);
+
     return data;
   }
 
-  private Map<String, Object> getNewCampaignOpportunitiesData(MailContentHolder mailContentHolder) {
+  private Map<String, Object> getFundraisingProposalRejectionData(
+      MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
-    data.put(CAMPAIGNS, mailContentHolder.getContent().get(CAMPAIGNS));
+    data.putAll(mailContentHolder.getContent());
+    data.putAll(getSocialMediaData());
+    data.put(WARNING, WARNING);
+
     return data;
   }
 
@@ -268,6 +304,24 @@ public class EmailServiceImpl implements EmailService {
       helper.setText(emailMessageDto.getText(), true);
 
       helper.addInline(LOGO, new ClassPathResource(LOGO_PATH), "image/png");
+      switch (emailMessageDto.getType()) {
+        case FUNDRAISING_PROPOSAL_APPROVAL:
+          helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), "image/png");
+          helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), "image/png");
+          helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), "image/png");
+          helper.addInline(LINKEDIN, new ClassPathResource(LINKEDIN_PATH), "image/png");
+          helper.addInline(CHECK_CIRCLE, new ClassPathResource(CHECK_CIRCLE_PATH), "image/png");
+          break;
+        case FUNDRAISING_PROPOSAL_REJECTION:
+          helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), "image/png");
+          helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), "image/png");
+          helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), "image/png");
+          helper.addInline(LINKEDIN, new ClassPathResource(LINKEDIN_PATH), "image/png");
+          helper.addInline(WARNING, new ClassPathResource(WARNING_PATH), "image/png");
+          break;
+        default:
+          break;
+      }
 
       log.debug("Trying to send e-mail message: {}", emailMessageDto);
 

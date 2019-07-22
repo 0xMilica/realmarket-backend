@@ -32,6 +32,7 @@ spring:
 frontend.service.url: http://localhost:3000/propeler
 hmac.secret: s3cr3t
 access-token.expiration-time: 3600000
+registration-token.expiration-time: 604800000
 app:
   email:
     contact_us: support@realmarket.io

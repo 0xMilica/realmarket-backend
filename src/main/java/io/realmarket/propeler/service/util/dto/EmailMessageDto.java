@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service.util.dto;
 
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,6 @@ public class EmailMessageDto {
   @NotNull private String subject;
 
   @NotNull private String text;
+
+  private EmailType type;
 }

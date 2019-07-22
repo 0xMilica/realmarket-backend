@@ -18,17 +18,41 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public interface AuthController {
 
   @ApiOperation(
-      value = "Register new user",
+      value = "Register new entrepreneur",
       httpMethod = "POST",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-    @ApiResponse(code = 201, message = "User successfully created."),
+    @ApiResponse(code = 201, message = "Entrepreneur successfully created."),
     @ApiResponse(code = 400, message = "Invalid request."),
     @ApiResponse(code = 409, message = "User with the provided username already exists."),
     @ApiResponse(code = 500, message = "A problem with sending email message has occurred.")
   })
-  ResponseEntity register(RegistrationDto registerDto);
+  ResponseEntity registerEntrepreneur(EntrepreneurRegistrationDto registerEntrepreneurDto);
+
+  @ApiOperation(
+      value = "Register new investor",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 201, message = "Investor successfully created."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 409, message = "User with the provided username already exists."),
+    @ApiResponse(code = 500, message = "A problem with sending email message has occurred.")
+  })
+  ResponseEntity registerInvestor(RegistrationDto registerDto);
+
+  @ApiOperation(
+      value = "Validate registration token",
+      httpMethod = "GET",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Token is valid."),
+    @ApiResponse(code = 400, message = "Invalid request.0")
+  })
+  ResponseEntity<RegistrationTokenInfoDto> validateToken(RegistrationTokenDto registrationTokenDto);
 
   @ApiOperation(
       value = "Confirm registered user.",

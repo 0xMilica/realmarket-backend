@@ -23,10 +23,10 @@ public class AuthControllerImplTest {
   @InjectMocks private AuthControllerImpl authControllerImpl;
 
   @Test
-  public void Register_Should_ReturnCreated() {
-    ResponseEntity responseEntity = authControllerImpl.register(TEST_REGISTRATION_DTO);
+  public void RegisterInvestor_Should_ReturnCreated() {
+    ResponseEntity responseEntity = authControllerImpl.registerInvestor(TEST_REGISTRATION_DTO);
 
-    verify(authService, Mockito.times(1)).register(TEST_REGISTRATION_DTO);
+    verify(authService, Mockito.times(1)).registerInvestor(TEST_REGISTRATION_DTO);
     assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
   }
 
