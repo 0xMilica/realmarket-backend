@@ -77,7 +77,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/files/public/**",
             "/campaigns/public",
             "/campaigns/{campaignName}/convertMoney",
-            "/campaigns/{campaignName}/convertPercentage")
+            "/campaigns/{campaignName}/convertPercentage",
+            "/*/documents/types")
         .antMatchers(
             HttpMethod.POST,
             "/auth",

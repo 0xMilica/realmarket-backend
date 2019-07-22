@@ -1,7 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.model.FundraisingProposalDocument;
-import io.realmarket.propeler.repository.CompanyDocumentTypeRepository;
+import io.realmarket.propeler.repository.DocumentTypeRepository;
 import io.realmarket.propeler.repository.FundraisingProposalDocumentRepository;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.FundraisingProposalService;
@@ -27,7 +27,7 @@ public class FundraisingProposalDocumentServiceImplTest {
 
   @Mock private FundraisingProposalService fundraisingProposalService;
   @Mock private FundraisingProposalDocumentRepository fundraisingProposalDocumentRepository;
-  @Mock private CompanyDocumentTypeRepository companyDocumentTypeRepository;
+  @Mock private DocumentTypeRepository companyDocumentTypeRepository;
   @Mock private CloudObjectStorageService cloudObjectStorageService;
 
   @InjectMocks private FundraisingProposalDocumentServiceImpl fundraisingProposalDocumentService;

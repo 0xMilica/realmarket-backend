@@ -4,12 +4,13 @@ import io.realmarket.propeler.api.dto.CompanyDocumentDto;
 import io.realmarket.propeler.api.dto.CompanyDocumentResponseDto;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.CompanyDocument;
-import io.realmarket.propeler.model.CompanyDocumentType;
 import io.realmarket.propeler.model.DocumentAccessLevel;
+import io.realmarket.propeler.model.DocumentType;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.CompanyDocumentRepository;
-import io.realmarket.propeler.repository.CompanyDocumentTypeRepository;
 import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
+import io.realmarket.propeler.repository.DocumentRepository;
+import io.realmarket.propeler.repository.DocumentTypeRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyDocumentService;
@@ -32,8 +33,9 @@ import java.util.stream.Collectors;
 public class CompanyDocumentServiceImpl implements CompanyDocumentService {
 
   private final CompanyDocumentRepository companyDocumentRepository;
+  private final DocumentRepository documentRepository;
   private final DocumentAccessLevelRepository documentAccessLevelRepository;
-  private final CompanyDocumentTypeRepository companyDocumentTypeRepository;
+  private final DocumentTypeRepository documentTypeRepository;
   private final CompanyService companyService;
   private final CloudObjectStorageService cloudObjectStorageService;
   private final ModelMapperBlankString modelMapperBlankString;
@@ -41,14 +43,16 @@ public class CompanyDocumentServiceImpl implements CompanyDocumentService {
   @Autowired
   public CompanyDocumentServiceImpl(
       CompanyDocumentRepository companyDocumentRepository,
+      DocumentRepository documentRepository,
       DocumentAccessLevelRepository documentAccessLevelRepository,
-      CompanyDocumentTypeRepository companyDocumentTypeRepository,
+      DocumentTypeRepository documentTypeRepository,
       CompanyService companyService,
       CloudObjectStorageService cloudObjectStorageService,
       ModelMapperBlankString modelMapperBlankString) {
     this.companyDocumentRepository = companyDocumentRepository;
+    this.documentRepository = documentRepository;
     this.documentAccessLevelRepository = documentAccessLevelRepository;
-    this.companyDocumentTypeRepository = companyDocumentTypeRepository;
+    this.documentTypeRepository = documentTypeRepository;
     this.companyService = companyService;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.modelMapperBlankString = modelMapperBlankString;
@@ -147,13 +151,13 @@ public class CompanyDocumentServiceImpl implements CompanyDocumentService {
       CompanyDocumentDto companyDocumentDto, Company company) {
     Optional<DocumentAccessLevel> accessLevel =
         this.documentAccessLevelRepository.findByName(companyDocumentDto.getAccessLevel());
-    Optional<CompanyDocumentType> type =
-        this.companyDocumentTypeRepository.findByName(companyDocumentDto.getType());
+    Optional<DocumentType> type =
+        this.documentTypeRepository.findByName(companyDocumentDto.getType());
     if (!accessLevel.isPresent() || !type.isPresent()) {
       throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
     }
 
-    return CompanyDocument.builder()
+    return CompanyDocument.companyDocumentBuilder()
         .title(companyDocumentDto.getTitle())
         .accessLevel(accessLevel.get())
         .type(type.get())

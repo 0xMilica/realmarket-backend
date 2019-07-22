@@ -127,7 +127,7 @@ public interface FundraisingProposalController {
         required = true)
   })
   @ApiResponses({
-    @ApiResponse(code = 200, message = "Successfully retireved fundraising proposal documents."),
+    @ApiResponse(code = 200, message = "Successfully retrieved fundraising proposal documents."),
     @ApiResponse(code = 404, message = "Fundraising proposal not found.")
   })
   ResponseEntity<List<FundraisingProposalDocumentResponseDto>> getFundraisingProposalDocuments(

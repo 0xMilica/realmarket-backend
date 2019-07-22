@@ -4,8 +4,8 @@ import io.realmarket.propeler.api.dto.CompanyDocumentDto;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.CompanyDocument;
 import io.realmarket.propeler.repository.CompanyDocumentRepository;
-import io.realmarket.propeler.repository.CompanyDocumentTypeRepository;
 import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
+import io.realmarket.propeler.repository.DocumentTypeRepository;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.exception.BadRequestException;
@@ -38,7 +38,7 @@ public class CompanyDocumentServiceImplTest {
 
   @Mock private CompanyDocumentRepository companyDocumentRepository;
   @Mock private DocumentAccessLevelRepository documentAccessLevelRepository;
-  @Mock private CompanyDocumentTypeRepository companyDocumentTypeRepository;
+  @Mock private DocumentTypeRepository companyDocumentTypeRepository;
   @Mock private CompanyService companyService;
   @Mock private CloudObjectStorageService cloudObjectStorageService;
   @Mock private ModelMapperBlankString modelMapperBlankString;

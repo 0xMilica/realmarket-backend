@@ -8,9 +8,13 @@ INSERT INTO public.auth_state (id, name) VALUES (NEXTVAL('auth_state_seq'), 'CON
 INSERT INTO public.auth_state (id, name) VALUES (NEXTVAL('auth_state_seq'), 'INITIALIZE_2FA');
 INSERT INTO public.auth_state (id, name) VALUES (NEXTVAL('auth_state_seq'), 'ACTIVE');
 
--- campaign document type
-INSERT INTO public.campaign_document_type (id, name) VALUES (NEXTVAL('campaign_document_type_seq'), 'DOCTYPE_DUE_DILIGENCE');
-INSERT INTO public.campaign_document_type (id, name) VALUES (NEXTVAL('campaign_document_type_seq'), 'DOCTYPE_LEGAL');
+-- document type
+INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'DUE_DILIGENCE');
+INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'LEGAL');
+INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'APR_PAPER');
+INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'BUSINESS_PLAN');
+INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'PITCH_DECK');
+INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'BANK');
 
 -- campaign state
 INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'INITIAL');
@@ -63,10 +67,10 @@ INSERT INTO public.company_category (id, name) VALUES (NEXTVAL('company_category
 INSERT INTO public.company_category (id, name) VALUES (NEXTVAL('company_category_seq'), 'Virtual & Augmented Reality');
 
 -- company document type
-INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_APR_PAPER');
-INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_BUSINESS_PLAN');
-INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_PITCH_DECK');
-INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_BANK');
+-- INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_APR_PAPER');
+-- INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_BUSINESS_PLAN');
+-- INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_PITCH_DECK');
+-- INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_BANK');
 
 -- document access level
 INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PLATFORM_ADMINS');

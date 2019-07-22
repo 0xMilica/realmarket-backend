@@ -7,14 +7,14 @@
                 endDelimiter=";"
                 splitStatements="true"
                 stripComments="true">
-            create sequence company_document_type_seq;
-            create table if not exists company_document_type
+            create sequence document_type_seq;
+            create table if not exists document_type
             (
             id bigint not null
-            constraint company_document_type_pkey
+            constraint document_type_pkey
             primary key,
             name varchar(255)
-            constraint company_document_type_uk_on_name
+            constraint document_type_uk_on_name
             unique
             );
         </sql>

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f5a76220-3d36-4147-bbd5-99cd497c94be",
+		"_postman_id": "38902d1f-76d3-4289-8f6c-56ab16500515",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -29,7 +29,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"accessLevel\": \"PUBLIC\",\r\n  \"title\": \"FIRSTDOCUMENTMODIFIED\",\r\n  \"type\": \"DOCTYPE_BUSINESS_PLAN\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
+									"raw": "{\r\n  \"accessLevel\": \"PUBLIC\",\r\n  \"title\": \"FIRSTDOCUMENTMODIFIED\",\r\n  \"type\": \"BUSINESS_PLAN\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/companies/mine/documents/{{document_id}}",
@@ -65,7 +65,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"accessLevel\": \"PLATFORM_ADMINS\",\r\n  \"title\": \"FIRSTDOCUMENT\",\r\n  \"type\": \"DOCTYPE_APR_PAPER\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
+									"raw": "{\r\n  \"accessLevel\": \"PLATFORM_ADMINS\",\r\n  \"title\": \"FIRSTDOCUMENT\",\r\n  \"type\": \"APR_PAPER\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/companies/{{company_id}}/documents",
@@ -144,6 +144,32 @@
 										"companies",
 										"{{company_id}}",
 										"documents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents/types",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/companies/documents/types",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"documents",
+										"types"
 									]
 								}
 							},
@@ -573,7 +599,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"accessLevel\": \"PLATFORM_ADMINS\",\r\n  \"title\": \"FIRSTDOCUMENT\",\r\n  \"type\": \"DOCTYPE_LEGAL\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
+									"raw": "{\r\n  \"accessLevel\": \"PLATFORM_ADMINS\",\r\n  \"title\": \"FIRSTDOCUMENT\",\r\n  \"type\": \"LEGAL\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/documents",
@@ -644,7 +670,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"accessLevel\": \"INVESTORS\",\r\n  \"title\": \"FIRSTDOCUMENTMODIFIED\",\r\n  \"type\": \"DOCTYPE_DUE_DILIGENCE\",\r\n  \"url\": \"N6UYQ3LJYOWZ4H7JHNOHOODVOOBNICEA.txt\"\r\n}"
+									"raw": "{\r\n  \"accessLevel\": \"INVESTORS\",\r\n  \"title\": \"FIRSTDOCUMENTMODIFIED\",\r\n  \"type\": \"DUE_DILIGENCE\",\r\n  \"url\": \"N6UYQ3LJYOWZ4H7JHNOHOODVOOBNICEA.txt\"\r\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/campaigns/mine/documents/{{document_id}}",
@@ -688,6 +714,32 @@
 										"campaigns",
 										"{{campaign_fname}}",
 										"documents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents/types",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/documents/types",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"documents",
+										"types"
 									]
 								}
 							},
@@ -3960,7 +4012,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"title\": \"FIRSTPROPOSALDOCUMENT\",\r\n  \"type\": \"DOCTYPE_PITCH_DECK\",\r\n  \"url\": \"X5BHXYEBWT55IRI63NDLOELTN5WYFM6Z.txt\"\r\n}"
+									"raw": "{\r\n  \"title\": \"FIRSTPROPOSALDOCUMENT\",\r\n  \"type\": \"PITCH_DECK\",\r\n  \"url\": \"X5BHXYEBWT55IRI63NDLOELTN5WYFM6Z.txt\"\r\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/fundraisingProposals/{{proposal_id}}/documents",
@@ -4003,6 +4055,32 @@
 										"fundraisingProposals",
 										"{{proposal_id}}",
 										"documents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents/types",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/fundraisingProposals/documents/types",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"fundraisingProposals",
+										"documents",
+										"types"
 									]
 								}
 							},

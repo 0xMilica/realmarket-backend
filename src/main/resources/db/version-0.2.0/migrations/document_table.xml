@@ -7,24 +7,31 @@
                 endDelimiter=";"
                 splitStatements="true"
                 stripComments="true">
-            create sequence company_document_seq;
-            create table if not exists company_document
+            create sequence document_seq;
+            create table if not exists document
             (
             id bigint not null
-            constraint company_document_pkey
+            constraint campaign_document_pkey
             primary key,
-            access_level_id bigint
-            constraint company_document_fk_on_access_level
-            references document_access_level,
             title varchar(255),
+            access_level_id bigint
+            constraint document_fk_on_access_level
+            references document_access_level,
             type_id bigint
-            constraint company_document_fk_on_type
-            references company_document_type,
-            upload_date timestamp,
+            constraint document_fk_on_type
+            references document_type,
             url varchar(255),
+            upload_date timestamp,
             company_id bigint
-            constraint company_document_fk_on_company
-            references company
+            constraint document_fk_on_company
+            references company,
+            campaign_id bigint
+            constraint document_fk_on_campaign
+            references campaign,
+            fundraising_proposal_id bigint
+            constraint document_fk_on_fundraising_proposal
+            references fundraising_proposal,
+            entity_name varchar(255)
             );
         </sql>
     </changeSet>

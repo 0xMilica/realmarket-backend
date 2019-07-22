@@ -11,34 +11,23 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@Table(name = "company_document")
-public class CompanyDocument {
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMPANY_DOCUMENT_SEQ")
-  @SequenceGenerator(
-      name = "COMPANY_DOCUMENT_SEQ",
-      sequenceName = "COMPANY_DOCUMENT_SEQ",
-      allocationSize = 1)
-  private Long id;
+@DiscriminatorValue("CompanyDocument")
+@Entity(name = "CompanyDocument")
+public class CompanyDocument extends Document {
 
-  private String title;
-
-  @JoinColumn(
-      name = "accessLevelId",
-      foreignKey = @ForeignKey(name = "company_document_fk_on_access_level"))
-  @ManyToOne
-  private DocumentAccessLevel accessLevel;
-
-  @JoinColumn(name = "typeId", foreignKey = @ForeignKey(name = "company_document_fk_on_type"))
-  @ManyToOne
-  private CompanyDocumentType type;
-
-  private String url;
-  private Instant uploadDate;
-
-  @JoinColumn(name = "companyId", foreignKey = @ForeignKey(name = "company_document_fk_on_company"))
+  @JoinColumn(name = "companyId", foreignKey = @ForeignKey(name = "document_fk_on_company"))
   @ManyToOne
   private Company company;
+
+  @Builder(builderMethodName = "companyDocumentBuilder")
+  public CompanyDocument(
+      String title,
+      DocumentAccessLevel accessLevel,
+      DocumentType type,
+      String url,
+      Instant uploadDate,
+      Company company) {
+    super(title, accessLevel, type, url, uploadDate);
+    this.company = company;
+  }
 }

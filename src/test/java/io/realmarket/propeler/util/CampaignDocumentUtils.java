@@ -2,10 +2,10 @@ package io.realmarket.propeler.util;
 
 import io.realmarket.propeler.api.dto.CampaignDocumentDto;
 import io.realmarket.propeler.model.CampaignDocument;
-import io.realmarket.propeler.model.CampaignDocumentType;
 import io.realmarket.propeler.model.DocumentAccessLevel;
-import io.realmarket.propeler.model.enums.CampaignDocumentTypeName;
+import io.realmarket.propeler.model.DocumentType;
 import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
+import io.realmarket.propeler.model.enums.DocumentTypeName;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -17,29 +17,25 @@ public class CampaignDocumentUtils {
   public static final String TEST_TITLE = "TEST_TITLE";
   public static final DocumentAccessLevelName TEST_ACCESS_LEVEL_ENUM =
       DocumentAccessLevelName.PUBLIC;
-  public static final CampaignDocumentTypeName TEST_TYPE_ENUM =
-      CampaignDocumentTypeName.DOCTYPE_LEGAL;
+  public static final DocumentTypeName TEST_TYPE_ENUM = DocumentTypeName.LEGAL;
   public static final DocumentAccessLevel TEST_ACCESS_LEVEL =
       DocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM).build();
-  public static final CampaignDocumentType TEST_TYPE =
-      CampaignDocumentType.builder().name(TEST_TYPE_ENUM).build();
+  public static final DocumentType TEST_TYPE = DocumentType.builder().name(TEST_TYPE_ENUM).build();
   public static final String TEST_URL = "TEST_URL";
   public static final Instant TEST_UPLOAD_DATE = Instant.now();
 
   public static final String TEST_TITLE_2 = "TEST_TITLE_2";
   public static final DocumentAccessLevelName TEST_ACCESS_LEVEL_ENUM_2 =
       DocumentAccessLevelName.INVESTORS;
-  public static final CampaignDocumentTypeName TEST_TYPE_ENUM_2 =
-      CampaignDocumentTypeName.DOCTYPE_DUE_DILIGENCE;
+  public static final DocumentTypeName TEST_TYPE_ENUM_2 = DocumentTypeName.DUE_DILIGENCE;
   public static final DocumentAccessLevel TEST_ACCESS_LEVEL_2 =
       DocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM_2).build();
-  public static final CampaignDocumentType TEST_TYPE_2 =
-      CampaignDocumentType.builder().name(TEST_TYPE_ENUM_2).build();
+  public static final DocumentType TEST_TYPE_2 =
+      DocumentType.builder().name(TEST_TYPE_ENUM_2).build();
   public static final String TEST_URL_2 = "TEST_URL2";
 
   public static final CampaignDocument TEST_CAMPAIGN_DOCUMENT =
-      CampaignDocument.builder()
-          .id(TEST_ID)
+      CampaignDocument.campaignDocumentBuilder()
           .title(TEST_TITLE)
           .accessLevel(TEST_ACCESS_LEVEL)
           .type(TEST_TYPE)
@@ -49,8 +45,7 @@ public class CampaignDocumentUtils {
           .build();
 
   public static CampaignDocument getCampaignDocumentMocked() {
-    return CampaignDocument.builder()
-        .id(TEST_ID)
+    return CampaignDocument.campaignDocumentBuilder()
         .title(TEST_TITLE)
         .accessLevel(TEST_ACCESS_LEVEL)
         .type(TEST_TYPE)
@@ -61,8 +56,7 @@ public class CampaignDocumentUtils {
   }
 
   public static CampaignDocument getCampaignDocumentMocked2() {
-    return CampaignDocument.builder()
-        .id(TEST_ID)
+    return CampaignDocument.campaignDocumentBuilder()
         .title(TEST_TITLE_2)
         .accessLevel(TEST_ACCESS_LEVEL_2)
         .type(TEST_TYPE_2)
@@ -74,8 +68,7 @@ public class CampaignDocumentUtils {
 
   public static CampaignDocument getCampaignDocumentMocked(
       DocumentAccessLevelName documentAccessLevel) {
-    return CampaignDocument.builder()
-        .id(TEST_ID)
+    return CampaignDocument.campaignDocumentBuilder()
         .title(TEST_TITLE)
         .accessLevel(DocumentAccessLevel.builder().name(documentAccessLevel).build())
         .type(TEST_TYPE)

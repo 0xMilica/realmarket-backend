@@ -2,10 +2,10 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.FundraisingProposalDocumentDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalDocumentResponseDto;
-import io.realmarket.propeler.model.CompanyDocumentType;
+import io.realmarket.propeler.model.DocumentType;
 import io.realmarket.propeler.model.FundraisingProposal;
 import io.realmarket.propeler.model.FundraisingProposalDocument;
-import io.realmarket.propeler.repository.CompanyDocumentTypeRepository;
+import io.realmarket.propeler.repository.DocumentTypeRepository;
 import io.realmarket.propeler.repository.FundraisingProposalDocumentRepository;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.FundraisingProposalDocumentService;
@@ -29,18 +29,18 @@ public class FundraisingProposalDocumentServiceImpl implements FundraisingPropos
 
   private FundraisingProposalService fundraisingProposalService;
   private FundraisingProposalDocumentRepository fundraisingProposalDocumentRepository;
-  private CompanyDocumentTypeRepository companyDocumentTypeRepository;
+  private DocumentTypeRepository documentTypeRepository;
   private CloudObjectStorageService cloudObjectStorageService;
 
   @Autowired
   public FundraisingProposalDocumentServiceImpl(
       FundraisingProposalService fundraisingProposalService,
       FundraisingProposalDocumentRepository fundraisingProposalDocumentRepository,
-      CompanyDocumentTypeRepository companyDocumentTypeRepository,
+      DocumentTypeRepository documentTypeRepository,
       CloudObjectStorageService cloudObjectStorageService) {
     this.fundraisingProposalService = fundraisingProposalService;
     this.fundraisingProposalDocumentRepository = fundraisingProposalDocumentRepository;
-    this.companyDocumentTypeRepository = companyDocumentTypeRepository;
+    this.documentTypeRepository = documentTypeRepository;
     this.cloudObjectStorageService = cloudObjectStorageService;
   }
 
@@ -89,13 +89,13 @@ public class FundraisingProposalDocumentServiceImpl implements FundraisingPropos
   private FundraisingProposalDocument convertDocumentDtoToDocument(
       FundraisingProposalDocumentDto fundraisingProposalDocumentDto,
       FundraisingProposal fundraisingProposal) {
-    Optional<CompanyDocumentType> type =
-        this.companyDocumentTypeRepository.findByName(fundraisingProposalDocumentDto.getType());
+    Optional<DocumentType> type =
+        this.documentTypeRepository.findByName(fundraisingProposalDocumentDto.getType());
     if (!type.isPresent()) {
       throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
     }
 
-    return FundraisingProposalDocument.builder()
+    return FundraisingProposalDocument.fundraisingProposalDocumentBuilder()
         .title(fundraisingProposalDocumentDto.getTitle())
         .type(type.get())
         .url(fundraisingProposalDocumentDto.getUrl())

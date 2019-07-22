@@ -1,9 +1,11 @@
 package io.realmarket.propeler.model.enums;
 
 public enum DocumentAccessLevelName {
-  PLATFORM_ADMINS("PLATFORM_ADMINS"),
+  PUBLIC("PUBLIC"),
+  PRIVATE("PRIVATE"),
+  ON_DEMAND("ON_DEMAND"),
   INVESTORS("INVESTORS"),
-  PUBLIC("PUBLIC");
+  PLATFORM_ADMINS("PLATFORM_ADMINS");
 
   private final String text;
 

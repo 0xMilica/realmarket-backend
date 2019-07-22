@@ -6,8 +6,8 @@ import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignDocument;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.repository.CampaignDocumentRepository;
-import io.realmarket.propeler.repository.CampaignDocumentTypeRepository;
 import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
+import io.realmarket.propeler.repository.DocumentTypeRepository;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
@@ -49,7 +49,7 @@ public class CampaignDocumentServiceImplTest {
 
   @Mock private CampaignDocumentRepository campaignDocumentRepository;
   @Mock private DocumentAccessLevelRepository documentAccessLevelRepository;
-  @Mock private CampaignDocumentTypeRepository campaignDocumentTypeRepository;
+  @Mock private DocumentTypeRepository documentTypeRepository;
   @Mock private CampaignService campaignService;
   @Mock private CompanyService companyService;
   @Mock private CloudObjectStorageService cloudObjectStorageService;
@@ -73,7 +73,7 @@ public class CampaignDocumentServiceImplTest {
         .thenReturn(CampaignUtils.TEST_CAMPAIGN);
     when(documentAccessLevelRepository.findByName(CampaignDocumentUtils.TEST_ACCESS_LEVEL_ENUM))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL));
-    when(campaignDocumentTypeRepository.findByName(CampaignDocumentUtils.TEST_TYPE_ENUM))
+    when(documentTypeRepository.findByName(CampaignDocumentUtils.TEST_TYPE_ENUM))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE));
     when(cloudObjectStorageService.doesFileExist(campaignDocumentDtoMocked.getUrl()))
         .thenReturn(true);
@@ -115,7 +115,7 @@ public class CampaignDocumentServiceImplTest {
 
     when(documentAccessLevelRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL));
-    when(campaignDocumentTypeRepository.findByName(any()))
+    when(documentTypeRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE));
     when(cloudObjectStorageService.doesFileExist(campaignDocumentMocked.getUrl())).thenReturn(true);
     when(campaignDocumentRepository.save(campaignDocumentMocked))
@@ -138,7 +138,7 @@ public class CampaignDocumentServiceImplTest {
         .thenReturn(CampaignUtils.TEST_CAMPAIGN);
     when(documentAccessLevelRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL));
-    when(campaignDocumentTypeRepository.findByName(any()))
+    when(documentTypeRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE));
     when(cloudObjectStorageService.doesFileExist(campaignDocumentMocked.getUrl()))
         .thenReturn(false);
@@ -272,7 +272,7 @@ public class CampaignDocumentServiceImplTest {
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_CAMPAIGN_DOCUMENT));
     when(documentAccessLevelRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_ACCESS_LEVEL_2));
-    when(campaignDocumentTypeRepository.findByName(any()))
+    when(documentTypeRepository.findByName(any()))
         .thenReturn(Optional.of(CampaignDocumentUtils.TEST_TYPE_2));
     when(cloudObjectStorageService.doesFileExist(campaignDocumentDtoMocked.getUrl()))
         .thenReturn(true);

@@ -1,8 +1,8 @@
 package io.realmarket.propeler.api.dto;
 
 import io.realmarket.propeler.model.CampaignDocument;
-import io.realmarket.propeler.model.enums.CampaignDocumentTypeName;
 import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
+import io.realmarket.propeler.model.enums.DocumentTypeName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ public class CampaignDocumentDto {
 
   @ApiModelProperty(value = "Campaign document's type")
   @NotNull
-  private CampaignDocumentTypeName type;
+  private DocumentTypeName type;
 
   @ApiModelProperty(value = "Campaign document's URL")
   @NotBlank

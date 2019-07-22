@@ -2,10 +2,10 @@ package io.realmarket.propeler.util;
 
 import io.realmarket.propeler.api.dto.CompanyDocumentDto;
 import io.realmarket.propeler.model.CompanyDocument;
-import io.realmarket.propeler.model.CompanyDocumentType;
 import io.realmarket.propeler.model.DocumentAccessLevel;
-import io.realmarket.propeler.model.enums.CompanyDocumentTypeName;
+import io.realmarket.propeler.model.DocumentType;
 import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
+import io.realmarket.propeler.model.enums.DocumentTypeName;
 
 import java.time.Instant;
 
@@ -15,12 +15,10 @@ public class CompanyDocumentUtils {
   public static final String TEST_TITLE = "TEST_TITLE";
   public static final DocumentAccessLevelName TEST_ACCESS_LEVEL_ENUM =
       DocumentAccessLevelName.PUBLIC;
-  public static final CompanyDocumentTypeName TEST_TYPE_ENUM =
-      CompanyDocumentTypeName.DOCTYPE_APR_PAPER;
+  public static final DocumentTypeName TEST_TYPE_ENUM = DocumentTypeName.APR_PAPER;
   public static final DocumentAccessLevel TEST_ACCESS_LEVEL =
       DocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM).build();
-  public static final CompanyDocumentType TEST_TYPE =
-      CompanyDocumentType.builder().name(TEST_TYPE_ENUM).build();
+  public static final DocumentType TEST_TYPE = DocumentType.builder().name(TEST_TYPE_ENUM).build();
   public static final String TEST_URL = "TEST_URL";
   public static final Instant TEST_UPLOAD_DATE = Instant.now();
 
@@ -28,17 +26,15 @@ public class CompanyDocumentUtils {
   public static final String TEST_TITLE_2 = "TEST_TITLE_2";
   public static final DocumentAccessLevelName TEST_ACCESS_LEVEL_ENUM_2 =
       DocumentAccessLevelName.INVESTORS;
-  public static final CompanyDocumentTypeName TEST_TYPE_ENUM_2 =
-      CompanyDocumentTypeName.DOCTYPE_BANK;
+  public static final DocumentTypeName TEST_TYPE_ENUM_2 = DocumentTypeName.BANK;
   public static final DocumentAccessLevel TEST_ACCESS_LEVEL_2 =
       DocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM_2).build();
-  public static final CompanyDocumentType TEST_TYPE_2 =
-      CompanyDocumentType.builder().name(TEST_TYPE_ENUM_2).build();
+  public static final DocumentType TEST_TYPE_2 =
+      DocumentType.builder().name(TEST_TYPE_ENUM_2).build();
   public static final String TEST_URL_2 = "TEST_URL2";
 
   public static final CompanyDocument TEST_COMPANY_DOCUMENT =
-      CompanyDocument.builder()
-          .id(TEST_ID)
+      CompanyDocument.companyDocumentBuilder()
           .title(TEST_TITLE)
           .accessLevel(TEST_ACCESS_LEVEL)
           .type(TEST_TYPE)
@@ -48,8 +44,7 @@ public class CompanyDocumentUtils {
           .build();
 
   public static CompanyDocument getCompanyDocumentMocked() {
-    return CompanyDocument.builder()
-        .id(TEST_ID)
+    return CompanyDocument.companyDocumentBuilder()
         .title(TEST_TITLE)
         .accessLevel(TEST_ACCESS_LEVEL)
         .type(TEST_TYPE)
@@ -69,8 +64,7 @@ public class CompanyDocumentUtils {
   }
 
   public static CompanyDocument getCompanyDocumentMocked2() {
-    return CompanyDocument.builder()
-        .id(TEST_ID_2)
+    return CompanyDocument.companyDocumentBuilder()
         .title(TEST_TITLE_2)
         .accessLevel(TEST_ACCESS_LEVEL_2)
         .type(TEST_TYPE_2)

@@ -9,7 +9,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 import static io.realmarket.propeler.util.AuthUtils.TEST_EMAIL;
-import static io.realmarket.propeler.util.PersonUtils.*;
+import static io.realmarket.propeler.util.PersonUtils.TEST_COUNTRY;
+import static io.realmarket.propeler.util.PersonUtils.TEST_PROFILE_PICTURE_URL;
 
 public class InvestmentUtils {
 
