@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DocumentUtil {
-  private DocumentUtil() {}
-
   public static final Map<String, List<DocumentMetadata>> documentEntityTypes =
       ImmutableMap.of(
           "companies",
@@ -61,4 +59,6 @@ public class DocumentUtil {
                   true,
                   Arrays.asList(DocumentAccessLevelName.PUBLIC, DocumentAccessLevelName.ON_DEMAND),
                   1)));
+
+  private DocumentUtil() {}
 }

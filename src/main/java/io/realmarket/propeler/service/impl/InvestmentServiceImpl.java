@@ -9,11 +9,11 @@ import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.investment.ChangeStateDto;
 import io.realmarket.propeler.service.blockchain.dto.investment.InvestmentDto;
-import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
@@ -64,7 +64,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     this.modelMapperBlankString = modelMapperBlankString;
     this.personService = personService;
     this.blockchainCommunicationService = blockchainCommunicationService;
-    }
+  }
 
   @Transactional
   @Override

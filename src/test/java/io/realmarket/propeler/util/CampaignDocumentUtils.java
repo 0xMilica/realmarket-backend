@@ -1,11 +1,10 @@
 package io.realmarket.propeler.util;
 
 import io.realmarket.propeler.api.dto.CampaignDocumentDto;
-import io.realmarket.propeler.model.CampaignDocument;
-import io.realmarket.propeler.model.DocumentAccessLevel;
-import io.realmarket.propeler.model.DocumentType;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
 import io.realmarket.propeler.model.enums.DocumentTypeName;
+import io.realmarket.propeler.model.enums.RequestStateName;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -33,6 +32,9 @@ public class CampaignDocumentUtils {
   public static final DocumentType TEST_TYPE_2 =
       DocumentType.builder().name(TEST_TYPE_ENUM_2).build();
   public static final String TEST_URL_2 = "TEST_URL2";
+
+  public static final RequestState TEST_PENDING_REQUEST_STATE =
+      RequestState.builder().name(RequestStateName.PENDING).build();
 
   public static final CampaignDocument TEST_CAMPAIGN_DOCUMENT =
       CampaignDocument.campaignDocumentBuilder()
@@ -102,4 +104,11 @@ public class CampaignDocumentUtils {
           getCampaignDocumentMocked(),
           getCampaignDocumentMocked(DocumentAccessLevelName.PLATFORM_ADMINS),
           getCampaignDocumentMocked(DocumentAccessLevelName.INVESTORS));
+
+  public static CampaignDocumentsAccessRequest TEST_PENDING_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST =
+      CampaignDocumentsAccessRequest.builder()
+          .campaign(CampaignUtils.TEST_ACTIVE_CAMPAIGN)
+          .auth(AuthUtils.TEST_AUTH_ENTREPRENEUR)
+          .requestState(TEST_PENDING_REQUEST_STATE)
+          .build();
 }

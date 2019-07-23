@@ -29,6 +29,7 @@
     <include file="migrations/document_type_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/document_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/registration_token_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/campaign_documents_access_request_table.xml" relativeToChangelogFile="true"/>
 
     <include file="migrations/country_table_init.xml" relativeToChangelogFile="true"/>
     <include file="migrations/tables_init.xml" relativeToChangelogFile="true"/>

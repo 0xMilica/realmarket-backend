@@ -22,6 +22,7 @@ public class RegistrationTokenServiceImpl implements RegistrationTokenService {
 
   private static final int TOKEN_LENGTH = 36;
   private final RegistrationTokenRepository registrationTokenRepository;
+
   @Value("${registration-token.expiration-time}")
   private Long tokenExpirationTime;
 

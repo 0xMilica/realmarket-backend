@@ -204,6 +204,27 @@ public interface CampaignController {
   ResponseEntity<List<CampaignDocumentResponseDto>> getCampaignDocuments(String campaignName);
 
   @ApiOperation(
+      value = "Send request for campaign documents access",
+      httpMethod = "POST",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignName",
+        value = "Campaign's url friendly name",
+        required = true,
+        dataType = "String",
+        paramType = "path")
+  })
+  @ApiResponses({
+    @ApiResponse(
+        code = 200,
+        message = "Successfully created request for campaign document access."),
+    @ApiResponse(code = 404, message = "Campaign not found.")
+  })
+  ResponseEntity<CampaignDocumentsAccessRequestDto> sendCampaignDocumentsAccessRequest(
+      String campaignName);
+
+  @ApiOperation(
       value = "Get active campaign",
       httpMethod = "GET",
       consumes = APPLICATION_JSON_VALUE,

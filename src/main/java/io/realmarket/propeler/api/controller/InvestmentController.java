@@ -98,6 +98,5 @@ public interface InvestmentController {
     @ApiResponse(code = 400, message = "Insufficient privileges.")
   })
   ResponseEntity<InvestmentResponseDto> registerOffPlatformInvestment(
-      OffPlatformInvestmentRequestDto offPlatformInvestmentRequestDto,
-      String campaignName);
+      OffPlatformInvestmentRequestDto offPlatformInvestmentRequestDto, String campaignName);
 }

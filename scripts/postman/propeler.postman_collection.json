@@ -744,6 +744,38 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "documents/request",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/{{campaign_fname}}/documents/request",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"{{campaign_fname}}",
+										"documents",
+										"request"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"_postman_isSubFolder": true

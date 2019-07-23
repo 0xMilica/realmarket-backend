@@ -24,6 +24,7 @@ public class CampaignControllerImpl implements CampaignController {
 
   private final CampaignService campaignService;
   private final CampaignDocumentService campaignDocumentService;
+  private final CampaignDocumentsAccessRequestService campaignDocumentsAccessRequestService;
   private final CampaignTeamMemberService campaignTeamMemberService;
   private final CampaignUpdateService campaignUpdateService;
   private final CampaignUpdateImageService campaignUpdateImageService;
@@ -33,12 +34,14 @@ public class CampaignControllerImpl implements CampaignController {
   public CampaignControllerImpl(
       CampaignService campaignService,
       CampaignDocumentService campaignDocumentService,
+      CampaignDocumentsAccessRequestService campaignDocumentsAccessRequestService,
       CampaignTeamMemberService campaignTeamMemberService,
       CampaignUpdateService campaignUpdateService,
       CampaignUpdateImageService campaignUpdateImageService,
       InvestmentService investmentService) {
     this.campaignService = campaignService;
     this.campaignDocumentService = campaignDocumentService;
+    this.campaignDocumentsAccessRequestService = campaignDocumentsAccessRequestService;
     this.campaignTeamMemberService = campaignTeamMemberService;
     this.campaignUpdateService = campaignUpdateService;
     this.campaignUpdateImageService = campaignUpdateImageService;
@@ -137,6 +140,16 @@ public class CampaignControllerImpl implements CampaignController {
   public ResponseEntity<List<CampaignDocumentResponseDto>> getCampaignDocuments(
       @PathVariable String campaignName) {
     return ResponseEntity.ok(campaignDocumentService.getCampaignDocuments(campaignName));
+  }
+
+  @PostMapping(value = "/{campaignName}/documents/request")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<CampaignDocumentsAccessRequestDto> sendCampaignDocumentsAccessRequest(
+      @PathVariable String campaignName) {
+    return ResponseEntity.ok(
+        new CampaignDocumentsAccessRequestDto(
+            campaignDocumentsAccessRequestService.sendCampaignDocumentsAccessRequest(
+                campaignName)));
   }
 
   @GetMapping(value = "/mine/active")

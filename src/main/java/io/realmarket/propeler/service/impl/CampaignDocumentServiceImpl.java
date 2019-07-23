@@ -107,11 +107,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
         .filter(this::hasReadAccess)
         .map(CampaignDocumentResponseDto::new)
         .collect(
-            groupingBy(
-                campaignDocumentDto -> {
-                  return campaignDocumentDto.getType().toString();
-                },
-                toList()));
+            groupingBy(campaignDocumentDto -> campaignDocumentDto.getType().toString(), toList()));
   }
 
   public CampaignDocument findByIdOrThrowException(Long documentId) {
