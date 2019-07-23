@@ -22,4 +22,6 @@ public interface PersonService {
   FileDto getProfilePicture(Long personId);
 
   void deleteProfilePicture(Long personId);
+
+  Person findByIdOrThrowException(Long id);
 }

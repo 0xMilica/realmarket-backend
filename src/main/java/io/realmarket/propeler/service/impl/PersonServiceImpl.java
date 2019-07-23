@@ -50,6 +50,7 @@ public class PersonServiceImpl implements PersonService {
     return personRepository.findByEmail(email);
   }
 
+  @Override
   public Person findByIdOrThrowException(Long id) {
     return personRepository
         .findById(id)

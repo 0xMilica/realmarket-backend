@@ -36,7 +36,6 @@ public class AuditServiceImplTest {
   @Mock private CampaignService campaignService;
   @Mock private EmailService emailService;
   @Mock private AuditRepository auditRepository;
-
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
 
   @InjectMocks private AuditServiceImpl auditServiceImpl;

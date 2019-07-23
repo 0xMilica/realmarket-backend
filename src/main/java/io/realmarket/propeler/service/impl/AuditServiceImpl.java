@@ -22,7 +22,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,7 +38,6 @@ public class AuditServiceImpl implements AuditService {
   private final AuthService authService;
   private final RequestStateService requestStateService;
   private final CampaignService campaignService;
-  private final CampaignStateService campaignStateService;
   private final EmailService emailService;
   private final BlockchainCommunicationService blockchainCommunicationService;
 
@@ -45,23 +47,14 @@ public class AuditServiceImpl implements AuditService {
       RequestStateService requestStateService,
       AuthService authService,
       @Lazy CampaignService campaignService,
-      CampaignStateService campaignStateService,
       EmailService emailService,
       BlockchainCommunicationService blockchainCommunicationService) {
     this.auditRepository = auditRepository;
     this.requestStateService = requestStateService;
     this.authService = authService;
     this.campaignService = campaignService;
-    this.campaignStateService = campaignStateService;
     this.emailService = emailService;
     this.blockchainCommunicationService = blockchainCommunicationService;
-  }
-
-  @Override
-  public Audit findPendingAuditByCampaignOrThrowException(Campaign campaign) {
-    return auditRepository
-        .findPendingAuditByCampaign(campaign)
-        .orElseThrow(() -> new EntityNotFoundException(PENDING_AUDIT_NOT_FOUND));
   }
 
   @Override
@@ -103,7 +96,7 @@ public class AuditServiceImpl implements AuditService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            Arrays.asList(campaignOwner.getPerson().getEmail()),
+            Collections.singletonList(campaignOwner.getPerson().getEmail()),
             EmailType.ACCEPT_CAMPAIGN,
             Collections.unmodifiableMap(
                 Stream.of(
@@ -139,9 +132,16 @@ public class AuditServiceImpl implements AuditService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            Arrays.asList(campaignOwner.getPerson().getEmail()),
+            Collections.singletonList(campaignOwner.getPerson().getEmail()),
             EmailType.REJECT_CAMPAIGN,
             parameters));
+  }
+
+  @Override
+  public Audit findPendingAuditByCampaignOrThrowException(Campaign campaign) {
+    return auditRepository
+        .findPendingAuditByCampaign(campaign)
+        .orElseThrow(() -> new EntityNotFoundException(PENDING_AUDIT_NOT_FOUND));
   }
 
   private Audit findByIdOrThrowException(Long auditId) {

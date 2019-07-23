@@ -6,8 +6,6 @@ import io.realmarket.propeler.model.Campaign;
 
 public interface AuditService {
 
-  Audit findPendingAuditByCampaignOrThrowException(Campaign campaign);
-
   Audit assignAudit(AuditRequestDto auditRequestDto);
 
   Audit acceptCampaign(Long auditId);
@@ -17,4 +15,6 @@ public interface AuditService {
   Audit declineCampaign(Long auditId, String content);
 
   void sendDeclineCampaignEmail(Audit audit);
+
+  Audit findPendingAuditByCampaignOrThrowException(Campaign campaign);
 }
