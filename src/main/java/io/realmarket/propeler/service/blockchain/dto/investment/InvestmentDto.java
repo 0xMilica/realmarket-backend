@@ -12,4 +12,9 @@ public class InvestmentDto extends AbstractBlockchainDto {
     this.userId = investment.getPerson().getId();
     this.investment = new InvestmentDetails(investment);
   }
+
+  public InvestmentDto(Investment investment, Long adminId) {
+    this.userId = investment.getPerson().getId();
+    this.investment = new InvestmentDetails(investment, adminId);
+  }
 }

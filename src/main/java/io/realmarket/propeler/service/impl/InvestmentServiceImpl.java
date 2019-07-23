@@ -113,7 +113,14 @@ public class InvestmentServiceImpl implements InvestmentService {
             .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
             .build();
 
-    return investmentRepository.save(investment);
+    investment = investmentRepository.save(investment);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.INVESTMENT_INTENT,
+        new InvestmentDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getClientIp());
+
+    return investment;
   }
 
   @Transactional
