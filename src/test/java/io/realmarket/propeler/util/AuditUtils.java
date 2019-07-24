@@ -1,6 +1,6 @@
 package io.realmarket.propeler.util;
 
-import io.realmarket.propeler.api.dto.AuditRequestDto;
+import io.realmarket.propeler.api.dto.AuditAssignmentDto;
 import io.realmarket.propeler.model.Audit;
 import io.realmarket.propeler.model.RequestState;
 import io.realmarket.propeler.model.enums.RequestStateName;
@@ -16,8 +16,8 @@ public class AuditUtils {
       RequestState.builder().name(RequestStateName.DECLINED).build();
   public static final String REJECTION_REASON = "Submitted campaign did not pass our standards";
 
-  public static final AuditRequestDto AUDIT_REQUEST_DTO =
-      AuditRequestDto.builder()
+  public static final AuditAssignmentDto AUDIT_REQUEST_DTO =
+      AuditAssignmentDto.builder()
           .auditorId(AuthUtils.TEST_AUTH_ID)
           .campaignUrlFriendlyName(CampaignUtils.TEST_URL_FRIENDLY_NAME)
           .build();

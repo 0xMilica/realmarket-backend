@@ -1,8 +1,8 @@
 package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.AuditController;
+import io.realmarket.propeler.api.dto.AuditAssignmentDto;
 import io.realmarket.propeler.api.dto.AuditDeclineDto;
-import io.realmarket.propeler.api.dto.AuditRequestDto;
 import io.realmarket.propeler.api.dto.AuditResponseDto;
 import io.realmarket.propeler.service.AuditService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +29,8 @@ public class AuditControllerImpl implements AuditController {
   @PostMapping
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public ResponseEntity<AuditResponseDto> assignAudit(
-      @RequestBody @Valid AuditRequestDto auditRequestDto) {
-    return ResponseEntity.ok(new AuditResponseDto(auditService.assignAudit(auditRequestDto)));
+      @RequestBody @Valid AuditAssignmentDto auditAssignmentDto) {
+    return ResponseEntity.ok(new AuditResponseDto(auditService.assignAudit(auditAssignmentDto)));
   }
 
   @Override

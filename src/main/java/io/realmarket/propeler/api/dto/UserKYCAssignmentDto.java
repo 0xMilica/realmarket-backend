@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuditRequestDto {
+public class UserKYCAssignmentDto {
 
   @ApiModelProperty(value = "Auditor's identifier")
   private Long auditorId;
 
-  @ApiModelProperty(value = "Url friendly version of campaign name")
-  private String campaignUrlFriendlyName;
+  @ApiModelProperty(value = "User KYC request's identifier")
+  private Long userKYCId;
 }

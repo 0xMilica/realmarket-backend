@@ -1,12 +1,12 @@
 package io.realmarket.propeler.service;
 
-import io.realmarket.propeler.api.dto.AuditRequestDto;
+import io.realmarket.propeler.api.dto.AuditAssignmentDto;
 import io.realmarket.propeler.model.Audit;
 import io.realmarket.propeler.model.Campaign;
 
 public interface AuditService {
 
-  Audit assignAudit(AuditRequestDto auditRequestDto);
+  Audit assignAudit(AuditAssignmentDto auditAssignmentDto);
 
   Audit acceptCampaign(Long auditId);
 

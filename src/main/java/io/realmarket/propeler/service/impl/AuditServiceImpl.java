@@ -1,6 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.AuditRequestDto;
+import io.realmarket.propeler.api.dto.AuditAssignmentDto;
 import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.Audit;
 import io.realmarket.propeler.model.Auth;
@@ -58,14 +58,15 @@ public class AuditServiceImpl implements AuditService {
   }
 
   @Override
-  public Audit assignAudit(AuditRequestDto auditRequestDto) {
-    Auth auditorAuth = authService.findByIdOrThrowException(auditRequestDto.getAuditorId());
+  public Audit assignAudit(AuditAssignmentDto auditAssignmentDto) {
+    Auth auditorAuth = authService.findByIdOrThrowException(auditAssignmentDto.getAuditorId());
     // TODO: Change this condition when assigning become possible for other roles too
     if (!auditorAuth.getUserRole().getName().equals(UserRoleName.ROLE_ADMIN)) {
       throw new BadRequestException(USER_CAN_NOT_BE_AUDITOR);
     }
     Campaign campaign =
-        campaignService.getCampaignByUrlFriendlyName(auditRequestDto.getCampaignUrlFriendlyName());
+        campaignService.getCampaignByUrlFriendlyName(
+            auditAssignmentDto.getCampaignUrlFriendlyName());
     campaignService.changeCampaignStateOrThrow(campaign, CampaignStateName.AUDIT);
 
     Audit audit =
