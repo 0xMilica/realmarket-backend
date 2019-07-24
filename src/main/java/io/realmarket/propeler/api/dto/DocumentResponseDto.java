@@ -1,7 +1,6 @@
 package io.realmarket.propeler.api.dto;
 
-import io.realmarket.propeler.model.CampaignDocument;
-import io.realmarket.propeler.model.CompanyDocument;
+import io.realmarket.propeler.model.Document;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -24,8 +23,8 @@ public class DocumentResponseDto {
   @ApiModelProperty(value = "Document's title")
   private String title;
 
-  @ApiModelProperty(value = "Kind of document")
-  private String kind;
+  @ApiModelProperty(value = "Type of document")
+  private String type;
 
   @ApiModelProperty(value = "Document's access level")
   private String accessLevel;
@@ -36,25 +35,12 @@ public class DocumentResponseDto {
   @ApiModelProperty(value = "Document's upload date")
   private Instant uploadDate;
 
-  @ApiModelProperty(value = "Document's campaign name")
-  private String campaignName;
-
-  public DocumentResponseDto(CampaignDocument campaignDocument) {
-    this.id = campaignDocument.getId();
-    this.title = campaignDocument.getTitle();
-    this.kind = campaignDocument.getType().getName().name();
-    this.accessLevel = campaignDocument.getAccessLevel().getName().name();
-    this.url = campaignDocument.getUrl();
-    this.uploadDate = campaignDocument.getUploadDate();
-    this.campaignName = campaignDocument.getCampaign().getName();
-  }
-
-  public DocumentResponseDto(CompanyDocument companyDocument) {
-    this.id = companyDocument.getId();
-    this.title = companyDocument.getTitle();
-    this.kind = companyDocument.getType().getName().name();
-    this.accessLevel = companyDocument.getAccessLevel().getName().name();
-    this.url = companyDocument.getUrl();
-    this.uploadDate = companyDocument.getUploadDate();
+  public DocumentResponseDto(Document document) {
+    this.id = document.getId();
+    this.title = document.getTitle();
+    this.type = document.getType().getName().name();
+    this.accessLevel = document.getAccessLevel().getName().name();
+    this.url = document.getUrl();
+    this.uploadDate = document.getUploadDate();
   }
 }

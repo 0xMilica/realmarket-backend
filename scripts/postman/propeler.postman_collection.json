@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "38902d1f-76d3-4289-8f6c-56ab16500515",
+		"_postman_id": "b5e43065-23d4-4e5f-90a0-53f974532867",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -3191,6 +3191,46 @@
 		{
 			"name": "user",
 			"item": [
+				{
+					"name": "docs",
+					"item": [
+						{
+							"name": "/documents",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"accessLevel\": \"PLATFORM_ADMINS\",\r\n  \"title\": \"FIRSTDOCUMENT\",\r\n  \"type\": \"PERSONAL_ID\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/users/documents",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"documents"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
 				{
 					"name": "/users/{auth_id}/secret",
 					"request": {

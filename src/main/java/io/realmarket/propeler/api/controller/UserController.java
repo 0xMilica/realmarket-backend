@@ -313,4 +313,26 @@ public interface UserController {
     @ApiResponse(code = 404, message = "User not found.")
   })
   ResponseEntity<List<CompanyDocumentResponseDto>> getCompanyDocuments(Long userId);
+
+  @ApiOperation(
+      value = "Submit personal document",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "DocumentDto",
+        value = "Dto that contains information about submitted document",
+        required = true,
+        dataType = "DocumentDto",
+        paramType = "body")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully saved person's document."),
+    @ApiResponse(
+        code = 400,
+        message =
+            "Person's documents not saved. Check request body -  probably missing document type in request, or title and user id are blank.")
+  })
+  ResponseEntity<DocumentResponseDto> submitPersonalDocument(DocumentDto companyDocumentDto);
 }

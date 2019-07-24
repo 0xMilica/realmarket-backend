@@ -27,18 +27,21 @@ public class UserControllerImpl implements UserController {
   private final TwoFactorAuthService twoFactorAuthService;
   private final CampaignDocumentService campaignDocumentService;
   private final CompanyDocumentService companyDocumentService;
+  private final PersonDocumentService personDocumentService;
 
   public UserControllerImpl(
       AuthService authService,
       PersonService personService,
       TwoFactorAuthService twoFactorAuthService,
       CampaignDocumentService campaignDocumentService,
-      CompanyDocumentService companyDocumentService) {
+      CompanyDocumentService companyDocumentService,
+      PersonDocumentService personDocumentService) {
     this.authService = authService;
     this.personService = personService;
     this.twoFactorAuthService = twoFactorAuthService;
     this.campaignDocumentService = campaignDocumentService;
     this.companyDocumentService = companyDocumentService;
+    this.personDocumentService = personDocumentService;
   }
 
   @RequestMapping(value = "{username}", method = RequestMethod.HEAD)
@@ -159,5 +162,13 @@ public class UserControllerImpl implements UserController {
   public ResponseEntity<List<CompanyDocumentResponseDto>> getCompanyDocuments(
       @PathVariable Long userId) {
     return ResponseEntity.ok(companyDocumentService.getUserCompanyDocuments(userId));
+  }
+
+  @PostMapping(value = "/documents")
+  @PreAuthorize("hasAnyAuthority('ROLE_ENTREPRENEUR', 'ROLE_INVESTOR')")
+  public ResponseEntity<DocumentResponseDto> submitPersonalDocument(@RequestBody @Valid DocumentDto documentDto) {
+    return ResponseEntity.ok(
+        new DocumentResponseDto(
+            personDocumentService.submitPersonDocument(documentDto)));
   }
 }

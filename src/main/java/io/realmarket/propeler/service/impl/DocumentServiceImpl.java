@@ -16,7 +16,7 @@ import java.util.List;
 public class DocumentServiceImpl implements DocumentService {
 
   @Autowired
-  public DocumentServiceImpl() {};
+  public DocumentServiceImpl() {}
 
   @Override
   public List<DocumentMetadata> getTypes(String entity) {

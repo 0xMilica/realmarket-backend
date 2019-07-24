@@ -31,6 +31,9 @@
             fundraising_proposal_id bigint
             constraint document_fk_on_fundraising_proposal
             references fundraising_proposal,
+            person_id bigint
+            constraint document_fk_on_person
+            references person,
             entity_name varchar(255)
             );
         </sql>

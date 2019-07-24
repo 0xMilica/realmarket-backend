@@ -58,6 +58,13 @@ public class DocumentUtil {
                   DocumentTypeName.PITCH_DECK,
                   true,
                   Arrays.asList(DocumentAccessLevelName.PUBLIC, DocumentAccessLevelName.ON_DEMAND),
+                  1)),
+          "persons",
+          Collections.singletonList(
+              new DocumentMetadata(
+                  DocumentTypeName.PERSONAL_ID,
+                  true,
+                  Collections.singletonList(DocumentAccessLevelName.PLATFORM_ADMINS),
                   1)));
 
   private DocumentUtil() {}

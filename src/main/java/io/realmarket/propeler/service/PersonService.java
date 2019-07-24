@@ -3,6 +3,7 @@ package io.realmarket.propeler.service;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.api.dto.PersonPatchDto;
+import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Person;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,4 +25,6 @@ public interface PersonService {
   void deleteProfilePicture(Long personId);
 
   Person findByIdOrThrowException(Long id);
+
+  Person getPersonFromAuth(Auth auth);
 }

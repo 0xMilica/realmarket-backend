@@ -6,7 +6,8 @@ public enum DocumentTypeName {
   PITCH_DECK("PITCH_DECK"),
   BANK("BANK"),
   DUE_DILIGENCE("DUE_DILIGENCE"),
-  LEGAL("LEGAL");
+  LEGAL("LEGAL"),
+  PERSONAL_ID("PERSONAL_ID");
 
   private final String text;
 

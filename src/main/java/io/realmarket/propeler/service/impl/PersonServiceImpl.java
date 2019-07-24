@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.api.dto.PersonPatchDto;
+import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.repository.PersonRepository;
 import io.realmarket.propeler.service.CloudObjectStorageService;
@@ -55,6 +56,11 @@ public class PersonServiceImpl implements PersonService {
     return personRepository
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.PERSON_ID_DOES_NOT_EXIST));
+  }
+
+  @Override
+  public Person getPersonFromAuth(Auth auth) {
+    return personRepository.findByAuth(auth);
   }
 
   public PersonDto getPerson(Long id) {
