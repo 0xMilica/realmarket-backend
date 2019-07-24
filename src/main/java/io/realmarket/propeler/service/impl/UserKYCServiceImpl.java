@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.model.UserKYC;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.UserKYCRepository;
+import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.UserKYCService;
@@ -25,11 +26,10 @@ public class UserKYCServiceImpl implements UserKYCService {
   }
 
   @Override
-  public UserKYC createUserKYCRequest(Long personId) {
-
+  public UserKYC createUserKYCRequest() {
     UserKYC userKYC =
         UserKYC.builder()
-            .person(personService.findByIdOrThrowException(personId))
+            .person(personService.getPersonFromAuth(AuthenticationUtil.getAuthentication().getAuth()))
             .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
             .build();
 

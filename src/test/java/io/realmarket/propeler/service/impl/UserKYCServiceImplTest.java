@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.model.UserKYC;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.UserKYCRepository;
+import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.util.AuthUtils;
@@ -37,13 +38,13 @@ public class UserKYCServiceImplTest {
 
   @Test
   public void createUserKYCRequest_Should_Create_UserKYCRequest() {
-    when(personService.findByIdOrThrowException(PersonUtils.TEST_PERSON_ID))
+    when(personService.getPersonFromAuth(AuthenticationUtil.getAuthentication().getAuth()))
         .thenReturn(PersonUtils.TEST_PERSON);
     when(requestStateService.getRequestState(RequestStateName.PENDING))
         .thenReturn(TEST_PENDING_REQUEST_STATE);
     when(userKYCRepository.save(TEST_USER_KYC)).thenReturn(TEST_USER_KYC);
 
-    UserKYC actualUserKYC = userKYCService.createUserKYCRequest(PersonUtils.TEST_PERSON_ID);
+    UserKYC actualUserKYC = userKYCService.createUserKYCRequest();
 
     assertEquals(RequestStateName.PENDING, actualUserKYC.getRequestState().getName());
     assertEquals(PersonUtils.TEST_PERSON_ID, actualUserKYC.getPerson().getId());

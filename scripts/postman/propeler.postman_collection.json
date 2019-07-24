@@ -4331,6 +4331,36 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "kyc",
+			"item": [
+				{
+					"name": "/kyc/user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/kyc/user",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"kyc",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
