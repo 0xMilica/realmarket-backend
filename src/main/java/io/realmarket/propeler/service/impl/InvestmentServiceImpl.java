@@ -86,6 +86,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.INVESTMENT_INTENT,
         new InvestmentDto(investment),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
     return investment;
@@ -118,6 +119,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.INVESTMENT_INTENT,
         new InvestmentDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
     return investment;
@@ -138,6 +140,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
 
@@ -156,6 +159,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
 
@@ -175,6 +179,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
 
@@ -197,6 +202,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
 
@@ -218,6 +224,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
 

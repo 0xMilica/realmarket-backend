@@ -78,6 +78,7 @@ public class CompanyServiceImpl implements CompanyService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.COMPANY_REGISTRATION,
         new RegistrationDto(company),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
     return company;
@@ -93,6 +94,7 @@ public class CompanyServiceImpl implements CompanyService {
       blockchainCommunicationService.invoke(
           BlockchainMethod.COMPANY_EDIT_REQUEST,
           new EditRequestDto(editRequest),
+          AuthenticationUtil.getAuthentication().getAuth().getUsername(),
           AuthenticationUtil.getClientIp());
 
       return company;

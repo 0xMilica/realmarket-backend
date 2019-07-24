@@ -49,9 +49,6 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
   @Value("${blockchain.user.organization}")
   private String organization;
 
-  @Value("${blockchain.user.username}")
-  private String username;
-
   private RestTemplate restTemplate;
 
   public BlockchainCommunicationServiceImpl(RestTemplate restTemplate) {
@@ -60,7 +57,7 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
 
   @Async
   public Future<Map<String, Object>> invoke(
-      String methodName, AbstractBlockchainDto dto, String ipAddress) {
+      String methodName, AbstractBlockchainDto dto, String username, String ipAddress) {
     if (!active) {
       log.info("Blockchain is off.");
       return null;
@@ -72,7 +69,7 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
 
     HttpHeaders headers = new HttpHeaders();
     headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-    headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + enrollUser());
+    headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + enrollUser(username));
 
     Map<String, Object> args = new HashMap<>();
     args.put("peers", peersAddresses);
@@ -94,7 +91,7 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     return new AsyncResult<>(processResponse(response));
   }
 
-  private String enrollUser() {
+  private String enrollUser(String username) {
     HttpHeaders headers = new HttpHeaders();
     headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 

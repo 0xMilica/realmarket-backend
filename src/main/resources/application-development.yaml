@@ -113,7 +113,6 @@ blockchain:
   active: true
   user:
     organization: Org1
-    username: Jim
   address: http://blockchain-service:5000
   invocation:
     peers: peer0.org1.example.com

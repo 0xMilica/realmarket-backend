@@ -318,6 +318,7 @@ public class CampaignServiceImpl implements CampaignService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.CAMPAIGN_SUBMISSION_FOR_REVIEW,
         new SubmissionForReviewDto(campaign),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
 

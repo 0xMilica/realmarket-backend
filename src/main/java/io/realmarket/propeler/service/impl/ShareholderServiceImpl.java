@@ -74,6 +74,7 @@ public class ShareholderServiceImpl implements ShareholderService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
         new UpdateShareholdersDto(company, getShareholders()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
     return shareholder;
@@ -120,6 +121,7 @@ public class ShareholderServiceImpl implements ShareholderService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
         new UpdateShareholdersDto(shareholder.getCompany(), getShareholders()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
     return shareholder;
@@ -134,6 +136,7 @@ public class ShareholderServiceImpl implements ShareholderService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
         new UpdateShareholdersDto(shareholder.getCompany(), getShareholders()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
 

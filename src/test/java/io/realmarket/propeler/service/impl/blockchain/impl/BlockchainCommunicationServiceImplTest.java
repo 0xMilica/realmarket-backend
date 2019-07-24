@@ -46,7 +46,7 @@ public class BlockchainCommunicationServiceImplTest {
     TEST_REGISTRATION_DTO.setPerson(new HashedPersonDetails(TEST_PERSON));
     Future<Map<String, Object>> retVal =
         blockchainCommunicationService.invoke(
-            BlockchainMethod.USER_REGISTRATION, BlockchainUtils.TEST_REGISTRATION_DTO, TEST_IP);
+            BlockchainMethod.USER_REGISTRATION, BlockchainUtils.TEST_REGISTRATION_DTO, TEST_USERNAME, TEST_IP);
 
     assertEquals(TEST_MESSAGE, retVal.get().get("message"));
   }
@@ -57,7 +57,7 @@ public class BlockchainCommunicationServiceImplTest {
 
     Future<Map<String, Object>> retVal =
         blockchainCommunicationService.invoke(
-            BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_IP);
+            BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_USERNAME, TEST_IP);
 
     assertNull(retVal);
   }
@@ -71,7 +71,7 @@ public class BlockchainCommunicationServiceImplTest {
     when(restTemplate.postForObject(anyString(), any(), any())).thenReturn(getMapMocked(false));
 
     blockchainCommunicationService.invoke(
-        BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_IP);
+        BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_USERNAME, TEST_IP);
   }
 
   @Test(expected = BlockchainException.class)
@@ -82,7 +82,7 @@ public class BlockchainCommunicationServiceImplTest {
         .thenReturn(TEST_RESPONSE_OK);
 
     blockchainCommunicationService.invoke(
-        BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, null);
+        BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_USERNAME, null);
   }
 
   @Test(expected = BlockchainException.class)
@@ -93,6 +93,6 @@ public class BlockchainCommunicationServiceImplTest {
         .thenReturn(TEST_RESPONSE_ERROR);
 
     blockchainCommunicationService.invoke(
-        BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_IP);
+        BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_USERNAME, TEST_IP);
   }
 }

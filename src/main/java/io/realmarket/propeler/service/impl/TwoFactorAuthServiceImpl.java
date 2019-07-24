@@ -175,6 +175,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_REGENERATION_OF_RECOVERY,
         RegenerationOfRecoveryDto.builder().userId(authId).build(),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
     return new OTPWildcardResponseDto(otpService.generateRecoveryCodes(auth));

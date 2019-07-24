@@ -17,6 +17,7 @@ public class BlockchainUtils {
 
   public static final String TEST_IP = "127.0.0.1";
   public static final Long TEST_ID = 123L;
+  public static final String TEST_USERNAME = "TEST_USERNAME";
   public static final String TEST_ROLE = "Role";
   public static final String TEST_MESSAGE = "message";
 

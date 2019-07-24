@@ -264,6 +264,7 @@ public class AuthServiceImpl implements AuthService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_REGISTRATION,
         new io.realmarket.propeler.service.blockchain.dto.user.RegistrationDto(auth),
+        auth.getUsername(),
         AuthenticationUtil.getClientIp());
   }
 
@@ -353,6 +354,7 @@ public class AuthServiceImpl implements AuthService {
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_PASSWORD_CHANGE,
         PasswordChangeDto.builder().userId(authId).build(),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
 
@@ -440,6 +442,7 @@ public class AuthServiceImpl implements AuthService {
             .userId(currentAuth.getId())
             .newEmailHash(HashingHelper.hash(authorizedAction.getData()))
             .build(),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
 

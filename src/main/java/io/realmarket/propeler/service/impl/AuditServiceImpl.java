@@ -171,6 +171,7 @@ public class AuditServiceImpl implements AuditService {
         BlockchainMethod.CAMPAIGN_STATE_CHANGE,
         new ChangeStateDto(
             audit.getCampaign(), AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
     return audit;
