@@ -16,6 +16,7 @@ import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,12 @@ public class CampaignDocumentsAccessRequestServiceImpl
     this.requestStateService = requestStateService;
   }
 
+  private CampaignDocumentsAccessRequest findByIdOrThrowException(Long requestId) {
+    return campaignDocumentsAccessRequestRepository
+        .findById(requestId)
+        .orElseThrow(EntityNotFoundException::new);
+  }
+
   private List<CampaignDocumentsAccessRequest> findByCampaign(Campaign campaign) {
     return campaignDocumentsAccessRequestRepository.findByCampaign(campaign);
   }
@@ -60,6 +67,17 @@ public class CampaignDocumentsAccessRequestServiceImpl
             .auth(auth)
             .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
             .build());
+  }
+
+  @Override
+  public CampaignDocumentsAccessRequest acceptCampaignDocumentsAccessRequest(Long requestId) {
+    CampaignDocumentsAccessRequest campaignDocumentsAccessRequest =
+        findByIdOrThrowException(requestId);
+    campaignService.throwIfNoAccess(campaignDocumentsAccessRequest.getCampaign());
+    campaignDocumentsAccessRequest.setRequestState(
+        requestStateService.getRequestState(RequestStateName.APPROVED));
+
+    return campaignDocumentsAccessRequestRepository.save(campaignDocumentsAccessRequest);
   }
 
   @Override

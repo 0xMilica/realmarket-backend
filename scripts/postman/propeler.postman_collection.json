@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "16438694-9deb-4a42-a011-aa1bb75c83b7",
+		"_postman_id": "11c15ea5-3f0f-40d2-af69-b503088bf609",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -746,7 +746,7 @@
 							"response": []
 						},
 						{
-							"name": "documents/request",
+							"name": "/documents/request",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -803,6 +803,39 @@
 										"campaigns",
 										"documents",
 										"requests"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents/requests/{{campaignDocumentsAccessRequestId}}/accept",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/documents/requests/{{campaignDocumentsAccessRequestId}}/accept",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"documents",
+										"requests",
+										"{{campaignDocumentsAccessRequestId}}",
+										"accept"
 									]
 								}
 							},

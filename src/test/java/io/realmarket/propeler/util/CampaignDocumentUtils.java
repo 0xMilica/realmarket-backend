@@ -35,6 +35,8 @@ public class CampaignDocumentUtils {
 
   public static final RequestState TEST_PENDING_REQUEST_STATE =
       RequestState.builder().name(RequestStateName.PENDING).build();
+  public static final RequestState TEST_APPROVED_REQUEST_STATE =
+      RequestState.builder().name(RequestStateName.APPROVED).build();
 
   public static final CampaignDocument TEST_CAMPAIGN_DOCUMENT =
       CampaignDocument.campaignDocumentBuilder()
@@ -110,5 +112,12 @@ public class CampaignDocumentUtils {
           .campaign(CampaignUtils.TEST_ACTIVE_CAMPAIGN)
           .auth(AuthUtils.TEST_AUTH_ENTREPRENEUR)
           .requestState(TEST_PENDING_REQUEST_STATE)
+          .build();
+
+  public static CampaignDocumentsAccessRequest TEST_ACCEPTED_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST =
+      CampaignDocumentsAccessRequest.builder()
+          .campaign(CampaignUtils.TEST_ACTIVE_CAMPAIGN)
+          .auth(AuthUtils.TEST_AUTH_ENTREPRENEUR)
+          .requestState(TEST_APPROVED_REQUEST_STATE)
           .build();
 }

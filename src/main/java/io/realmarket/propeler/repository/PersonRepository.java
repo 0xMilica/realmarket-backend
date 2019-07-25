@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
   List<Person> findByEmail(String email);
+
   Person findByAuth(Auth auth);
 }

@@ -25,7 +25,7 @@ public class InvestmentDetails {
     this.investmentType = "offPlatform";
   }
 
-  private void setCommonFields(Investment investment){
+  private void setCommonFields(Investment investment) {
     this.investmentId = investment.getId();
     this.investorId = investment.getPerson().getId();
     this.campaignId = investment.getCampaign().getId();

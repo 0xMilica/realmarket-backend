@@ -8,5 +8,5 @@ import java.util.concurrent.Future;
 public interface BlockchainCommunicationService {
 
   Future<Map<String, Object>> invoke(
-      String methodName, AbstractBlockchainDto dto, String username, String ipAddress );
+      String methodName, AbstractBlockchainDto dto, String username, String ipAddress);
 }

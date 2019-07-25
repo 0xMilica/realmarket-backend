@@ -39,7 +39,8 @@ public class UserKYCServiceImpl implements UserKYCService {
   public UserKYC createUserKYCRequest() {
     UserKYC userKYC =
         UserKYC.builder()
-            .person(personService.getPersonFromAuth(AuthenticationUtil.getAuthentication().getAuth()))
+            .person(
+                personService.getPersonFromAuth(AuthenticationUtil.getAuthentication().getAuth()))
             .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
             .build();
 

@@ -1,7 +1,10 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.DocumentDto;
-import io.realmarket.propeler.model.*;
+import io.realmarket.propeler.model.DocumentAccessLevel;
+import io.realmarket.propeler.model.DocumentType;
+import io.realmarket.propeler.model.Person;
+import io.realmarket.propeler.model.PersonDocument;
 import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.DocumentTypeRepository;
 import io.realmarket.propeler.repository.PersonDocumentRepository;
@@ -43,7 +46,8 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
   @Override
   @Transactional
   public PersonDocument submitPersonDocument(DocumentDto documentDto) {
-    Person person = personService.getPersonFromAuth(AuthenticationUtil.getAuthentication().getAuth());
+    Person person =
+        personService.getPersonFromAuth(AuthenticationUtil.getAuthentication().getAuth());
 
     PersonDocument personDocument = convertDocumentDtoToDocument(documentDto, person);
     personDocument.setUploadDate(Instant.now());
@@ -58,8 +62,7 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
   private PersonDocument convertDocumentDtoToDocument(DocumentDto documentDto, Person person) {
     Optional<DocumentAccessLevel> accessLevel =
         this.documentAccessLevelRepository.findByName(documentDto.getAccessLevel());
-    Optional<DocumentType> type =
-        this.documentTypeRepository.findByName(documentDto.getType());
+    Optional<DocumentType> type = this.documentTypeRepository.findByName(documentDto.getType());
     if (!accessLevel.isPresent() || !type.isPresent()) {
       throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
     }

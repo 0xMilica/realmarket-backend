@@ -166,9 +166,9 @@ public class UserControllerImpl implements UserController {
 
   @PostMapping(value = "/documents")
   @PreAuthorize("hasAnyAuthority('ROLE_ENTREPRENEUR', 'ROLE_INVESTOR')")
-  public ResponseEntity<DocumentResponseDto> submitPersonalDocument(@RequestBody @Valid DocumentDto documentDto) {
+  public ResponseEntity<DocumentResponseDto> submitPersonalDocument(
+      @RequestBody @Valid DocumentDto documentDto) {
     return ResponseEntity.ok(
-        new DocumentResponseDto(
-            personDocumentService.submitPersonDocument(documentDto)));
+        new DocumentResponseDto(personDocumentService.submitPersonDocument(documentDto)));
   }
 }

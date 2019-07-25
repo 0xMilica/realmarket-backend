@@ -1,7 +1,10 @@
 package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.UserKYCDto;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
