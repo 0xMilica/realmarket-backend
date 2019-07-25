@@ -236,7 +236,7 @@ public interface CampaignController {
   ResponseEntity getCampaignDocumentsAccessRequests();
 
   @ApiOperation(
-      value = "Approve request for campaign documents access",
+      value = "Accept request for campaign documents access",
       httpMethod = "PATCH",
       produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
@@ -250,10 +250,33 @@ public interface CampaignController {
   @ApiResponses({
     @ApiResponse(
         code = 200,
-        message = "Successfully approved request for campaign documents access."),
+        message = "Successfully approved request for campaign document access."),
+    @ApiResponse(code = 400, message = "Invalid request."),
     @ApiResponse(code = 404, message = "Campaign documents access request not found.")
   })
   ResponseEntity<CampaignDocumentsAccessRequestDto> acceptCampaignDocumentsAccessRequest(
+      Long requestId);
+
+  @ApiOperation(
+      value = "Reject request for campaign documents access",
+      httpMethod = "PATCH",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "requestId",
+        value = "Campaign documents access request id",
+        required = true,
+        dataType = "Long",
+        paramType = "path")
+  })
+  @ApiResponses({
+    @ApiResponse(
+        code = 200,
+        message = "Successfully rejected request for campaign document access."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 404, message = "Campaign documents access request not found.")
+  })
+  ResponseEntity<CampaignDocumentsAccessRequestDto> rejectCampaignDocumentsAccessRequest(
       Long requestId);
 
   @ApiOperation(

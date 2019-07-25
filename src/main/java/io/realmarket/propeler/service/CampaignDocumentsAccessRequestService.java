@@ -10,4 +10,6 @@ public interface CampaignDocumentsAccessRequestService {
   CampaignDocumentsAccessRequestsDto getCampaignDocumentsAccessRequests();
 
   CampaignDocumentsAccessRequest acceptCampaignDocumentsAccessRequest(Long requestId);
+
+  CampaignDocumentsAccessRequest rejectCampaignDocumentsAccessRequest(Long requestId);
 }

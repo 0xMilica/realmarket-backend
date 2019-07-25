@@ -71,4 +71,20 @@ public class CampaignDocumentsAccessRequestServiceImplTest {
 
     verify(campaignDocumentsAccessRequestRepository, times(1)).save(any());
   }
+
+  @Test
+  public void rejectDocumentsAccessRequest_Should_RejectDocumentsAccessRequest() {
+    when(campaignDocumentsAccessRequestRepository.findById(CampaignDocumentUtils.TEST_ID))
+            .thenReturn(
+                    Optional.of(CampaignDocumentUtils.TEST_PENDING_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST));
+    when(requestStateService.getRequestState(RequestStateName.APPROVED))
+            .thenReturn(CampaignDocumentUtils.TEST_DECLINED_REQUEST_STATE);
+    when(campaignDocumentsAccessRequestRepository.save(any()))
+            .thenReturn(CampaignDocumentUtils.TEST_ACCEPTED_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST);
+
+    campaignDocumentsAccessRequestService.acceptCampaignDocumentsAccessRequest(
+            CampaignDocumentUtils.TEST_ID);
+
+    verify(campaignDocumentsAccessRequestRepository, times(1)).save(any());
+  }
 }

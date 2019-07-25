@@ -70,17 +70,6 @@ public class CampaignDocumentsAccessRequestServiceImpl
   }
 
   @Override
-  public CampaignDocumentsAccessRequest acceptCampaignDocumentsAccessRequest(Long requestId) {
-    CampaignDocumentsAccessRequest campaignDocumentsAccessRequest =
-        findByIdOrThrowException(requestId);
-    campaignService.throwIfNoAccess(campaignDocumentsAccessRequest.getCampaign());
-    campaignDocumentsAccessRequest.setRequestState(
-        requestStateService.getRequestState(RequestStateName.APPROVED));
-
-    return campaignDocumentsAccessRequestRepository.save(campaignDocumentsAccessRequest);
-  }
-
-  @Override
   public CampaignDocumentsAccessRequestsDto getCampaignDocumentsAccessRequests() {
     Campaign activeCampaign = campaignService.getActiveCampaign();
 
@@ -99,5 +88,27 @@ public class CampaignDocumentsAccessRequestServiceImpl
     campaignDocumentsAccessRequestsDto.setRequests(requestList);
 
     return campaignDocumentsAccessRequestsDto;
+  }
+
+  @Override
+  public CampaignDocumentsAccessRequest acceptCampaignDocumentsAccessRequest(Long requestId) {
+    CampaignDocumentsAccessRequest campaignDocumentsAccessRequest =
+        findByIdOrThrowException(requestId);
+    campaignService.throwIfNoAccess(campaignDocumentsAccessRequest.getCampaign());
+    campaignDocumentsAccessRequest.setRequestState(
+        requestStateService.getRequestState(RequestStateName.APPROVED));
+
+    return campaignDocumentsAccessRequestRepository.save(campaignDocumentsAccessRequest);
+  }
+
+  @Override
+  public CampaignDocumentsAccessRequest rejectCampaignDocumentsAccessRequest(Long requestId) {
+    CampaignDocumentsAccessRequest campaignDocumentsAccessRequest =
+        findByIdOrThrowException(requestId);
+    campaignService.throwIfNoAccess(campaignDocumentsAccessRequest.getCampaign());
+    campaignDocumentsAccessRequest.setRequestState(
+        requestStateService.getRequestState(RequestStateName.DECLINED));
+
+    return campaignDocumentsAccessRequestRepository.save(campaignDocumentsAccessRequest);
   }
 }

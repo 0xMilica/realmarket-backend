@@ -168,6 +168,15 @@ public class CampaignControllerImpl implements CampaignController {
             campaignDocumentsAccessRequestService.acceptCampaignDocumentsAccessRequest(requestId)));
   }
 
+  @PatchMapping(value = "/documents/requests/{requestId}/reject")
+  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  public ResponseEntity<CampaignDocumentsAccessRequestDto> rejectCampaignDocumentsAccessRequest(
+      @PathVariable Long requestId) {
+    return ResponseEntity.ok(
+        new CampaignDocumentsAccessRequestDto(
+            campaignDocumentsAccessRequestService.rejectCampaignDocumentsAccessRequest(requestId)));
+  }
+
   @GetMapping(value = "/mine/active")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity<CampaignResponseDto> getActiveCampaign() {
