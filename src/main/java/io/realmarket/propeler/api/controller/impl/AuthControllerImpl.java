@@ -45,8 +45,8 @@ public class AuthControllerImpl implements AuthController {
   @Override
   @GetMapping(value = "/register/validateToken")
   public ResponseEntity<RegistrationTokenInfoDto> validateToken(
-      @RequestBody @Valid RegistrationTokenDto registrationTokenDto) {
-    return new ResponseEntity(authService.validateToken(registrationTokenDto), OK);
+      @RequestParam(value = "tokenValue") String tokenValue) {
+    return new ResponseEntity(authService.validateToken(tokenValue), OK);
   }
 
   @PostMapping(value = "/confirm_registration")

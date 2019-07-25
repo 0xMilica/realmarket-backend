@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "097c5bfe-5c3a-4929-a73d-f2fd76499c45",
+		"_postman_id": "aba79bf9-ce59-4a27-bea6-bd3c9ca6156a",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -3100,6 +3100,38 @@
 								"api",
 								"auth",
 								"recover_username"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/register/validateToken",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/auth/register/validateToken?tokenValue=token",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register",
+								"validateToken"
+							],
+							"query": [
+								{
+									"key": "tokenValue",
+									"value": "token"
+								}
 							]
 						}
 					},

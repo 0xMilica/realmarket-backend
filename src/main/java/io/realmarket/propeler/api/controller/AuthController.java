@@ -46,13 +46,12 @@ public interface AuthController {
   @ApiOperation(
       value = "Validate registration token",
       httpMethod = "GET",
-      consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
     @ApiResponse(code = 200, message = "Token is valid."),
     @ApiResponse(code = 400, message = "Invalid request.0")
   })
-  ResponseEntity<RegistrationTokenInfoDto> validateToken(RegistrationTokenDto registrationTokenDto);
+  ResponseEntity<RegistrationTokenInfoDto> validateToken(String tokenValue);
 
   @ApiOperation(
       value = "Confirm registered user.",

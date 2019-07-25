@@ -13,7 +13,7 @@ public interface AuthService {
 
   void registerInvestor(RegistrationDto registrationDto);
 
-  RegistrationTokenInfoDto validateToken(RegistrationTokenDto registrationTokenDto);
+  RegistrationTokenInfoDto validateToken(String tokenValue);
 
   void initializeChangePassword(Long userId, ChangePasswordDto changePasswordDto);
 

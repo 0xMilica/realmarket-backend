@@ -187,10 +187,9 @@ public class AuthServiceImpl implements AuthService {
     createTokenAndSendMail(auth, registrationDto);
   }
 
-  public RegistrationTokenInfoDto validateToken(RegistrationTokenDto registrationTokenDto) {
+  public RegistrationTokenInfoDto validateToken(String tokenValue) {
     RegistrationToken registrationToken =
-        registrationTokenService.findByValueAndNotExpiredOrThrowException(
-            registrationTokenDto.getValue());
+        registrationTokenService.findByValueAndNotExpiredOrThrowException(tokenValue);
     return new RegistrationTokenInfoDto(
         registrationToken.getFundraisingProposal().getFirstName(),
         registrationToken.getFundraisingProposal().getLastName());

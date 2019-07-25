@@ -127,7 +127,7 @@ public class AuthServiceImplTest {
             RegistrationTokenUtils.TEST_VALUE))
         .thenReturn(RegistrationTokenUtils.TEST_REGISTRATION_TOKEN);
 
-    authServiceImpl.validateToken(RegistrationTokenUtils.TEST_REGISTRATION_TOKEN_DTO);
+    authServiceImpl.validateToken(RegistrationTokenUtils.TEST_VALUE);
 
     verify(registrationTokenService, Mockito.times(1))
         .findByValueAndNotExpiredOrThrowException(RegistrationTokenUtils.TEST_VALUE);

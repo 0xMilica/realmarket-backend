@@ -33,16 +33,12 @@ public class AuthTest {
 
   @Test
   public void validateToken() {
-    RegistrationTokenDto registrationTokenDto =
-        RegistrationTokenDto.builder().value("tokenValidateValue").build();
-
     given()
         .contentType("application/json")
         .accept("*/*, application/json")
         .header("captcha_response", "captcha")
-        .body(registrationTokenDto)
         .when()
-        .get("/api/auth/register/validateToken")
+        .get("/api/auth/register/validateToken?tokenValue=tokenValidateValue")
         .then()
         .statusCode(200)
         .body("firstName", equalTo("testFirstName"))
