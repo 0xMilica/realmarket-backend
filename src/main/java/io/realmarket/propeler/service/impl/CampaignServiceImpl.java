@@ -130,17 +130,17 @@ public class CampaignServiceImpl implements CampaignService {
     return new CampaignResponseDto(campaignRepository.save(campaign));
   }
 
-  public Campaign getActiveCampaignForCompany() {
+  public Campaign getActiveCampaign() {
     final Company company =
         companyService.findByAuthIdOrThrowException(
             AuthenticationUtil.getAuthentication().getAuth().getId());
     return campaignRepository
-        .findExistingByCompany(company)
+        .findByCompanyAndActiveTrue(company)
         .orElseThrow(() -> new EntityNotFoundException(NO_ACTIVE_CAMPAIGN));
   }
 
   public CampaignResponseDto getActiveCampaignDto() {
-    Campaign campaign = getActiveCampaignForCompany();
+    Campaign campaign = getActiveCampaign();
     CampaignResponseDto campaignDto = new CampaignResponseDto(campaign);
     campaignDto.setTopicStatus(campaignTopicService.getTopicStatus(campaign));
     return campaignDto;

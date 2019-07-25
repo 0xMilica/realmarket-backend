@@ -225,6 +225,17 @@ public interface CampaignController {
       String campaignName);
 
   @ApiOperation(
+      value = "Get requests for campaign documents access",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(
+        code = 200,
+        message = "Successfully retrieved requests for campaign documents access.")
+  })
+  ResponseEntity getCampaignDocumentsAccessRequests();
+
+  @ApiOperation(
       value = "Get active campaign",
       httpMethod = "GET",
       consumes = APPLICATION_JSON_VALUE,

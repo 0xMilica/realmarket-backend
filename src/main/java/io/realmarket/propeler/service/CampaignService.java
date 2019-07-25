@@ -40,7 +40,7 @@ public interface CampaignService {
 
   void throwIfNotActive(Campaign campaign);
 
-  Campaign getActiveCampaignForCompany();
+  Campaign getActiveCampaign();
 
   CampaignResponseDto getActiveCampaignDto();
 

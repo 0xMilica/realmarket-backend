@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b5e43065-23d4-4e5f-90a0-53f974532867",
+		"_postman_id": "16438694-9deb-4a42-a011-aa1bb75c83b7",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -772,6 +772,37 @@
 										"{{campaign_fname}}",
 										"documents",
 										"request"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/documents/requests",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*, application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/campaigns/documents/requests",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"campaigns",
+										"documents",
+										"requests"
 									]
 								}
 							},
@@ -1869,13 +1900,14 @@
 							}
 						],
 						"url": {
-							"raw": "{{server_ip}}/api/campaigns/active",
+							"raw": "{{server_ip}}/api/campaigns/mine/active",
 							"host": [
 								"{{server_ip}}"
 							],
 							"path": [
 								"api",
 								"campaigns",
+								"mine",
 								"active"
 							]
 						}
