@@ -44,8 +44,7 @@ public class Person {
   @OneToOne(
       mappedBy = "person",
       cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER,
-      optional = false)
+      fetch = FetchType.EAGER)
   private Auth auth;
 
   public Person(

@@ -60,9 +60,14 @@ public class DocumentUtil {
                   Arrays.asList(DocumentAccessLevelName.PUBLIC, DocumentAccessLevelName.ON_DEMAND),
                   1)),
           "persons",
-          Collections.singletonList(
+          Arrays.asList(
               new DocumentMetadata(
-                  DocumentTypeName.PERSONAL_ID,
+                  DocumentTypeName.PERSONAL_ID_FRONT,
+                  true,
+                  Collections.singletonList(DocumentAccessLevelName.PLATFORM_ADMINS),
+                  1),
+              new DocumentMetadata(
+                  DocumentTypeName.PERSONAL_ID_BACK,
                   true,
                   Collections.singletonList(DocumentAccessLevelName.PLATFORM_ADMINS),
                   1)));

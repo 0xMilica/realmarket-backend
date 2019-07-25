@@ -541,12 +541,12 @@ public class CampaignServiceImpl implements CampaignService {
       Pageable pageable, String state) {
     if (state.equalsIgnoreCase("all")) {
       return campaignRepository
-          .findAllByCompany(pageable, companyService.findMyCompany())
+          .findAllByCompanyViewable(pageable, companyService.findMyCompany())
           .map(
               c ->
                   new CampaignWithInvestmentsWithPersonResponseDto(
                       c, investmentService.findAllByCampaignWithInvestors(c)));
-    } else if (!state.equalsIgnoreCase("delete")) {
+    } else if (!state.equalsIgnoreCase("deleted")) {
       CampaignState campaignState = campaignStateService.getCampaignState(state);
       return campaignRepository
           .findAllByCampaignStateAndCompany(

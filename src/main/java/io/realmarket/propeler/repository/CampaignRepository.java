@@ -53,6 +53,11 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
   Page<Campaign> findAllByCompany(Pageable pageable, Company company);
 
   @Query(
+      value =
+          "SELECT c, s FROM Campaign c JOIN c.campaignState s WHERE c.company = :company AND s.name <> 'DELETED' ORDER BY c.creationDate DESC")
+  Page<Campaign> findAllByCompanyViewable(Pageable pageable, Company company);
+
+  @Query(
       "select c, s from Campaign c join fetch c.campaignState s where c.company = :company and s.name <> 'DELETED' order by c.creationDate desc")
   List<Campaign> findByCompany(@Param("company") Company company);
 }

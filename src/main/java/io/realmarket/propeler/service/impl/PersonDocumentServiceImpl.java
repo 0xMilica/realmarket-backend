@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -57,6 +58,11 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
     }
 
     return personDocumentRepository.save(personDocument);
+  }
+
+  @Override
+  public List<PersonDocument> findByPerson(Person person) {
+    return personDocumentRepository.findAllByPerson(person);
   }
 
   private PersonDocument convertDocumentDtoToDocument(DocumentDto documentDto, Person person) {

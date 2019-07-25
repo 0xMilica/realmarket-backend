@@ -15,7 +15,8 @@ INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq')
 INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'BUSINESS_PLAN');
 INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'PITCH_DECK');
 INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'BANK');
-INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'PERSONAL_ID');
+INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'PERSONAL_ID_FRONT');
+INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'PERSONAL_ID_BACK');
 
 -- campaign state
 INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'INITIAL');

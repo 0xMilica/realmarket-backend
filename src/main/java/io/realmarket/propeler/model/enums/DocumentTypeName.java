@@ -7,7 +7,8 @@ public enum DocumentTypeName {
   BANK("BANK"),
   DUE_DILIGENCE("DUE_DILIGENCE"),
   LEGAL("LEGAL"),
-  PERSONAL_ID("PERSONAL_ID");
+  PERSONAL_ID_FRONT("PERSONAL_ID_FRONT"),
+  PERSONAL_ID_BACK("PERSONAL_ID_BACK");
 
   private final String text;
 

@@ -160,4 +160,7 @@ public interface ExceptionMessages {
 
   // No SHA Algorithm.
   String NO_HASH_ALGORITHM = "SHA_001";
+
+  // User KYC with provided id does not exist.
+  String USER_KYC_DOES_NOT_EXIST = "UKY_001";
 }

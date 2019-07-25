@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "aba79bf9-ce59-4a27-bea6-bd3c9ca6156a",
+		"_postman_id": "60004c78-f121-41e6-8a6f-a8e6fa459d28",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -3342,7 +3342,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"accessLevel\": \"PLATFORM_ADMINS\",\r\n  \"title\": \"FIRSTDOCUMENT\",\r\n  \"type\": \"PERSONAL_ID\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
+									"raw": "{\r\n  \"accessLevel\": \"PLATFORM_ADMINS\",\r\n  \"title\": \"FIRSTDOCUMENT\",\r\n  \"type\": \"PERSONAL_ID_FRONT\",\r\n  \"url\": \"ZPQADB52R24TBD3ECEI2Z3YZKE5WZ4BO.txt\"\r\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/users/documents",
@@ -4485,6 +4485,103 @@
 								"api",
 								"kyc",
 								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/kyc/user/assign",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"auditorId\": \"5\",\n\t\"userKYCId\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/kyc/user/assign",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"kyc",
+								"user",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/kyc/users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/kyc/users?page=1&size=2",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"kyc",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/kyc/user/{{userKYC_Id}}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/kyc/user/{{userKYC_Id}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"kyc",
+								"user",
+								"{{userKYC_Id}}"
 							]
 						}
 					},

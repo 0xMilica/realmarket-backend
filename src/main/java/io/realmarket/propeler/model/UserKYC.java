@@ -22,7 +22,6 @@ public class UserKYC {
   private Long id;
 
   @JoinColumn(name = "auditorId", foreignKey = @ForeignKey(name = "user_kyc_fk_on_auditor"))
-  @NotNull
   @ManyToOne
   private Auth auditor;
 
