@@ -10,6 +10,7 @@ public class BlockchainMethod {
   public static final String COMPANY_EDIT_REQUEST = "CompanyEditRequest";
   public static final String CAMPAIGN_STATE_CHANGE = "CampaignStateChange";
   public static final String CAMPAIGN_DOCUMENT_ACCESS_REQUEST = "CampaignDocumentAccessRequest";
+  public static final String CAMPAIGN_DOCUMENT_ACCESS_REQUEST_STATE_CHANGE = "CampaignDocumentAccessRequestStateChange";
   public static final String SUBMIT_SHAREHOLDERS = "CompanyShareholderSubmission";
   public static final String INVESTMENT_INTENT = "CampaignInvestmentIntent";
   public static final String INVESTMENT_STATE_CHANGE = "CampaignInvestmentStateChange";

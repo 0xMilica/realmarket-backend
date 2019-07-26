@@ -5,16 +5,14 @@ import io.realmarket.propeler.service.blockchain.dto.AbstractBlockchainDto;
 import lombok.Data;
 
 @Data
-public class CampaignDocumentAccessRequestDto extends AbstractBlockchainDto {
+public class CampaignDocumentAccessRequestStateChangeDto extends AbstractBlockchainDto {
   private Long campaignDocumentAccessRequestId;
-  private Long campaignId;
-  private String requestState;
+  private String newState;
 
-  public CampaignDocumentAccessRequestDto(
+  public CampaignDocumentAccessRequestStateChangeDto(
       CampaignDocumentsAccessRequest campaignDocumentAccessRequest, Long userId) {
     this.campaignDocumentAccessRequestId = campaignDocumentAccessRequest.getId();
-    this.campaignId = campaignDocumentAccessRequest.getCampaign().getId();
-    this.requestState = campaignDocumentAccessRequest.getRequestState().getName().toString();
+    this.newState = campaignDocumentAccessRequest.getRequestState().getName().toString();
     this.userId = userId;
   }
 }

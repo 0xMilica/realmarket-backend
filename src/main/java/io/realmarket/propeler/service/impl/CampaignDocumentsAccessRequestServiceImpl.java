@@ -15,6 +15,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
+import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignDocumentAccessRequestStateChangeDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,7 +149,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
     campaignDocumentsAccessRequest.setRequestState(
         requestStateService.getRequestState(RequestStateName.APPROVED));
 
-    return campaignDocumentsAccessRequestRepository.save(campaignDocumentsAccessRequest);
+    return saveAndSendToBlockchain(campaignDocumentsAccessRequest);
   }
 
   @Override
@@ -159,6 +160,22 @@ public class CampaignDocumentsAccessRequestServiceImpl
     campaignDocumentsAccessRequest.setRequestState(
         requestStateService.getRequestState(RequestStateName.DECLINED));
 
-    return campaignDocumentsAccessRequestRepository.save(campaignDocumentsAccessRequest);
+    return saveAndSendToBlockchain(campaignDocumentsAccessRequest);
+  }
+
+  private CampaignDocumentsAccessRequest saveAndSendToBlockchain(
+      CampaignDocumentsAccessRequest campaignDocumentsAccessRequest) {
+    campaignDocumentsAccessRequest =
+        campaignDocumentsAccessRequestRepository.save(campaignDocumentsAccessRequest);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.CAMPAIGN_DOCUMENT_ACCESS_REQUEST_STATE_CHANGE,
+        new CampaignDocumentAccessRequestStateChangeDto(
+            campaignDocumentsAccessRequest,
+            AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
+        AuthenticationUtil.getClientIp());
+
+    return campaignDocumentsAccessRequest;
   }
 }
