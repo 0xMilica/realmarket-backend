@@ -11,6 +11,8 @@ import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.CampaignDocumentsAccessRequestRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +31,21 @@ public class CampaignDocumentsAccessRequestServiceImpl
   private final AuthService authService;
   private final RequestStateService requestStateService;
 
+  private final BlockchainCommunicationService blockchainCommunicationService;
+
   @Autowired
   public CampaignDocumentsAccessRequestServiceImpl(
       CampaignDocumentsAccessRequestRepository campaignDocumentsAccessRequestRepository,
       CompanyService companyService,
       CampaignService campaignService,
       AuthService authService,
-      RequestStateService requestStateService) {
+      RequestStateService requestStateService,
+      BlockchainCommunicationService blockchainCommunicationService) {
     this.campaignDocumentsAccessRequestRepository = campaignDocumentsAccessRequestRepository;
     this.campaignService = campaignService;
     this.authService = authService;
     this.requestStateService = requestStateService;
+    this.blockchainCommunicationService = blockchainCommunicationService;
   }
 
   private CampaignDocumentsAccessRequest findByIdOrThrowException(Long requestId) {
@@ -59,14 +65,24 @@ public class CampaignDocumentsAccessRequestServiceImpl
       throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
     }
     Auth auth = AuthenticationUtil.getAuthentication().getAuth();
-    auth = authService.findById(auth.getId()).get();
+    auth = authService.findByIdOrThrowException(auth.getId());
 
-    return campaignDocumentsAccessRequestRepository.save(
-        CampaignDocumentsAccessRequest.builder()
-            .campaign(campaign)
-            .auth(auth)
-            .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
-            .build());
+    CampaignDocumentsAccessRequest campaignDocumentsAccessRequest =
+        campaignDocumentsAccessRequestRepository.save(
+            CampaignDocumentsAccessRequest.builder()
+                .campaign(campaign)
+                .auth(auth)
+                .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
+                .build());
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.CAMPAIGN_DOCUMENT_ACCESS_REQUEST,
+        new io.realmarket.propeler.service.blockchain.dto.campaign.CampaignDocumentAccessRequestDto(
+            campaignDocumentsAccessRequest, auth.getId()),
+        auth.getUsername(),
+        AuthenticationUtil.getClientIp());
+
+    return campaignDocumentsAccessRequest;
   }
 
   @Override

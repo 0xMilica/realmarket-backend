@@ -5,6 +5,7 @@ import io.realmarket.propeler.repository.CampaignDocumentsAccessRequestRepositor
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.RequestStateService;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.CampaignDocumentUtils;
 import io.realmarket.propeler.util.CampaignUtils;
@@ -29,6 +30,7 @@ public class CampaignDocumentsAccessRequestServiceImplTest {
   @Mock private RequestStateService requestStateService;
   @Mock private CampaignService campaignService;
   @Mock private AuthService authService;
+  @Mock private BlockchainCommunicationService blockchainCommunicationService;
 
   @InjectMocks
   private CampaignDocumentsAccessRequestServiceImpl campaignDocumentsAccessRequestService;
@@ -44,7 +46,7 @@ public class CampaignDocumentsAccessRequestServiceImplTest {
             CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenReturn(CampaignUtils.TEST_ACTIVE_CAMPAIGN);
 
-    when(authService.findById(AuthUtils.TEST_AUTH_ID)).thenReturn(Optional.of(AuthUtils.TEST_AUTH));
+    when(authService.findByIdOrThrowException(AuthUtils.TEST_AUTH_ID)).thenReturn(AuthUtils.TEST_AUTH);
     when(requestStateService.getRequestState(RequestStateName.PENDING))
         .thenReturn(CampaignDocumentUtils.TEST_PENDING_REQUEST_STATE);
     when(campaignDocumentsAccessRequestRepository.save(any()))
