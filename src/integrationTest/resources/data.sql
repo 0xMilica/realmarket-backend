@@ -337,9 +337,9 @@ INSERT INTO public.campaign_topic_type (id, name) VALUES (NEXTVAL('campaign_topi
 INSERT INTO public.campaign_topic_type (id, name) VALUES (NEXTVAL('campaign_topic_type_seq'), 'TRACTION');
 
 -- document access level
-INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PLATFORM_ADMINS');
-INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'INVESTORS');
 INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PUBLIC');
+INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PRIVATE');
+INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'ON_DEMAND');
 
 -- document type
 INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'DUE_DILIGENCE');

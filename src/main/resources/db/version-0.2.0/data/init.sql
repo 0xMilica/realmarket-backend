@@ -75,9 +75,9 @@ INSERT INTO public.company_category (id, name) VALUES (NEXTVAL('company_category
 -- INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_BANK');
 
 -- document access level
-INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PLATFORM_ADMINS');
-INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'INVESTORS');
 INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PUBLIC');
+INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PRIVATE');
+INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'ON_DEMAND');
 
 -- investment state
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'INITIAL');

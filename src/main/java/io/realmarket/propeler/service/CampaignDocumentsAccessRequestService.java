@@ -1,6 +1,7 @@
 package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.CampaignDocumentsAccessRequestsDto;
+import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignDocumentsAccessRequest;
 
 public interface CampaignDocumentsAccessRequestService {
@@ -14,4 +15,6 @@ public interface CampaignDocumentsAccessRequestService {
   CampaignDocumentsAccessRequest acceptCampaignDocumentsAccessRequest(Long requestId);
 
   CampaignDocumentsAccessRequest rejectCampaignDocumentsAccessRequest(Long requestId);
+
+  boolean hasCampaignDocumentsAccessRequest(Campaign campaign);
 }

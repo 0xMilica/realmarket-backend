@@ -7,6 +7,7 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.CampaignDocument;
 import io.realmarket.propeler.model.CampaignDocumentsAccessRequest;
+import io.realmarket.propeler.model.RequestState;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
 import io.realmarket.propeler.model.enums.RequestStateName;
@@ -66,6 +67,11 @@ public class CampaignDocumentsAccessRequestServiceImpl
 
   private List<CampaignDocumentsAccessRequest> findByCampaign(Campaign campaign) {
     return campaignDocumentsAccessRequestRepository.findByCampaign(campaign);
+  }
+
+  private CampaignDocumentsAccessRequest findByCampaignAndAuthAndApproved(Campaign campaign, Auth auth) {
+    RequestState requestState = requestStateService.getRequestState(RequestStateName.APPROVED);
+    return campaignDocumentsAccessRequestRepository.findByCampaignAndAuthAndRequestState(campaign, auth, requestState);
   }
 
   @Override
@@ -177,5 +183,14 @@ public class CampaignDocumentsAccessRequestServiceImpl
         AuthenticationUtil.getClientIp());
 
     return campaignDocumentsAccessRequest;
+  }
+
+  @Override
+  public boolean hasCampaignDocumentsAccessRequest(Campaign campaign) {
+    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+    if (findByCampaignAndAuthAndApproved(campaign, auth) == null) {
+      return false;
+    }
+    return true;
   }
 }

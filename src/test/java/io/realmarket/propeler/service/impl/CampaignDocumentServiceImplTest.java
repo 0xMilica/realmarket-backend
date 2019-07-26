@@ -8,6 +8,7 @@ import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.repository.CampaignDocumentRepository;
 import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.DocumentTypeRepository;
+import io.realmarket.propeler.service.CampaignDocumentsAccessRequestService;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
@@ -52,6 +53,7 @@ public class CampaignDocumentServiceImplTest {
   @Mock private DocumentTypeRepository documentTypeRepository;
   @Mock private CampaignService campaignService;
   @Mock private CompanyService companyService;
+  @Mock private CampaignDocumentsAccessRequestService campaignDocumentsAccessRequestService;
   @Mock private CloudObjectStorageService cloudObjectStorageService;
   @Mock private ModelMapperBlankString modelMapperBlankString;
 

@@ -8,10 +8,7 @@ import io.realmarket.propeler.repository.CampaignDocumentRepository;
 import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
 import io.realmarket.propeler.repository.DocumentTypeRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
-import io.realmarket.propeler.service.CampaignDocumentService;
-import io.realmarket.propeler.service.CampaignService;
-import io.realmarket.propeler.service.CloudObjectStorageService;
-import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
@@ -40,6 +37,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   private final DocumentTypeRepository documentTypeRepository;
   private final CampaignService campaignService;
   private final CompanyService companyService;
+  private final CampaignDocumentsAccessRequestService campaignDocumentsAccessRequestService;
   private final CloudObjectStorageService cloudObjectStorageService;
   private final ModelMapperBlankString modelMapperBlankString;
 
@@ -50,6 +48,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
       DocumentTypeRepository documentTypeRepository,
       CampaignService campaignService,
       CompanyService companyService,
+      CampaignDocumentsAccessRequestService campaignDocumentsAccessRequestService,
       CloudObjectStorageService cloudObjectStorageService,
       ModelMapperBlankString modelMapperBlankString) {
     this.campaignDocumentRepository = campaignDocumentRepository;
@@ -57,6 +56,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     this.documentTypeRepository = documentTypeRepository;
     this.campaignService = campaignService;
     this.companyService = companyService;
+    this.campaignDocumentsAccessRequestService = campaignDocumentsAccessRequestService;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.modelMapperBlankString = modelMapperBlankString;
   }
@@ -88,23 +88,15 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     campaignDocumentRepository.delete(campaignDocument);
   }
 
-  public boolean hasReadAccess(CampaignDocument campaignDocument) {
-    if (campaignService.isOwner(campaignDocument.getCampaign())) {
-      return true;
-    }
-    UserRoleName userRoleName =
-        AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
-    DocumentAccessLevel accessLevel = campaignDocument.getAccessLevel();
-    return DocumentAccessLevel.hasReadAccess(accessLevel, userRoleName);
-  }
-
   public Map<String, List<CampaignDocumentResponseDto>> getAllCampaignDocumentDtoGroupedByType(
       String campaignName) {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
     campaignService.throwIfNoAccess(campaign);
 
+    boolean hasDocumentsAccess = campaignDocumentsAccessRequestService.hasCampaignDocumentsAccessRequest(campaign);
+
     return campaignDocumentRepository.findAllByCampaign(campaign).stream()
-        .filter(this::hasReadAccess)
+        .filter(campaignDocument -> hasReadAccess(campaignDocument, hasDocumentsAccess))
         .map(CampaignDocumentResponseDto::new)
         .collect(
             groupingBy(campaignDocumentDto -> campaignDocumentDto.getType().toString(), toList()));
@@ -183,9 +175,12 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   @Override
   public List<CampaignDocumentResponseDto> getCampaignDocuments(String campaignName) {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
+    campaignService.throwIfNoAccess(campaign);
+
+    boolean hasDocumentsAccess = campaignDocumentsAccessRequestService.hasCampaignDocumentsAccessRequest(campaign);
 
     return findAllByCampaignOrderByUploadDateDesc(campaign).stream()
-        .filter(this::hasReadAccess)
+        .filter(campaignDocument -> hasReadAccess(campaignDocument, hasDocumentsAccess))
         .map(CampaignDocumentResponseDto::new)
         .collect(Collectors.toList());
   }
@@ -207,5 +202,15 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
         .url(campaignDocumentDto.getUrl())
         .campaign(campaign)
         .build();
+  }
+
+  private boolean hasReadAccess(CampaignDocument campaignDocument, boolean hasDocumentsAccess) {
+    if (campaignService.isOwner(campaignDocument.getCampaign())) {
+      return true;
+    }
+    UserRoleName userRoleName =
+            AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
+    DocumentAccessLevel accessLevel = campaignDocument.getAccessLevel();
+    return DocumentAccessLevel.hasReadAccess(accessLevel, userRoleName, hasDocumentsAccess);
   }
 }

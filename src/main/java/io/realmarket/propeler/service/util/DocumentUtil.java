@@ -64,12 +64,12 @@ public class DocumentUtil {
               new DocumentMetadata(
                   DocumentTypeName.PERSONAL_ID_FRONT,
                   true,
-                  Collections.singletonList(DocumentAccessLevelName.PLATFORM_ADMINS),
+                  Collections.singletonList(DocumentAccessLevelName.PRIVATE),
                   1),
               new DocumentMetadata(
                   DocumentTypeName.PERSONAL_ID_BACK,
                   true,
-                  Collections.singletonList(DocumentAccessLevelName.PLATFORM_ADMINS),
+                  Collections.singletonList(DocumentAccessLevelName.PRIVATE),
                   1)));
 
   private DocumentUtil() {}

@@ -25,7 +25,7 @@ public class CampaignDocumentUtils {
 
   public static final String TEST_TITLE_2 = "TEST_TITLE_2";
   public static final DocumentAccessLevelName TEST_ACCESS_LEVEL_ENUM_2 =
-      DocumentAccessLevelName.INVESTORS;
+      DocumentAccessLevelName.ON_DEMAND;
   public static final DocumentTypeName TEST_TYPE_ENUM_2 = DocumentTypeName.DUE_DILIGENCE;
   public static final DocumentAccessLevel TEST_ACCESS_LEVEL_2 =
       DocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM_2).build();
@@ -106,8 +106,8 @@ public class CampaignDocumentUtils {
       Arrays.asList(
           getCampaignDocumentMocked(),
           getCampaignDocumentMocked(),
-          getCampaignDocumentMocked(DocumentAccessLevelName.PLATFORM_ADMINS),
-          getCampaignDocumentMocked(DocumentAccessLevelName.INVESTORS));
+          getCampaignDocumentMocked(DocumentAccessLevelName.PRIVATE),
+          getCampaignDocumentMocked(DocumentAccessLevelName.PUBLIC));
 
   public static CampaignDocumentsAccessRequest TEST_PENDING_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST =
       CampaignDocumentsAccessRequest.builder()

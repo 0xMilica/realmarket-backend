@@ -25,7 +25,7 @@ public class CompanyDocumentUtils {
   public static final Long TEST_ID_2 = 2L;
   public static final String TEST_TITLE_2 = "TEST_TITLE_2";
   public static final DocumentAccessLevelName TEST_ACCESS_LEVEL_ENUM_2 =
-      DocumentAccessLevelName.INVESTORS;
+      DocumentAccessLevelName.ON_DEMAND;
   public static final DocumentTypeName TEST_TYPE_ENUM_2 = DocumentTypeName.BANK;
   public static final DocumentAccessLevel TEST_ACCESS_LEVEL_2 =
       DocumentAccessLevel.builder().name(TEST_ACCESS_LEVEL_ENUM_2).build();
