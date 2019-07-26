@@ -5,8 +5,10 @@ import io.realmarket.propeler.api.dto.CampaignDocumentsAccessRequestsDto;
 import io.realmarket.propeler.api.dto.CampaignResponseDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.CampaignDocument;
 import io.realmarket.propeler.model.CampaignDocumentsAccessRequest;
 import io.realmarket.propeler.model.enums.CampaignStateName;
+import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.CampaignDocumentsAccessRequestRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -27,6 +29,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
     implements CampaignDocumentsAccessRequestService {
 
   private final CampaignDocumentsAccessRequestRepository campaignDocumentsAccessRequestRepository;
+  private final CampaignDocumentService campaignDocumentService;
   private final CampaignService campaignService;
   private final AuthService authService;
   private final RequestStateService requestStateService;
@@ -36,12 +39,14 @@ public class CampaignDocumentsAccessRequestServiceImpl
   @Autowired
   public CampaignDocumentsAccessRequestServiceImpl(
       CampaignDocumentsAccessRequestRepository campaignDocumentsAccessRequestRepository,
+      CampaignDocumentService campaignDocumentService,
       CompanyService companyService,
       CampaignService campaignService,
       AuthService authService,
       RequestStateService requestStateService,
       BlockchainCommunicationService blockchainCommunicationService) {
     this.campaignDocumentsAccessRequestRepository = campaignDocumentsAccessRequestRepository;
+    this.campaignDocumentService = campaignDocumentService;
     this.campaignService = campaignService;
     this.authService = authService;
     this.requestStateService = requestStateService;
@@ -52,6 +57,10 @@ public class CampaignDocumentsAccessRequestServiceImpl
     return campaignDocumentsAccessRequestRepository
         .findById(requestId)
         .orElseThrow(EntityNotFoundException::new);
+  }
+
+  private CampaignDocumentsAccessRequest findByCampaignAndAuth(Campaign campaign, Auth auth) {
+    return campaignDocumentsAccessRequestRepository.findByCampaignAndAuth(campaign, auth);
   }
 
   private List<CampaignDocumentsAccessRequest> findByCampaign(Campaign campaign) {
@@ -90,6 +99,31 @@ public class CampaignDocumentsAccessRequestServiceImpl
     Campaign activeCampaign = campaignService.getActiveCampaign();
 
     return getRequestsForCampaign(activeCampaign);
+  }
+
+  @Override
+  public String getCampaignDocumentsAccessRequestStatus(String campaignName) {
+    Campaign campaign = campaignService.getCampaignByUrlFriendlyName(campaignName);
+    if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)) {
+      throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
+    }
+    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+
+    CampaignDocumentsAccessRequest campaignDocumentsAccessRequest =
+        findByCampaignAndAuth(campaign, auth);
+    if (campaignDocumentsAccessRequest != null) {
+      return campaignDocumentsAccessRequest.getRequestState().getName().toString();
+    }
+
+    List<CampaignDocument> campaignDocuments =
+        campaignDocumentService.findAllByCampaignOrderByUploadDateDesc(campaign);
+    // TODO: Discuss about these messages
+    for (CampaignDocument campaignDocument : campaignDocuments) {
+      if (campaignDocument.getAccessLevel().getName().equals(DocumentAccessLevelName.ON_DEMAND)) {
+        return "NEED REQUEST";
+      }
+    }
+    return "NO ON DEMAND DOCUMENTS";
   }
 
   private CampaignDocumentsAccessRequestsDto getRequestsForCampaign(Campaign campaign) {

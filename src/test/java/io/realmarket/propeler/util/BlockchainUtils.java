@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.realmarket.propeler.util.AuthUtils.TEST_EMAIL;
-import static io.realmarket.propeler.util.AuthUtils.TEST_USERNAME;
 
 public class BlockchainUtils {
 

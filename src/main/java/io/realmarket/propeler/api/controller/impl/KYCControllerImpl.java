@@ -32,7 +32,8 @@ public class KYCControllerImpl implements KYCController {
   @Override
   @PatchMapping("/user/assign")
   @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_AUDITOR')")
-  public ResponseEntity<UserKYCDto> assignUserKYC(@RequestBody UserKYCAssignmentDto userKYCAssignmentDto) {
+  public ResponseEntity<UserKYCDto> assignUserKYC(
+      @RequestBody UserKYCAssignmentDto userKYCAssignmentDto) {
     return ResponseEntity.ok(new UserKYCDto(userKYCService.assignUserKYC(userKYCAssignmentDto)));
   }
 

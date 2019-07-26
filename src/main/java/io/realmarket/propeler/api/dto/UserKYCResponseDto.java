@@ -66,7 +66,7 @@ public class UserKYCResponseDto {
 
   public UserKYCResponseDto(UserKYC userKYC, Person person, Auth auth, Company company) {
     this.id = userKYC.getId();
-    this.auditorId = (userKYC.getAuditor() != null)?userKYC.getAuditor().getId():null;
+    this.auditorId = (userKYC.getAuditor() != null) ? userKYC.getAuditor().getId() : null;
     this.firstName = person.getFirstName();
     this.lastName = person.getLastName();
     this.authId = auth.getId();
@@ -75,8 +75,7 @@ public class UserKYCResponseDto {
       this.userRole = "Individual investor";
     else if (auth.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR))
       this.userRole = "Entrepreneur";
-    else
-      this.userRole = "Wrong user buddy...";
+    else this.userRole = "Wrong user buddy...";
     if (company == null) {
       this.companyId = null;
       this.companyName = null;

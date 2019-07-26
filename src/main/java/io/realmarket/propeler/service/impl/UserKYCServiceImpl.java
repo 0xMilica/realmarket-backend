@@ -18,7 +18,8 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.USER_CAN_NOT_BE_AUDITOR;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.USER_KYC_DOES_NOT_EXIST;
 
 @Service
 public class UserKYCServiceImpl implements UserKYCService {
@@ -94,13 +95,14 @@ public class UserKYCServiceImpl implements UserKYCService {
     String personalIdFrontUrl = null;
     String personalIdBackUrl = null;
     List<PersonDocument> personalId = personDocumentService.findByPerson(person);
-    for (PersonDocument pd: personalId) {
+    for (PersonDocument pd : personalId) {
       if (pd.getType().getName().equals(DocumentTypeName.PERSONAL_ID_BACK))
         personalIdBackUrl = pd.getUrl();
       if (pd.getType().getName().equals(DocumentTypeName.PERSONAL_ID_FRONT))
         personalIdFrontUrl = pd.getUrl();
     }
-    return new UserKYCResponseWithFilesDto(userKYC, person, auth, company, personalIdBackUrl, personalIdFrontUrl);
+    return new UserKYCResponseWithFilesDto(
+        userKYC, person, auth, company, personalIdBackUrl, personalIdFrontUrl);
   }
 
   private UserKYCResponseDto convertUserKYCToUserKYCResponseDto(UserKYC userKYC) {

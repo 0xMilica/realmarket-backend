@@ -225,6 +225,26 @@ public interface CampaignController {
       String campaignName);
 
   @ApiOperation(
+      value = "Get status of request for campaign documents access",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "campaignName",
+        value = "Campaign's url friendly name",
+        required = true,
+        dataType = "String",
+        paramType = "path")
+  })
+  @ApiResponses({
+    @ApiResponse(
+        code = 200,
+        message = "Successfully retrived status of request for campaign document access."),
+    @ApiResponse(code = 404, message = "Campaign not found.")
+  })
+  ResponseEntity getCampaignDocumentsAccessRequestStatus(String campaignName);
+
+  @ApiOperation(
       value = "Get requests for campaign documents access",
       httpMethod = "GET",
       produces = APPLICATION_JSON_VALUE)

@@ -46,7 +46,10 @@ public class BlockchainCommunicationServiceImplTest {
     TEST_REGISTRATION_DTO.setPerson(new HashedPersonDetails(TEST_PERSON));
     Future<Map<String, Object>> retVal =
         blockchainCommunicationService.invoke(
-            BlockchainMethod.USER_REGISTRATION, BlockchainUtils.TEST_REGISTRATION_DTO, TEST_USERNAME, TEST_IP);
+            BlockchainMethod.USER_REGISTRATION,
+            BlockchainUtils.TEST_REGISTRATION_DTO,
+            TEST_USERNAME,
+            TEST_IP);
 
     assertEquals(TEST_MESSAGE, retVal.get().get("message"));
   }

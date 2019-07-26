@@ -41,10 +41,7 @@ public class Person {
   private String phoneNumber;
   private String profilePictureUrl;
 
-  @OneToOne(
-      mappedBy = "person",
-      cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER)
+  @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private Auth auth;
 
   public Person(

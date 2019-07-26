@@ -46,7 +46,8 @@ public class CampaignDocumentsAccessRequestServiceImplTest {
             CampaignUtils.TEST_URL_FRIENDLY_NAME))
         .thenReturn(CampaignUtils.TEST_ACTIVE_CAMPAIGN);
 
-    when(authService.findByIdOrThrowException(AuthUtils.TEST_AUTH_ID)).thenReturn(AuthUtils.TEST_AUTH);
+    when(authService.findByIdOrThrowException(AuthUtils.TEST_AUTH_ID))
+        .thenReturn(AuthUtils.TEST_AUTH);
     when(requestStateService.getRequestState(RequestStateName.PENDING))
         .thenReturn(CampaignDocumentUtils.TEST_PENDING_REQUEST_STATE);
     when(campaignDocumentsAccessRequestRepository.save(any()))
@@ -77,15 +78,15 @@ public class CampaignDocumentsAccessRequestServiceImplTest {
   @Test
   public void rejectDocumentsAccessRequest_Should_RejectDocumentsAccessRequest() {
     when(campaignDocumentsAccessRequestRepository.findById(CampaignDocumentUtils.TEST_ID))
-            .thenReturn(
-                    Optional.of(CampaignDocumentUtils.TEST_PENDING_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST));
+        .thenReturn(
+            Optional.of(CampaignDocumentUtils.TEST_PENDING_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST));
     when(requestStateService.getRequestState(RequestStateName.APPROVED))
-            .thenReturn(CampaignDocumentUtils.TEST_DECLINED_REQUEST_STATE);
+        .thenReturn(CampaignDocumentUtils.TEST_DECLINED_REQUEST_STATE);
     when(campaignDocumentsAccessRequestRepository.save(any()))
-            .thenReturn(CampaignDocumentUtils.TEST_ACCEPTED_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST);
+        .thenReturn(CampaignDocumentUtils.TEST_ACCEPTED_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST);
 
     campaignDocumentsAccessRequestService.acceptCampaignDocumentsAccessRequest(
-            CampaignDocumentUtils.TEST_ID);
+        CampaignDocumentUtils.TEST_ID);
 
     verify(campaignDocumentsAccessRequestRepository, times(1)).save(any());
   }

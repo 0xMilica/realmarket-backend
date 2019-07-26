@@ -152,6 +152,14 @@ public class CampaignControllerImpl implements CampaignController {
                 campaignName)));
   }
 
+  @GetMapping(value = "/{campaignName}/documents/request")
+  @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
+  public ResponseEntity getCampaignDocumentsAccessRequestStatus(@PathVariable String campaignName) {
+    return ResponseEntity.ok(
+        campaignDocumentsAccessRequestService.getCampaignDocumentsAccessRequestStatus(
+            campaignName));
+  }
+
   @GetMapping(value = "/documents/requests")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
   public ResponseEntity getCampaignDocumentsAccessRequests() {

@@ -40,7 +40,6 @@ public interface KYCController {
   })
   ResponseEntity<UserKYCDto> assignUserKYC(UserKYCAssignmentDto userKYCAssignmentDto);
 
-
   @ApiOperation(
       value = "Get user KYC request",
       httpMethod = "GET",
@@ -52,8 +51,8 @@ public interface KYCController {
       dataType = "Long",
       paramType = "path")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "User KYC successfully found."),
-      @ApiResponse(code = 400, message = "Invalid request.")
+    @ApiResponse(code = 200, message = "User KYC successfully found."),
+    @ApiResponse(code = 400, message = "Invalid request.")
   })
   ResponseEntity<UserKYCResponseWithFilesDto> getUserKYC(Long userKYCId);
 
@@ -62,22 +61,22 @@ public interface KYCController {
       httpMethod = "GET",
       produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
-      @ApiImplicitParam(
-          name = "page",
-          value = "Number of page to be returned",
-          defaultValue = "20",
-          dataType = "Integer",
-          paramType = "query"),
-      @ApiImplicitParam(
-          name = "size",
-          value = "Page size (number of items to be returned)",
-          defaultValue = "0",
-          dataType = "Integer",
-          paramType = "query")
+    @ApiImplicitParam(
+        name = "page",
+        value = "Number of page to be returned",
+        defaultValue = "20",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        dataType = "Integer",
+        paramType = "query")
   })
   @ApiResponses({
-      @ApiResponse(code = 200, message = "User KYCs successfully found."),
-      @ApiResponse(code = 400, message = "Invalid request.")
+    @ApiResponse(code = 200, message = "User KYCs successfully found."),
+    @ApiResponse(code = 400, message = "Invalid request.")
   })
   ResponseEntity<Page<UserKYCResponseDto>> getUserKYCs(Pageable pageable);
 }

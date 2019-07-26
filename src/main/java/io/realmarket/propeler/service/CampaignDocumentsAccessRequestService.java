@@ -7,6 +7,8 @@ public interface CampaignDocumentsAccessRequestService {
 
   CampaignDocumentsAccessRequest sendCampaignDocumentsAccessRequest(String campaignName);
 
+  String getCampaignDocumentsAccessRequestStatus(String campaignName);
+
   CampaignDocumentsAccessRequestsDto getCampaignDocumentsAccessRequests();
 
   CampaignDocumentsAccessRequest acceptCampaignDocumentsAccessRequest(Long requestId);
