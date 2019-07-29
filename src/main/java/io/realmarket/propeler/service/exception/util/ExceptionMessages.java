@@ -163,4 +163,10 @@ public interface ExceptionMessages {
 
   // User KYC with provided id does not exist.
   String USER_KYC_DOES_NOT_EXIST = "UKY_001";
+
+  // User is not the auditor of user KYC.
+  String NOT_USER_KYC_AUDITOR = "UKY_002";
+
+  // User KYC is not assigned yet.
+  String USER_KYC_AUDITOR_NOT_ASSIGNED = "UKY_003";
 }

@@ -36,6 +36,7 @@ public class AuthUtils {
   public static final UserRoleName TEST_ROLE_ADMIN = UserRoleName.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
+  public static final Long TEST_AUTH_ADMIN_ID = TEST_AUTH_ID + 2;
   public static final MailContentHolder TEST_EMAIL_DTO =
       new MailContentHolder(
           Arrays.asList(TEST_EMAIL),

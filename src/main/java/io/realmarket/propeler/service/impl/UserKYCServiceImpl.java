@@ -11,6 +11,7 @@ import io.realmarket.propeler.repository.UserKYCRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.BadRequestException;
+import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.USER_CAN_NOT_BE_AUDITOR;
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.USER_KYC_DOES_NOT_EXIST;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
 @Service
 public class UserKYCServiceImpl implements UserKYCService {
@@ -78,6 +78,35 @@ public class UserKYCServiceImpl implements UserKYCService {
   @Override
   public Page<UserKYCResponseDto> getUserKYCs(Pageable pageable) {
     return userKYCRepository.findAll(pageable).map(this::convertUserKYCToUserKYCResponseDto);
+  }
+
+  @Override
+  public UserKYC approveUserKYC(Long userKYCId) {
+    UserKYC userKYC = findByIdOrThrowException(userKYCId);
+    throwIfNotAuditor(userKYC);
+    userKYC.setRequestState(requestStateService.getRequestState(RequestStateName.APPROVED));
+    return userKYCRepository.save(userKYC);
+  }
+
+  @Override
+  public UserKYC rejectUserKYC(Long userKYCId, String content) {
+    UserKYC userKYC = findByIdOrThrowException(userKYCId);
+    throwIfNotAuditor(userKYC);
+    userKYC.setRequestState(requestStateService.getRequestState(RequestStateName.DECLINED));
+    userKYC.setContent(content);
+    return userKYCRepository.save(userKYC);
+  }
+
+  private void throwIfNotAuditor(UserKYC userKYC) {
+    if (userKYC.getAuditor() == null) {
+      throw new ForbiddenOperationException(USER_KYC_AUDITOR_NOT_ASSIGNED);
+    }
+    if (!AuthenticationUtil.getAuthentication()
+        .getAuth()
+        .getId()
+        .equals(userKYC.getAuditor().getId())) {
+      throw new ForbiddenOperationException(NOT_USER_KYC_AUDITOR);
+    }
   }
 
   private UserKYC findByIdOrThrowException(Long id) {

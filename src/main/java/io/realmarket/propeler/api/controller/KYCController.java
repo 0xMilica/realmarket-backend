@@ -1,9 +1,6 @@
 package io.realmarket.propeler.api.controller;
 
-import io.realmarket.propeler.api.dto.UserKYCAssignmentDto;
-import io.realmarket.propeler.api.dto.UserKYCDto;
-import io.realmarket.propeler.api.dto.UserKYCResponseDto;
-import io.realmarket.propeler.api.dto.UserKYCResponseWithFilesDto;
+import io.realmarket.propeler.api.dto.*;
 import io.swagger.annotations.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +33,8 @@ public interface KYCController {
       paramType = "body")
   @ApiResponses({
     @ApiResponse(code = 200, message = "User KYC successfully assigned."),
-    @ApiResponse(code = 400, message = "Invalid request.")
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 404, message = "UKY_001")
   })
   ResponseEntity<UserKYCDto> assignUserKYC(UserKYCAssignmentDto userKYCAssignmentDto);
 
@@ -52,7 +50,8 @@ public interface KYCController {
       paramType = "path")
   @ApiResponses({
     @ApiResponse(code = 200, message = "User KYC successfully found."),
-    @ApiResponse(code = 400, message = "Invalid request.")
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 404, message = "UKY_001")
   })
   ResponseEntity<UserKYCResponseWithFilesDto> getUserKYC(Long userKYCId);
 
@@ -79,4 +78,44 @@ public interface KYCController {
     @ApiResponse(code = 400, message = "Invalid request.")
   })
   ResponseEntity<Page<UserKYCResponseDto>> getUserKYCs(Pageable pageable);
+
+  @ApiOperation(value = "Approve user KYC", httpMethod = "PATCH", produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParam(
+      name = "userKYCId",
+      value = "UserKYC's id",
+      required = true,
+      dataType = "Long",
+      paramType = "path")
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "User KYC successfully approved."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 400, message = "UKY_002"),
+    @ApiResponse(code = 400, message = "UKY_003"),
+    @ApiResponse(code = 404, message = "UKY_001")
+  })
+  ResponseEntity<UserKYCDto> approveUserKYC(Long UserKYCId);
+
+  @ApiOperation(value = "Reject user KYC", httpMethod = "PATCH", produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "userKYCId",
+        value = "UserKYC's id",
+        required = true,
+        dataType = "Long",
+        paramType = "path"),
+    @ApiImplicitParam(
+        name = "userKYCRejectDto",
+        value = "UserKYC's reason for rejection",
+        required = true,
+        dataType = "AuditDeclineDto",
+        paramType = "body")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "User KYC successfully rejected."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 400, message = "UKY_002"),
+    @ApiResponse(code = 400, message = "UKY_003"),
+    @ApiResponse(code = 404, message = "UKY_001")
+  })
+  ResponseEntity<UserKYCDto> rejectUserKYC(Long UserKYCId, AuditDeclineDto userKYCRejectDto);
 }

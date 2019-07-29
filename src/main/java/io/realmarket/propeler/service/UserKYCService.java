@@ -16,4 +16,8 @@ public interface UserKYCService {
   UserKYCResponseWithFilesDto getUserKYC(Long userKYCId);
 
   Page<UserKYCResponseDto> getUserKYCs(Pageable pageable);
+
+  UserKYC approveUserKYC(Long userKYCId);
+
+  UserKYC rejectUserKYC(Long userKYCId, String content);
 }
