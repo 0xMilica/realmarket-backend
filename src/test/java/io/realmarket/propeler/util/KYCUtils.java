@@ -18,14 +18,14 @@ public class KYCUtils {
   public static final UserKYC TEST_PENDING_USER_KYC =
       UserKYC.builder()
           .id(TEST_USER_KYC_ID)
-          .person(PersonUtils.TEST_PERSON)
+          .user(AuthUtils.TEST_AUTH_ENTREPRENEUR)
           .requestState(TEST_PENDING_REQUEST_STATE)
           .build();
 
   public static final UserKYC TEST_USER_KYC_ASSIGNED =
       UserKYC.builder()
           .id(TEST_USER_KYC_ID)
-          .person(PersonUtils.TEST_PERSON)
+          .user(AuthUtils.TEST_AUTH_ENTREPRENEUR)
           .requestState(TEST_PENDING_REQUEST_STATE)
           .auditor(AuthUtils.TEST_AUTH_ADMIN)
           .build();
@@ -33,7 +33,7 @@ public class KYCUtils {
   public static final UserKYC TEST_USER_KYC_APPROVED =
       UserKYC.builder()
           .id(TEST_USER_KYC_ID)
-          .person(PersonUtils.TEST_PERSON)
+          .user(AuthUtils.TEST_AUTH_ENTREPRENEUR)
           .requestState(TEST_APPROVED_REQUEST_STATE)
           .auditor(AuthUtils.TEST_AUTH_ADMIN)
           .build();
@@ -41,7 +41,7 @@ public class KYCUtils {
   public static final UserKYC TEST_USER_KYC_DECLINED =
       UserKYC.builder()
           .id(TEST_USER_KYC_ID)
-          .person(PersonUtils.TEST_PERSON)
+          .user(AuthUtils.TEST_AUTH_ENTREPRENEUR)
           .requestState(TEST_DECLINED_REQUEST_STATE)
           .auditor(AuthUtils.TEST_AUTH_ADMIN)
           .build();

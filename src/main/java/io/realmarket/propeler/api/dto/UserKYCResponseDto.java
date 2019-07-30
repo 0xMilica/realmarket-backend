@@ -34,7 +34,7 @@ public class UserKYCResponseDto {
 
   @ApiModelProperty(value = "Platform's user identifier")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Long authId;
+  private Long userId;
 
   @ApiModelProperty(value = "User's username")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -64,16 +64,16 @@ public class UserKYCResponseDto {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String content;
 
-  public UserKYCResponseDto(UserKYC userKYC, Person person, Auth auth, Company company) {
+  public UserKYCResponseDto(UserKYC userKYC, Person person, Auth user, Company company) {
     this.id = userKYC.getId();
     this.auditorId = (userKYC.getAuditor() != null) ? userKYC.getAuditor().getId() : null;
     this.firstName = person.getFirstName();
     this.lastName = person.getLastName();
-    this.authId = auth.getId();
-    this.userName = auth.getUsername();
-    if (auth.getUserRole().getName().equals(UserRoleName.ROLE_INVESTOR))
+    this.userId = user.getId();
+    this.userName = user.getUsername();
+    if (user.getUserRole().getName().equals(UserRoleName.ROLE_INVESTOR))
       this.userRole = "Individual investor";
-    else if (auth.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR))
+    else if (user.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR))
       this.userRole = "Entrepreneur";
     else this.userRole = "Wrong user buddy...";
     if (company == null) {

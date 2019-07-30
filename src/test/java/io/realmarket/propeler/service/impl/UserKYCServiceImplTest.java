@@ -53,13 +53,12 @@ public class UserKYCServiceImplTest {
     UserKYC actualUserKYC = userKYCService.createUserKYCRequest();
 
     assertEquals(RequestStateName.PENDING, actualUserKYC.getRequestState().getName());
-    assertEquals(PersonUtils.TEST_PERSON_ID, actualUserKYC.getPerson().getId());
+    assertEquals(AuthUtils.TEST_AUTH_ENTREPRENEUR.getId(), actualUserKYC.getUser().getId());
   }
 
   @Test
   public void assignUserKYC_Should_Assign() {
-    when(authService.findByIdOrThrowException(AuthUtils.TEST_AUTH_ID))
-        .thenReturn(AuthUtils.TEST_AUTH_ADMIN);
+    AuthUtils.mockRequestAndContextAdmin();
     when(userKYCRepository.getOne(TEST_USER_KYC_ID))
         .thenReturn(TEST_PENDING_USER_KYC.toBuilder().build());
     when(requestStateService.getRequestState(RequestStateName.PENDING))

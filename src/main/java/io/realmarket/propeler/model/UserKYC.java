@@ -25,10 +25,10 @@ public class UserKYC {
   @ManyToOne
   private Auth auditor;
 
-  @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "user_kyc_fk_on_person"))
+  @JoinColumn(name = "userId", foreignKey = @ForeignKey(name = "user_kyc_fk_on_user"))
   @NotNull
   @ManyToOne
-  private Person person;
+  private Auth user;
 
   @JoinColumn(
       name = "requestStateId",

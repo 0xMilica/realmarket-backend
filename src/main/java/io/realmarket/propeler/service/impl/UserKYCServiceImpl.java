@@ -1,13 +1,14 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.DocumentResponseDto;
 import io.realmarket.propeler.api.dto.UserKYCAssignmentDto;
 import io.realmarket.propeler.api.dto.UserKYCResponseDto;
 import io.realmarket.propeler.api.dto.UserKYCResponseWithFilesDto;
 import io.realmarket.propeler.model.*;
-import io.realmarket.propeler.model.enums.DocumentTypeName;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.UserKYCRepository;
+import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.BadRequestException;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
@@ -30,6 +32,7 @@ public class UserKYCServiceImpl implements UserKYCService {
   private final AuthService authService;
   private final CompanyService companyService;
   private final PersonDocumentService personDocumentService;
+  private final UserRoleRepository userRoleRepository;
 
   public UserKYCServiceImpl(
       PersonService personService,
@@ -37,21 +40,22 @@ public class UserKYCServiceImpl implements UserKYCService {
       UserKYCRepository userKYCRepository,
       AuthService authService,
       CompanyService companyService,
-      PersonDocumentService personDocumentService) {
+      PersonDocumentService personDocumentService,
+      UserRoleRepository userRoleRepository) {
     this.personService = personService;
     this.requestStateService = requestStateService;
     this.userKYCRepository = userKYCRepository;
     this.authService = authService;
     this.companyService = companyService;
     this.personDocumentService = personDocumentService;
+    this.userRoleRepository = userRoleRepository;
   }
 
   @Override
   public UserKYC createUserKYCRequest() {
     UserKYC userKYC =
         UserKYC.builder()
-            .person(
-                personService.getPersonFromAuth(AuthenticationUtil.getAuthentication().getAuth()))
+            .user(AuthenticationUtil.getAuthentication().getAuth())
             .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
             .build();
 
@@ -60,7 +64,9 @@ public class UserKYCServiceImpl implements UserKYCService {
 
   @Override
   public UserKYC assignUserKYC(UserKYCAssignmentDto userKYCAssignmentDto) {
-    Auth auditorAuth = authService.findByIdOrThrowException(userKYCAssignmentDto.getAuditorId());
+    // TODO: Instead of taking Auth from session, it should be taken from userKYCAssignmentDto when
+    // auditor listing is implemented
+    Auth auditorAuth = AuthenticationUtil.getAuthentication().getAuth();
     // TODO: Change this condition when assigning become possible for other roles too
     if (!auditorAuth.getUserRole().getName().equals(UserRoleName.ROLE_ADMIN)) {
       throw new BadRequestException(USER_CAN_NOT_BE_AUDITOR);
@@ -76,8 +82,36 @@ public class UserKYCServiceImpl implements UserKYCService {
   }
 
   @Override
-  public Page<UserKYCResponseDto> getUserKYCs(Pageable pageable) {
-    return userKYCRepository.findAll(pageable).map(this::convertUserKYCToUserKYCResponseDto);
+  public Page<UserKYCResponseDto> getUserKYCs(Pageable pageable, String requestState, String role) {
+    boolean isRoleAll = role.equals("all");
+    boolean isStateAll = requestState.equals("all");
+    Page<UserKYC> results = null;
+    if (isStateAll && isRoleAll) results = userKYCRepository.findAll(pageable);
+    else if (isStateAll) {
+      UserRole userRole = getUserRole(role);
+      results = userKYCRepository.findAllByUserRole(pageable, userRole);
+    } else if (isRoleAll) {
+      RequestState state = null;
+      if (requestState.toLowerCase().startsWith("pending")) state = getUserKYCState("PENDING");
+      else state = getUserKYCState(requestState);
+      if (requestState.toLowerCase().endsWith("notassigned"))
+        results = userKYCRepository.findAllByRequestStateNotAssigned(pageable, state);
+      else results = userKYCRepository.findAllByRequestStateAssigned(pageable, state);
+    } else {
+      UserRole userRole = getUserRole(role);
+      RequestState state = null;
+      if (requestState.toLowerCase().startsWith("pending")) state = getUserKYCState("PENDING");
+      else state = getUserKYCState(requestState);
+      if (requestState.toLowerCase().endsWith("notassigned"))
+        results =
+            userKYCRepository.findAllByRequestStateAndByUserRoleNotAssigned(
+                pageable, state, userRole);
+      else
+        results =
+            userKYCRepository.findAllByRequestStateAndByUserRoleAssigned(
+                pageable, state, userRole);
+    }
+    return results.map(this::convertUserKYCToUserKYCResponseDto);
   }
 
   @Override
@@ -95,6 +129,21 @@ public class UserKYCServiceImpl implements UserKYCService {
     userKYC.setRequestState(requestStateService.getRequestState(RequestStateName.DECLINED));
     userKYC.setContent(content);
     return userKYCRepository.save(userKYC);
+  }
+
+  private UserRole getUserRole(String role) {
+    return userRoleRepository.findByName(getUserRoleNameOrThrow(role)).get();
+  }
+
+  private UserRoleName getUserRoleNameOrThrow(String role) {
+    if (role.equals("investor")) {
+      return UserRoleName.ROLE_INVESTOR;
+    } else if (role.equals("entrepreneur")) return UserRoleName.ROLE_ENTREPRENEUR;
+    throw new BadRequestException(INVALID_REQUEST);
+  }
+
+  private RequestState getUserKYCState(String state) {
+    return requestStateService.getRequestState(state);
   }
 
   private void throwIfNotAuditor(UserKYC userKYC) {
@@ -116,30 +165,26 @@ public class UserKYCServiceImpl implements UserKYCService {
   }
 
   private UserKYCResponseWithFilesDto convertUserKYCToUserKYCResponseWithFilesDto(UserKYC userKYC) {
-    Person person = userKYC.getPerson();
-    Auth auth = person.getAuth();
+    Auth user = userKYC.getUser();
+    Person person = personService.getPersonFromAuth(user);
     Company company = null;
-    if (auth.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR))
-      company = companyService.findByAuthIdOrThrowException(auth.getId());
-    String personalIdFrontUrl = null;
-    String personalIdBackUrl = null;
-    List<PersonDocument> personalId = personDocumentService.findByPerson(person);
-    for (PersonDocument pd : personalId) {
-      if (pd.getType().getName().equals(DocumentTypeName.PERSONAL_ID_BACK))
-        personalIdBackUrl = pd.getUrl();
-      if (pd.getType().getName().equals(DocumentTypeName.PERSONAL_ID_FRONT))
-        personalIdFrontUrl = pd.getUrl();
-    }
+    if (user.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR))
+      company = companyService.findByAuthIdOrThrowException(user.getId());
+    List<PersonDocument> userDocuments = personDocumentService.findByPerson(person);
     return new UserKYCResponseWithFilesDto(
-        userKYC, person, auth, company, personalIdBackUrl, personalIdFrontUrl);
+        userKYC,
+        person,
+        user,
+        company,
+        userDocuments.stream().map(DocumentResponseDto::new).collect(Collectors.toList()));
   }
 
   private UserKYCResponseDto convertUserKYCToUserKYCResponseDto(UserKYC userKYC) {
-    Person person = userKYC.getPerson();
-    Auth auth = person.getAuth();
+    Auth user = userKYC.getUser();
+    Person person = personService.getPersonFromAuth(user);
     Company company = null;
-    if (auth.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR))
-      company = companyService.findByAuthIdOrThrowException(auth.getId());
-    return new UserKYCResponseDto(userKYC, person, auth, company);
+    if (user.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR))
+      company = companyService.findByAuthIdOrThrowException(user.getId());
+    return new UserKYCResponseDto(userKYC, person, user, company);
   }
 }

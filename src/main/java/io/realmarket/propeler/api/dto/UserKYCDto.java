@@ -39,7 +39,7 @@ public class UserKYCDto {
   public UserKYCDto(UserKYC userKYC) {
     this.id = userKYC.getId();
     this.auditorId = (userKYC.getAuditor() != null) ? userKYC.getAuditor().getId() : null;
-    this.userId = userKYC.getPerson().getId();
+    this.userId = userKYC.getUser().getId();
     this.requestState = userKYC.getRequestState().getName().toString();
     this.content = userKYC.getContent();
   }

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "748c649e-b29c-4948-a20a-769a4b385300",
+		"_postman_id": "60004c78-f121-41e6-8a6f-a8e6fa459d28",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -4564,7 +4564,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{server_ip}}/api/kyc/users?page=1&size=2",
+							"raw": "{{server_ip}}/api/kyc/users?page=0&size=3&state=pendingAssigned&role=entrepreneur",
 							"host": [
 								"{{server_ip}}"
 							],
@@ -4576,11 +4576,19 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "1"
+									"value": "0"
 								},
 								{
 									"key": "size",
-									"value": "2"
+									"value": "3"
+								},
+								{
+									"key": "state",
+									"value": "pendingAssigned"
+								},
+								{
+									"key": "role",
+									"value": "entrepreneur"
 								}
 							]
 						}

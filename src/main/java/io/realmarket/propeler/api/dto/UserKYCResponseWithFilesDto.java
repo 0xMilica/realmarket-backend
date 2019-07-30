@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @ApiModel
 @Data
 @NoArgsConstructor
@@ -19,21 +21,15 @@ public class UserKYCResponseWithFilesDto extends UserKYCResponseDto {
 
   @ApiModelProperty(value = "User's personal id's front url")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private String personalIdFrontURL;
-
-  @ApiModelProperty(value = "User's personal id's back url")
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private String personalIdBackURL;
+  private List<DocumentResponseDto> userDocuments;
 
   public UserKYCResponseWithFilesDto(
       UserKYC userKYC,
       Person person,
-      Auth auth,
+      Auth user,
       Company company,
-      String personalIdBackURL,
-      String personalIdFrontURL) {
-    super(userKYC, person, auth, company);
-    this.personalIdBackURL = personalIdBackURL;
-    this.personalIdFrontURL = personalIdFrontURL;
+      List<DocumentResponseDto> userDocuments) {
+    super(userKYC, person, user, company);
+    this.userDocuments = userDocuments;
   }
 }
