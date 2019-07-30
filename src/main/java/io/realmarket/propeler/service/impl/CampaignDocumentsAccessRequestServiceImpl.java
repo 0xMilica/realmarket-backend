@@ -3,11 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.CampaignDocumentsAccessRequestDto;
 import io.realmarket.propeler.api.dto.CampaignDocumentsAccessRequestsDto;
 import io.realmarket.propeler.api.dto.CampaignResponseDto;
-import io.realmarket.propeler.model.Auth;
-import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.CampaignDocument;
-import io.realmarket.propeler.model.CampaignDocumentsAccessRequest;
-import io.realmarket.propeler.model.RequestState;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
 import io.realmarket.propeler.model.enums.RequestStateName;
@@ -20,6 +16,7 @@ import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignDocumentAc
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -41,7 +38,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
   @Autowired
   public CampaignDocumentsAccessRequestServiceImpl(
       CampaignDocumentsAccessRequestRepository campaignDocumentsAccessRequestRepository,
-      CampaignDocumentService campaignDocumentService,
+      @Lazy CampaignDocumentService campaignDocumentService,
       CompanyService companyService,
       CampaignService campaignService,
       AuthService authService,
@@ -69,9 +66,11 @@ public class CampaignDocumentsAccessRequestServiceImpl
     return campaignDocumentsAccessRequestRepository.findByCampaign(campaign);
   }
 
-  private CampaignDocumentsAccessRequest findByCampaignAndAuthAndApproved(Campaign campaign, Auth auth) {
+  private CampaignDocumentsAccessRequest findByCampaignAndAuthAndApproved(
+      Campaign campaign, Auth auth) {
     RequestState requestState = requestStateService.getRequestState(RequestStateName.APPROVED);
-    return campaignDocumentsAccessRequestRepository.findByCampaignAndAuthAndRequestState(campaign, auth, requestState);
+    return campaignDocumentsAccessRequestRepository.findByCampaignAndAuthAndRequestState(
+        campaign, auth, requestState);
   }
 
   @Override

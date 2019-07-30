@@ -441,7 +441,7 @@ public class AuthServiceImpl implements AuthService {
             .userId(currentAuth.getId())
             .newEmailHash(HashingHelper.hash(authorizedAction.getData()))
             .build(),
-        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
+        currentAuth.getUsername(),
         AuthenticationUtil.getClientIp());
   }
 
