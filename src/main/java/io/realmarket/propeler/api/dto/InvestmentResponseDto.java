@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 
-@ApiModel(description = "CampaignPortfolioResponseDto")
+@ApiModel(description = "InvestmentResponseDto")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
+import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CampaignService;
@@ -24,6 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static io.realmarket.propeler.util.AuthUtils.*;
 import static io.realmarket.propeler.util.CampaignUtils.*;
@@ -52,6 +54,8 @@ public class InvestmentServiceImplTest {
   @Mock private ModelMapperBlankString modelMapperBlankString;
 
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
+
+  @Mock private CountryRepository countryRepository;
 
   @Before
   public void createAuthContext() {
@@ -118,6 +122,7 @@ public class InvestmentServiceImplTest {
     doNothing().when(modelMapperBlankString).map(TEST_OFFPLATFORM_INVESTMENT, testPerson);
     when(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
         .thenReturn(TEST_INVESTMENT_INITIAL_STATE);
+    when(countryRepository.findByCode(TEST_COUNTRY_CODE)).thenReturn(Optional.of(TEST_COUNTRY));
     when(investmentRepository.save(any(Investment.class))).thenReturn(TEST_INVESTMENT_INITIAL);
 
     Investment investment =

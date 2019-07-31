@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.Size;
+
 @ApiModel(value = "PersonDto", description = "Person profile information")
 @Data
 @NoArgsConstructor
@@ -44,6 +46,22 @@ public class PersonDto {
   @ApiModelProperty(value = "Person's profile picture url")
   private String profilePictureUrl;
 
+  @ApiModelProperty(value = "Linkedin url")
+  private String linkedinUrl;
+
+  @ApiModelProperty(value = "Twitter url")
+  private String twitterUrl;
+
+  @ApiModelProperty(value = "Facebook url")
+  private String facebookUrl;
+
+  @ApiModelProperty(value = "Custom url")
+  private String customProfileUrl;
+
+  @ApiModelProperty(value = "Short Biography")
+  @Size(max = 250, message = "Short biography cannot be longer than 250 characters.")
+  private String shortBiography;
+
   public PersonDto(Person person) {
     this.id = person.getId();
     this.lastName = person.getLastName();
@@ -57,5 +75,10 @@ public class PersonDto {
     this.email = person.getEmail();
     this.phoneNumber = person.getPhoneNumber();
     this.profilePictureUrl = person.getProfilePictureUrl();
+    this.linkedinUrl = person.getLinkedinUrl();
+    this.facebookUrl = person.getFacebookUrl();
+    this.twitterUrl = person.getTwitterUrl();
+    this.customProfileUrl = person.getCustomProfileUrl();
+    this.shortBiography = person.getShortBiography();
   }
 }

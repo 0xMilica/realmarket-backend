@@ -7,9 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
-@ApiModel(value = "PersonDto", description = "Off platform investment data")
+@ApiModel(value = "OffPlatformInvestmentRequestDto", description = "Off platform investment data")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +25,9 @@ public class OffPlatformInvestmentRequestDto {
 
   @ApiModelProperty(value = "Person's last name")
   private String lastName;
+
+  @ApiModelProperty(value = "Person's national identification number")
+  private String nationalIdentificationNumber;
 
   @ApiModelProperty(value = "Person's country of residence")
   private String countryOfResidence;
@@ -42,6 +46,22 @@ public class OffPlatformInvestmentRequestDto {
 
   @ApiModelProperty(value = "Person's profile picture url")
   private String profilePictureUrl;
+
+  @ApiModelProperty(value = "Linkedin url")
+  private String linkedinUrl;
+
+  @ApiModelProperty(value = "Twitter url")
+  private String twitterUrl;
+
+  @ApiModelProperty(value = "Facebook url")
+  private String facebookUrl;
+
+  @ApiModelProperty(value = "Custom url")
+  private String customProfileUrl;
+
+  @ApiModelProperty(value = "Short Biography")
+  @Size(max = 250, message = "Short biography cannot be longer than 250 characters.")
+  private String shortBiography;
 
   @ApiModelProperty(value = "Invested amount")
   private BigDecimal investedAmount;

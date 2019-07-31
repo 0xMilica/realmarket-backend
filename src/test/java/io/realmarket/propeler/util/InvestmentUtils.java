@@ -8,6 +8,7 @@ import io.realmarket.propeler.model.enums.InvestmentStateName;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import static io.realmarket.propeler.util.AuthUtils.TEST_COUNTRY_CODE;
 import static io.realmarket.propeler.util.AuthUtils.TEST_EMAIL;
 import static io.realmarket.propeler.util.PersonUtils.TEST_COUNTRY;
 import static io.realmarket.propeler.util.PersonUtils.TEST_PROFILE_PICTURE_URL;
@@ -98,7 +99,7 @@ public class InvestmentUtils {
       OffPlatformInvestmentRequestDto.builder()
           .email(TEST_EMAIL)
           .profilePictureUrl(TEST_PROFILE_PICTURE_URL)
-          .countryOfResidence(TEST_COUNTRY.toString())
+          .countryOfResidence(TEST_COUNTRY_CODE)
           .investedAmount(BigDecimal.valueOf(100))
           .build();
 

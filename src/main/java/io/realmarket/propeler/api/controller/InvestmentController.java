@@ -81,7 +81,7 @@ public interface InvestmentController {
       produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
     @ApiImplicitParam(
-        name = "OffPlatformInvestmentRequestDto",
+        name = "offPlatformInvestmentRequestDto",
         value = "Off-Platform investment data",
         required = true,
         dataType = "OffPlatformInvestmentRequestDto",

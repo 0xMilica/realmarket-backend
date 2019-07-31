@@ -23,6 +23,7 @@ public class Person {
   private String email;
   private String firstName;
   private String lastName;
+  private String nationalIdentificationNumber;
 
   @JoinColumn(
       name = "countryOfResidence",
@@ -40,6 +41,13 @@ public class Person {
   private String address;
   private String phoneNumber;
   private String profilePictureUrl;
+  private String linkedinUrl;
+  private String twitterUrl;
+  private String facebookUrl;
+  private String customProfileUrl;
+
+  @Column(length = 250)
+  private String shortBiography;
 
   @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private Auth auth;

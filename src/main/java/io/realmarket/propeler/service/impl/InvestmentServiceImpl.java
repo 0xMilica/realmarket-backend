@@ -2,11 +2,13 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.Country;
 import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
+import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
@@ -44,6 +46,7 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final ModelMapperBlankString modelMapperBlankString;
   private final PersonService personService;
   private final BlockchainCommunicationService blockchainCommunicationService;
+  private final CountryRepository countryRepository;
 
   @Value("${app.investment.weekInMillis}")
   private long weekInMillis;
@@ -56,7 +59,8 @@ public class InvestmentServiceImpl implements InvestmentService {
       InvestmentStateService investmentStateService,
       ModelMapperBlankString modelMapperBlankString,
       PersonService personService,
-      BlockchainCommunicationService blockchainCommunicationService) {
+      BlockchainCommunicationService blockchainCommunicationService,
+      CountryRepository countryRepository) {
     this.campaignService = campaignService;
     this.investmentRepository = investmentRepository;
     this.paymentService = paymentService;
@@ -64,6 +68,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     this.modelMapperBlankString = modelMapperBlankString;
     this.personService = personService;
     this.blockchainCommunicationService = blockchainCommunicationService;
+    this.countryRepository = countryRepository;
   }
 
   @Transactional
@@ -104,6 +109,10 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     Person person = new Person();
     modelMapperBlankString.map(offPlatformInvestmentRequestDto, person);
+    if (offPlatformInvestmentRequestDto.getCountryOfResidence() != null)
+      person.setCountryOfResidence(findCountryByCodeOrThrowException(offPlatformInvestmentRequestDto.getCountryOfResidence()));
+    if (offPlatformInvestmentRequestDto.getCountryForTaxation() != null)
+      person.setCountryForTaxation(findCountryByCodeOrThrowException(offPlatformInvestmentRequestDto.getCountryForTaxation()));
     personService.save(person);
 
     Investment investment =
@@ -254,6 +263,12 @@ public class InvestmentServiceImpl implements InvestmentService {
             });
 
     return new PageImpl<>(portfolio, pageable, campaignPage.getTotalElements());
+  }
+
+  private Country findCountryByCodeOrThrowException(String code) {
+    return countryRepository
+        .findByCode(code)
+        .orElseThrow(() -> new BadRequestException(INVALID_COUNTRY_CODE));
   }
 
   private PortfolioCampaignResponseDto convertCampaignToPortfolioCampaign(

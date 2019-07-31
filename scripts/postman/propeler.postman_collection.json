@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b1fa1755-19f2-4839-ac31-e43d59cee73f",
+		"_postman_id": "c18eed29-6409-40e0-a471-72d1e8b78fda",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -4101,7 +4101,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"radovan.turovic@realmarket.io\",\n\t\"firstName\": \"Несрећко\",\n\t\"lastName\": \"Шошкић\",\n\t\"countryOfResidence\": \"RS\",\n\t\"countryForTaxation\": \"RS\",\n\t\"city\": \"Доње Бријање\",\n\t\"address\": \"Доње Бријање 7\",\n\t\"phoneNumber\": \"+381606060606\",\n\t\"profilePictureUrl\": \"https://static.juznasrbija.info/files/donje_brijanje-6a063e2cdb5d.jpg\",\n\t\"investedAmount\": \"16206\"\n}"
+							"raw": "{\n\t\"email\": \"radovan.turovic@realmarket.io\",\n\t\"firstName\": \"Несрећко\",\n\t\"lastName\": \"Шошкић\",\n\t\"countryOfResidence\": \"RS\",\n\t\"countryForTaxation\": \"RS\",\n\t\"city\": \"Доње Бријање\",\n\t\"address\": \"Доње Бријање 7\",\n\t\"phoneNumber\": \"+381606060606\",\n\t\"profilePictureUrl\": \"https://static.juznasrbija.info/files/donje_brijanje-6a063e2cdb5d.jpg\",\n\t\"investedAmount\": \"16206\",\n\t\"twitterUrl\": \"https://twitter.com/twichtwichtwich\",\n\t\"linkedinUrl\": \"https://linkedin.com/linklinklinkininin\",\n\t\"facebookUrl\": \"https://facebook.com/facefacefacekacekacekace\",\n\t\"customProfileUrl\": \"https://myspace.com/kojosovocudokoristikojosovocudokoristikojosovocudokoristi\",\n\t\"shortBiography\": \"Dodjos iz lalinskog sreza.\",\n\t\"nationalIdentificationNumber\":\"1234567890123\"\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/investments/offPlatform/{{campaign_investable_urlFriendlyName}}",
