@@ -8,6 +8,7 @@ import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.RequestStateService;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.PersonUtils;
@@ -38,6 +39,7 @@ public class UserKYCServiceImplTest {
   @Mock private PersonService personService;
   @Mock private AuthService authService;
   @Mock private EmailService emailService;
+  @Mock private BlockchainCommunicationService blockchainCommunicationService;
 
   @InjectMocks private UserKYCServiceImpl userKYCService;
 

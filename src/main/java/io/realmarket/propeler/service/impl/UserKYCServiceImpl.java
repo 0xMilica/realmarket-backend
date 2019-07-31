@@ -12,6 +12,9 @@ import io.realmarket.propeler.repository.UserKYCRepository;
 import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.BlockchainMethod;
+import io.realmarket.propeler.service.blockchain.dto.user.kyc.RequestForReviewDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -42,6 +45,7 @@ public class UserKYCServiceImpl implements UserKYCService {
   private final EmailService emailService;
   private final UserKYCRepository userKYCRepository;
   private final UserRoleRepository userRoleRepository;
+  private final BlockchainCommunicationService blockchainCommunicationService;
 
   @Value(value = "${app.time.zone}")
   private String timeZone;
@@ -53,7 +57,9 @@ public class UserKYCServiceImpl implements UserKYCService {
       PersonDocumentService personDocumentService,
       EmailService emailService,
       UserKYCRepository userKYCRepository,
-      UserRoleRepository userRoleRepository) {
+      UserRoleRepository userRoleRepository,
+    BlockchainCommunicationService blockchainCommunicationService) {
+
     this.personService = personService;
     this.requestStateService = requestStateService;
     this.companyService = companyService;
@@ -61,6 +67,7 @@ public class UserKYCServiceImpl implements UserKYCService {
     this.emailService = emailService;
     this.userKYCRepository = userKYCRepository;
     this.userRoleRepository = userRoleRepository;
+    this.blockchainCommunicationService = blockchainCommunicationService;
   }
 
   @Override
@@ -72,7 +79,15 @@ public class UserKYCServiceImpl implements UserKYCService {
             .uploadDate(Instant.now())
             .build();
 
-    return userKYCRepository.save(userKYC);
+    userKYC = userKYCRepository.save(userKYC);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.USER_KYC_REQUEST_FOR_REVIEW,
+        new RequestForReviewDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
+        AuthenticationUtil.getClientIp());
+
+    return userKYC;
   }
 
   @Override
