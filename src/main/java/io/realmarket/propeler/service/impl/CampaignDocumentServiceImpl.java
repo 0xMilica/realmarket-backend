@@ -93,7 +93,8 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
     campaignService.throwIfNoAccess(campaign);
 
-    boolean hasDocumentsAccess = campaignDocumentsAccessRequestService.hasCampaignDocumentsAccessRequest(campaign);
+    boolean hasDocumentsAccess =
+        campaignDocumentsAccessRequestService.hasCampaignDocumentsAccessRequest(campaign);
 
     return campaignDocumentRepository.findAllByCampaign(campaign).stream()
         .filter(campaignDocument -> hasReadAccess(campaignDocument, hasDocumentsAccess))
@@ -177,7 +178,8 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
     campaignService.throwIfNoAccess(campaign);
 
-    boolean hasDocumentsAccess = campaignDocumentsAccessRequestService.hasCampaignDocumentsAccessRequest(campaign);
+    boolean hasDocumentsAccess =
+        campaignDocumentsAccessRequestService.hasCampaignDocumentsAccessRequest(campaign);
 
     return findAllByCampaignOrderByUploadDateDesc(campaign).stream()
         .filter(campaignDocument -> hasReadAccess(campaignDocument, hasDocumentsAccess))
@@ -209,7 +211,7 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
       return true;
     }
     UserRoleName userRoleName =
-            AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
+        AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
     DocumentAccessLevel accessLevel = campaignDocument.getAccessLevel();
     return DocumentAccessLevel.hasReadAccess(accessLevel, userRoleName, hasDocumentsAccess);
   }

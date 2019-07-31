@@ -157,7 +157,7 @@ public interface FundraisingProposalController {
     @ApiResponse(code = 404, message = "Fundraising proposal not found.")
   })
   ResponseEntity<FundraisingProposalResponseDto> rejectFundraisingProposal(
-      Long fundraisingProposalId, AuditDeclineDto auditDeclineDto);
+      Long fundraisingProposalId, RejectionReasonDto rejectionReasonDto);
 
   @ApiOperation(
       value = "Accept fundraising proposal",

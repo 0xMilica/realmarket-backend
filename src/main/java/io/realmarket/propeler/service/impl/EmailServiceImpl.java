@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.exception.EmailSendingException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
@@ -36,12 +37,14 @@ public class EmailServiceImpl implements EmailService {
   public static final String LAST_NAME = "lastName";
   public static final String REGISTRATION_TOKEN = "registrationToken";
   public static final String REJECTION_REASON = "rejectionReason";
+  public static final String DATE = "date";
 
   private static final String CONTACT_US_EMAIL = "contactUsEmail";
   private static final String REGISTRATION_LINK = "registrationLink";
   private static final String ACTIVATION_LINK = "activationLink";
   private static final String RESET_PASSWORD_LINK = "resetPasswordLink";
 
+  private static final String PNG_IMAGE = "image/png";
   private static final String LOGO = "logo";
   private static final String LOGO_PATH = "/static/images/logo.png";
   private static final String CHECK_CIRCLE = "check_circle";
@@ -124,7 +127,7 @@ public class EmailServiceImpl implements EmailService {
       case SECRET_CHANGE:
         subject = "Propeler - Secret Changed";
         data = getBasicEmailData();
-        templateName = "secretCHangeMailTemplate";
+        templateName = "secretChangeMailTemplate";
         break;
 
       case ACCOUNT_BLOCKED:
@@ -148,14 +151,14 @@ public class EmailServiceImpl implements EmailService {
       case FUNDRAISING_PROPOSAL_APPROVAL:
         subject = "Propoler - Fundraising proposal approval";
         data = getFundraisingProposalApprovalData(mailContentHolder);
-        templateName = "fundraisingApprovalTemplate";
+        templateName = "acceptFundraisingProposalTemplate";
         break;
 
       case FUNDRAISING_PROPOSAL_REJECTION:
         subject = "Propeler - Fundraising proposal rejection";
-        data = getFundraisingProposalRejectionData(mailContentHolder);
+        data = getRejectionData(mailContentHolder);
         data.put(WARNING, WARNING);
-        templateName = "fundraisingRejectionTemplate";
+        templateName = "rejectFundraisingProposalTemplate";
         break;
 
       case ACCEPT_CAMPAIGN:
@@ -168,6 +171,24 @@ public class EmailServiceImpl implements EmailService {
         subject = "Propeler - Campaign rejected";
         data = getData(mailContentHolder);
         templateName = "rejectCampaignTemplate";
+        break;
+
+      case KYC_UNDER_REVIEW:
+        subject = "Propeler - KYC regulation compliance";
+        data = getKYCUnderReviewData(mailContentHolder);
+        templateName = "underReviewKYCTemplate";
+        break;
+
+      case KYC_APPROVAL:
+        subject = "Propeler - KYC accepted";
+        data = getApprovalData(mailContentHolder);
+        templateName = "acceptKYCTemplate";
+        break;
+
+      case KYC_REJECTION:
+        subject = "Propeler - KYC rejection";
+        data = getRejectionData(mailContentHolder);
+        templateName = "rejectKYCTemplate";
         break;
 
       default:
@@ -276,12 +297,28 @@ public class EmailServiceImpl implements EmailService {
     return data;
   }
 
-  private Map<String, Object> getFundraisingProposalRejectionData(
-      MailContentHolder mailContentHolder) {
+  private Map<String, Object> getApprovalData(MailContentHolder mailContentHolder) {
+    Map<String, Object> data = getBasicEmailData();
+    data.putAll(mailContentHolder.getContent());
+    data.putAll(getSocialMediaData());
+    data.put(CHECK_CIRCLE, CHECK_CIRCLE);
+
+    return data;
+  }
+
+  private Map<String, Object> getRejectionData(MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
     data.putAll(mailContentHolder.getContent());
     data.putAll(getSocialMediaData());
     data.put(WARNING, WARNING);
+
+    return data;
+  }
+
+  private Map<String, Object> getKYCUnderReviewData(MailContentHolder mailContentHolder) {
+    Map<String, Object> data = getBasicEmailData();
+    data.putAll(mailContentHolder.getContent());
+    data.putAll(getSocialMediaData());
 
     return data;
   }
@@ -303,25 +340,7 @@ public class EmailServiceImpl implements EmailService {
       helper.setTo(emailMessageDto.getReceivers());
       helper.setText(emailMessageDto.getText(), true);
 
-      helper.addInline(LOGO, new ClassPathResource(LOGO_PATH), "image/png");
-      switch (emailMessageDto.getType()) {
-        case FUNDRAISING_PROPOSAL_APPROVAL:
-          helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), "image/png");
-          helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), "image/png");
-          helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), "image/png");
-          helper.addInline(LINKEDIN, new ClassPathResource(LINKEDIN_PATH), "image/png");
-          helper.addInline(CHECK_CIRCLE, new ClassPathResource(CHECK_CIRCLE_PATH), "image/png");
-          break;
-        case FUNDRAISING_PROPOSAL_REJECTION:
-          helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), "image/png");
-          helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), "image/png");
-          helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), "image/png");
-          helper.addInline(LINKEDIN, new ClassPathResource(LINKEDIN_PATH), "image/png");
-          helper.addInline(WARNING, new ClassPathResource(WARNING_PATH), "image/png");
-          break;
-        default:
-          break;
-      }
+      addInlineContent(helper, emailMessageDto.getType());
 
       log.debug("Trying to send e-mail message: {}", emailMessageDto);
 
@@ -332,6 +351,37 @@ public class EmailServiceImpl implements EmailService {
     } catch (MessagingException e) {
       log.error("Problem with sending email: {}", e.getCause());
       throw new EmailSendingException(ExceptionMessages.EMAIL_SENDING_EXCEPTION + e.getCause());
+    }
+  }
+
+  private void addInlineContent(MimeMessageHelper helper, EmailType emailType)
+      throws MessagingException {
+    helper.addInline(LOGO, new ClassPathResource(LOGO_PATH), PNG_IMAGE);
+
+    switch (emailType) {
+      case KYC_APPROVAL:
+      case FUNDRAISING_PROPOSAL_APPROVAL:
+        helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), PNG_IMAGE);
+        helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), PNG_IMAGE);
+        helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), PNG_IMAGE);
+        helper.addInline(LINKEDIN, new ClassPathResource(LINKEDIN_PATH), PNG_IMAGE);
+        helper.addInline(CHECK_CIRCLE, new ClassPathResource(CHECK_CIRCLE_PATH), PNG_IMAGE);
+        break;
+      case KYC_REJECTION:
+      case FUNDRAISING_PROPOSAL_REJECTION:
+        helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), PNG_IMAGE);
+        helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), PNG_IMAGE);
+        helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), PNG_IMAGE);
+        helper.addInline(LINKEDIN, new ClassPathResource(LINKEDIN_PATH), PNG_IMAGE);
+        helper.addInline(WARNING, new ClassPathResource(WARNING_PATH), PNG_IMAGE);
+        break;
+      case KYC_UNDER_REVIEW:
+        helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), PNG_IMAGE);
+        helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), PNG_IMAGE);
+        helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), PNG_IMAGE);
+        helper.addInline(LINKEDIN, new ClassPathResource(LINKEDIN_PATH), PNG_IMAGE);
+      default:
+        break;
     }
   }
 }

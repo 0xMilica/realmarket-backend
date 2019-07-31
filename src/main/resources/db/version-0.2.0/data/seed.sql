@@ -46,8 +46,8 @@ INSERT INTO public.campaign(id, url_friendly_name, funding_goals, collected_amou
 INSERT INTO public.campaign(id, url_friendly_name, funding_goals, collected_amount, market_image_url, max_equity_offered, min_equity_offered, name, time_to_raise_funds, min_investment, tag_line, activation_date, modified_date, creation_date, company_id, campaign_state_id) VALUES (NEXTVAL('campaign_seq'), 'friendlyName9', 1000000, 0, null, 20, 18, 'Airsorted', 30, 500, 'Airsorted makes hosting hassle-free on platforms like Airbnb, HomeAway & Expedia.', null, null, TO_DATE('17/05/2019', 'DD/MM/YYYY'),  6, 3);
 
 -- audits
-INSERT INTO public.audit(id, auditor_id, campaign_id, request_state_id, content) VALUES (NEXTVAL('audit_seq'), 5, 8, 1, null);
-INSERT INTO public.audit(id, auditor_id, campaign_id, request_state_id, content) VALUES (NEXTVAL('audit_seq'), 5, 9, 1, null);
+INSERT INTO public.audit(id, auditor_id, campaign_id, request_state_id, rejection_reason) VALUES (NEXTVAL('audit_seq'), 5, 8, 1, null);
+INSERT INTO public.audit(id, auditor_id, campaign_id, request_state_id, rejection_reason) VALUES (NEXTVAL('audit_seq'), 5, 9, 1, null);
 
 -- campaign team member
 INSERT INTO public.campaign_team_member(id, custom_profile_url, description, facebook_url, linkedin_url, name, order_number, photo_url, title, twitter_url, campaign_id) VALUES (NEXTVAL('campaign_team_member_seq'), null, 'Leading the development of the company''s short- and long-term strategy. Creating and implementing the company or organization''s vision and mission.', 'www.facebook.com/tombritton', 'www.linkedin.com/tombritton', 'Tom Britton', 1, null, 'CEO', 'www.twitter.com/tombritton', 4);
@@ -91,5 +91,14 @@ INSERT INTO public.investment(id, invested_amount, person_id, campaign_id, inves
 INSERT INTO public.investment(id, invested_amount, person_id, campaign_id, investment_state_id, creation_date, payment_date) VALUES (NEXTVAL('investment_seq'), 15000, 3, 2, 4, '2019-06-26 13:41:45.15652', '2019-06-27 13:41:45.15652');
 INSERT INTO public.investment(id, invested_amount, person_id, campaign_id, investment_state_id, creation_date, payment_date) VALUES (NEXTVAL('investment_seq'), 1000, 6, 7, 4, '2019-06-26 13:41:45.15652', '2019-06-27 13:41:45.15652');
 
-INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, content, request_state_id) VALUES (nextval('fundraising_proposal_seq'), 'Marko', 'Markovic', 'Company X', 'https://companyx.rs', 'comx@mail.rs','+381212233369', '<100K', '100K-500K', null, 1);
-INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, content, request_state_id) VALUES (nextval('fundraising_proposal_seq'), 'Pera', 'Peric', 'Company Y', 'https://companyy.rs', 'comy@mail.rs','+381212233369', '100K-500K', '1M+', null, 1);
+INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, rejection_reason, request_state_id) VALUES (nextval('fundraising_proposal_seq'), 'Marko', 'Markovic', 'Company X', 'https://companyx.rs', 'comx@mail.rs','+381212233369', '<100K', '100K-500K', null, 1);
+INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, rejection_reason, request_state_id) VALUES (nextval('fundraising_proposal_seq'), 'Pera', 'Peric', 'Company Y', 'https://companyy.rs', 'comy@mail.rs','+381212233369', '100K-500K', '1M+', null, 1);
+
+INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date) VALUES (NEXTVAL('user_kyc_seq'), 5, 1, 1, null, TO_DATE('17/04/2019', 'DD/MM/YYYY'));
+INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date) VALUES (NEXTVAL('user_kyc_seq'), 5, 2, 2, null, TO_DATE('17/05/2019', 'DD/MM/YYYY'));
+INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date) VALUES (NEXTVAL('user_kyc_seq'), 5, 3, 1, null, TO_DATE('17/05/2019', 'DD/MM/YYYY'));
+INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date) VALUES (NEXTVAL('user_kyc_seq'), 5, 4, 3, 'rejection_reason', TO_DATE('17/05/2019', 'DD/MM/YYYY'));
+INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date) VALUES (NEXTVAL('user_kyc_seq'), 5, 6, 1, null, TO_DATE('17/05/2019', 'DD/MM/YYYY'));
+INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date) VALUES (NEXTVAL('user_kyc_seq'), null, 7, 1, null, TO_DATE('17/07/2019', 'DD/MM/YYYY'));
+INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date) VALUES (NEXTVAL('user_kyc_seq'), 5, 8, 1, null, TO_DATE('17/05/2019', 'DD/MM/YYYY'));
+INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date) VALUES (NEXTVAL('user_kyc_seq'), 5, 9, 1, null, TO_DATE('17/05/2019', 'DD/MM/YYYY'));

@@ -1,8 +1,8 @@
 package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.AuditAssignmentDto;
-import io.realmarket.propeler.api.dto.AuditDeclineDto;
 import io.realmarket.propeler.api.dto.AuditResponseDto;
+import io.realmarket.propeler.api.dto.RejectionReasonDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 
@@ -75,5 +75,6 @@ public interface AuditController {
     @ApiResponse(code = 404, message = "Audit not found."),
     @ApiResponse(code = 400, message = "Audit state cannot be changed.")
   })
-  ResponseEntity<AuditResponseDto> declineAudit(Long auditId, AuditDeclineDto auditDeclineDto);
+  ResponseEntity<AuditResponseDto> declineAudit(
+      Long auditId, RejectionReasonDto rejectionReasonDto);
 }

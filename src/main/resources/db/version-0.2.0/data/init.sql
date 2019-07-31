@@ -68,12 +68,6 @@ INSERT INTO public.company_category (id, name) VALUES (NEXTVAL('company_category
 INSERT INTO public.company_category (id, name) VALUES (NEXTVAL('company_category_seq'), 'Video & Photography');
 INSERT INTO public.company_category (id, name) VALUES (NEXTVAL('company_category_seq'), 'Virtual & Augmented Reality');
 
--- company document type
--- INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_APR_PAPER');
--- INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_BUSINESS_PLAN');
--- INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_PITCH_DECK');
--- INSERT INTO public.company_document_type (id, name) VALUES (NEXTVAL('company_document_type_seq'), 'DOCTYPE_BANK');
-
 -- document access level
 INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PUBLIC');
 INSERT INTO public.document_access_level (id, name) VALUES (NEXTVAL('document_access_level_seq'), 'PRIVATE');

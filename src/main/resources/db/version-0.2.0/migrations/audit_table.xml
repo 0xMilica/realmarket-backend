@@ -22,7 +22,7 @@
             request_state_id bigint
             constraint audit_fk_on_request_state
             references request_state,
-            content varchar(10000)
+            rejection_reason varchar(10000)
             );
         </sql>
     </changeSet>

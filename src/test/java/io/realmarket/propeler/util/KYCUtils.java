@@ -5,6 +5,8 @@ import io.realmarket.propeler.model.RequestState;
 import io.realmarket.propeler.model.UserKYC;
 import io.realmarket.propeler.model.enums.RequestStateName;
 
+import java.time.Instant;
+
 public class KYCUtils {
   public static final Long TEST_USER_KYC_ID = 1L;
   public static final RequestState TEST_PENDING_REQUEST_STATE =
@@ -14,12 +16,14 @@ public class KYCUtils {
   public static final RequestState TEST_DECLINED_REQUEST_STATE =
       RequestState.builder().name(RequestStateName.DECLINED).build();
   public static final String TEST_REJECTION_REASON = "Submitted KYC did not pass our standards";
+  public static final Instant TEST_DATE = Instant.now();
 
   public static final UserKYC TEST_PENDING_USER_KYC =
       UserKYC.builder()
           .id(TEST_USER_KYC_ID)
           .user(AuthUtils.TEST_AUTH_ENTREPRENEUR)
           .requestState(TEST_PENDING_REQUEST_STATE)
+          .uploadDate(TEST_DATE)
           .build();
 
   public static final UserKYC TEST_USER_KYC_ASSIGNED =
@@ -28,6 +32,7 @@ public class KYCUtils {
           .user(AuthUtils.TEST_AUTH_ENTREPRENEUR)
           .requestState(TEST_PENDING_REQUEST_STATE)
           .auditor(AuthUtils.TEST_AUTH_ADMIN)
+          .uploadDate(TEST_DATE)
           .build();
 
   public static final UserKYC TEST_USER_KYC_APPROVED =
@@ -36,6 +41,7 @@ public class KYCUtils {
           .user(AuthUtils.TEST_AUTH_ENTREPRENEUR)
           .requestState(TEST_APPROVED_REQUEST_STATE)
           .auditor(AuthUtils.TEST_AUTH_ADMIN)
+          .uploadDate(TEST_DATE)
           .build();
 
   public static final UserKYC TEST_USER_KYC_DECLINED =
@@ -44,6 +50,7 @@ public class KYCUtils {
           .user(AuthUtils.TEST_AUTH_ENTREPRENEUR)
           .requestState(TEST_DECLINED_REQUEST_STATE)
           .auditor(AuthUtils.TEST_AUTH_ADMIN)
+          .uploadDate(TEST_DATE)
           .build();
 
   public static final UserKYCAssignmentDto TEST_USER_KYC_ASSIGNMENT_DTO =

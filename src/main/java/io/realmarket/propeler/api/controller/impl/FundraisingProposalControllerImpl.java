@@ -96,10 +96,11 @@ public class FundraisingProposalControllerImpl implements FundraisingProposalCon
   @PatchMapping("/{fundraisingProposalId}/reject")
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public ResponseEntity<FundraisingProposalResponseDto> rejectFundraisingProposal(
-      @PathVariable Long fundraisingProposalId, @RequestBody AuditDeclineDto auditDeclineDto) {
+      @PathVariable Long fundraisingProposalId,
+      @RequestBody RejectionReasonDto rejectionReasonDto) {
     return ResponseEntity.ok(
         new FundraisingProposalResponseDto(
             fundraisingProposalService.declineFundraisingProposal(
-                fundraisingProposalId, auditDeclineDto)));
+                fundraisingProposalId, rejectionReasonDto)));
   }
 }

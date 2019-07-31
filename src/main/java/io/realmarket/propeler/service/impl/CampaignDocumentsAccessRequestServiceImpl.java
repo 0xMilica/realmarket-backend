@@ -39,7 +39,6 @@ public class CampaignDocumentsAccessRequestServiceImpl
   public CampaignDocumentsAccessRequestServiceImpl(
       CampaignDocumentsAccessRequestRepository campaignDocumentsAccessRequestRepository,
       @Lazy CampaignDocumentService campaignDocumentService,
-      CompanyService companyService,
       CampaignService campaignService,
       AuthService authService,
       RequestStateService requestStateService,
@@ -187,9 +186,6 @@ public class CampaignDocumentsAccessRequestServiceImpl
   @Override
   public boolean hasCampaignDocumentsAccessRequest(Campaign campaign) {
     Auth auth = AuthenticationUtil.getAuthentication().getAuth();
-    if (findByCampaignAndAuthAndApproved(campaign, auth) == null) {
-      return false;
-    }
-    return true;
+    return findByCampaignAndAuthAndApproved(campaign, auth) != null;
   }
 }

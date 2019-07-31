@@ -37,5 +37,5 @@ public class Audit {
   private RequestState requestState;
 
   @Column(length = 10000)
-  private String content;
+  private String rejectionReason;
 }

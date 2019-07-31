@@ -52,6 +52,8 @@ public class FundraisingProposalResponseDto {
 
   private String proposalState;
 
+  private String rejectionReason;
+
   public FundraisingProposalResponseDto(FundraisingProposal fundraisingProposal) {
     this.id = fundraisingProposal.getId();
     this.firstName = fundraisingProposal.getFirstName();
@@ -63,5 +65,6 @@ public class FundraisingProposalResponseDto {
     this.previouslyRaised = fundraisingProposal.getPreviouslyRaised();
     this.fundingGoals = fundraisingProposal.getFundingGoals();
     this.proposalState = fundraisingProposal.getRequestState().getName().toString();
+    this.rejectionReason = fundraisingProposal.getRejectionReason();
   }
 }

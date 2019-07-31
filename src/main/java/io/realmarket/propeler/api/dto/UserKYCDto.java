@@ -34,13 +34,13 @@ public class UserKYCDto {
 
   @ApiModelProperty(value = "Reason for transition to DECLINED state, when declining User's KYC.")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private String content;
+  private String rejectionReason;
 
   public UserKYCDto(UserKYC userKYC) {
     this.id = userKYC.getId();
     this.auditorId = (userKYC.getAuditor() != null) ? userKYC.getAuditor().getId() : null;
     this.userId = userKYC.getUser().getId();
     this.requestState = userKYC.getRequestState().getName().toString();
-    this.content = userKYC.getContent();
+    this.rejectionReason = userKYC.getRejectionReason();
   }
 }

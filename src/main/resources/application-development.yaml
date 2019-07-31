@@ -102,6 +102,8 @@ app:
   investment:
     weekInMillis: 604800000
 
+  time.zone: Europe/Belgrade
+
 google:
   recaptcha:
     secret: ${GOOGLE_RECAPTCHA_SECRET}

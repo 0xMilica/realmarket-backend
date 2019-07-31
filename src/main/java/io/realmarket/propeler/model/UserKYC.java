@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -38,5 +39,7 @@ public class UserKYC {
   private RequestState requestState;
 
   @Column(length = 10000)
-  private String content;
+  private String rejectionReason;
+
+  private Instant uploadDate;
 }

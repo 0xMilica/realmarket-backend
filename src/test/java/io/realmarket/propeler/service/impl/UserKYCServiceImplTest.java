@@ -5,6 +5,7 @@ import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.UserKYCRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.AuthService;
+import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.PersonService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
@@ -17,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -24,6 +26,7 @@ import static io.realmarket.propeler.util.AuditUtils.TEST_PENDING_REQUEST_STATE;
 import static io.realmarket.propeler.util.KYCUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -34,12 +37,14 @@ public class UserKYCServiceImplTest {
   @Mock private UserKYCRepository userKYCRepository;
   @Mock private PersonService personService;
   @Mock private AuthService authService;
+  @Mock private EmailService emailService;
 
   @InjectMocks private UserKYCServiceImpl userKYCService;
 
   @Before
   public void createAuthContext() {
     AuthUtils.mockRequestAndContext();
+    ReflectionTestUtils.setField(userKYCService, "timeZone", "Europe/Belgrade");
   }
 
   @Test
@@ -64,6 +69,7 @@ public class UserKYCServiceImplTest {
     when(requestStateService.getRequestState(RequestStateName.PENDING))
         .thenReturn(TEST_PENDING_REQUEST_STATE);
     when(userKYCRepository.save(any(UserKYC.class))).thenReturn(TEST_USER_KYC_ASSIGNED);
+    doNothing().when(emailService).sendMailToUser(any());
 
     UserKYC actualUserKYC = userKYCService.assignUserKYC(TEST_USER_KYC_ASSIGNMENT_DTO);
 
@@ -75,10 +81,11 @@ public class UserKYCServiceImplTest {
     AuthUtils.mockRequestAndContextAdmin();
 
     when(userKYCRepository.findById(TEST_USER_KYC_ID))
-        .thenReturn(Optional.of(TEST_USER_KYC_ASSIGNED));
+        .thenReturn(Optional.of(TEST_USER_KYC_ASSIGNED.toBuilder().build()));
     when(requestStateService.getRequestState(RequestStateName.APPROVED))
         .thenReturn(TEST_APPROVED_REQUEST_STATE);
     when(userKYCRepository.save(any())).thenReturn(TEST_USER_KYC_APPROVED);
+    doNothing().when(emailService).sendMailToUser(any());
 
     UserKYC userKYC = userKYCService.approveUserKYC(TEST_USER_KYC_ID);
 
@@ -99,12 +106,13 @@ public class UserKYCServiceImplTest {
     AuthUtils.mockRequestAndContextAdmin();
 
     when(userKYCRepository.findById(TEST_USER_KYC_ID))
-        .thenReturn(Optional.of(TEST_USER_KYC_ASSIGNED));
+        .thenReturn(Optional.of(TEST_USER_KYC_ASSIGNED.toBuilder().build()));
     when(requestStateService.getRequestState(RequestStateName.DECLINED))
-        .thenReturn(TEST_APPROVED_REQUEST_STATE);
+        .thenReturn(TEST_DECLINED_REQUEST_STATE);
     when(userKYCRepository.save(any())).thenReturn(TEST_USER_KYC_DECLINED);
+    doNothing().when(emailService).sendMailToUser(any());
 
-    UserKYC userKYC = userKYCService.approveUserKYC(TEST_USER_KYC_ID);
+    UserKYC userKYC = userKYCService.rejectUserKYC(TEST_USER_KYC_ID, TEST_REJECTION_REASON);
 
     assertEquals(TEST_DECLINED_REQUEST_STATE, userKYC.getRequestState());
   }

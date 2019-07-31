@@ -4,6 +4,7 @@ import io.realmarket.propeler.api.dto.DocumentResponseDto;
 import io.realmarket.propeler.api.dto.UserKYCAssignmentDto;
 import io.realmarket.propeler.api.dto.UserKYCResponseDto;
 import io.realmarket.propeler.api.dto.UserKYCResponseWithFilesDto;
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
@@ -13,12 +14,20 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.service.util.MailContentHolder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
@@ -28,26 +37,29 @@ public class UserKYCServiceImpl implements UserKYCService {
 
   private final PersonService personService;
   private final RequestStateService requestStateService;
-  private final UserKYCRepository userKYCRepository;
-  private final AuthService authService;
   private final CompanyService companyService;
   private final PersonDocumentService personDocumentService;
+  private final EmailService emailService;
+  private final UserKYCRepository userKYCRepository;
   private final UserRoleRepository userRoleRepository;
+
+  @Value(value = "${app.time.zone}")
+  private String timeZone;
 
   public UserKYCServiceImpl(
       PersonService personService,
       RequestStateService requestStateService,
-      UserKYCRepository userKYCRepository,
-      AuthService authService,
       CompanyService companyService,
       PersonDocumentService personDocumentService,
+      EmailService emailService,
+      UserKYCRepository userKYCRepository,
       UserRoleRepository userRoleRepository) {
     this.personService = personService;
     this.requestStateService = requestStateService;
-    this.userKYCRepository = userKYCRepository;
-    this.authService = authService;
     this.companyService = companyService;
     this.personDocumentService = personDocumentService;
+    this.emailService = emailService;
+    this.userKYCRepository = userKYCRepository;
     this.userRoleRepository = userRoleRepository;
   }
 
@@ -57,6 +69,7 @@ public class UserKYCServiceImpl implements UserKYCService {
         UserKYC.builder()
             .user(AuthenticationUtil.getAuthentication().getAuth())
             .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
+            .uploadDate(Instant.now())
             .build();
 
     return userKYCRepository.save(userKYC);
@@ -72,8 +85,27 @@ public class UserKYCServiceImpl implements UserKYCService {
       throw new BadRequestException(USER_CAN_NOT_BE_AUDITOR);
     }
     UserKYC userKYC = userKYCRepository.getOne(userKYCAssignmentDto.getUserKYCId());
+    if (userKYC.getAuditor() != null) {
+      throw new BadRequestException(INVALID_REQUEST);
+    }
+
     userKYC.setAuditor(auditorAuth);
-    return userKYCRepository.save(userKYC);
+    userKYC = userKYCRepository.save(userKYC);
+    sendKYCUnderReviewMail(userKYC);
+
+    return userKYC;
+  }
+
+  private void sendKYCUnderReviewMail(UserKYC userKYC) {
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put(EmailServiceImpl.FIRST_NAME, userKYC.getUser().getPerson().getFirstName());
+    parameters.put(EmailServiceImpl.LAST_NAME, userKYC.getUser().getPerson().getLastName());
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            Collections.singletonList(userKYC.getUser().getPerson().getEmail()),
+            EmailType.KYC_UNDER_REVIEW,
+            parameters));
   }
 
   @Override
@@ -85,13 +117,13 @@ public class UserKYCServiceImpl implements UserKYCService {
   public Page<UserKYCResponseDto> getUserKYCs(Pageable pageable, String requestState, String role) {
     boolean isRoleAll = role.equals("all");
     boolean isStateAll = requestState.equals("all");
-    Page<UserKYC> results = null;
+    Page<UserKYC> results;
     if (isStateAll && isRoleAll) results = userKYCRepository.findAll(pageable);
     else if (isStateAll) {
       UserRole userRole = getUserRole(role);
       results = userKYCRepository.findAllByUserRole(pageable, userRole);
     } else if (isRoleAll) {
-      RequestState state = null;
+      RequestState state;
       if (requestState.toLowerCase().startsWith("pending")) state = getUserKYCState("PENDING");
       else state = getUserKYCState(requestState);
       if (requestState.toLowerCase().endsWith("notassigned"))
@@ -99,7 +131,7 @@ public class UserKYCServiceImpl implements UserKYCService {
       else results = userKYCRepository.findAllByRequestStateAssigned(pageable, state);
     } else {
       UserRole userRole = getUserRole(role);
-      RequestState state = null;
+      RequestState state;
       if (requestState.toLowerCase().startsWith("pending")) state = getUserKYCState("PENDING");
       else state = getUserKYCState(requestState);
       if (requestState.toLowerCase().endsWith("notassigned"))
@@ -108,8 +140,7 @@ public class UserKYCServiceImpl implements UserKYCService {
                 pageable, state, userRole);
       else
         results =
-            userKYCRepository.findAllByRequestStateAndByUserRoleAssigned(
-                pageable, state, userRole);
+            userKYCRepository.findAllByRequestStateAndByUserRoleAssigned(pageable, state, userRole);
     }
     return results.map(this::convertUserKYCToUserKYCResponseDto);
   }
@@ -117,22 +148,71 @@ public class UserKYCServiceImpl implements UserKYCService {
   @Override
   public UserKYC approveUserKYC(Long userKYCId) {
     UserKYC userKYC = findByIdOrThrowException(userKYCId);
+    throwIfNotPending(userKYC);
     throwIfNotAuditor(userKYC);
     userKYC.setRequestState(requestStateService.getRequestState(RequestStateName.APPROVED));
-    return userKYCRepository.save(userKYC);
+    userKYC = userKYCRepository.save(userKYC);
+    sendKYCApprovalEmail(userKYC);
+
+    return userKYC;
+  }
+
+  private void sendKYCApprovalEmail(UserKYC userKYC) {
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put(EmailServiceImpl.FIRST_NAME, userKYC.getUser().getPerson().getFirstName());
+    parameters.put(EmailServiceImpl.LAST_NAME, userKYC.getUser().getPerson().getLastName());
+
+    LocalDateTime uploadDate =
+        LocalDateTime.ofInstant(userKYC.getUploadDate(), ZoneId.of(timeZone));
+    parameters.put(EmailServiceImpl.DATE, uploadDate);
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            Collections.singletonList(userKYC.getUser().getPerson().getEmail()),
+            EmailType.KYC_APPROVAL,
+            parameters));
   }
 
   @Override
-  public UserKYC rejectUserKYC(Long userKYCId, String content) {
+  public UserKYC rejectUserKYC(Long userKYCId, String rejectionReason) {
     UserKYC userKYC = findByIdOrThrowException(userKYCId);
+    throwIfNotPending(userKYC);
     throwIfNotAuditor(userKYC);
     userKYC.setRequestState(requestStateService.getRequestState(RequestStateName.DECLINED));
-    userKYC.setContent(content);
-    return userKYCRepository.save(userKYC);
+    userKYC.setRejectionReason(rejectionReason);
+    userKYC = userKYCRepository.save(userKYC);
+    sendKYCRejectionEmail(userKYC);
+
+    return userKYC;
+  }
+
+  private void sendKYCRejectionEmail(UserKYC userKYC) {
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put(EmailServiceImpl.FIRST_NAME, userKYC.getUser().getPerson().getFirstName());
+    parameters.put(EmailServiceImpl.LAST_NAME, userKYC.getUser().getPerson().getLastName());
+    parameters.put(EmailServiceImpl.REJECTION_REASON, userKYC.getRejectionReason());
+
+    LocalDateTime uploadDate =
+        LocalDateTime.ofInstant(userKYC.getUploadDate(), ZoneId.of(timeZone));
+    parameters.put(EmailServiceImpl.DATE, uploadDate);
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            Collections.singletonList(userKYC.getUser().getPerson().getEmail()),
+            EmailType.KYC_REJECTION,
+            parameters));
+  }
+
+  private void throwIfNotPending(UserKYC userKYC) {
+    if (!userKYC.getRequestState().getName().equals(RequestStateName.PENDING)) {
+      throw new BadRequestException(INVALID_REQUEST);
+    }
   }
 
   private UserRole getUserRole(String role) {
-    return userRoleRepository.findByName(getUserRoleNameOrThrow(role)).get();
+    return userRoleRepository
+        .findByName(getUserRoleNameOrThrow(role))
+        .orElseThrow(EntityNotFoundException::new);
   }
 
   private UserRoleName getUserRoleNameOrThrow(String role) {

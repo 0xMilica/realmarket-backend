@@ -1,7 +1,7 @@
 package io.realmarket.propeler.service;
 
-import io.realmarket.propeler.api.dto.AuditDeclineDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalDto;
+import io.realmarket.propeler.api.dto.RejectionReasonDto;
 import io.realmarket.propeler.model.FundraisingProposal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,5 +17,5 @@ public interface FundraisingProposalService {
   FundraisingProposal approveFundraisingProposal(Long fundraisingProposalId);
 
   FundraisingProposal declineFundraisingProposal(
-      Long fundraisingProposalId, AuditDeclineDto auditDeclineDto);
+      Long fundraisingProposalId, RejectionReasonDto rejectionReasonDto);
 }

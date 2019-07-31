@@ -62,7 +62,7 @@ public class UserKYCResponseDto {
 
   @ApiModelProperty(value = "Reason for transition to DECLINED state, when declining User's KYC.")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private String content;
+  private String rejectionReason;
 
   public UserKYCResponseDto(UserKYC userKYC, Person person, Auth user, Company company) {
     this.id = userKYC.getId();
@@ -84,6 +84,6 @@ public class UserKYCResponseDto {
       this.companyId = company.getId();
     }
     this.requestState = userKYC.getRequestState().getName().toString();
-    this.content = userKYC.getContent();
+    this.rejectionReason = userKYC.getRejectionReason();
   }
 }

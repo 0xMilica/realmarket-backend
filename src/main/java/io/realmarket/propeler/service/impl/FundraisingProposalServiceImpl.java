@@ -1,7 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.AuditDeclineDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalDto;
+import io.realmarket.propeler.api.dto.RejectionReasonDto;
 import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.FundraisingProposal;
 import io.realmarket.propeler.model.RegistrationToken;
@@ -94,7 +94,7 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
 
   @Override
   public FundraisingProposal declineFundraisingProposal(
-      Long fundraisingProposalId, AuditDeclineDto auditDeclineDto) {
+      Long fundraisingProposalId, RejectionReasonDto rejectionReasonDto) {
     throwIfNotAdmin();
     FundraisingProposal fundraisingProposal =
         fundraisingProposalRepository.getOne(fundraisingProposalId);
@@ -102,7 +102,7 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
 
     fundraisingProposal.setRequestState(
         requestStateService.getRequestState(RequestStateName.DECLINED));
-    fundraisingProposal.setContent(auditDeclineDto.getContent());
+    fundraisingProposal.setRejectionReason(rejectionReasonDto.getContent());
 
     fundraisingProposal = fundraisingProposalRepository.save(fundraisingProposal);
     sendRejectionEmail(fundraisingProposal);
@@ -147,7 +147,7 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
     Map<String, Object> parameters = new HashMap<>();
     parameters.put(EmailServiceImpl.FIRST_NAME, fundraisingProposal.getFirstName());
     parameters.put(EmailServiceImpl.LAST_NAME, fundraisingProposal.getLastName());
-    parameters.put(EmailServiceImpl.REJECTION_REASON, fundraisingProposal.getContent());
+    parameters.put(EmailServiceImpl.REJECTION_REASON, fundraisingProposal.getRejectionReason());
     emailService.sendMailToUser(
         new MailContentHolder(
             Collections.singletonList(fundraisingProposal.getEmail()),

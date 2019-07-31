@@ -1,7 +1,7 @@
 package io.realmarket.propeler.util;
 
-import io.realmarket.propeler.api.dto.AuditDeclineDto;
 import io.realmarket.propeler.api.dto.FundraisingProposalDto;
+import io.realmarket.propeler.api.dto.RejectionReasonDto;
 import io.realmarket.propeler.model.FundraisingProposal;
 
 public class FundraisingProposalUtils {
@@ -10,8 +10,8 @@ public class FundraisingProposalUtils {
   public static final String TEST_CONTENT = "TEST_CONTENT";
   public static final String TEST_PREVIOUSLY_RAISED = "150000";
   public static final String TEST_FUNDING_GOALS = "200000";
-  public static final AuditDeclineDto TEST_AUDIT_DECLINE_DTO =
-      AuditDeclineDto.builder().content(TEST_CONTENT).build();
+  public static final RejectionReasonDto TEST_AUDIT_DECLINE_DTO =
+      RejectionReasonDto.builder().content(TEST_CONTENT).build();
 
   public static final FundraisingProposal TEST_PENDING_FUNDRAISING_PROPOSAL =
       FundraisingProposal.builder()

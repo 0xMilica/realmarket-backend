@@ -39,7 +39,7 @@ public class FundraisingProposal {
   private RequestState requestState;
 
   @Column(length = 10000)
-  private String content;
+  private String rejectionReason;
 
   public FundraisingProposal(FundraisingProposalDto fundraisingProposalDto) {
     this.firstName = fundraisingProposalDto.getFirstName();

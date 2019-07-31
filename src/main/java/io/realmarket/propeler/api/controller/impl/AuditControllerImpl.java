@@ -2,8 +2,8 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.AuditController;
 import io.realmarket.propeler.api.dto.AuditAssignmentDto;
-import io.realmarket.propeler.api.dto.AuditDeclineDto;
 import io.realmarket.propeler.api.dto.AuditResponseDto;
+import io.realmarket.propeler.api.dto.RejectionReasonDto;
 import io.realmarket.propeler.service.AuditService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +44,9 @@ public class AuditControllerImpl implements AuditController {
   @PatchMapping(value = "/{auditId}/decline")
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public ResponseEntity<AuditResponseDto> declineAudit(
-      @PathVariable Long auditId, @RequestBody AuditDeclineDto auditDeclineDto) {
+      @PathVariable Long auditId, @RequestBody RejectionReasonDto rejectionReasonDto) {
     return ResponseEntity.ok(
-        new AuditResponseDto(auditService.declineCampaign(auditId, auditDeclineDto.getContent())));
+        new AuditResponseDto(
+            auditService.declineCampaign(auditId, rejectionReasonDto.getContent())));
   }
 }

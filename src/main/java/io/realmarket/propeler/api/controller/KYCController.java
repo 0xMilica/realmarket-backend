@@ -66,32 +66,33 @@ public interface KYCController {
         defaultValue = "20",
         dataType = "Integer",
         paramType = "query"),
-      @ApiImplicitParam(
-          name = "size",
-          value = "Page size (number of items to be returned)",
-          defaultValue = "0",
-          dataType = "Integer",
-          paramType = "query"),
-      @ApiImplicitParam(
-          name = "state",
-          value = "State of user KYC",
-          allowableValues = "all, pendingAssigned, pendingNotAssigned, approved, declined",
-          defaultValue = "all",
-          dataType = "String",
-          paramType = "query"),
-      @ApiImplicitParam(
-          name = "role",
-          value = "User role of user KYC",
-          allowableValues = "all, investor, entrepreneur",
-          defaultValue = "investor",
-          dataType = "String",
-          paramType = "query")
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "state",
+        value = "State of user KYC",
+        allowableValues = "all, pendingAssigned, pendingNotAssigned, approved, declined",
+        defaultValue = "all",
+        dataType = "String",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "role",
+        value = "User role of user KYC",
+        allowableValues = "all, investor, entrepreneur",
+        defaultValue = "investor",
+        dataType = "String",
+        paramType = "query")
   })
   @ApiResponses({
     @ApiResponse(code = 200, message = "User KYCs successfully found."),
     @ApiResponse(code = 400, message = "Invalid request.")
   })
-  ResponseEntity<Page<UserKYCResponseDto>> getUserKYCs(Pageable pageable, String state, String role);
+  ResponseEntity<Page<UserKYCResponseDto>> getUserKYCs(
+      Pageable pageable, String state, String role);
 
   @ApiOperation(value = "Approve user KYC", httpMethod = "PATCH", produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParam(
@@ -131,5 +132,5 @@ public interface KYCController {
     @ApiResponse(code = 400, message = "UKY_003"),
     @ApiResponse(code = 404, message = "UKY_001")
   })
-  ResponseEntity<UserKYCDto> rejectUserKYC(Long userKYCId, AuditDeclineDto userKYCRejectDto);
+  ResponseEntity<UserKYCDto> rejectUserKYC(Long UserKYCId, RejectionReasonDto userKYCRejectDto);
 }

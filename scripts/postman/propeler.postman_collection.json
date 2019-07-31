@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "60004c78-f121-41e6-8a6f-a8e6fa459d28",
+		"_postman_id": "b1fa1755-19f2-4839-ac31-e43d59cee73f",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -702,6 +702,11 @@
 										"key": "Accept",
 										"value": "*/*, application/json",
 										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
 									}
 								],
 								"url": {
@@ -727,6 +732,11 @@
 									{
 										"key": "Accept",
 										"value": "*/*, application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
 										"type": "text"
 									}
 								],
@@ -4633,7 +4643,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{server_ip}}/api/kyc/user/{{userKYC_Id}}",
+							"raw": "{{server_ip}}/api/kyc/user/{{userKYC_Id}}/accept",
 							"host": [
 								"{{server_ip}}"
 							],
@@ -4641,7 +4651,8 @@
 								"api",
 								"kyc",
 								"user",
-								"{{userKYC_Id}}"
+								"{{userKYC_Id}}",
+								"accept"
 							]
 						}
 					},

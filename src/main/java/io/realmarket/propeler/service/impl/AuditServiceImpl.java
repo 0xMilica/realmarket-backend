@@ -111,12 +111,12 @@ public class AuditServiceImpl implements AuditService {
   }
 
   @Override
-  public Audit declineCampaign(Long auditId, String content) {
+  public Audit declineCampaign(Long auditId, String rejectionReason) {
     Audit audit = findByIdOrThrowException(auditId);
     throwIfNoAccess(audit);
 
     campaignService.changeCampaignStateOrThrow(audit.getCampaign(), CampaignStateName.INITIAL);
-    audit.setContent(content);
+    audit.setRejectionReason(rejectionReason);
     audit.setRequestState(requestStateService.getRequestState(RequestStateName.DECLINED));
     audit = saveAndSendToBlockchain(audit);
     sendDeclineCampaignEmail(audit);
@@ -129,7 +129,7 @@ public class AuditServiceImpl implements AuditService {
     Map<String, Object> parameters = new HashMap<>();
     parameters.put(EmailServiceImpl.USERNAME, campaignOwner.getUsername());
     parameters.put(EmailServiceImpl.CAMPAIGN, audit.getCampaign().getName());
-    parameters.put(EmailServiceImpl.REJECTION_REASON, audit.getContent());
+    parameters.put(EmailServiceImpl.REJECTION_REASON, audit.getRejectionReason());
 
     emailService.sendMailToUser(
         new MailContentHolder(

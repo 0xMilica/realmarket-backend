@@ -390,9 +390,9 @@ INSERT INTO public.auth (id, state_id, password, user_role_id, blocked, totp_sec
 INSERT INTO public.temporary_token (id, expiration_time, temporary_token_type_id, value, auth_id) VALUES (NEXTVAL('temporary_token_seq'), TO_DATE('01/05/2050', 'DD/MM/YYYY'), 6, 'confirmEmailChangeToken', 13);
 INSERT INTO public.authorized_action (id, auth_id, data, expiration, type_id) VALUES (NEXTVAL('authorized_action_seq'), 13, 'authAction', TO_DATE('01/05/2050', 'DD/MM/YYYY'), 3);
 
-INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, content, request_state_id) VALUES (NEXTVAL('fundraising_proposal_seq'), 'testFirstName', 'testLastName', 'testCompany', 'testWebsite','test.fundraising1@malinator.com', '+3812122333', '<100K', '100K-500K', null, 1);
+INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, rejection_reason, request_state_id) VALUES (NEXTVAL('fundraising_proposal_seq'), 'testFirstName', 'testLastName', 'testCompany', 'testWebsite','test.fundraising1@malinator.com', '+3812122333', '<100K', '100K-500K', null, 1);
 INSERT INTO public.registration_token (id, value, expiration_time, fundraising_proposal_id) VALUES (NEXTVAL('registration_token_seq'), 'tokenValue', TO_DATE('01/05/2050', 'DD/MM/YYYY'), 1);
-INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, content, request_state_id) VALUES (NEXTVAL('fundraising_proposal_seq'), 'testFirstName', 'testLastName', 'testCompany', 'testWebsite','test.fundraising1@malinator.com', '+3812122333', '<100K', '100K-500K', null, 1);
+INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, rejection_reason, request_state_id) VALUES (NEXTVAL('fundraising_proposal_seq'), 'testFirstName', 'testLastName', 'testCompany', 'testWebsite','test.fundraising1@malinator.com', '+3812122333', '<100K', '100K-500K', null, 1);
 INSERT INTO public.registration_token (id, value, expiration_time, fundraising_proposal_id) VALUES (NEXTVAL('registration_token_seq'), 'tokenValidateValue', TO_DATE('01/05/2050', 'DD/MM/YYYY'), 2);
 
 -- used in TwoFactorAuthTest

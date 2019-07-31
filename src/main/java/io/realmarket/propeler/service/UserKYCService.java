@@ -19,5 +19,5 @@ public interface UserKYCService {
 
   UserKYC approveUserKYC(Long userKYCId);
 
-  UserKYC rejectUserKYC(Long userKYCId, String content);
+  UserKYC rejectUserKYC(Long userKYCId, String rejectionReason);
 }

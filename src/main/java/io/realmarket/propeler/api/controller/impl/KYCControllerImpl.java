@@ -60,7 +60,7 @@ public class KYCControllerImpl implements KYCController {
   @Override
   @PatchMapping("/user/{userKYCId}/reject")
   public ResponseEntity<UserKYCDto> rejectUserKYC(
-      @PathVariable Long userKYCId, @RequestBody AuditDeclineDto userKYCRejectDto) {
+      @PathVariable Long userKYCId, @RequestBody RejectionReasonDto userKYCRejectDto) {
     return ResponseEntity.ok(
         new UserKYCDto(userKYCService.rejectUserKYC(userKYCId, userKYCRejectDto.getContent())));
   }
