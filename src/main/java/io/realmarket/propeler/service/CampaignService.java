@@ -42,7 +42,7 @@ public interface CampaignService {
 
   Campaign getActiveCampaign();
 
-  CampaignResponseDto getActiveCampaignDto();
+  CampaignResponseDto getCurrentCampaignDto();
 
   CampaignResponseDto getCampaignDtoByUrlFriendlyName(String name);
 

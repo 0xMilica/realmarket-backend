@@ -185,10 +185,10 @@ public class CampaignControllerImpl implements CampaignController {
             campaignDocumentsAccessRequestService.rejectCampaignDocumentsAccessRequest(requestId)));
   }
 
-  @GetMapping(value = "/mine/active")
+  @GetMapping(value = "/mine/current")
   @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
-  public ResponseEntity<CampaignResponseDto> getActiveCampaign() {
-    return ResponseEntity.ok(campaignService.getActiveCampaignDto());
+  public ResponseEntity<CampaignResponseDto> getCurrentCampaign() {
+    return ResponseEntity.ok(campaignService.getCurrentCampaignDto());
   }
 
   @PostMapping("/{campaignName}/team/{teamMemberId}/picture")

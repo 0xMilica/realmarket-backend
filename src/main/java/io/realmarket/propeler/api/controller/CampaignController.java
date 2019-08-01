@@ -300,15 +300,15 @@ public interface CampaignController {
       Long requestId);
 
   @ApiOperation(
-      value = "Get active campaign",
+      value = "Get user's current campaign",
       httpMethod = "GET",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-    @ApiResponse(code = 200, message = "Successfully retrieved active campaign"),
+    @ApiResponse(code = 200, message = "Successfully retrieved current campaign"),
     @ApiResponse(code = 401, message = "Unauthorized attempt to retrieve campaign.")
   })
-  ResponseEntity<CampaignResponseDto> getActiveCampaign();
+  ResponseEntity<CampaignResponseDto> getCurrentCampaign();
 
   @ApiOperation(
       value = "Upload team member picture",

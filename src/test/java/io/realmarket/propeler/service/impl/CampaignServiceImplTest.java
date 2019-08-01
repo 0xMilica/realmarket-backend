@@ -292,19 +292,19 @@ public class CampaignServiceImplTest {
   }
 
   @Test
-  public void GetActiveCampaignDto_Should_Return_Campaign() {
+  public void GetCurrentCampaignDto_Should_Return_Campaign() {
     when(companyService.findByAuthIdOrThrowException(TEST_USER_AUTH.getAuth().getId()))
         .thenReturn(getCompanyMocked());
     Campaign campaign = getCampaignMocked();
-    when(campaignRepository.findByCompanyAndActiveTrue(getCompanyMocked()))
+    when(campaignRepository.findExistingByCompany(getCompanyMocked()))
         .thenReturn(Optional.of(campaign));
 
-    campaignServiceImpl.getActiveCampaignDto();
+    campaignServiceImpl.getCurrentCampaignDto();
 
     verify(companyService, Mockito.times(1))
         .findByAuthIdOrThrowException(TEST_USER_AUTH.getAuth().getId());
     verify(campaignTopicService, times(1)).getTopicStatus(campaign);
-    verify(campaignRepository, Mockito.times(1)).findByCompanyAndActiveTrue(getCompanyMocked());
+    verify(campaignRepository, Mockito.times(1)).findExistingByCompany(getCompanyMocked());
   }
 
   @Test(expected = EntityNotFoundException.class)
