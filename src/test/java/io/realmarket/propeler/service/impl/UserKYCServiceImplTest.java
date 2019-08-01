@@ -42,6 +42,7 @@ public class UserKYCServiceImplTest {
   @Mock private PersonDocumentService personDocumentService;
   @Mock private AuthService authService;
   @Mock private EmailService emailService;
+  @Mock private UserKYCDocumentService userKYCDocumentService;
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
 
   @InjectMocks private UserKYCServiceImpl userKYCService;
@@ -59,8 +60,11 @@ public class UserKYCServiceImplTest {
     when(requestStateService.getRequestState(RequestStateName.PENDING))
         .thenReturn(TEST_PENDING_REQUEST_STATE);
     when(userKYCRepository.save(any(UserKYC.class))).thenReturn(TEST_PENDING_USER_KYC);
+    when(userKYCDocumentService.submitDocuments(
+            TEST_PENDING_USER_KYC, TEST_USER_KYC_REQUEST_DTO.getDocumentsUrl()))
+        .thenReturn(TEST_PENDING_USER_KYC);
 
-    UserKYC actualUserKYC = userKYCService.createUserKYCRequest();
+    UserKYC actualUserKYC = userKYCService.createUserKYCRequest(TEST_USER_KYC_REQUEST_DTO);
 
     assertEquals(RequestStateName.PENDING, actualUserKYC.getRequestState().getName());
     assertEquals(AuthUtils.TEST_AUTH_ENTREPRENEUR.getId(), actualUserKYC.getUser().getId());

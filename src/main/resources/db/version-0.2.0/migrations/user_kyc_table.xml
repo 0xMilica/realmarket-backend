@@ -23,7 +23,8 @@
             constraint user_kyc_fk_on_request_state
             references request_state,
             rejection_reason varchar(10000),
-            upload_date timestamp
+            upload_date timestamp,
+            politically_exposed boolean
             );
         </sql>
     </changeSet>

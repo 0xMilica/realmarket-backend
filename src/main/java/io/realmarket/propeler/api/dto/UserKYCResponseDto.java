@@ -64,6 +64,10 @@ public class UserKYCResponseDto {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private String rejectionReason;
 
+  @ApiModelProperty(value = "User politically exposed")
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private boolean politicallyExposed;
+
   public UserKYCResponseDto(UserKYC userKYC, Person person, Auth user, Company company) {
     this.id = userKYC.getId();
     this.auditorId = (userKYC.getAuditor() != null) ? userKYC.getAuditor().getId() : null;
@@ -85,5 +89,6 @@ public class UserKYCResponseDto {
     }
     this.requestState = userKYC.getRequestState().getName().toString();
     this.rejectionReason = userKYC.getRejectionReason();
+    this.politicallyExposed = userKYC.isPoliticallyExposed();
   }
 }

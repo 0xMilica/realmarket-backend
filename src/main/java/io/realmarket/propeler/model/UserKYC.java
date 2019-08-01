@@ -42,4 +42,6 @@ public class UserKYC {
   private String rejectionReason;
 
   private Instant uploadDate;
+
+  private boolean politicallyExposed;
 }

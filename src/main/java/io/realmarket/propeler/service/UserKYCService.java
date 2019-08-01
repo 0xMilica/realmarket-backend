@@ -1,6 +1,7 @@
 package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.UserKYCAssignmentDto;
+import io.realmarket.propeler.api.dto.UserKYCRequestDto;
 import io.realmarket.propeler.api.dto.UserKYCResponseDto;
 import io.realmarket.propeler.api.dto.UserKYCResponseWithFilesDto;
 import io.realmarket.propeler.model.UserKYC;
@@ -9,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface UserKYCService {
 
-  UserKYC createUserKYCRequest();
+  UserKYC createUserKYCRequest(UserKYCRequestDto userKYCRequestDto);
 
   UserKYC assignUserKYC(UserKYCAssignmentDto userKYCAssignmentDto);
 

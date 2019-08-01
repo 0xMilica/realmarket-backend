@@ -22,8 +22,8 @@ public class KYCControllerImpl implements KYCController {
   @Override
   @PostMapping("/user")
   @PreAuthorize("hasAnyAuthority('ROLE_ENTREPRENEUR', 'ROLE_INVESTOR')")
-  public ResponseEntity<UserKYCDto> requestUserKYC() {
-    return ResponseEntity.ok(new UserKYCDto(userKYCService.createUserKYCRequest()));
+  public ResponseEntity<UserKYCDto> requestUserKYC(@RequestBody UserKYCRequestDto userKYCRequestDto) {
+    return ResponseEntity.ok(new UserKYCDto(userKYCService.createUserKYCRequest(userKYCRequestDto)));
   }
 
   @Override

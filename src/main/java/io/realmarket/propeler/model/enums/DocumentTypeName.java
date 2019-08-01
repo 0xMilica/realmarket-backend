@@ -8,7 +8,8 @@ public enum DocumentTypeName {
   DUE_DILIGENCE("DUE_DILIGENCE"),
   LEGAL("LEGAL"),
   PERSONAL_ID_FRONT("PERSONAL_ID_FRONT"),
-  PERSONAL_ID_BACK("PERSONAL_ID_BACK");
+  PERSONAL_ID_BACK("PERSONAL_ID_BACK"),
+  USER_KYC("USER_KYC");
 
   private final String text;
 

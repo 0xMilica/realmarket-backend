@@ -34,6 +34,9 @@
             person_id bigint
             constraint document_fk_on_person
             references person,
+            user_kyc_id bigint
+            constraint document_fk_on_user_kyc
+            references user_kyc,
             entity_name varchar(255)
             );
         </sql>

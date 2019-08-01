@@ -1,9 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.DocumentResponseDto;
-import io.realmarket.propeler.api.dto.UserKYCAssignmentDto;
-import io.realmarket.propeler.api.dto.UserKYCResponseDto;
-import io.realmarket.propeler.api.dto.UserKYCResponseWithFilesDto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.RequestStateName;
@@ -42,8 +39,8 @@ public class UserKYCServiceImpl implements UserKYCService {
   private final PersonService personService;
   private final RequestStateService requestStateService;
   private final CompanyService companyService;
-  private final PersonDocumentService personDocumentService;
   private final EmailService emailService;
+  private final UserKYCDocumentService userKYCDocumentService;
   private final UserKYCRepository userKYCRepository;
   private final UserRoleRepository userRoleRepository;
   private final BlockchainCommunicationService blockchainCommunicationService;
@@ -55,32 +52,34 @@ public class UserKYCServiceImpl implements UserKYCService {
       PersonService personService,
       RequestStateService requestStateService,
       CompanyService companyService,
-      PersonDocumentService personDocumentService,
       EmailService emailService,
+      UserKYCDocumentService userKYCDocumentService,
       UserKYCRepository userKYCRepository,
       UserRoleRepository userRoleRepository,
       BlockchainCommunicationService blockchainCommunicationService) {
-
     this.personService = personService;
     this.requestStateService = requestStateService;
     this.companyService = companyService;
-    this.personDocumentService = personDocumentService;
     this.emailService = emailService;
+    this.userKYCDocumentService = userKYCDocumentService;
     this.userKYCRepository = userKYCRepository;
     this.userRoleRepository = userRoleRepository;
     this.blockchainCommunicationService = blockchainCommunicationService;
   }
 
   @Override
-  public UserKYC createUserKYCRequest() {
+  public UserKYC createUserKYCRequest(UserKYCRequestDto userKYCRequestDto) {
     UserKYC userKYC =
         UserKYC.builder()
             .user(AuthenticationUtil.getAuthentication().getAuth())
             .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
             .uploadDate(Instant.now())
+            .politicallyExposed(userKYCRequestDto.isPoliticallyExposed())
             .build();
 
     userKYC = userKYCRepository.save(userKYC);
+
+    userKYC = userKYCDocumentService.submitDocuments(userKYC, userKYCRequestDto.getDocumentsUrl());
 
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_KYC_REQUEST_FOR_REVIEW,
@@ -305,13 +304,13 @@ public class UserKYCServiceImpl implements UserKYCService {
     if (user.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR)) {
       company = companyService.findByAuthIdOrThrowException(user.getId());
     }
-    List<PersonDocument> userDocuments = personDocumentService.findByPerson(person);
+    List<UserKYCDocument> userKYCDocuments = userKYCDocumentService.findByUserKYC(userKYC);
     return new UserKYCResponseWithFilesDto(
         userKYC,
         person,
         user,
         company,
-        userDocuments.stream().map(DocumentResponseDto::new).collect(Collectors.toList()));
+        userKYCDocuments.stream().map(DocumentResponseDto::new).collect(Collectors.toList()));
   }
 
   private UserKYCResponseDto convertUserKYCToUserKYCResponseDto(UserKYC userKYC) {
