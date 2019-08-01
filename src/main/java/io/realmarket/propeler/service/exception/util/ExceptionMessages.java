@@ -162,11 +162,14 @@ public interface ExceptionMessages {
   String NO_HASH_ALGORITHM = "SHA_001";
 
   // User KYC with provided id does not exist.
-  String USER_KYC_DOES_NOT_EXIST = "UKY_001";
+  String USER_KYC_DOES_NOT_EXIST = "KYC_001";
 
   // User is not the auditor of user KYC.
-  String NOT_USER_KYC_AUDITOR = "UKY_002";
+  String NOT_USER_KYC_AUDITOR = "KYC_002";
 
   // User KYC is not assigned yet.
-  String USER_KYC_AUDITOR_NOT_ASSIGNED = "UKY_003";
+  String USER_KYC_AUDITOR_NOT_ASSIGNED = "KYC_003";
+
+  // User is not owner of this KYC request.
+  String USER_IS_NOT_OWNER_OF_KYC = "KYC_004";
 }

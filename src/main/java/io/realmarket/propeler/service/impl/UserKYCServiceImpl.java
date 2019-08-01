@@ -132,7 +132,10 @@ public class UserKYCServiceImpl implements UserKYCService {
 
   @Override
   public UserKYCResponseWithFilesDto getUserKYC(Long userKYCId) {
-    return convertUserKYCToUserKYCResponseWithFilesDto(findByIdOrThrowException(userKYCId));
+    UserKYC userKYC = findByIdOrThrowException(userKYCId);
+    throwIfNoAccess(userKYC);
+
+    return convertUserKYCToUserKYCResponseWithFilesDto(userKYC);
   }
 
   @Override
@@ -243,6 +246,23 @@ public class UserKYCServiceImpl implements UserKYCService {
     }
   }
 
+  private void throwIfNoAccess(UserKYC userKYC) {
+    UserRoleName userRoleName =
+        AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
+    if ((userRoleName.equals(UserRoleName.ROLE_ENTREPRENEUR)
+            || userRoleName.equals(UserRoleName.ROLE_INVESTOR))
+        && !isOwner(userKYC)) {
+      throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_KYC);
+    }
+  }
+
+  private boolean isOwner(UserKYC userKYC) {
+    return userKYC
+        .getUser()
+        .getId()
+        .equals(AuthenticationUtil.getAuthentication().getAuth().getId());
+  }
+
   private UserRole getUserRole(String role) {
     return userRoleRepository
         .findByName(getUserRoleNameOrThrow(role))
@@ -282,8 +302,9 @@ public class UserKYCServiceImpl implements UserKYCService {
     Auth user = userKYC.getUser();
     Person person = personService.getPersonFromAuth(user);
     Company company = null;
-    if (user.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR))
+    if (user.getUserRole().getName().equals(UserRoleName.ROLE_ENTREPRENEUR)) {
       company = companyService.findByAuthIdOrThrowException(user.getId());
+    }
     List<PersonDocument> userDocuments = personDocumentService.findByPerson(person);
     return new UserKYCResponseWithFilesDto(
         userKYC,

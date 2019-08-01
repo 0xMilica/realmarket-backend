@@ -36,7 +36,6 @@ public class KYCControllerImpl implements KYCController {
 
   @Override
   @GetMapping("/user/{userKYCId}")
-  @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_AUDITOR')")
   public ResponseEntity<UserKYCResponseWithFilesDto> getUserKYC(@PathVariable Long userKYCId) {
     return ResponseEntity.ok(userKYCService.getUserKYC(userKYCId));
   }

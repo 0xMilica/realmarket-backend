@@ -53,6 +53,14 @@ public class KYCUtils {
           .uploadDate(TEST_DATE)
           .build();
 
+  public static final UserKYC TEST_PENDING_USER_KYC_INVESTOR =
+      UserKYC.builder()
+          .id(TEST_USER_KYC_ID)
+          .user(AuthUtils.TEST_AUTH_INVESTOR)
+          .requestState(TEST_PENDING_REQUEST_STATE)
+          .uploadDate(TEST_DATE)
+          .build();
+
   public static final UserKYCAssignmentDto TEST_USER_KYC_ASSIGNMENT_DTO =
       UserKYCAssignmentDto.builder()
           .auditorId(AuthUtils.TEST_AUTH_ID)

@@ -1,13 +1,12 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.UserKYCResponseWithFilesDto;
+import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.UserKYC;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.UserKYCRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
-import io.realmarket.propeler.service.AuthService;
-import io.realmarket.propeler.service.EmailService;
-import io.realmarket.propeler.service.PersonService;
-import io.realmarket.propeler.service.RequestStateService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.util.AuthUtils;
@@ -24,8 +23,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Optional;
 
 import static io.realmarket.propeler.util.AuditUtils.TEST_PENDING_REQUEST_STATE;
+import static io.realmarket.propeler.util.AuthUtils.TEST_REGISTRATION_DTO;
 import static io.realmarket.propeler.util.KYCUtils.*;
+import static io.realmarket.propeler.util.PersonUtils.TEST_COUNTRY;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -37,6 +39,7 @@ public class UserKYCServiceImplTest {
   @Mock private RequestStateService requestStateService;
   @Mock private UserKYCRepository userKYCRepository;
   @Mock private PersonService personService;
+  @Mock private PersonDocumentService personDocumentService;
   @Mock private AuthService authService;
   @Mock private EmailService emailService;
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
@@ -76,6 +79,29 @@ public class UserKYCServiceImplTest {
     UserKYC actualUserKYC = userKYCService.assignUserKYC(TEST_USER_KYC_ASSIGNMENT_DTO);
 
     assertEquals(AuthUtils.TEST_AUTH_ADMIN_ID, actualUserKYC.getAuditor().getId());
+  }
+
+  @Test
+  public void getUserKYCRequest_Should_Get_UserKYCRequest() {
+    AuthUtils.mockRequestAndContextAdmin();
+    when(userKYCRepository.findById(TEST_USER_KYC_ID))
+        .thenReturn(Optional.of(TEST_PENDING_USER_KYC_INVESTOR));
+    when(personService.getPersonFromAuth(TEST_PENDING_USER_KYC_INVESTOR.getUser()))
+        .thenReturn(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null));
+
+    UserKYCResponseWithFilesDto actualUserKYCResponseWithFilesDto =
+        userKYCService.getUserKYC(TEST_USER_KYC_ID);
+
+    assertNotNull(actualUserKYCResponseWithFilesDto);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void getUserKYCRequest_Should_Throw_ForbiddenOperationException() {
+    AuthUtils.mockRequestAndContextEntrepreneur();
+    when(userKYCRepository.findById(TEST_USER_KYC_ID))
+        .thenReturn(Optional.of(TEST_PENDING_USER_KYC_INVESTOR));
+
+    userKYCService.getUserKYC(TEST_USER_KYC_ID);
   }
 
   @Test
