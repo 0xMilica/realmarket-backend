@@ -14,6 +14,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
+import io.realmarket.propeler.service.blockchain.dto.user.kyc.ChangeStateDto;
 import io.realmarket.propeler.service.blockchain.dto.user.kyc.RequestForReviewDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
@@ -58,7 +59,7 @@ public class UserKYCServiceImpl implements UserKYCService {
       EmailService emailService,
       UserKYCRepository userKYCRepository,
       UserRoleRepository userRoleRepository,
-    BlockchainCommunicationService blockchainCommunicationService) {
+      BlockchainCommunicationService blockchainCommunicationService) {
 
     this.personService = personService;
     this.requestStateService = requestStateService;
@@ -107,6 +108,12 @@ public class UserKYCServiceImpl implements UserKYCService {
     userKYC.setAuditor(auditorAuth);
     userKYC = userKYCRepository.save(userKYC);
     sendKYCUnderReviewMail(userKYC);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.USER_KYC_STATE_CHANGE,
+        new ChangeStateDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
+        AuthenticationUtil.getClientIp());
 
     return userKYC;
   }
@@ -169,6 +176,12 @@ public class UserKYCServiceImpl implements UserKYCService {
     userKYC = userKYCRepository.save(userKYC);
     sendKYCApprovalEmail(userKYC);
 
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.USER_KYC_STATE_CHANGE,
+        new ChangeStateDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
+        AuthenticationUtil.getClientIp());
+
     return userKYC;
   }
 
@@ -197,6 +210,12 @@ public class UserKYCServiceImpl implements UserKYCService {
     userKYC.setRejectionReason(rejectionReason);
     userKYC = userKYCRepository.save(userKYC);
     sendKYCRejectionEmail(userKYC);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.USER_KYC_STATE_CHANGE,
+        new ChangeStateDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
+        AuthenticationUtil.getClientIp());
 
     return userKYC;
   }
