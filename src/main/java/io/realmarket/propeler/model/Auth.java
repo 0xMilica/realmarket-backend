@@ -28,7 +28,7 @@ public class Auth {
   private AuthState state;
 
   @ToString.Exclude
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne
   @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "auth_fk_on_person"))
   private Person person;
 
