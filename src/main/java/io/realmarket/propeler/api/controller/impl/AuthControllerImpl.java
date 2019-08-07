@@ -38,7 +38,7 @@ public class AuthControllerImpl implements AuthController {
   @PostMapping(value = "/register/investor")
   @RequireCaptcha
   public ResponseEntity registerInvestor(@RequestBody @Valid RegistrationDto registrationDto) {
-    authService.registerInvestor(registrationDto);
+    authService.registerIndividualInvestor(registrationDto);
     return new ResponseEntity(CREATED);
   }
 

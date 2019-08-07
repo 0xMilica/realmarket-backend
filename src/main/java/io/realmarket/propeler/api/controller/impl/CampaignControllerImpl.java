@@ -143,7 +143,7 @@ public class CampaignControllerImpl implements CampaignController {
   }
 
   @PostMapping(value = "/{campaignName}/documents/request")
-  @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_COMPANY_INVESTOR')")
   public ResponseEntity<CampaignDocumentsAccessRequestDto> sendCampaignDocumentsAccessRequest(
       @PathVariable String campaignName) {
     return ResponseEntity.ok(
@@ -153,7 +153,7 @@ public class CampaignControllerImpl implements CampaignController {
   }
 
   @GetMapping(value = "/{campaignName}/documents/request")
-  @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_COMPANY_INVESTOR')")
   public ResponseEntity getCampaignDocumentsAccessRequestStatus(@PathVariable String campaignName) {
     return ResponseEntity.ok(
         campaignDocumentsAccessRequestService.getCampaignDocumentsAccessRequestStatus(
@@ -253,32 +253,32 @@ public class CampaignControllerImpl implements CampaignController {
   }
 
   @GetMapping(value = "/{campaignName}/availableEquity")
-  @PreAuthorize("hasAnyAuthority('ROLE_INVESTOR', 'ROLE_ENTREPRENEUR')")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_COMPANY_INVESTOR', 'ROLE_ENTREPRENEUR')")
   public ResponseEntity getAvailableEquity(@PathVariable String campaignName) {
     return ResponseEntity.ok(campaignService.getAvailableEquity(campaignName));
   }
 
   @GetMapping(value = "/{campaignName}/availableInvestment")
-  @PreAuthorize("hasAnyAuthority('ROLE_INVESTOR', 'ROLE_ENTREPRENEUR')")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_COMPANY_INVESTOR', 'ROLE_ENTREPRENEUR')")
   public ResponseEntity getAvailableInvestment(@PathVariable String campaignName) {
     return ResponseEntity.ok(campaignService.getAvailableInvestment(campaignName));
   }
 
   @GetMapping(value = "/{campaignName}/availableInvestableAmount")
-  @PreAuthorize("hasAnyAuthority('ROLE_INVESTOR', 'ROLE_ENTREPRENEUR')")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_COMPANY_INVESTOR', 'ROLE_ENTREPRENEUR')")
   public ResponseEntity getAvailableInvestableAmount(@PathVariable String campaignName) {
     return ResponseEntity.ok(campaignService.getAvailableInvestableAmount(campaignName));
   }
 
   @PostMapping(value = "/{campaignName}/invest")
-  @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_COMPANY_INVESTOR')")
   public ResponseEntity investInCampaign(
       @RequestBody AvailableInvestmentDto amountOfMoney, @PathVariable String campaignName) {
     investmentService.invest(amountOfMoney.getAmount(), campaignName);
     return ResponseEntity.noContent().build();
   }
 
-  @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_COMPANY_INVESTOR')")
   @GetMapping(value = "/mine/portfolio")
   public ResponseEntity<Page<PortfolioCampaignResponseDto>> getPortfolio(
       Pageable pageable,
@@ -324,7 +324,7 @@ public class CampaignControllerImpl implements CampaignController {
   }
 
   @GetMapping(value = "/updates")
-  @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_COMPANY_INVESTOR')")
   public ResponseEntity<Page<CampaignUpdateResponseDto>> getCampaignUpdates(
       Pageable pageable,
       @RequestParam(value = "filter", required = false, defaultValue = "all") String filter) {

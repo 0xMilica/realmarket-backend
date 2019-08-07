@@ -88,7 +88,7 @@ public interface KYCController {
     @ApiImplicitParam(
         name = "role",
         value = "User role of user KYC",
-        allowableValues = "all, investor, entrepreneur",
+        allowableValues = "all, ROLE_INDIVIDUAL_INVESTOR, ROLE_COMPANY_INVESTOR, ROLE_ENTREPRENEUR",
         defaultValue = "investor",
         dataType = "String",
         paramType = "query")

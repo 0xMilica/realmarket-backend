@@ -24,6 +24,8 @@ public class Person {
   private String firstName;
   private String lastName;
   private String nationalIdentificationNumber;
+  private String companyName;
+  private String companyIdentificationNumber;
 
   @JoinColumn(
       name = "countryOfResidence",

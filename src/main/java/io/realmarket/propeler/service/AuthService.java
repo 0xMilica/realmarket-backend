@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface AuthService {
   void registerEntrepreneur(EntrepreneurRegistrationDto entrepreneurRegistrationDto);
 
-  void registerInvestor(RegistrationDto registrationDto);
+  void registerIndividualInvestor(RegistrationDto registrationDto);
 
   RegistrationTokenInfoDto validateToken(String tokenValue);
 

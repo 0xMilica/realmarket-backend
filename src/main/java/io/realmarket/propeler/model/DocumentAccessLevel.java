@@ -36,9 +36,10 @@ public class DocumentAccessLevel {
       case PUBLIC:
         return true;
       case ON_DEMAND:
-        if (userRoleName.equals(UserRoleName.ROLE_INVESTOR)) return true;
-        // Access INVESTOR means that both ROLE_INVESTOR and ROLE_ADMIN can access this document.
-        // because of this break is omitted.
+        if (UserRoleName.getInvestorRoleNames().contains(userRoleName)) return true;
+        // Access INVESTOR means that ROLE_INDIVIDUAL_INVESTOR and ROLE_COMPANY_INVESTOR as well as
+        // ROLE_ADMIN
+        // can access this document. because of this break is omitted.
       case PRIVATE:
         if (userRoleName.equals(UserRoleName.ROLE_ADMIN)) return true;
       default:
@@ -52,15 +53,16 @@ public class DocumentAccessLevel {
       case PUBLIC:
         return true;
       case ON_DEMAND:
-        if (userRoleName.equals(UserRoleName.ROLE_INVESTOR)) {
+        if (UserRoleName.getInvestorRoleNames().contains(userRoleName)) {
           if (hasDocumentsAccess) {
             return true;
           } else {
             return false;
           }
         }
-        // Access INVESTOR means that both ROLE_INVESTOR and ROLE_ADMIN can access this document.
-        // because of this break is omitted.
+        // Access INVESTOR means that ROLE_INDIVIDUAL_INVESTOR and ROLE_COMPANY_INVESTOR as well as
+        // ROLE_ADMIN
+        // can access this document. because of this break is omitted.
       case PRIVATE:
         if (userRoleName.equals(UserRoleName.ROLE_ADMIN)) return true;
       default:

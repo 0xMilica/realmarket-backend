@@ -249,7 +249,7 @@ public class UserKYCServiceImpl implements UserKYCService {
     UserRoleName userRoleName =
         AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
     if ((userRoleName.equals(UserRoleName.ROLE_ENTREPRENEUR)
-            || userRoleName.equals(UserRoleName.ROLE_INVESTOR))
+        || UserRoleName.getInvestorRoleNames().contains(userRoleName))
         && !isOwner(userKYC)) {
       throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_KYC);
     }
@@ -264,15 +264,8 @@ public class UserKYCServiceImpl implements UserKYCService {
 
   private UserRole getUserRole(String role) {
     return userRoleRepository
-        .findByName(getUserRoleNameOrThrow(role))
+        .findByName(UserRoleName.valueOf(role))
         .orElseThrow(EntityNotFoundException::new);
-  }
-
-  private UserRoleName getUserRoleNameOrThrow(String role) {
-    if (role.equals("investor")) {
-      return UserRoleName.ROLE_INVESTOR;
-    } else if (role.equals("entrepreneur")) return UserRoleName.ROLE_ENTREPRENEUR;
-    throw new BadRequestException(INVALID_REQUEST);
   }
 
   private RequestState getUserKYCState(String state) {

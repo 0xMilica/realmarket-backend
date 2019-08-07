@@ -148,8 +148,8 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Transactional
-  public void registerInvestor(RegistrationDto registrationDto) {
-    register(registrationDto, UserRoleName.ROLE_INVESTOR);
+  public void registerIndividualInvestor(RegistrationDto registrationDto) {
+    register(registrationDto, UserRoleName.ROLE_INDIVIDUAL_INVESTOR);
   }
 
   private void register(RegistrationDto registrationDto, UserRoleName userRoleName) {
@@ -389,15 +389,19 @@ public class AuthServiceImpl implements AuthService {
   }
 
   public List<Auth> findAllInvestors() {
-    return authRepository.findAllByUserRoleName(UserRoleName.ROLE_INVESTOR);
+    List<Auth> investors = new ArrayList<>();
+    for (UserRoleName investor : UserRoleName.getInvestorRoleNames()) {
+      investors.addAll(authRepository.findAllByUserRoleName(investor));
+    }
+    return investors;
   }
 
-  public void initializeEmailChange(final Long authId, final EmailDto emaildto) {
+  public void initializeEmailChange(final Long authId, final EmailDto emailDto) {
     checkIfAllowed(authId);
     authorizedActionService.storeAuthorizationAction(
         authId,
         AuthorizedActionTypeName.NEW_EMAIL,
-        emaildto.getEmail(),
+        emailDto.getEmail(),
         EMAIL_CHANGE_ACTION_MILLISECONDS);
   }
 

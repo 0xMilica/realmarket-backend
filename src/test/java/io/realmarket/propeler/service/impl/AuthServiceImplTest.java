@@ -113,7 +113,7 @@ public class AuthServiceImplTest {
         .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY2));
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
-    authServiceImpl.registerInvestor(AuthUtils.TEST_REGISTRATION_DTO);
+    authServiceImpl.registerIndividualInvestor(AuthUtils.TEST_REGISTRATION_DTO);
 
     verify(authRepository, Mockito.times(1)).findByUsername(TEST_USERNAME);
     verify(personService, Mockito.times(1)).save(TEST_REGISTRATION_PERSON);
@@ -149,7 +149,7 @@ public class AuthServiceImplTest {
   public void RegisterInvestor_Should_Throw_UsernameAlreadyExistsException_WhenUsernameExists() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
 
-    authServiceImpl.registerInvestor(AuthUtils.TEST_REGISTRATION_DTO);
+    authServiceImpl.registerIndividualInvestor(AuthUtils.TEST_REGISTRATION_DTO);
   }
 
   @Test(expected = BadCredentialsException.class)

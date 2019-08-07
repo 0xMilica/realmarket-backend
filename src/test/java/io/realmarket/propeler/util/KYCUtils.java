@@ -61,7 +61,7 @@ public class KYCUtils {
   public static final UserKYC TEST_PENDING_USER_KYC_INVESTOR =
       UserKYC.builder()
           .id(TEST_USER_KYC_ID)
-          .user(AuthUtils.TEST_AUTH_INVESTOR)
+          .user(AuthUtils.TEST_AUTH_INDIVIDUAL_INVESTOR)
           .requestState(TEST_PENDING_REQUEST_STATE)
           .uploadDate(TEST_DATE)
           .build();

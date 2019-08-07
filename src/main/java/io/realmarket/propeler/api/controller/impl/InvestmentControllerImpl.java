@@ -21,7 +21,7 @@ public class InvestmentControllerImpl implements InvestmentController {
   }
 
   @DeleteMapping("/{investmentId}")
-  @PreAuthorize("hasAuthority('ROLE_INVESTOR')")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_COMPANY_INVESTOR')")
   public ResponseEntity<Void> revokeInvestment(@PathVariable Long investmentId) {
     investmentService.revokeInvestment(investmentId);
     return ResponseEntity.noContent().build();

@@ -1,8 +1,12 @@
 package io.realmarket.propeler.model.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum UserRoleName {
   ROLE_ADMIN("ROLE_ADMIN"),
-  ROLE_INVESTOR("ROLE_INVESTOR"),
+  ROLE_INDIVIDUAL_INVESTOR("ROLE_INDIVIDUAL_INVESTOR"),
+  ROLE_COMPANY_INVESTOR("ROLE_COMPANY_INVESTOR"),
   ROLE_ENTREPRENEUR("ROLE_ENTREPRENEUR"),
   ROLE_AUDITOR("ROLE_AUDITOR");
 
@@ -10,6 +14,10 @@ public enum UserRoleName {
 
   UserRoleName(final String text) {
     this.text = text;
+  }
+
+  public static List<UserRoleName> getInvestorRoleNames() {
+    return Arrays.asList(ROLE_INDIVIDUAL_INVESTOR, ROLE_COMPANY_INVESTOR);
   }
 
   @Override

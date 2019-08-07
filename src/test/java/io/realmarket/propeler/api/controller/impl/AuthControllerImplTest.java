@@ -26,7 +26,7 @@ public class AuthControllerImplTest {
   public void RegisterInvestor_Should_ReturnCreated() {
     ResponseEntity responseEntity = authControllerImpl.registerInvestor(TEST_REGISTRATION_DTO);
 
-    verify(authService, Mockito.times(1)).registerInvestor(TEST_REGISTRATION_DTO);
+    verify(authService, Mockito.times(1)).registerIndividualInvestor(TEST_REGISTRATION_DTO);
     assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
   }
 

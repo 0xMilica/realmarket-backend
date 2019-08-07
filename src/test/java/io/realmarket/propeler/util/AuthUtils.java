@@ -30,13 +30,14 @@ public class AuthUtils {
   public static final String TEST_PASSWORD = "TEST_PASSWORD";
   public static final String TEST_PASSWORD_NEW = "TEST_PASSWORD_NEW";
   public static final String TEST_ENCODED_SECRET = "enc_secret";
-  public static final UserRoleName TEST_ROLE = UserRoleName.ROLE_INVESTOR;
+  public static final UserRoleName TEST_ROLE = UserRoleName.ROLE_INDIVIDUAL_INVESTOR;
   public static final UserRoleName TEST_ROLE_ENTREPRENEUR = UserRoleName.ROLE_ENTREPRENEUR;
-  public static final UserRoleName TEST_ROLE_INVESTOR = UserRoleName.ROLE_INVESTOR;
+  public static final UserRoleName TEST_ROLE_INDIVIDUAL_INVESTOR = UserRoleName.ROLE_INDIVIDUAL_INVESTOR;
+  public static final UserRoleName TEST_ROLE_COMPANY_INVESTOR = UserRoleName.ROLE_COMPANY_INVESTOR;
   public static final UserRoleName TEST_ROLE_ADMIN = UserRoleName.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
-  public static final Long TEST_AUTH_ADMIN_ID = TEST_AUTH_ID + 2;
+  public static final Long TEST_AUTH_ADMIN_ID = TEST_AUTH_ID + 3;
   public static final MailContentHolder TEST_EMAIL_DTO =
       new MailContentHolder(
           Arrays.asList(TEST_EMAIL),
@@ -63,10 +64,12 @@ public class AuthUtils {
   public static final UserRole TEST_USER_ROLE = UserRole.builder().name(TEST_ROLE).id(100L).build();
   public static final UserRole TEST_ENTREPRENEUR_USER_ROLE =
       UserRole.builder().name(TEST_ROLE_ENTREPRENEUR).id(101L).build();
-  public static final UserRole TEST_INVESTOR_USER_ROLE =
-      UserRole.builder().name(TEST_ROLE_INVESTOR).id(102L).build();
+  public static final UserRole TEST_INDIVIDUAL_INVESTOR_USER_ROLE =
+      UserRole.builder().name(TEST_ROLE_INDIVIDUAL_INVESTOR).id(102L).build();
+  public static final UserRole TEST_COMPANY_INVESTOR_USER_ROLE =
+      UserRole.builder().name(TEST_ROLE_COMPANY_INVESTOR).id(103L).build();
   public static final UserRole TEST_ADMIN_ROLE =
-      UserRole.builder().name(TEST_ROLE_ADMIN).id(103L).build();
+      UserRole.builder().name(TEST_ROLE_ADMIN).id(104L).build();
   public static final AuthState TEST_AUTH_STATE =
       AuthState.builder().name(AuthStateName.ACTIVE).id(100L).build();
 
@@ -120,12 +123,23 @@ public class AuthUtils {
           .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
           .build();
 
-  public static final Auth TEST_AUTH_INVESTOR =
+  public static final Auth TEST_AUTH_INDIVIDUAL_INVESTOR =
       Auth.builder()
           .id(TEST_AUTH_ID + 1)
           .username(TEST_USERNAME)
           .state(TEST_AUTH_STATE)
-          .userRole(TEST_INVESTOR_USER_ROLE)
+          .userRole(TEST_INDIVIDUAL_INVESTOR_USER_ROLE)
+          .password(TEST_PASSWORD)
+          .totpSecret(TEST_ENCODED_SECRET)
+          .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
+          .build();
+
+  public static final Auth TEST_AUTH_COMPANY_INVESTOR =
+      Auth.builder()
+          .id(TEST_AUTH_ID + 2)
+          .username(TEST_USERNAME)
+          .state(TEST_AUTH_STATE)
+          .userRole(TEST_COMPANY_INVESTOR_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
           .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
@@ -133,7 +147,7 @@ public class AuthUtils {
 
   public static final Auth TEST_AUTH_ADMIN =
       Auth.builder()
-          .id(TEST_AUTH_ID + 2)
+          .id(TEST_AUTH_ID + 3)
           .username(TEST_USERNAME)
           .state(TEST_AUTH_STATE)
           .userRole(TEST_ADMIN_ROLE)
