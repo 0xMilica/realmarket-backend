@@ -15,6 +15,6 @@ import java.util.List;
 @Builder
 public class UserKYCRequestDto {
 
-    List<String> documentsUrl;
-    boolean politicallyExposed;
+  List<String> documentsUrl;
+  boolean politicallyExposed;
 }

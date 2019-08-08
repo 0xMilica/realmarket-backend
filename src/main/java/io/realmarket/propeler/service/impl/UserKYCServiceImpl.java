@@ -249,7 +249,7 @@ public class UserKYCServiceImpl implements UserKYCService {
     UserRoleName userRoleName =
         AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
     if ((userRoleName.equals(UserRoleName.ROLE_ENTREPRENEUR)
-        || UserRoleName.getInvestorRoleNames().contains(userRoleName))
+            || UserRoleName.getInvestorRoleNames().contains(userRoleName))
         && !isOwner(userKYC)) {
       throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_KYC);
     }

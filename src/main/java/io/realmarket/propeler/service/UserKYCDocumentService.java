@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserKYCDocumentService {
 
-    UserKYC submitDocuments(UserKYC userKYC, List<String> documentUrls);
+  UserKYC submitDocuments(UserKYC userKYC, List<String> documentUrls);
 
-    List<UserKYCDocument> findByUserKYC(UserKYC userKYC);
+  List<UserKYCDocument> findByUserKYC(UserKYC userKYC);
 }

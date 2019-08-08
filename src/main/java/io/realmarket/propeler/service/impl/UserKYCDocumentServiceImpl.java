@@ -59,12 +59,12 @@ public class UserKYCDocumentServiceImpl implements UserKYCDocumentService {
     return userKYC;
   }
 
-    @Override
-    public List<UserKYCDocument> findByUserKYC(UserKYC userKYC) {
-        return userKYCDocumentRepository.findAllByUserKYC(userKYC);
-    }
+  @Override
+  public List<UserKYCDocument> findByUserKYC(UserKYC userKYC) {
+    return userKYCDocumentRepository.findAllByUserKYC(userKYC);
+  }
 
-    private UserKYCDocument convertDocumentDtoToDocument(String documentUrl, UserKYC userKYC) {
+  private UserKYCDocument convertDocumentDtoToDocument(String documentUrl, UserKYC userKYC) {
     DocumentAccessLevel accessLevel =
         this.documentAccessLevelRepository
             .findByName(DocumentAccessLevelName.PRIVATE)

@@ -32,7 +32,8 @@ public class AuthUtils {
   public static final String TEST_ENCODED_SECRET = "enc_secret";
   public static final UserRoleName TEST_ROLE = UserRoleName.ROLE_INDIVIDUAL_INVESTOR;
   public static final UserRoleName TEST_ROLE_ENTREPRENEUR = UserRoleName.ROLE_ENTREPRENEUR;
-  public static final UserRoleName TEST_ROLE_INDIVIDUAL_INVESTOR = UserRoleName.ROLE_INDIVIDUAL_INVESTOR;
+  public static final UserRoleName TEST_ROLE_INDIVIDUAL_INVESTOR =
+      UserRoleName.ROLE_INDIVIDUAL_INVESTOR;
   public static final UserRoleName TEST_ROLE_COMPANY_INVESTOR = UserRoleName.ROLE_COMPANY_INVESTOR;
   public static final UserRoleName TEST_ROLE_ADMIN = UserRoleName.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";

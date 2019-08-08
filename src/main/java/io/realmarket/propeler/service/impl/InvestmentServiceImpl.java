@@ -110,9 +110,13 @@ public class InvestmentServiceImpl implements InvestmentService {
     Person person = new Person();
     modelMapperBlankString.map(offPlatformInvestmentRequestDto, person);
     if (offPlatformInvestmentRequestDto.getCountryOfResidence() != null)
-      person.setCountryOfResidence(findCountryByCodeOrThrowException(offPlatformInvestmentRequestDto.getCountryOfResidence()));
+      person.setCountryOfResidence(
+          findCountryByCodeOrThrowException(
+              offPlatformInvestmentRequestDto.getCountryOfResidence()));
     if (offPlatformInvestmentRequestDto.getCountryForTaxation() != null)
-      person.setCountryForTaxation(findCountryByCodeOrThrowException(offPlatformInvestmentRequestDto.getCountryForTaxation()));
+      person.setCountryForTaxation(
+          findCountryByCodeOrThrowException(
+              offPlatformInvestmentRequestDto.getCountryForTaxation()));
     personService.save(person);
 
     Investment investment =

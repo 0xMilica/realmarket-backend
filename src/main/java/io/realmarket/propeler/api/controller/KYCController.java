@@ -16,11 +16,11 @@ public interface KYCController {
       httpMethod = "POST",
       produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParam(
-          name = "userKYCRequestDto",
-          value = "DTO with information about user KYC",
-          required = true,
-          dataType = "UserKYCRequestDto",
-          paramType = "body")
+      name = "userKYCRequestDto",
+      value = "DTO with information about user KYC",
+      required = true,
+      dataType = "UserKYCRequestDto",
+      paramType = "body")
   @ApiResponses({
     @ApiResponse(code = 200, message = "User KYC successfully requested."),
     @ApiResponse(code = 400, message = "Invalid request.")

@@ -141,9 +141,10 @@ public class CampaignServiceImpl implements CampaignService {
 
   public CampaignResponseDto getCurrentCampaignDto() {
     final Company company =
-            companyService.findByAuthIdOrThrowException(
-                    AuthenticationUtil.getAuthentication().getAuth().getId());
-    Campaign campaign = campaignRepository
+        companyService.findByAuthIdOrThrowException(
+            AuthenticationUtil.getAuthentication().getAuth().getId());
+    Campaign campaign =
+        campaignRepository
             .findExistingByCompany(company)
             .orElseThrow(() -> new EntityNotFoundException(NO_ACTIVE_CAMPAIGN));
     CampaignResponseDto campaignDto = new CampaignResponseDto(campaign);
