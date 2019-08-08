@@ -28,6 +28,9 @@ public class PersonDto {
   @ApiModelProperty(value = "Person's last name")
   private String lastName;
 
+  @ApiModelProperty(value = "For corporate person, name of company this person represents")
+  private String companyName;
+
   @ApiModelProperty(value = "Person's country of residence")
   private String countryOfResidence;
 
@@ -66,6 +69,7 @@ public class PersonDto {
     this.id = person.getId();
     this.lastName = person.getLastName();
     this.firstName = person.getFirstName();
+    this.companyName = person.getCompanyName();
     this.address = person.getAddress();
     this.city = person.getCity();
     if (!StringUtils.isEmpty(person.getCountryForTaxation())) {

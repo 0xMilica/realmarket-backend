@@ -54,11 +54,7 @@ public class DocumentAccessLevel {
         return true;
       case ON_DEMAND:
         if (UserRoleName.getInvestorRoleNames().contains(userRoleName)) {
-          if (hasDocumentsAccess) {
-            return true;
-          } else {
-            return false;
-          }
+          return hasDocumentsAccess;
         }
         // Access INVESTOR means that ROLE_INDIVIDUAL_INVESTOR and ROLE_COMPANY_INVESTOR as well as
         // ROLE_ADMIN

@@ -5,6 +5,7 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.UserKYC;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -77,7 +78,11 @@ public class UserKYCResponseDto {
     this.userRole = user.getUserRole().getName().toString();
     if (company == null) {
       this.companyId = null;
-      this.companyName = null;
+      if (user.getUserRole().getName().equals(UserRoleName.ROLE_COMPANY_INVESTOR)) {
+        this.companyName = person.getCompanyName();
+      } else {
+        this.companyName = null;
+      }
     } else {
       this.companyName = company.getName();
       this.companyId = company.getId();
