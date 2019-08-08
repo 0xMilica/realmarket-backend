@@ -21,12 +21,13 @@ public class UserKYCDocument extends Document {
 
   @Builder(builderMethodName = "userKYCDocumentBuilder")
   public UserKYCDocument(
+      String title,
       DocumentAccessLevel accessLevel,
       DocumentType type,
       String url,
       Instant uploadDate,
       UserKYC userKYC) {
-    super(null, accessLevel, type, url, uploadDate);
+    super(title, accessLevel, type, url, uploadDate);
     this.userKYC = userKYC;
   }
 }

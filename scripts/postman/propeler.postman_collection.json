@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c18eed29-6409-40e0-a471-72d1e8b78fda",
+		"_postman_id": "12c876eb-b6f3-49af-81ca-b49ad2ccf937",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -4510,8 +4510,22 @@
 								"key": "Authorization",
 								"value": "{{token}}",
 								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"documents\": [\n\t\t{\"name\": \"userKYCFront\", \"type\": \"USER_KYC\", \"url\": \"TB63FMPVP7PGX4WX3HDXRWMBNUS2H7AW.PNG\"},\n\t\t{\"name\": \"userKYCFront\", \"type\": \"USER_KYC\", \"url\": \"TB63FMPVP7PGX4WX3HDXRWMBNUS2H7AW.PNG\"},\n\t\t{\"name\": \"corporateInvestorKYC\", \"type\": \"CORPORATE_INVESTOR_KYC\", \"url\": \"TB63FMPVP7PGX4WX3HDXRWMBNUS2H7AW.PNG\"}],\n\t\"politicallyExposed\": true\n}"
+						},
 						"url": {
 							"raw": "{{server_ip}}/api/kyc/user",
 							"host": [

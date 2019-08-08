@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface UserKYCService {
 
-  UserKYC createUserKYCRequest(UserKYCRequestDto userKYCRequestDto);
+  UserKYC submitUserKYCRequest(UserKYCRequestDto userKYCRequestDto);
 
   UserKYC assignUserKYC(UserKYCAssignmentDto userKYCAssignmentDto);
 

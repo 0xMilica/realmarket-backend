@@ -6,7 +6,7 @@ import java.util.List;
 public enum UserRoleName {
   ROLE_ADMIN("ROLE_ADMIN"),
   ROLE_INDIVIDUAL_INVESTOR("ROLE_INDIVIDUAL_INVESTOR"),
-  ROLE_COMPANY_INVESTOR("ROLE_COMPANY_INVESTOR"),
+  ROLE_CORPORATE_INVESTOR("ROLE_CORPORATE_INVESTOR"),
   ROLE_ENTREPRENEUR("ROLE_ENTREPRENEUR"),
   ROLE_AUDITOR("ROLE_AUDITOR");
 
@@ -17,7 +17,7 @@ public enum UserRoleName {
   }
 
   public static List<UserRoleName> getInvestorRoleNames() {
-    return Arrays.asList(ROLE_INDIVIDUAL_INVESTOR, ROLE_COMPANY_INVESTOR);
+    return Arrays.asList(ROLE_INDIVIDUAL_INVESTOR, ROLE_CORPORATE_INVESTOR);
   }
 
   @Override

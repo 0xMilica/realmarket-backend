@@ -18,6 +18,7 @@ INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq')
 INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'PERSONAL_ID_FRONT');
 INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'PERSONAL_ID_BACK');
 INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'USER_KYC');
+INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'CORPORATE_INVESTOR_KYC');
 
 -- campaign state
 INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'INITIAL');
@@ -103,6 +104,6 @@ INSERT INTO public.temporary_token_type (id, name) VALUES (NEXTVAL('temporary_to
 -- user role
 INSERT INTO public.user_role (id, name) VALUES (NEXTVAL('user_role_seq'), 'ROLE_ADMIN');
 INSERT INTO public.user_role (id, name) VALUES (NEXTVAL('user_role_seq'), 'ROLE_INDIVIDUAL_INVESTOR');
-INSERT INTO public.user_role (id, name) VALUES (NEXTVAL('user_role_seq'), 'ROLE_COMPANY_INVESTOR');
+INSERT INTO public.user_role (id, name) VALUES (NEXTVAL('user_role_seq'), 'ROLE_CORPORATE_INVESTOR');
 INSERT INTO public.user_role (id, name) VALUES (NEXTVAL('user_role_seq'), 'ROLE_ENTREPRENEUR');
 INSERT INTO public.user_role (id, name) VALUES (NEXTVAL('user_role_seq'), 'ROLE_AUDITOR');

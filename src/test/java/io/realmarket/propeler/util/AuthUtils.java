@@ -34,7 +34,8 @@ public class AuthUtils {
   public static final UserRoleName TEST_ROLE_ENTREPRENEUR = UserRoleName.ROLE_ENTREPRENEUR;
   public static final UserRoleName TEST_ROLE_INDIVIDUAL_INVESTOR =
       UserRoleName.ROLE_INDIVIDUAL_INVESTOR;
-  public static final UserRoleName TEST_ROLE_COMPANY_INVESTOR = UserRoleName.ROLE_COMPANY_INVESTOR;
+  public static final UserRoleName TEST_ROLE_CORPORATE_INVESTOR =
+      UserRoleName.ROLE_CORPORATE_INVESTOR;
   public static final UserRoleName TEST_ROLE_ADMIN = UserRoleName.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
@@ -68,7 +69,7 @@ public class AuthUtils {
   public static final UserRole TEST_INDIVIDUAL_INVESTOR_USER_ROLE =
       UserRole.builder().name(TEST_ROLE_INDIVIDUAL_INVESTOR).id(102L).build();
   public static final UserRole TEST_COMPANY_INVESTOR_USER_ROLE =
-      UserRole.builder().name(TEST_ROLE_COMPANY_INVESTOR).id(103L).build();
+      UserRole.builder().name(TEST_ROLE_CORPORATE_INVESTOR).id(103L).build();
   public static final UserRole TEST_ADMIN_ROLE =
       UserRole.builder().name(TEST_ROLE_ADMIN).id(104L).build();
   public static final AuthState TEST_AUTH_STATE =

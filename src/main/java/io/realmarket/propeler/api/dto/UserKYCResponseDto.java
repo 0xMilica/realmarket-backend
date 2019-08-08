@@ -78,7 +78,7 @@ public class UserKYCResponseDto {
     this.userRole = user.getUserRole().getName().toString();
     if (company == null) {
       this.companyId = null;
-      if (user.getUserRole().getName().equals(UserRoleName.ROLE_COMPANY_INVESTOR)) {
+      if (user.getUserRole().getName().equals(UserRoleName.ROLE_CORPORATE_INVESTOR)) {
         this.companyName = person.getCompanyName();
       } else {
         this.companyName = null;

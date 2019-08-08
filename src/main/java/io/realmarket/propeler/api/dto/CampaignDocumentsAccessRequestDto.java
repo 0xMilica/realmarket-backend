@@ -41,7 +41,7 @@ public class CampaignDocumentsAccessRequestDto {
     Auth auth = campaignDocumentsAccessRequest.getAuth();
     this.authId = auth.getId();
     Person person = auth.getPerson();
-    if (auth.getUserRole().getName().equals(UserRoleName.ROLE_COMPANY_INVESTOR)) {
+    if (auth.getUserRole().getName().equals(UserRoleName.ROLE_CORPORATE_INVESTOR)) {
       this.name = person.getCompanyName();
     } else {
       this.name = person.getFirstName() + " " + person.getLastName();

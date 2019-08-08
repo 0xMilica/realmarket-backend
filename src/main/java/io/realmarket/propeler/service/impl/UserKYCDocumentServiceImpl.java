@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.KYCDocumentDto;
 import io.realmarket.propeler.model.DocumentAccessLevel;
 import io.realmarket.propeler.model.DocumentType;
 import io.realmarket.propeler.model.UserKYC;
@@ -45,9 +46,10 @@ public class UserKYCDocumentServiceImpl implements UserKYCDocumentService {
   }
 
   @Override
-  public UserKYC submitDocuments(UserKYC userKYC, List<String> documentUrls) {
-    for (String documentUrl : documentUrls) {
-      UserKYCDocument userKYCDocument = convertDocumentDtoToDocument(documentUrl, userKYC);
+  public UserKYC submitDocuments(UserKYC userKYC, List<KYCDocumentDto> documents) {
+
+    for (KYCDocumentDto document : documents) {
+      UserKYCDocument userKYCDocument = convertDocumentDtoToDocument(document, userKYC);
       userKYCDocument.setUploadDate(Instant.now());
 
       if (!cloudObjectStorageService.doesFileExist(userKYCDocument.getUrl())) {
@@ -56,6 +58,7 @@ public class UserKYCDocumentServiceImpl implements UserKYCDocumentService {
 
       userKYCDocumentRepository.save(userKYCDocument);
     }
+
     return userKYC;
   }
 
@@ -64,20 +67,21 @@ public class UserKYCDocumentServiceImpl implements UserKYCDocumentService {
     return userKYCDocumentRepository.findAllByUserKYC(userKYC);
   }
 
-  private UserKYCDocument convertDocumentDtoToDocument(String documentUrl, UserKYC userKYC) {
+  private UserKYCDocument convertDocumentDtoToDocument(KYCDocumentDto document, UserKYC userKYC) {
     DocumentAccessLevel accessLevel =
         this.documentAccessLevelRepository
             .findByName(DocumentAccessLevelName.PRIVATE)
             .orElseThrow(EntityNotFoundException::new);
     DocumentType type =
         this.documentTypeRepository
-            .findByName(DocumentTypeName.USER_KYC)
+            .findByName(DocumentTypeName.valueOf(document.getType().toUpperCase()))
             .orElseThrow(EntityNotFoundException::new);
 
     return UserKYCDocument.userKYCDocumentBuilder()
+        .title(document.getName())
         .accessLevel(accessLevel)
         .type(type)
-        .url(documentUrl)
+        .url(document.getUrl())
         .userKYC(userKYC)
         .build();
   }

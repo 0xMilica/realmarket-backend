@@ -37,7 +37,8 @@ public class DocumentAccessLevel {
         return true;
       case ON_DEMAND:
         if (UserRoleName.getInvestorRoleNames().contains(userRoleName)) return true;
-        // Access INVESTOR means that ROLE_INDIVIDUAL_INVESTOR and ROLE_COMPANY_INVESTOR as well as
+        // Access INVESTOR means that ROLE_INDIVIDUAL_INVESTOR and ROLE_CORPORATE_INVESTOR as well
+        // as
         // ROLE_ADMIN
         // can access this document. because of this break is omitted.
       case PRIVATE:
@@ -56,7 +57,8 @@ public class DocumentAccessLevel {
         if (UserRoleName.getInvestorRoleNames().contains(userRoleName)) {
           return hasDocumentsAccess;
         }
-        // Access INVESTOR means that ROLE_INDIVIDUAL_INVESTOR and ROLE_COMPANY_INVESTOR as well as
+        // Access INVESTOR means that ROLE_INDIVIDUAL_INVESTOR and ROLE_CORPORATE_INVESTOR as well
+        // as
         // ROLE_ADMIN
         // can access this document. because of this break is omitted.
       case PRIVATE:

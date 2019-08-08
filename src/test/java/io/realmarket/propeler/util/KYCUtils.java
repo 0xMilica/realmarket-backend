@@ -1,9 +1,11 @@
 package io.realmarket.propeler.util;
 
+import io.realmarket.propeler.api.dto.KYCDocumentDto;
 import io.realmarket.propeler.api.dto.UserKYCAssignmentDto;
 import io.realmarket.propeler.api.dto.UserKYCRequestDto;
 import io.realmarket.propeler.model.RequestState;
 import io.realmarket.propeler.model.UserKYC;
+import io.realmarket.propeler.model.enums.DocumentTypeName;
 import io.realmarket.propeler.model.enums.RequestStateName;
 
 import java.time.Instant;
@@ -72,9 +74,23 @@ public class KYCUtils {
           .userKYCId(TEST_USER_KYC_ID)
           .build();
 
+  public static final KYCDocumentDto TEST_USER_KYC_DOCUMENT_DTO =
+      KYCDocumentDto.builder()
+          .name("KYC_DOCUMENT")
+          .type(DocumentTypeName.USER_KYC.toString())
+          .url("TEST_URL")
+          .build();
+
+  public static final KYCDocumentDto TEST_CORPORATE_INVESTOR_KYC_DTO =
+      KYCDocumentDto.builder()
+          .name("KYC_DOCUMENT")
+          .type(DocumentTypeName.CORPORATE_INVESTOR_KYC.toString())
+          .url("TEST_URL")
+          .build();
+
   public static final UserKYCRequestDto TEST_USER_KYC_REQUEST_DTO =
       UserKYCRequestDto.builder()
-          .documentsUrl(TEST_KYC_DOCUMENT_LIST)
+          .documents(Arrays.asList(TEST_USER_KYC_DOCUMENT_DTO, TEST_CORPORATE_INVESTOR_KYC_DTO))
           .politicallyExposed(TEST_POLITICALLY_EXPOSED)
           .build();
 }

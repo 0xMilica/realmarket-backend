@@ -61,10 +61,10 @@ public class UserKYCServiceImplTest {
         .thenReturn(TEST_PENDING_REQUEST_STATE);
     when(userKYCRepository.save(any(UserKYC.class))).thenReturn(TEST_PENDING_USER_KYC);
     when(userKYCDocumentService.submitDocuments(
-            TEST_PENDING_USER_KYC, TEST_USER_KYC_REQUEST_DTO.getDocumentsUrl()))
+            TEST_PENDING_USER_KYC, TEST_USER_KYC_REQUEST_DTO.getDocuments()))
         .thenReturn(TEST_PENDING_USER_KYC);
 
-    UserKYC actualUserKYC = userKYCService.createUserKYCRequest(TEST_USER_KYC_REQUEST_DTO);
+    UserKYC actualUserKYC = userKYCService.submitUserKYCRequest(TEST_USER_KYC_REQUEST_DTO);
 
     assertEquals(RequestStateName.PENDING, actualUserKYC.getRequestState().getName());
     assertEquals(AuthUtils.TEST_AUTH_ENTREPRENEUR.getId(), actualUserKYC.getUser().getId());

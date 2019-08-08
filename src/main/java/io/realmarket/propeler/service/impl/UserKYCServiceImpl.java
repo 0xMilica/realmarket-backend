@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
@@ -68,7 +69,8 @@ public class UserKYCServiceImpl implements UserKYCService {
   }
 
   @Override
-  public UserKYC createUserKYCRequest(UserKYCRequestDto userKYCRequestDto) {
+  @Transactional
+  public UserKYC submitUserKYCRequest(UserKYCRequestDto userKYCRequestDto) {
     UserKYC userKYC =
         UserKYC.builder()
             .user(AuthenticationUtil.getAuthentication().getAuth())
@@ -79,7 +81,7 @@ public class UserKYCServiceImpl implements UserKYCService {
 
     userKYC = userKYCRepository.save(userKYC);
 
-    userKYC = userKYCDocumentService.submitDocuments(userKYC, userKYCRequestDto.getDocumentsUrl());
+    userKYC = userKYCDocumentService.submitDocuments(userKYC, userKYCRequestDto.getDocuments());
 
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_KYC_REQUEST_FOR_REVIEW,
