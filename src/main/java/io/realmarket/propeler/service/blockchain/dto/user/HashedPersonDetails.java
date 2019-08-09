@@ -15,6 +15,8 @@ public class HashedPersonDetails {
   private String city;
   private String address;
   private String phoneNumber;
+  private String companyName;
+  private String companyIdentificationNumber;
 
   public HashedPersonDetails(Person person) {
     this.email = hash(person.getEmail());
@@ -23,6 +25,8 @@ public class HashedPersonDetails {
     this.countryOfResidence = hash(person.getCountryOfResidence().getCode());
     this.city = hash(person.getCity());
     this.address = hash(person.getAddress());
+    this.companyName = hash(person.getCompanyName());
+    this.companyIdentificationNumber = hash(person.getCompanyIdentificationNumber());
 
     if (person.getCountryForTaxation() != null) {
       this.countryOfTaxation = person.getCountryForTaxation().getCode();
