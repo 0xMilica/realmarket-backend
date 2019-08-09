@@ -14,6 +14,8 @@ public interface UserKYCService {
 
   UserKYC assignUserKYC(UserKYCAssignmentDto userKYCAssignmentDto);
 
+  UserKYCResponseWithFilesDto getUserKYC();
+
   UserKYCResponseWithFilesDto getUserKYC(Long userKYCId);
 
   Page<UserKYCResponseDto> getUserKYCs(Pageable pageable, String requestState, String role);

@@ -8,6 +8,7 @@ import io.realmarket.propeler.repository.UserKYCRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.PersonUtils;
@@ -70,6 +71,14 @@ public class UserKYCServiceImplTest {
     assertEquals(AuthUtils.TEST_AUTH_ENTREPRENEUR.getId(), actualUserKYC.getUser().getId());
   }
 
+  @Test(expected = BadRequestException.class)
+  public void createUserKYCRequest_Should_Throw_BadRequestException() {
+    when(userKYCRepository.findFirstByUserOrderByUploadDateDesc(any()))
+        .thenReturn(Optional.of(TEST_PENDING_USER_KYC));
+
+    userKYCService.submitUserKYCRequest(TEST_USER_KYC_REQUEST_DTO);
+  }
+
   @Test
   public void assignUserKYC_Should_Assign() {
     AuthUtils.mockRequestAndContextAdmin();
@@ -83,6 +92,18 @@ public class UserKYCServiceImplTest {
     UserKYC actualUserKYC = userKYCService.assignUserKYC(TEST_USER_KYC_ASSIGNMENT_DTO);
 
     assertEquals(AuthUtils.TEST_AUTH_ADMIN_ID, actualUserKYC.getAuditor().getId());
+  }
+
+  @Test
+  public void getCurrentUserKYCRequest_Should_Get_UserKYCRequest() {
+    when(userKYCRepository.findFirstByUserOrderByUploadDateDesc(any()))
+        .thenReturn(Optional.of(TEST_PENDING_USER_KYC_INVESTOR));
+    when(personService.getPersonFromAuth(TEST_PENDING_USER_KYC_INVESTOR.getUser()))
+        .thenReturn(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null));
+
+    UserKYCResponseWithFilesDto actualUserKYCResponseWithFilesDto = userKYCService.getUserKYC();
+
+    assertNotNull(actualUserKYCResponseWithFilesDto);
   }
 
   @Test

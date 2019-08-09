@@ -172,4 +172,7 @@ public interface ExceptionMessages {
 
   // User is not owner of this KYC request.
   String USER_IS_NOT_OWNER_OF_KYC = "KYC_004";
+
+  // User has already KYC request in pending state.
+  String USER_HAS_PENDING_KYC = "KYC_005";
 }

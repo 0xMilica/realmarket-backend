@@ -71,6 +71,8 @@ public class UserKYCServiceImpl implements UserKYCService {
   @Override
   @Transactional
   public UserKYC submitUserKYCRequest(UserKYCRequestDto userKYCRequestDto) {
+    throwIfHasPendingKYC();
+
     UserKYC userKYC =
         UserKYC.builder()
             .user(AuthenticationUtil.getAuthentication().getAuth())
@@ -129,6 +131,16 @@ public class UserKYCServiceImpl implements UserKYCService {
             Collections.singletonList(userKYC.getUser().getPerson().getEmail()),
             EmailType.KYC_UNDER_REVIEW,
             parameters));
+  }
+
+  @Override
+  public UserKYCResponseWithFilesDto getUserKYC() {
+    UserKYC userKYC = findLastKYCForCurrentUser();
+
+    if (userKYC == null) {
+      return null;
+    }
+    return convertUserKYCToUserKYCResponseWithFilesDto(userKYC);
   }
 
   @Override
@@ -286,10 +298,23 @@ public class UserKYCServiceImpl implements UserKYCService {
     }
   }
 
+  private void throwIfHasPendingKYC() {
+    UserKYC userKYC = findLastKYCForCurrentUser();
+    if (userKYC != null && userKYC.getRequestState().getName().equals(RequestStateName.PENDING)) {
+      throw new BadRequestException(USER_HAS_PENDING_KYC);
+    }
+  }
+
   private UserKYC findByIdOrThrowException(Long id) {
     return userKYCRepository
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException(USER_KYC_DOES_NOT_EXIST));
+  }
+
+  private UserKYC findLastKYCForCurrentUser() {
+    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+
+    return userKYCRepository.findFirstByUserOrderByUploadDateDesc(auth).orElse(null);
   }
 
   private UserKYCResponseWithFilesDto convertUserKYCToUserKYCResponseWithFilesDto(UserKYC userKYC) {

@@ -1,5 +1,6 @@
 package io.realmarket.propeler.repository;
 
+import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.RequestState;
 import io.realmarket.propeler.model.UserKYC;
 import io.realmarket.propeler.model.UserRole;
@@ -9,6 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface UserKYCRepository extends JpaRepository<UserKYC, Long> {
@@ -47,4 +50,6 @@ public interface UserKYCRepository extends JpaRepository<UserKYC, Long> {
       Pageable pageable,
       @Param("requestState") RequestState requestState,
       @Param("userRole") UserRole userRole);
+
+  Optional<UserKYC> findFirstByUserOrderByUploadDateDesc(Auth user);
 }

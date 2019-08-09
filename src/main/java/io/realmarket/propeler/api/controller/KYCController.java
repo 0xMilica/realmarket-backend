@@ -45,6 +45,17 @@ public interface KYCController {
   ResponseEntity<UserKYCDto> assignUserKYC(UserKYCAssignmentDto userKYCAssignmentDto);
 
   @ApiOperation(
+      value = "Get KYC for current user",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "User KYC successfully found."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 404, message = "UKY_001")
+  })
+  ResponseEntity<UserKYCResponseWithFilesDto> getUserKYC();
+
+  @ApiOperation(
       value = "Get user KYC request",
       httpMethod = "GET",
       produces = APPLICATION_JSON_VALUE)
