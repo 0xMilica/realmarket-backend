@@ -43,6 +43,7 @@ public class EmailServiceImpl implements EmailService {
   private static final String REGISTRATION_LINK = "registrationLink";
   private static final String ACTIVATION_LINK = "activationLink";
   private static final String RESET_PASSWORD_LINK = "resetPasswordLink";
+  private static final String DASHBOARD_LINK = "dashboardLink";
 
   private static final String PNG_IMAGE = "image/png";
   private static final String LOGO = "logo";
@@ -163,13 +164,13 @@ public class EmailServiceImpl implements EmailService {
 
       case ACCEPT_CAMPAIGN:
         subject = "Propeler - Campaign accepted";
-        data = getData(mailContentHolder);
+        data = getCampaignAcceptData(mailContentHolder);
         templateName = "acceptCampaignTemplate";
         break;
 
       case REJECT_CAMPAIGN:
         subject = "Propeler - Campaign rejected";
-        data = getData(mailContentHolder);
+        data = getRejectionData(mailContentHolder);
         templateName = "rejectCampaignTemplate";
         break;
 
@@ -279,6 +280,16 @@ public class EmailServiceImpl implements EmailService {
     return data;
   }
 
+  private Map<String, Object> getCampaignAcceptData(MailContentHolder mailContentHolder) {
+    Map<String, Object> data = getBasicEmailData();
+    data.putAll(mailContentHolder.getContent());
+    data.putAll(getSocialMediaData());
+    data.put(CHECK_CIRCLE, CHECK_CIRCLE);
+    data.put(DASHBOARD_LINK, frontendServiceUrlPath);
+
+    return data;
+  }
+
   private Map<String, Object> getFundraisingProposalApprovalData(
       MailContentHolder mailContentHolder) {
     String registrationToken = (String) mailContentHolder.getContent().get(REGISTRATION_TOKEN);
@@ -360,6 +371,7 @@ public class EmailServiceImpl implements EmailService {
 
     switch (emailType) {
       case KYC_APPROVAL:
+      case ACCEPT_CAMPAIGN:
       case FUNDRAISING_PROPOSAL_APPROVAL:
         helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), PNG_IMAGE);
         helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), PNG_IMAGE);
@@ -368,6 +380,7 @@ public class EmailServiceImpl implements EmailService {
         helper.addInline(CHECK_CIRCLE, new ClassPathResource(CHECK_CIRCLE_PATH), PNG_IMAGE);
         break;
       case KYC_REJECTION:
+      case REJECT_CAMPAIGN:
       case FUNDRAISING_PROPOSAL_REJECTION:
         helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), PNG_IMAGE);
         helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), PNG_IMAGE);
@@ -380,6 +393,7 @@ public class EmailServiceImpl implements EmailService {
         helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), PNG_IMAGE);
         helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), PNG_IMAGE);
         helper.addInline(LINKEDIN, new ClassPathResource(LINKEDIN_PATH), PNG_IMAGE);
+        break;
       default:
         break;
     }

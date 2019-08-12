@@ -22,12 +22,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
 
@@ -94,20 +91,16 @@ public class AuditServiceImpl implements AuditService {
   @Override
   public void sendAcceptCampaignEmail(Audit audit) {
     Auth campaignOwner = audit.getCampaign().getCompany().getAuth();
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put(EmailServiceImpl.FIRST_NAME, campaignOwner.getPerson().getFirstName());
+    parameters.put(EmailServiceImpl.LAST_NAME, campaignOwner.getPerson().getLastName());
+    parameters.put(EmailServiceImpl.CAMPAIGN, audit.getCampaign().getName());
 
     emailService.sendMailToUser(
         new MailContentHolder(
             Collections.singletonList(campaignOwner.getPerson().getEmail()),
             EmailType.ACCEPT_CAMPAIGN,
-            Collections.unmodifiableMap(
-                Stream.of(
-                        new AbstractMap.SimpleEntry<>(
-                            EmailServiceImpl.USERNAME, campaignOwner.getUsername()),
-                        new AbstractMap.SimpleEntry<>(
-                            EmailServiceImpl.CAMPAIGN, audit.getCampaign().getName()))
-                    .collect(
-                        Collectors.toMap(
-                            AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)))));
+            parameters));
   }
 
   @Override
@@ -127,7 +120,8 @@ public class AuditServiceImpl implements AuditService {
   public void sendDeclineCampaignEmail(Audit audit) {
     Auth campaignOwner = audit.getCampaign().getCompany().getAuth();
     Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.USERNAME, campaignOwner.getUsername());
+    parameters.put(EmailServiceImpl.FIRST_NAME, campaignOwner.getPerson().getFirstName());
+    parameters.put(EmailServiceImpl.LAST_NAME, campaignOwner.getPerson().getLastName());
     parameters.put(EmailServiceImpl.CAMPAIGN, audit.getCampaign().getName());
     parameters.put(EmailServiceImpl.REJECTION_REASON, audit.getRejectionReason());
 
