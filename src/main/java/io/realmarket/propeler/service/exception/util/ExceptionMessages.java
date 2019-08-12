@@ -175,4 +175,7 @@ public interface ExceptionMessages {
 
   // User has already KYC request in pending state.
   String USER_HAS_PENDING_KYC = "KYC_005";
+
+  // Digital signature does not exist.
+  String DIGITAL_SIGNATURE_DOES_NOT_EXIST = "SIG_001";
 }

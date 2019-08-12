@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3f0d1aaf-947c-4705-89e8-e1573dd476f4",
+		"_postman_id": "2e761bf9-bfa4-4400-8542-2d926b24bf26",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -4769,6 +4769,95 @@
 								"user",
 								"{{userKYC_Id}}",
 								"reject"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "digital_signature",
+			"item": [
+				{
+					"name": "/digitalSignatures",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"publicKey\": \"eyJjcnYiOiJQLTM4NCIsImV4dCI6dHJ1ZSwia2V5X29wcyI6WyJ2ZXJpZnkiXSwia3R5IjoiRUMiLCJ4IjoiaTd6OEU4c3pDRTZYMDZydkxtT0ZsZ2gtcGpGcXlmaV9DaHVVYnR5MjNGLTNTaUhPRmdRVVBoZTFCOW85T0FrcCIsInkiOiIzOFk3bmpiVEZFMlNBekRQdjYtd0VwTkxVUVZlMDVVQnBlaHk3ZG5NSUpGOXMwazRtNVdlaTZ0TFU2bUJWSDV0In0=\",\r\n\"encryptedPrivateKey\": \"spWkI+t/Gbmk64qWXrP1na+eZIhJqDI/N4UbbyKB0h2znlRqwKhawtImNFNubft7HdgTClDVmm5WQnwu1yA02eObgTYb4zrsnDUNLXaXYcXP2EtHMrZpqN+Rn7Uc1y9JtKQNlS3AK+/SJoluy+XiSA3PkC6UuxkiT4TG51wBLO5EwoxpxVWArCfNr2PHznva6TgKdj1BPGcn0jtTTGeKh6kl1QPW9OXMIdHLiZ9t4EFYFFR86wOHLEyqesi7rGmI34nbNOnGqkG8cVcazeEMUsisdyXgsl/VucSgxmv/Id+sYLPXwx+MG5U6TiNUSqx/Nqkjgc5uJCvXKcQdnae+8jJX9NuOxipqwRP8xbf4PEO0ktrzqi9+UdAHsB/G\",\r\n\"initialVector\": \"CZ2D1EwDdabpXFJB\",\r\n\"salt\": \"dGVkV2wQaxRYvbtbdoA8E5wFgSNGTzzFAUNj1BEgyyM=\",\r\n\"passLength\": 6\r\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/digitalSignatures",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"digitalSignatures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/digitalSignatures/mine",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/digitalSignatures/mine",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"digitalSignatures",
+								"mine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/digitalSignatures/{{auth_id}}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/digitalSignatures/{{auth_id}}",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"digitalSignatures",
+								"{{auth_id}}"
 							]
 						}
 					},

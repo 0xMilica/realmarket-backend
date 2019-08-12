@@ -1,0 +1,27 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="milicavulic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence digital_signature_seq;
+            create table if not exists digital_signature
+            (
+            id bigint not null
+            constraint digital_signature_pkey
+            primary key,
+            encrypted_private_key varchar(380),
+            public_key varchar(268),
+            initial_vector varchar(255),
+            salt varchar(255),
+            pass_length int,
+            auth_id bigint
+            constraint digital_signature_fk_on_auth
+            references auth
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@ApiModel(description = " CampaignWithInvestmentsResponseDto")
+@ApiModel(description = "CampaignWithInvestmentsResponseDto")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
