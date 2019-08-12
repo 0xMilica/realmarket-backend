@@ -30,13 +30,6 @@ public class AuthUtils {
   public static final String TEST_PASSWORD = "TEST_PASSWORD";
   public static final String TEST_PASSWORD_NEW = "TEST_PASSWORD_NEW";
   public static final String TEST_ENCODED_SECRET = "enc_secret";
-  public static final UserRoleName TEST_ROLE = UserRoleName.ROLE_INDIVIDUAL_INVESTOR;
-  public static final UserRoleName TEST_ROLE_ENTREPRENEUR = UserRoleName.ROLE_ENTREPRENEUR;
-  public static final UserRoleName TEST_ROLE_INDIVIDUAL_INVESTOR =
-      UserRoleName.ROLE_INDIVIDUAL_INVESTOR;
-  public static final UserRoleName TEST_ROLE_CORPORATE_INVESTOR =
-      UserRoleName.ROLE_CORPORATE_INVESTOR;
-  public static final UserRoleName TEST_ROLE_ADMIN = UserRoleName.ROLE_ADMIN;
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
   public static final Long TEST_AUTH_ADMIN_ID = TEST_AUTH_ID + 3;
@@ -63,15 +56,21 @@ public class AuthUtils {
   private static final String TEST_FIRST_NAME = "TEST_FIRST_NAME";
   private static final String TEST_LAST_NAME = "TEST_LAST_NAME";
 
-  public static final UserRole TEST_USER_ROLE = UserRole.builder().name(TEST_ROLE).id(100L).build();
-  public static final UserRole TEST_ENTREPRENEUR_USER_ROLE =
-      UserRole.builder().name(TEST_ROLE_ENTREPRENEUR).id(101L).build();
+  public static final UserRoleName TEST_ROLE_ADMIN = UserRoleName.ROLE_ADMIN;
+  public static final UserRoleName TEST_ROLE_INDIVIDUAL_INVESTOR =
+      UserRoleName.ROLE_INDIVIDUAL_INVESTOR;
+  public static final UserRoleName TEST_ROLE_CORPORATE_INVESTOR =
+      UserRoleName.ROLE_CORPORATE_INVESTOR;
+  public static final UserRoleName TEST_ROLE_ENTREPRENEUR = UserRoleName.ROLE_ENTREPRENEUR;
+
+  public static final UserRole TEST_ADMIN_ROLE = UserRole.builder().name(TEST_ROLE_ADMIN).build();
   public static final UserRole TEST_INDIVIDUAL_INVESTOR_USER_ROLE =
-      UserRole.builder().name(TEST_ROLE_INDIVIDUAL_INVESTOR).id(102L).build();
-  public static final UserRole TEST_COMPANY_INVESTOR_USER_ROLE =
-      UserRole.builder().name(TEST_ROLE_CORPORATE_INVESTOR).id(103L).build();
-  public static final UserRole TEST_ADMIN_ROLE =
-      UserRole.builder().name(TEST_ROLE_ADMIN).id(104L).build();
+      UserRole.builder().name(TEST_ROLE_INDIVIDUAL_INVESTOR).build();
+  public static final UserRole TEST_CORPORATE_INVESTOR_USER_ROLE =
+      UserRole.builder().name(TEST_ROLE_CORPORATE_INVESTOR).build();
+  public static final UserRole TEST_ENTREPRENEUR_USER_ROLE =
+      UserRole.builder().name(TEST_ROLE_ENTREPRENEUR).build();
+
   public static final AuthState TEST_AUTH_STATE =
       AuthState.builder().name(AuthStateName.ACTIVE).id(100L).build();
 
@@ -79,6 +78,19 @@ public class AuthUtils {
   public static final Country TEST_COUNTRY = Country.builder().code("RS").name("Serbia").build();
   public static final String TEST_COUNTRY_CODE2 = "BS";
   public static final Country TEST_COUNTRY2 = Country.builder().code("BS").name("Bahamas").build();
+
+  public static final EntrepreneurRegistrationDto TEST_ENTREPRENEUR_REGISTRATION_DTO =
+      EntrepreneurRegistrationDto.entrepreneurRegistrationDtoBuilder()
+          .registrationToken(RegistrationTokenUtils.TEST_VALUE)
+          .email(TEST_EMAIL)
+          .username(TEST_USERNAME)
+          .password(TEST_PASSWORD)
+          .firstName(TEST_FIRST_NAME)
+          .lastName(TEST_LAST_NAME)
+          .countryOfResidence(TEST_COUNTRY_CODE)
+          .city("TEST_CITY")
+          .address("TEST_ADDRESS")
+          .build();
 
   public static final RegistrationDto TEST_REGISTRATION_DTO =
       RegistrationDto.builder()
@@ -91,12 +103,27 @@ public class AuthUtils {
           .city("TEST_CITY")
           .address("TEST_ADDRESS")
           .build();
+
+  public static final CorporateInvestorRegistrationDto TEST_CORPORATE_INVESTOR_REGISTRATION_DTO =
+      CorporateInvestorRegistrationDto.corporateInvestorRegistrationDtoBuilder()
+          .email(TEST_EMAIL)
+          .username(TEST_USERNAME)
+          .password(TEST_PASSWORD)
+          .firstName(TEST_FIRST_NAME)
+          .lastName(TEST_LAST_NAME)
+          .countryOfResidence("RS")
+          .city("TEST_CITY")
+          .address("TEST_ADDRESS")
+          .companyName("TEST_COMPANY")
+          .companyIdentificationNumber("1234")
+          .build();
+
   public static final Auth TEST_AUTH =
       Auth.builder()
           .id(TEST_AUTH_ID)
           .username(TEST_USERNAME)
           .state(TEST_AUTH_STATE)
-          .userRole(TEST_USER_ROLE)
+          .userRole(TEST_INDIVIDUAL_INVESTOR_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
           .person(PersonUtils.TEST_PERSON)
@@ -108,7 +135,7 @@ public class AuthUtils {
           .id(TEST_AUTH_ID + 1)
           .username(TEST_USERNAME)
           .state(TEST_AUTH_STATE)
-          .userRole(TEST_USER_ROLE)
+          .userRole(TEST_INDIVIDUAL_INVESTOR_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
           .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
@@ -136,12 +163,12 @@ public class AuthUtils {
           .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
           .build();
 
-  public static final Auth TEST_AUTH_COMPANY_INVESTOR =
+  public static final Auth TEST_AUTH_CORPORATE_INVESTOR =
       Auth.builder()
           .id(TEST_AUTH_ID + 2)
           .username(TEST_USERNAME)
           .state(TEST_AUTH_STATE)
-          .userRole(TEST_COMPANY_INVESTOR_USER_ROLE)
+          .userRole(TEST_CORPORATE_INVESTOR_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(TEST_ENCODED_SECRET)
           .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
@@ -162,7 +189,7 @@ public class AuthUtils {
       Auth.builder()
           .username(TEST_USERNAME)
           .state(TEST_AUTH_STATE)
-          .userRole(TEST_USER_ROLE)
+          .userRole(TEST_INDIVIDUAL_INVESTOR_USER_ROLE)
           .password(TEST_PASSWORD)
           .totpSecret(OTPUtils.TEST_SECRET_1)
           .person(new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null))
@@ -186,19 +213,6 @@ public class AuthUtils {
   static {
     TEST_REQUEST.setCookies(TEST_COOKIE);
   }
-
-  public static final EntrepreneurRegistrationDto TEST_REGISTRATION_ENTREPRENEUR_DTO =
-      EntrepreneurRegistrationDto.entrepreneurRegistrationDtoBuilder()
-          .registrationToken(RegistrationTokenUtils.TEST_VALUE)
-          .email(TEST_EMAIL)
-          .username(TEST_USERNAME)
-          .password(TEST_PASSWORD)
-          .firstName(TEST_FIRST_NAME)
-          .lastName(TEST_LAST_NAME)
-          .countryOfResidence(TEST_COUNTRY_CODE)
-          .city("TEST_CITY")
-          .address("TEST_ADDRESS")
-          .build();
 
   public static void mockSecurityContext(UserAuthentication userAuthentication) {
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);

@@ -9,9 +9,7 @@ import io.realmarket.propeler.model.enums.AuthorizedActionTypeName;
 import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.AuthRepository;
-import io.realmarket.propeler.repository.AuthStateRepository;
 import io.realmarket.propeler.repository.CountryRepository;
-import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
@@ -55,10 +53,10 @@ public class AuthServiceImpl implements AuthService {
   public static final Long PASSWORD_CHANGE_ACTION_MILLISECONDS = 180000L;
 
   private final AuthRepository authRepository;
-  private final UserRoleRepository userRoleRepository;
-  private final AuthStateRepository authStateRepository;
   private final CountryRepository countryRepository;
 
+  private final AuthStateService authStateService;
+  private final UserRoleService userRoleService;
   private final PersonService personService;
   private final EmailService emailService;
   private final TemporaryTokenService temporaryTokenService;
@@ -78,8 +76,8 @@ public class AuthServiceImpl implements AuthService {
       PersonService personService,
       EmailService emailService,
       AuthRepository authRepository,
-      UserRoleRepository userRoleRepository,
-      AuthStateRepository authStateRepository,
+      UserRoleService userRoleService,
+      AuthStateService authStateService,
       CountryRepository countryRepository,
       TemporaryTokenService temporaryTokenService,
       RegistrationTokenService registrationTokenService,
@@ -93,8 +91,8 @@ public class AuthServiceImpl implements AuthService {
     this.personService = personService;
     this.emailService = emailService;
     this.authRepository = authRepository;
-    this.userRoleRepository = userRoleRepository;
-    this.authStateRepository = authStateRepository;
+    this.userRoleService = userRoleService;
+    this.authStateService = authStateService;
     this.countryRepository = countryRepository;
     this.temporaryTokenService = temporaryTokenService;
     this.registrationTokenService = registrationTokenService;
@@ -148,20 +146,15 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Transactional
-  public void registerIndividualInvestor(RegistrationDto registrationDto) {
-    register(registrationDto, UserRoleName.ROLE_INDIVIDUAL_INVESTOR);
-  }
-
-  private void register(RegistrationDto registrationDto, UserRoleName userRoleName) {
+  public void register(RegistrationDto registrationDto, UserRoleName userRoleName) {
     if (authRepository.findByUsername(registrationDto.getUsername()).isPresent()) {
       log.error(
           "User with the provided username '{}' already exists!", registrationDto.getUsername());
       throw new UsernameAlreadyExistsException(ExceptionMessages.USERNAME_ALREADY_EXISTS);
     }
 
-    Optional<UserRole> userRole = userRoleRepository.findByName(userRoleName);
-    Optional<AuthState> authState =
-        this.authStateRepository.findByName(AuthStateName.CONFIRM_REGISTRATION);
+    UserRole userRole = userRoleService.getUserRole(userRoleName);
+    AuthState authState = this.authStateService.getAuthState(AuthStateName.CONFIRM_REGISTRATION);
 
     Country countryOfResidence =
         findCountryByCodeOrThrowException(registrationDto.getCountryOfResidence());
@@ -177,8 +170,8 @@ public class AuthServiceImpl implements AuthService {
         this.authRepository.save(
             Auth.builder()
                 .username(registrationDto.getUsername())
-                .state(authState.get())
-                .userRole(userRole.get())
+                .state(authState)
+                .userRole(userRole)
                 .password(passwordEncoder.encode(registrationDto.getPassword()))
                 .person(person)
                 .blocked(false)
@@ -215,7 +208,7 @@ public class AuthServiceImpl implements AuthService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            Arrays.asList(registrationDto.getEmail()),
+            Collections.singletonList(registrationDto.getEmail()),
             EmailType.REGISTER,
             Collections.unmodifiableMap(
                 Stream.of(
@@ -236,9 +229,9 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public void finalize2faInitialization(Auth auth) {
-    Optional<AuthState> authState = this.authStateRepository.findByName(AuthStateName.ACTIVE);
+    AuthState authState = this.authStateService.getAuthState(AuthStateName.ACTIVE);
 
-    auth.setState(authState.get());
+    auth.setState(authState);
     authRepository.save(auth);
   }
 
@@ -251,11 +244,10 @@ public class AuthServiceImpl implements AuthService {
         temporaryTokenService.findByValueAndNotExpiredOrThrowException(
             confirmRegistrationDto.getToken());
 
-    Optional<AuthState> authState =
-        this.authStateRepository.findByName(AuthStateName.INITIALIZE_2FA);
+    AuthState authState = this.authStateService.getAuthState(AuthStateName.INITIALIZE_2FA);
 
     Auth auth = temporaryToken.getAuth();
-    auth.setState(authState.get());
+    auth.setState(authState);
     authRepository.save(auth);
 
     temporaryTokenService.deleteToken(temporaryToken);
@@ -278,7 +270,7 @@ public class AuthServiceImpl implements AuthService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            Arrays.asList(emailDto.getEmail()),
+            Collections.singletonList(emailDto.getEmail()),
             EmailType.RECOVER_USERNAME,
             Collections.singletonMap(EmailServiceImpl.USERNAME_LIST, usernameList)));
   }
@@ -291,7 +283,7 @@ public class AuthServiceImpl implements AuthService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            Arrays.asList(auth.getPerson().getEmail()),
+            Collections.singletonList(auth.getPerson().getEmail()),
             EmailType.RESET_PASSWORD,
             Collections.singletonMap(EmailServiceImpl.RESET_TOKEN, temporaryToken.getValue())));
   }
@@ -420,7 +412,7 @@ public class AuthServiceImpl implements AuthService {
 
     emailService.sendMailToUser(
         new MailContentHolder(
-            Arrays.asList(newEmail),
+            Collections.singletonList(newEmail),
             EmailType.CHANGE_EMAIL,
             Collections.singletonMap(EmailServiceImpl.EMAIL_CHANGE_TOKEN, token.getValue())));
   }
@@ -517,7 +509,7 @@ public class AuthServiceImpl implements AuthService {
         authRepository.save(auth);
         emailService.sendMailToUser(
             new MailContentHolder(
-                Arrays.asList(auth.getPerson().getEmail()),
+                Collections.singletonList(auth.getPerson().getEmail()),
                 EmailType.ACCOUNT_BLOCKED,
                 Collections.singletonMap(EmailServiceImpl.USERNAME, auth.getUsername())));
       }

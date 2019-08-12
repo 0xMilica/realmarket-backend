@@ -3,6 +3,7 @@ package io.realmarket.propeler.api.controller.impl;
 import io.realmarket.propeler.api.annotations.RequireCaptcha;
 import io.realmarket.propeler.api.controller.AuthController;
 import io.realmarket.propeler.api.dto.*;
+import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +36,19 @@ public class AuthControllerImpl implements AuthController {
     return new ResponseEntity(CREATED);
   }
 
-  @PostMapping(value = "/register/investor")
+  @PostMapping(value = "/register/individualInvestor")
   @RequireCaptcha
-  public ResponseEntity registerInvestor(@RequestBody @Valid RegistrationDto registrationDto) {
-    authService.registerIndividualInvestor(registrationDto);
+  public ResponseEntity registerIndividualInvestor(
+      @RequestBody @Valid RegistrationDto registrationDto) {
+    authService.register(registrationDto, UserRoleName.ROLE_INDIVIDUAL_INVESTOR);
+    return new ResponseEntity(CREATED);
+  }
+
+  @PostMapping(value = "/register/corporateInvestor")
+  @RequireCaptcha
+  public ResponseEntity registerCorporateInvestor(
+      @RequestBody @Valid CorporateInvestorRegistrationDto corporateInvestorRegistrationDto) {
+    authService.register(corporateInvestorRegistrationDto, UserRoleName.ROLE_CORPORATE_INVESTOR);
     return new ResponseEntity(CREATED);
   }
 

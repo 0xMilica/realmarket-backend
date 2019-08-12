@@ -1,5 +1,6 @@
 package io.realmarket.propeler.model;
 
+import io.realmarket.propeler.api.dto.CorporateInvestorRegistrationDto;
 import io.realmarket.propeler.api.dto.RegistrationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,5 +65,10 @@ public class Person {
     this.city = registrationDto.getCity();
     this.address = registrationDto.getAddress();
     this.phoneNumber = registrationDto.getPhoneNumber();
+    if (registrationDto instanceof CorporateInvestorRegistrationDto) {
+      this.companyName = ((CorporateInvestorRegistrationDto) registrationDto).getCompanyName();
+      this.companyIdentificationNumber =
+          ((CorporateInvestorRegistrationDto) registrationDto).getCompanyIdentificationNumber();
+    }
   }
 }

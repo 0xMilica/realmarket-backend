@@ -28,20 +28,34 @@ public interface AuthController {
     @ApiResponse(code = 409, message = "User with the provided username already exists."),
     @ApiResponse(code = 500, message = "A problem with sending email message has occurred.")
   })
-  ResponseEntity registerEntrepreneur(EntrepreneurRegistrationDto registerEntrepreneurDto);
+  ResponseEntity registerEntrepreneur(EntrepreneurRegistrationDto entrepreneurRegistrationDto);
 
   @ApiOperation(
-      value = "Register new investor",
+      value = "Register new individual investor",
       httpMethod = "POST",
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiResponses({
-    @ApiResponse(code = 201, message = "Investor successfully created."),
+    @ApiResponse(code = 201, message = "Individual investor successfully created."),
     @ApiResponse(code = 400, message = "Invalid request."),
     @ApiResponse(code = 409, message = "User with the provided username already exists."),
     @ApiResponse(code = 500, message = "A problem with sending email message has occurred.")
   })
-  ResponseEntity registerInvestor(RegistrationDto registerDto);
+  ResponseEntity registerIndividualInvestor(RegistrationDto registrationDto);
+
+  @ApiOperation(
+      value = "Register new corporate investor",
+      httpMethod = "POST",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 201, message = "Corporate investor successfully created."),
+    @ApiResponse(code = 400, message = "Invalid request."),
+    @ApiResponse(code = 409, message = "User with the provided username already exists."),
+    @ApiResponse(code = 500, message = "A problem with sending email message has occurred.")
+  })
+  ResponseEntity registerCorporateInvestor(
+      CorporateInvestorRegistrationDto corporateInvestorRegistrationDto);
 
   @ApiOperation(
       value = "Validate registration token",

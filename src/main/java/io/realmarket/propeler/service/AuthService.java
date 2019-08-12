@@ -2,6 +2,7 @@ package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Auth;
+import io.realmarket.propeler.model.enums.UserRoleName;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +12,7 @@ import java.util.Optional;
 public interface AuthService {
   void registerEntrepreneur(EntrepreneurRegistrationDto entrepreneurRegistrationDto);
 
-  void registerIndividualInvestor(RegistrationDto registrationDto);
+  void register(RegistrationDto registrationDto, UserRoleName userRoleName);
 
   RegistrationTokenInfoDto validateToken(String tokenValue);
 

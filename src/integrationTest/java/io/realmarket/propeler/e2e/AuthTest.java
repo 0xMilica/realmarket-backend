@@ -73,11 +73,11 @@ public class AuthTest {
   }
 
   @Test
-  public void registerInvestor() {
+  public void registerIndividualInvestor() {
     RegistrationDto registrationDto =
         RegistrationDto.builder()
             .email("test@mail.com")
-            .username("testInvestor")
+            .username("testIndividualInvestor")
             .password("testPassword")
             .firstName("testFirstName")
             .lastName("testLastName")
@@ -93,7 +93,35 @@ public class AuthTest {
         .header("captcha_response", "captcha")
         .body(registrationDto)
         .when()
-        .post("/api/auth/register/investor")
+        .post("/api/auth/register/individualInvestor")
+        .then()
+        .statusCode(201);
+  }
+
+  @Test
+  public void registerCorporateInvestor() {
+    CorporateInvestorRegistrationDto corporateInvestorRegistrationDto =
+        CorporateInvestorRegistrationDto.corporateInvestorRegistrationDtoBuilder()
+            .email("test@mail.com")
+            .username("testCorporateInvestor")
+            .password("testPassword")
+            .firstName("testFirstName")
+            .lastName("testLastName")
+            .countryOfResidence("RS")
+            .countryForTaxation("BB")
+            .city("Novi Sad")
+            .address("Modene 1")
+            .companyName("Realmarket")
+            .companyIdentificationNumber("12345")
+            .build();
+
+    given()
+        .contentType("application/json")
+        .accept("*/*, application/json")
+        .header("captcha_response", "captcha")
+        .body(corporateInvestorRegistrationDto)
+        .when()
+        .post("/api/auth/register/corporateInvestor")
         .then()
         .statusCode(201);
   }
@@ -118,7 +146,7 @@ public class AuthTest {
         .header("captcha_response", "captcha")
         .body(registrationDto)
         .when()
-        .post("/api/auth/register/investor")
+        .post("/api/auth/register/individualInvestor")
         .then()
         .statusCode(400)
         .body("message", equalTo("REG_001"));
@@ -144,7 +172,7 @@ public class AuthTest {
         .header("captcha_response", "captcha")
         .body(registrationDto)
         .when()
-        .post("/api/auth/register/investor")
+        .post("/api/auth/register/individualInvestor")
         .then()
         .statusCode(400)
         .body("message", equalTo("CTR_001"));

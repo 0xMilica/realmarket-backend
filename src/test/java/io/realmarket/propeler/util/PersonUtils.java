@@ -14,8 +14,6 @@ public class PersonUtils {
 
   public static final Country TEST_COUNTRY = Country.builder().code("RS").name("Serbia").build();
   public static final Country TEST_COUNTRY2 = Country.builder().code("BS").name("Bahamas").build();
-  public static final Person TEST_REGISTRATION_PERSON =
-      new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null);
   public static final String TEST_PROFILE_PICTURE_URL = "TEST_PROFILE_PICTURE_URL.EXT";
   public static final Long TEST_PERSON_ID = 1L;
   public static final byte[] TEST_PROFILE_PICTURE = "TEST_PROFILE_PICTURE".getBytes();
@@ -23,6 +21,12 @@ public class PersonUtils {
   public static final String TEST_PERSON_LAST_NAME = "TEST_LAST_NAME";
   public static final String TEST_PERSON_FIRST_NAME = "TEST_FIRST_NAME";
   public static final String TEST_PERSON_PHONE_NUMBER = "TEST_PHONE_NUMBER";
+
+  public static final Person TEST_REGISTRATION_PERSON =
+      new Person(TEST_REGISTRATION_DTO, TEST_COUNTRY, null);
+
+  public static final Person TEST_CORPORATE_INVESTOR_REGISTRATION_PERSON =
+      new Person(TEST_CORPORATE_INVESTOR_REGISTRATION_DTO, TEST_COUNTRY, null);
 
   public static final Person TEST_PERSON =
       Person.builder()

@@ -2871,7 +2871,42 @@
 					"response": []
 				},
 				{
-					"name": "/auth/register/investor",
+					"name": "/auth/register/individualInvestor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "captcha_response",
+								"type": "text",
+								"value": "captcha"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"address\": \"string\",\r\n  \"city\": \"string\",\r\n  \"countryForTaxation\": \"RS\",\r\n  \"countryOfResidence\": \"BB\",\r\n  \"email\": \"ognjen.vlajic@realmarket.io\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"password\": \"testPASS123\",\r\n  \"phoneNumber\": \"02122333\",\r\n  \"username\": \"user2\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/auth/register/individualInvestor",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register",
+								"individualInvestor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/register/corporateInvestor",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -2888,10 +2923,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"address\": \"string\",\r\n  \"city\": \"string\",\r\n  \"countryForTaxation\": \"RS\",\r\n  \"countryOfResidence\": \"BB\",\r\n  \"email\": \"ognjen.vlajic@realmarket.io\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"password\": \"testPASS123\",\r\n  \"phoneNumber\": \"02122333\",\r\n  \"username\": \"user\"\r\n}"
+							"raw": "{\r\n  \"address\": \"string\",\r\n  \"city\": \"string\",\r\n  \"countryForTaxation\": \"RS\",\r\n  \"countryOfResidence\": \"BB\",\r\n  \"email\": \"ognjen.vlajic@realmarket.io\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"password\": \"testPASS123\",\r\n  \"phoneNumber\": \"02122333\",\r\n  \"username\": \"user3\",\r\n  \"companyName\": \"company\",\r\n  \"companyIdentificationNumber\": \"123456890\"\r\n}"
 						},
 						"url": {
-							"raw": "{{server_ip}}/api/auth/register/investor",
+							"raw": "{{server_ip}}/api/auth/register/corporateInvestor",
 							"host": [
 								"{{server_ip}}"
 							],
@@ -2899,7 +2934,7 @@
 								"api",
 								"auth",
 								"register",
-								"investor"
+								"corporateInvestor"
 							]
 						}
 					},

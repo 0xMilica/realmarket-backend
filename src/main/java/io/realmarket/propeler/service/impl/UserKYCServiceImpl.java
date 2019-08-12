@@ -6,7 +6,6 @@ import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.UserKYCRepository;
-import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
@@ -42,8 +41,8 @@ public class UserKYCServiceImpl implements UserKYCService {
   private final CompanyService companyService;
   private final EmailService emailService;
   private final UserKYCDocumentService userKYCDocumentService;
+  private final UserRoleService userRoleService;
   private final UserKYCRepository userKYCRepository;
-  private final UserRoleRepository userRoleRepository;
   private final BlockchainCommunicationService blockchainCommunicationService;
 
   @Value(value = "${app.time.zone}")
@@ -55,16 +54,16 @@ public class UserKYCServiceImpl implements UserKYCService {
       CompanyService companyService,
       EmailService emailService,
       UserKYCDocumentService userKYCDocumentService,
+      UserRoleService userRoleService,
       UserKYCRepository userKYCRepository,
-      UserRoleRepository userRoleRepository,
       BlockchainCommunicationService blockchainCommunicationService) {
     this.personService = personService;
     this.requestStateService = requestStateService;
     this.companyService = companyService;
     this.emailService = emailService;
     this.userKYCDocumentService = userKYCDocumentService;
+    this.userRoleService = userRoleService;
     this.userKYCRepository = userKYCRepository;
-    this.userRoleRepository = userRoleRepository;
     this.blockchainCommunicationService = blockchainCommunicationService;
   }
 
@@ -158,7 +157,7 @@ public class UserKYCServiceImpl implements UserKYCService {
     Page<UserKYC> results;
     if (isStateAll && isRoleAll) results = userKYCRepository.findAll(pageable);
     else if (isStateAll) {
-      UserRole userRole = getUserRole(role);
+      UserRole userRole = userRoleService.getUserRole(role);
       results = userKYCRepository.findAllByUserRole(pageable, userRole);
     } else if (isRoleAll) {
       RequestState state;
@@ -168,7 +167,7 @@ public class UserKYCServiceImpl implements UserKYCService {
         results = userKYCRepository.findAllByRequestStateNotAssigned(pageable, state);
       else results = userKYCRepository.findAllByRequestStateAssigned(pageable, state);
     } else {
-      UserRole userRole = getUserRole(role);
+      UserRole userRole = userRoleService.getUserRole(role);
       RequestState state;
       if (requestState.toLowerCase().startsWith("pending")) state = getUserKYCState("PENDING");
       else state = getUserKYCState(requestState);
@@ -274,12 +273,6 @@ public class UserKYCServiceImpl implements UserKYCService {
         .getUser()
         .getId()
         .equals(AuthenticationUtil.getAuthentication().getAuth().getId());
-  }
-
-  private UserRole getUserRole(String role) {
-    return userRoleRepository
-        .findByName(UserRoleName.valueOf(role))
-        .orElseThrow(EntityNotFoundException::new);
   }
 
   private RequestState getUserKYCState(String state) {

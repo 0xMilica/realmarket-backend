@@ -23,10 +23,31 @@ public class AuthControllerImplTest {
   @InjectMocks private AuthControllerImpl authControllerImpl;
 
   @Test
-  public void RegisterInvestor_Should_ReturnCreated() {
-    ResponseEntity responseEntity = authControllerImpl.registerInvestor(TEST_REGISTRATION_DTO);
+  public void RegisterEntrepreneur_Should_ReturnCreated() {
+    ResponseEntity responseEntity =
+        authControllerImpl.registerEntrepreneur(TEST_ENTREPRENEUR_REGISTRATION_DTO);
 
-    verify(authService, Mockito.times(1)).registerIndividualInvestor(TEST_REGISTRATION_DTO);
+    verify(authService, Mockito.times(1)).registerEntrepreneur(TEST_ENTREPRENEUR_REGISTRATION_DTO);
+    assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+  }
+
+  @Test
+  public void RegisterIndividualInvestor_Should_ReturnCreated() {
+    ResponseEntity responseEntity =
+        authControllerImpl.registerIndividualInvestor(TEST_REGISTRATION_DTO);
+
+    verify(authService, Mockito.times(1))
+        .register(TEST_REGISTRATION_DTO, TEST_ROLE_INDIVIDUAL_INVESTOR);
+    assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+  }
+
+  @Test
+  public void RegisterCorporateInvestor_Should_ReturnCreated() {
+    ResponseEntity responseEntity =
+        authControllerImpl.registerCorporateInvestor(TEST_CORPORATE_INVESTOR_REGISTRATION_DTO);
+
+    verify(authService, Mockito.times(1))
+        .register(TEST_CORPORATE_INVESTOR_REGISTRATION_DTO, TEST_ROLE_CORPORATE_INVESTOR);
     assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
   }
 

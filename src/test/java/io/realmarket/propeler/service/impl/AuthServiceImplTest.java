@@ -10,9 +10,7 @@ import io.realmarket.propeler.model.enums.AuthStateName;
 import io.realmarket.propeler.model.enums.AuthorizedActionTypeName;
 import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
 import io.realmarket.propeler.repository.AuthRepository;
-import io.realmarket.propeler.repository.AuthStateRepository;
 import io.realmarket.propeler.repository.CountryRepository;
-import io.realmarket.propeler.repository.UserRoleRepository;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
@@ -65,8 +63,8 @@ public class AuthServiceImplTest {
   @Mock private AuthorizedActionService authorizedActionService;
   @Mock private LoginIPAttemptsService loginIPAttemptsService;
   @Mock private LoginUsernameAttemptsService loginUsernameAttemptsService;
-  @Mock private UserRoleRepository userRoleRepository;
-  @Mock private AuthStateRepository authStateRepository;
+  @Mock private UserRoleService userRoleService;
+  @Mock private AuthStateService authStateService;
   @Mock private CountryRepository countryRepository;
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
 
@@ -82,8 +80,9 @@ public class AuthServiceImplTest {
     when(registrationTokenService.findByValueAndNotExpiredOrThrowException(
             RegistrationTokenUtils.TEST_VALUE))
         .thenReturn(RegistrationTokenUtils.TEST_REGISTRATION_TOKEN);
-    when(userRoleRepository.findByName(any())).thenReturn(Optional.of(AuthUtils.TEST_USER_ROLE));
-    when(authStateRepository.findByName(any())).thenReturn(Optional.of(TEST_AUTH_STATE));
+    when(userRoleService.getUserRole(TEST_ROLE_ENTREPRENEUR))
+        .thenReturn(TEST_ENTREPRENEUR_USER_ROLE);
+    when(authStateService.getAuthState(any())).thenReturn(TEST_AUTH_STATE);
     when(countryRepository.findByCode(TEST_COUNTRY_CODE))
         .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY));
     when(personService.save(TEST_REGISTRATION_PERSON)).thenReturn(TEST_REGISTRATION_PERSON);
@@ -92,31 +91,59 @@ public class AuthServiceImplTest {
         .thenReturn(TEST_TEMPORARY_TOKEN);
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
-    authServiceImpl.registerEntrepreneur(TEST_REGISTRATION_ENTREPRENEUR_DTO);
+    authServiceImpl.registerEntrepreneur(TEST_ENTREPRENEUR_REGISTRATION_DTO);
 
     verify(authRepository, Mockito.times(1)).save(any(Auth.class));
   }
 
   @Test
-  public void RegisterInvestor_Should_RegisterInvestor() {
+  public void RegisterIndividualInvestor_Should_RegisterIndividualInvestor() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
     when(personService.save(TEST_REGISTRATION_PERSON)).thenReturn(TEST_REGISTRATION_PERSON);
     when(authRepository.save(any(Auth.class))).thenReturn(TEST_AUTH);
     when(temporaryTokenService.createToken(TEST_AUTH, TemporaryTokenTypeName.REGISTRATION_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
     when(passwordEncoder.encode(TEST_PASSWORD)).thenReturn(TEST_PASSWORD);
-    when(userRoleRepository.findByName(any())).thenReturn(Optional.of(AuthUtils.TEST_USER_ROLE));
-    when(authStateRepository.findByName(any())).thenReturn(Optional.of(TEST_AUTH_STATE));
+    when(userRoleService.getUserRole(TEST_ROLE_INDIVIDUAL_INVESTOR))
+        .thenReturn(TEST_INDIVIDUAL_INVESTOR_USER_ROLE);
+    when(authStateService.getAuthState(any())).thenReturn(TEST_AUTH_STATE);
     when(countryRepository.findByCode(TEST_COUNTRY_CODE))
         .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY));
     when(countryRepository.findByCode(TEST_COUNTRY_CODE2))
         .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY2));
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
-    authServiceImpl.registerIndividualInvestor(AuthUtils.TEST_REGISTRATION_DTO);
+    authServiceImpl.register(TEST_REGISTRATION_DTO, TEST_ROLE_INDIVIDUAL_INVESTOR);
 
     verify(authRepository, Mockito.times(1)).findByUsername(TEST_USERNAME);
     verify(personService, Mockito.times(1)).save(TEST_REGISTRATION_PERSON);
+    verify(authRepository, Mockito.times(1)).save(any(Auth.class));
+    verify(passwordEncoder, Mockito.times(1)).encode(TEST_PASSWORD);
+  }
+
+  @Test
+  public void RegisterCorporateInvestor_Should_RegisterCorporateInvestor() {
+    when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.empty());
+    when(personService.save(TEST_CORPORATE_INVESTOR_REGISTRATION_PERSON))
+        .thenReturn(TEST_CORPORATE_INVESTOR_REGISTRATION_PERSON);
+    when(authRepository.save(any(Auth.class))).thenReturn(TEST_AUTH);
+    when(temporaryTokenService.createToken(TEST_AUTH, TemporaryTokenTypeName.REGISTRATION_TOKEN))
+        .thenReturn(TEST_TEMPORARY_TOKEN);
+    when(passwordEncoder.encode(TEST_PASSWORD)).thenReturn(TEST_PASSWORD);
+    when(userRoleService.getUserRole(TEST_ROLE_CORPORATE_INVESTOR))
+        .thenReturn(TEST_CORPORATE_INVESTOR_USER_ROLE);
+    when(authStateService.getAuthState(any())).thenReturn(TEST_AUTH_STATE);
+    when(countryRepository.findByCode(TEST_COUNTRY_CODE))
+        .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY));
+    when(countryRepository.findByCode(TEST_COUNTRY_CODE2))
+        .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY2));
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+
+    authServiceImpl.register(
+        TEST_CORPORATE_INVESTOR_REGISTRATION_DTO, TEST_ROLE_CORPORATE_INVESTOR);
+
+    verify(authRepository, Mockito.times(1)).findByUsername(TEST_USERNAME);
+    verify(personService, Mockito.times(1)).save(TEST_CORPORATE_INVESTOR_REGISTRATION_PERSON);
     verify(authRepository, Mockito.times(1)).save(any(Auth.class));
     verify(passwordEncoder, Mockito.times(1)).encode(TEST_PASSWORD);
   }
@@ -149,7 +176,7 @@ public class AuthServiceImplTest {
   public void RegisterInvestor_Should_Throw_UsernameAlreadyExistsException_WhenUsernameExists() {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
 
-    authServiceImpl.registerIndividualInvestor(AuthUtils.TEST_REGISTRATION_DTO);
+    authServiceImpl.register(TEST_REGISTRATION_DTO, TEST_ROLE_INDIVIDUAL_INVESTOR);
   }
 
   @Test(expected = BadCredentialsException.class)
@@ -253,7 +280,7 @@ public class AuthServiceImplTest {
     final TemporaryToken mock = PowerMockito.spy(TEST_TEMPORARY_TOKEN);
     PowerMockito.when(mock, "getAuth").thenReturn(TEST_AUTH);
     when(authRepository.save(TEST_AUTH)).thenReturn(TEST_AUTH);
-    when(authStateRepository.findByName(any())).thenReturn(Optional.of(TEST_AUTH_STATE));
+    when(authStateService.getAuthState(any())).thenReturn(TEST_AUTH_STATE);
     doNothing().when(temporaryTokenService).deleteToken(TEST_TEMPORARY_TOKEN);
 
     authServiceImpl.confirmRegistration(AuthUtils.TEST_CONFIRM_REGISTRATION_DTO);

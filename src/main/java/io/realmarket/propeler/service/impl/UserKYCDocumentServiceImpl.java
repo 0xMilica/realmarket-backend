@@ -12,10 +12,8 @@ import io.realmarket.propeler.repository.DocumentTypeRepository;
 import io.realmarket.propeler.repository.UserKYCDocumentRepository;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.UserKYCDocumentService;
-import io.realmarket.propeler.service.UserKYCService;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -25,7 +23,6 @@ import java.util.List;
 @Service
 public class UserKYCDocumentServiceImpl implements UserKYCDocumentService {
 
-  private final UserKYCService userKYCService;
   private final CloudObjectStorageService cloudObjectStorageService;
   private final DocumentAccessLevelRepository documentAccessLevelRepository;
   private final DocumentTypeRepository documentTypeRepository;
@@ -33,12 +30,10 @@ public class UserKYCDocumentServiceImpl implements UserKYCDocumentService {
 
   @Autowired
   public UserKYCDocumentServiceImpl(
-      @Lazy UserKYCService userKYCService,
       CloudObjectStorageService cloudObjectStorageService,
       DocumentAccessLevelRepository documentAccessLevelRepository,
       DocumentTypeRepository documentTypeRepository,
       UserKYCDocumentRepository userKYCDocumentRepository) {
-    this.userKYCService = userKYCService;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.documentAccessLevelRepository = documentAccessLevelRepository;
     this.documentTypeRepository = documentTypeRepository;
