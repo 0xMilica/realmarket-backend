@@ -23,6 +23,7 @@ public class Company {
   private String name;
   private String taxIdentifier;
   private String bankAccount;
+  private String companyIdentificationNumber;
   private String county;
   private String city;
   private String address;

@@ -32,6 +32,10 @@ public class CompanyDto {
   @NotBlank
   private String taxIdentifier;
 
+  @ApiModelProperty(value = "Company's identification number")
+  @NotBlank
+  private String companyIdentificationNumber;
+
   @ApiModelProperty(value = "Company's bank account")
   @NotBlank
   private String bankAccount;
@@ -79,6 +83,7 @@ public class CompanyDto {
     this.id = company.getId();
     this.name = company.getName();
     this.taxIdentifier = company.getTaxIdentifier();
+    this.companyIdentificationNumber = company.getCompanyIdentificationNumber();
     this.bankAccount = company.getBankAccount();
     this.county = company.getCounty();
     this.city = company.getCity();
@@ -98,6 +103,7 @@ public class CompanyDto {
     return Company.builder()
         .name(this.getName())
         .taxIdentifier(this.getTaxIdentifier())
+        .companyIdentificationNumber(this.companyIdentificationNumber)
         .bankAccount(this.getBankAccount())
         .county(this.getCounty())
         .city(this.getCity())

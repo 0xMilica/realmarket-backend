@@ -21,6 +21,7 @@
             logo_url varchar(255),
             name varchar(255),
             tax_identifier varchar(255),
+            company_identification_number varchar(255),
             website varchar(255),
             linkedin_url varchar(255),
             twitter_url varchar(255),

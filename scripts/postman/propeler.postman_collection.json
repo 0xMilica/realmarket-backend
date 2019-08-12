@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "8bd9c1c2-54e5-4119-9e3c-cdd934b5c436",
+		"_postman_id": "3f0d1aaf-947c-4705-89e8-e1573dd476f4",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -201,7 +201,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"address\": \"string\",\r\n  \"bankAccount\": \"string\",\r\n  \"city\": \"string\",\r\n  \"companyCategory\": {\r\n    \"id\": 1\r\n  },\r\n  \"county\": \"string\",\r\n  \"featuredImageUrl\": \"string\",\r\n  \"logoUrl\": \"string\",\r\n  \"name\": \"string2\",\r\n  \"taxIdentifier\": \"string\",\r\n  \"website\": \"string\"\r\n}"
+							"raw": "{\r\n  \"address\": \"string\",\r\n  \"bankAccount\": \"string\",\r\n  \"city\": \"string\",\r\n  \"companyCategory\": {\r\n    \"id\": 1\r\n  },\r\n  \"county\": \"string\",\r\n  \"featuredImageUrl\": \"string\",\r\n  \"logoUrl\": \"string\",\r\n  \"name\": \"string2\",\r\n  \"taxIdentifier\": \"string\",\r\n  \"companyIdentificationNumber\": \"string\",\r\n  \"website\": \"string\"\r\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/companies",
