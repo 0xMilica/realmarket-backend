@@ -4438,7 +4438,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{server_ip}}/api/fundraisingProposals?page=0&size=2&filter=all",
+							"raw": "{{server_ip}}/api/fundraisingProposals?page=0&size=2&filter=pending",
 							"host": [
 								"{{server_ip}}"
 							],
@@ -4457,7 +4457,7 @@
 								},
 								{
 									"key": "filter",
-									"value": "all"
+									"value": "pending"
 								}
 							]
 						}
@@ -4623,7 +4623,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{server_ip}}/api/kyc/users?page=0&size=3&state=pendingAssigned&role=entrepreneur",
+							"raw": "{{server_ip}}/api/kyc/users?page=0&size=3&state=pendingAssigned&role=role_entrepreneur",
 							"host": [
 								"{{server_ip}}"
 							],
@@ -4647,7 +4647,7 @@
 								},
 								{
 									"key": "role",
-									"value": "entrepreneur"
+									"value": "role_entrepreneur"
 								}
 							]
 						}

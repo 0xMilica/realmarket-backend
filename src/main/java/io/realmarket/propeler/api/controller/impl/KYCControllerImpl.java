@@ -56,8 +56,8 @@ public class KYCControllerImpl implements KYCController {
   @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_AUDITOR')")
   public ResponseEntity<Page<UserKYCResponseDto>> getUserKYCs(
       Pageable pageable,
-      @RequestParam(value = "state", required = false, defaultValue = "all") String state,
-      @RequestParam(value = "role", required = false, defaultValue = "investor") String role) {
+      @RequestParam(value = "state", required = false) String state,
+      @RequestParam(value = "role", required = false) String role) {
     return ResponseEntity.ok(userKYCService.getUserKYCs(pageable, state, role));
   }
 

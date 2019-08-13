@@ -71,8 +71,7 @@ public interface FundraisingProposalController {
     @ApiImplicitParam(
         name = "filter",
         value = "State of fundraising proposal to be returned",
-        allowableValues = "all, pending, approved, declined",
-        defaultValue = "active",
+        allowableValues = "pending, approved, declined",
         dataType = "String",
         paramType = "query")
   })

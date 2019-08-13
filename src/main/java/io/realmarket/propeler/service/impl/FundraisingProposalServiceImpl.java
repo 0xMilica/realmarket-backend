@@ -69,9 +69,12 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
   @Override
   public Page<FundraisingProposal> getFundraisingProposalsByState(
       Pageable pageable, String filter) {
-    if (filter.equals("all")) return fundraisingProposalRepository.findAll(pageable);
+    if (filter == null) {
+      return fundraisingProposalRepository.findAll(pageable);
+    }
     return fundraisingProposalRepository.findByRequestState(
-        pageable, requestStateService.getRequestState(filter.toUpperCase()));
+        pageable,
+        requestStateService.getRequestState(RequestStateName.valueOf(filter.toUpperCase())));
   }
 
   @Override

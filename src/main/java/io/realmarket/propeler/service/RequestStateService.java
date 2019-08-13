@@ -5,7 +5,5 @@ import io.realmarket.propeler.model.enums.RequestStateName;
 
 public interface RequestStateService {
 
-  RequestState getRequestState(String name);
-
   RequestState getRequestState(RequestStateName requestStateName);
 }

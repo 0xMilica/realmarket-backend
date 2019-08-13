@@ -152,34 +152,12 @@ public class UserKYCServiceImpl implements UserKYCService {
 
   @Override
   public Page<UserKYCResponseDto> getUserKYCs(Pageable pageable, String requestState, String role) {
-    boolean isRoleAll = role.equals("all");
-    boolean isStateAll = requestState.equals("all");
-    Page<UserKYC> results;
-    if (isStateAll && isRoleAll) results = userKYCRepository.findAll(pageable);
-    else if (isStateAll) {
-      UserRole userRole = userRoleService.getUserRole(role);
-      results = userKYCRepository.findAllByUserRole(pageable, userRole);
-    } else if (isRoleAll) {
-      RequestState state;
-      if (requestState.toLowerCase().startsWith("pending")) state = getUserKYCState("PENDING");
-      else state = getUserKYCState(requestState);
-      if (requestState.toLowerCase().endsWith("notassigned"))
-        results = userKYCRepository.findAllByRequestStateNotAssigned(pageable, state);
-      else results = userKYCRepository.findAllByRequestStateAssigned(pageable, state);
-    } else {
-      UserRole userRole = userRoleService.getUserRole(role);
-      RequestState state;
-      if (requestState.toLowerCase().startsWith("pending")) state = getUserKYCState("PENDING");
-      else state = getUserKYCState(requestState);
-      if (requestState.toLowerCase().endsWith("notassigned"))
-        results =
-            userKYCRepository.findAllByRequestStateAndByUserRoleNotAssigned(
-                pageable, state, userRole);
-      else
-        results =
-            userKYCRepository.findAllByRequestStateAndByUserRoleAssigned(pageable, state, userRole);
-    }
-    return results.map(this::convertUserKYCToUserKYCResponseDto);
+    UserRole userRole = (role == null) ? null : userRoleService.getUserRole(role.toUpperCase());
+    RequestState state = getRequestStateFromFilterParameter(requestState);
+    Boolean isAssigned = getAssignedFlag(requestState);
+    return userKYCRepository
+        .findAllByRequestStateAndByUserRoleAndByAssigned(pageable, state, userRole, isAssigned)
+        .map(this::convertUserKYCToUserKYCResponseDto);
   }
 
   @Override
@@ -198,6 +176,27 @@ public class UserKYCServiceImpl implements UserKYCService {
         AuthenticationUtil.getClientIp());
 
     return userKYC;
+  }
+
+  private Boolean getAssignedFlag(String requestState) {
+    if (requestState == null) {
+      return null;
+    } else {
+      return !requestState.toUpperCase().endsWith("NOTASSIGNED");
+    }
+  }
+
+  private RequestState getRequestStateFromFilterParameter(String requestState) {
+    if (requestState == null) {
+      return null;
+    } else {
+      requestState = requestState.toUpperCase();
+      if (requestState.startsWith(RequestStateName.PENDING.toString())) {
+        return requestStateService.getRequestState(RequestStateName.PENDING);
+      } else {
+        return requestStateService.getRequestState(RequestStateName.valueOf(requestState));
+      }
+    }
   }
 
   private void sendKYCApprovalEmail(UserKYC userKYC) {
@@ -273,10 +272,6 @@ public class UserKYCServiceImpl implements UserKYCService {
         .getUser()
         .getId()
         .equals(AuthenticationUtil.getAuthentication().getAuth().getId());
-  }
-
-  private RequestState getUserKYCState(String state) {
-    return requestStateService.getRequestState(state);
   }
 
   private void throwIfNotAuditor(UserKYC userKYC) {

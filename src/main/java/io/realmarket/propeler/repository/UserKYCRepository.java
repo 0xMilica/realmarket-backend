@@ -20,36 +20,16 @@ public interface UserKYCRepository extends JpaRepository<UserKYC, Long> {
 
   @Query(
       value =
-          "select uk from UserKYC uk where uk.requestState = :requestState and uk.auditor <> null")
-  Page<UserKYC> findAllByRequestStateAssigned(
-      Pageable pageable, @Param("requestState") RequestState requestState);
-
-  @Query(
-      value =
-          "select uk from UserKYC uk where uk.requestState = :requestState and uk.auditor = null")
-  Page<UserKYC> findAllByRequestStateNotAssigned(
-      Pageable pageable, @Param("requestState") RequestState requestState);
-
-  @Query(
-      value =
-          "select uk from UserKYC uk left join Auth a on uk.user = a where a.userRole = :userRole")
-  Page<UserKYC> findAllByUserRole(Pageable pageable, @Param("userRole") UserRole userRole);
-
-  @Query(
-      value =
-          "select uk from UserKYC uk left outer join Auth a on uk.user = a where uk.requestState = :requestState and a.userRole = :userRole and uk.requestState = :requestState and uk.auditor <> null")
-  Page<UserKYC> findAllByRequestStateAndByUserRoleAssigned(
+          "select uk " +
+              "from UserKYC uk left outer join Auth a on uk.user = a " +
+              "where (:requestState is null or uk.requestState = :requestState) " +
+              "and (:userRole is null or a.userRole = :userRole) " +
+              "and (:isAssigned is null or ((:isAssigned = true and uk.auditor is not null)" +
+              "or (:isAssigned = false and uk.auditor is null)))")
+  Page<UserKYC> findAllByRequestStateAndByUserRoleAndByAssigned(
       Pageable pageable,
       @Param("requestState") RequestState requestState,
-      @Param("userRole") UserRole userRole);
-
-  @Query(
-      value =
-          "select uk from UserKYC uk left join Auth a  on uk.user = a where uk.requestState = :requestState and a.userRole = :userRole and uk.requestState = :requestState and uk.auditor = null")
-  Page<UserKYC> findAllByRequestStateAndByUserRoleNotAssigned(
-      Pageable pageable,
-      @Param("requestState") RequestState requestState,
-      @Param("userRole") UserRole userRole);
-
+      @Param("userRole") UserRole userRole,
+      @Param("isAssigned") Boolean isAssigned);
   Optional<UserKYC> findFirstByUserOrderByUploadDateDesc(Auth user);
 }

@@ -92,16 +92,13 @@ public interface KYCController {
     @ApiImplicitParam(
         name = "state",
         value = "State of user KYC",
-        allowableValues = "all, pendingAssigned, pendingNotAssigned, approved, declined",
-        defaultValue = "all",
+        allowableValues = "pendingAssigned, pendingNotAssigned, approved, declined",
         dataType = "String",
         paramType = "query"),
     @ApiImplicitParam(
         name = "role",
         value = "User role of user KYC",
-        allowableValues =
-            "all, ROLE_INDIVIDUAL_INVESTOR, ROLE_CORPORATE_INVESTOR, ROLE_ENTREPRENEUR",
-        defaultValue = "investor",
+        allowableValues = "role_individual_investor, role_corporate_investor, role_entrepreneur",
         dataType = "String",
         paramType = "query")
   })
