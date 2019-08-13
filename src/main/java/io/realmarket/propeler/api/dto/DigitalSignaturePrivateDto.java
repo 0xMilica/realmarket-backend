@@ -1,6 +1,5 @@
 package io.realmarket.propeler.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.realmarket.propeler.model.DigitalSignature;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -19,10 +18,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @Builder
 public class DigitalSignaturePrivateDto {
-
-  @ApiModelProperty(value = "Digital signature's identifier")
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Long id;
 
   @ApiModelProperty(value = "Encrypted private key")
   @NotBlank
@@ -44,17 +39,11 @@ public class DigitalSignaturePrivateDto {
   @NotBlank
   private Integer passLength;
 
-  @ApiModelProperty(value = "Digital signature's owner identifier")
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Long ownerId;
-
   public DigitalSignaturePrivateDto(DigitalSignature digitalSignature) {
-    this.id = digitalSignature.getId();
     this.encryptedPrivateKey = digitalSignature.getEncryptedPrivateKey();
     this.publicKey = digitalSignature.getPublicKey();
     this.initialVector = digitalSignature.getInitialVector();
     this.salt = digitalSignature.getSalt();
     this.passLength = digitalSignature.getPassLength();
-    this.ownerId = digitalSignature.getAuth().getId();
   }
 }
