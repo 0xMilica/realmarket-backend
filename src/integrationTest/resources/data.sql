@@ -323,6 +323,7 @@ INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'OWNER_APPROVED');
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'OWNER_REJECTED');
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'PAID');
+INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'EXPIRED');
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'REVOKED');
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'AUDIT_APPROVED');
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'AUDIT_REJECTED');

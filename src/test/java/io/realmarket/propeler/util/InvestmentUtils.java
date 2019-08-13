@@ -41,6 +41,14 @@ public class InvestmentUtils {
           .investedAmount(BigDecimal.valueOf(100))
           .build();
 
+  public static final Investment TEST_INVESTMENT_OWNER_APPROVED =
+      Investment.builder()
+          .campaign(CampaignUtils.TEST_ACTIVE_CAMPAIGN)
+          .investmentState(TEST_INVESTMENT_OWNER_APPROVED_STATE)
+          .person(PersonUtils.TEST_PERSON)
+          .investedAmount(BigDecimal.valueOf(100))
+          .build();
+
   public static final Investment TEST_INVESTMENT_PAID_NOT_REVOCABLE =
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)

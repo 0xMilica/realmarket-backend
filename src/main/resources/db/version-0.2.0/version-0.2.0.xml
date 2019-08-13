@@ -15,6 +15,7 @@
     <include file="migrations/company_edit_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/investment_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/payment_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/shareholder_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_team_member_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_topic_type_table.xml" relativeToChangelogFile="true"/>

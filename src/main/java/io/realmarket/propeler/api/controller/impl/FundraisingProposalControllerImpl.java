@@ -54,8 +54,7 @@ public class FundraisingProposalControllerImpl implements FundraisingProposalCon
   @GetMapping
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public ResponseEntity<Page<FundraisingProposalResponseDto>> getFundraisingProposals(
-      Pageable pageable,
-      @RequestParam(value = "filter", required = false) String filter) {
+      Pageable pageable, @RequestParam(value = "filter", required = false) String filter) {
     return ResponseEntity.ok(
         fundraisingProposalService
             .getFundraisingProposalsByState(pageable, filter)

@@ -4,6 +4,7 @@ import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.enums.CampaignStateName;
+import io.realmarket.propeler.model.enums.InvestmentStateName;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,4 +29,9 @@ public interface InvestmentRepository extends JpaRepository<Investment, Long> {
       "SELECT c FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = :state AND c.id IN (SELECT i.campaign FROM Investment i WHERE person = :person) ORDER BY modified_date DESC")
   Page<Campaign> findInvestedCampaignByState(
       @Param("person") Person person, @Param("state") CampaignStateName state, Pageable pageable);
+
+  @Query(
+      "SELECT i FROM Investment i LEFT JOIN InvestmentState ist ON i.investmentState.id = ist.id WHERE (:state = null AND ist.name IN ('OWNER_APPROVED', 'PAID', 'EXPIRED')) OR ist.name = :state")
+  Page<Investment> findAllPaymentInvestment(
+      @Param("state") InvestmentStateName state, Pageable pageable);
 }

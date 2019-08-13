@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2e761bf9-bfa4-4400-8542-2d926b24bf26",
+		"_postman_id": "62e77d90-00ec-48d4-9edc-323dfc224fab",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2681,12 +2681,6 @@
 								"method": "POST",
 								"header": [
 									{
-										"key": "token",
-										"type": "text",
-										"value": "",
-										"disabled": true
-									},
-									{
 										"key": "Content-Type",
 										"name": "Content-Type",
 										"type": "text",
@@ -2695,7 +2689,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"code\": \"014385\",\n  \"wildcard\": \"545\",\n  \"token\": \"N3YRMF46UZCYCVSRZFP3GOM3DFGRCTUYQVPA\",\n  \"rememberMe\":true\n}"
+									"raw": "{\n  \"code\": \"257750\",\n  \"wildcard\": \"545\",\n  \"token\": \"QO3BFDKWQ4LYJQLGBDNNTNKEOPSEGRM7U5MQ\",\n  \"rememberMe\":true\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/auth/2fa",
@@ -4858,6 +4852,54 @@
 								"api",
 								"digitalSignatures",
 								"{{auth_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "payments",
+			"item": [
+				{
+					"name": "/payments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/payments?size=10&page=0&filter=paid",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"payments"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "filter",
+									"value": "paid"
+								}
 							]
 						}
 					},

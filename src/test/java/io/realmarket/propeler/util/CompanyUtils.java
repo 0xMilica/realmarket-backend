@@ -11,7 +11,8 @@ public class CompanyUtils {
   public static final Long TEST_ID = 1L;
   public static final String TEST_NAME = "TEST_NAME";
   public static final String TEST_TAX_IDENTIFIER = "TEST_TAX_IDENTIFIER";
-  public static final String TEST_COMPANY_IDENTIFICATION_NUMBER = "TEST_COMPANY_IDENTIFICATION_NUMBER";
+  public static final String TEST_COMPANY_IDENTIFICATION_NUMBER =
+      "TEST_COMPANY_IDENTIFICATION_NUMBER";
   public static final String TEST_BANK_ACCOUNT = "TEST_BANK_ACCOUNT";
   public static final String TEST_COUNTY = "TEST_COUNTY";
   public static final String TEST_CITY = "TEST_CITY";

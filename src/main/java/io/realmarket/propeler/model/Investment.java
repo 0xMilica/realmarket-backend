@@ -43,4 +43,6 @@ public class Investment {
 
   @Column(name = "payment_date")
   private Instant paymentDate;
+
+  private String invoiceUrl;
 }
