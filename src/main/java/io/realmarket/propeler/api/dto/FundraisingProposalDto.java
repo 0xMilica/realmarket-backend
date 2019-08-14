@@ -28,6 +28,14 @@ public class FundraisingProposalDto {
   @NotBlank
   private String companyName;
 
+  @ApiModelProperty(value = "Company's tax identifier")
+  @NotBlank
+  private String taxIdentifier;
+
+  @ApiModelProperty(value = "Company's ID number")
+  @NotBlank
+  private String companyIdentificationNumber;
+
   @ApiModelProperty(value = "Company's website")
   private String website;
 

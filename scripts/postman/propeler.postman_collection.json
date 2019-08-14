@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "62e77d90-00ec-48d4-9edc-323dfc224fab",
+		"_postman_id": "f5e69565-cd5f-4c11-a575-a224f3867967",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -4375,7 +4375,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"firstName\": \"Мићо\",\r\n\t\"lastName\": \"Јовић\",\r\n\t\"companyName\": \"Бачка тамница\",\r\n\t\"website\": \"https://trs.ai\",\r\n\t\"email\": \"gazda@trs.ai\",\r\n\t\"phoneNumber\": \"+381212233369\",\r\n\t\"previouslyRaised\": \"-25.00\",\r\n\t\"fundingGoals\":\"1000000\"\r\n}"
+							"raw": "{\r\n\t\"firstName\": \"Мићо\",\r\n\t\"lastName\": \"Јовић\",\r\n\t\"companyName\": \"Бачка тамница\",\r\n\t\"taxIdentifier\": \"1212122\",\r\n\t\"companyIdentificationNumber\": \"43443443434\",\r\n\t\"website\": \"https://trs.ai\",\r\n\t\"email\": \"gazda@trs.ai\",\r\n\t\"phoneNumber\": \"+381212233369\",\r\n\t\"previouslyRaised\": \"-25.00\",\r\n\t\"fundingGoals\":\"1000000\"\r\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/fundraisingProposals",

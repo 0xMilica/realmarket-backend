@@ -26,6 +26,8 @@ public class FundraisingProposal {
   private String firstName;
   private String lastName;
   private String companyName;
+  private String taxIdentifier;
+  private String companyIdentificationNumber;
   private String website;
   private String email;
   private String phoneNumber;
@@ -45,6 +47,8 @@ public class FundraisingProposal {
     this.firstName = fundraisingProposalDto.getFirstName();
     this.lastName = fundraisingProposalDto.getLastName();
     this.companyName = fundraisingProposalDto.getCompanyName();
+    this.taxIdentifier = fundraisingProposalDto.getTaxIdentifier();
+    this.companyIdentificationNumber = fundraisingProposalDto.getCompanyIdentificationNumber();
     this.website = fundraisingProposalDto.getWebsite();
     this.email = fundraisingProposalDto.getEmail();
     this.phoneNumber = fundraisingProposalDto.getPhoneNumber();

@@ -50,11 +50,6 @@ public class DocumentUtil {
           "fundraisingProposals",
           Arrays.asList(
               new DocumentMetadata(
-                  DocumentTypeName.BUSINESS_PLAN,
-                  true,
-                  Arrays.asList(DocumentAccessLevelName.PRIVATE, DocumentAccessLevelName.ON_DEMAND),
-                  1),
-              new DocumentMetadata(
                   DocumentTypeName.PITCH_DECK,
                   true,
                   Arrays.asList(DocumentAccessLevelName.PUBLIC, DocumentAccessLevelName.ON_DEMAND),

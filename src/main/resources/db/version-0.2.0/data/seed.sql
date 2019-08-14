@@ -109,9 +109,11 @@ INSERT INTO public.payment (id, investment_id, amount, currency, creation_date, 
 INSERT INTO public.payment (id, investment_id, amount, currency, creation_date, payment_date, account_number, routing_number, proforma_invoice_url, session_token, entity_name) VALUES (NEXTVAL('payment_seq'), 8, 105000, 'RSD', TO_DATE('01/07/2019', 'DD/MM/YYYY'), TO_DATE('05/07/2019', 'DD/MM/YYYY'), '123456789', '804', null, null, 'BankTransferPayment');
 
 
-INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, rejection_reason, request_state_id) VALUES (nextval('fundraising_proposal_seq'), 'Marko', 'Markovic', 'Company X', 'https://companyx.rs', 'comx@mail.rs','+381212233369', '<100K', '100K-500K', null, 1);
-INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, website, email, phone_number, previously_raised, funding_goals, rejection_reason, request_state_id) VALUES (nextval('fundraising_proposal_seq'), 'Pera', 'Peric', 'Company Y', 'https://companyy.rs', 'comy@mail.rs','+381212233369', '100K-500K', '1M+', null, 1);
+--fundraising proposal
+INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, tax_identifier, company_identification_number, website, email, phone_number, previously_raised, funding_goals, rejection_reason, request_state_id) VALUES (nextval('fundraising_proposal_seq'), 'Marko', 'Markovic', 'Company X', '121212', '343434', 'https://companyx.rs', 'comx@mail.rs','+381212233369', '<100K', '100K-500K', null, 1);
+INSERT INTO public.fundraising_proposal (id, first_name, last_name, company_name, tax_identifier, company_identification_number, website, email, phone_number, previously_raised, funding_goals, rejection_reason, request_state_id) VALUES (nextval('fundraising_proposal_seq'), 'Pera', 'Peric', 'Company Y',  '555666', '666777', 'https://companyy.rs', 'comy@mail.rs','+381212233369', '100K-500K', '1M+', null, 1);
 
+--user KYC
 INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date, politically_exposed) VALUES (NEXTVAL('user_kyc_seq'), 5, 1, 1, null, TO_DATE('17/04/2019', 'DD/MM/YYYY'), false);
 INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date, politically_exposed) VALUES (NEXTVAL('user_kyc_seq'), 5, 2, 2, null, TO_DATE('17/05/2019', 'DD/MM/YYYY'), true);
 INSERT INTO public.user_kyc(id, auditor_id, user_id, request_state_id, rejection_reason, upload_date, politically_exposed) VALUES (NEXTVAL('user_kyc_seq'), 5, 3, 1, null, TO_DATE('17/05/2019', 'DD/MM/YYYY'), false);
