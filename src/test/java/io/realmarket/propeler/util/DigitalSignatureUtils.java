@@ -35,9 +35,6 @@ public class DigitalSignatureUtils {
       DigitalSignaturePublicDto.builder()
           .id(1L)
           .publicKey(TEST_PUBLIC_KEY)
-          .initialVector(TEST_INITIAL_VECTOR)
-          .salt(TEST_SALT)
-          .passLength(TEST_PASS_LENGTH)
           .ownerId(AuthUtils.TEST_AUTH_ID)
           .build();
 }

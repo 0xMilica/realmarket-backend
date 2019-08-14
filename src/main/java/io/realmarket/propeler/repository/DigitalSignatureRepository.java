@@ -18,6 +18,6 @@ public interface DigitalSignatureRepository extends Repository<DigitalSignature,
   Optional<DigitalSignature> getPrivateDigitalSignatureByAuth(@Param("auth") Auth auth);
 
   @Query(
-      "SELECT NEW io.realmarket.propeler.api.dto.DigitalSignaturePublicDto(ds.id, ds.publicKey, ds.initialVector, ds.salt, ds.passLength, ds.auth.id) FROM DigitalSignature ds WHERE ds.auth = :auth")
+      "SELECT NEW io.realmarket.propeler.api.dto.DigitalSignaturePublicDto(ds.id, ds.publicKey, ds.auth.id) FROM DigitalSignature ds WHERE ds.auth = :auth")
   Optional<DigitalSignaturePublicDto> getPublicDigitalSignatureByAuth(@Param("auth") Auth auth);
 }

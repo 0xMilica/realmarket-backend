@@ -26,21 +26,6 @@ public class DigitalSignaturePublicDto {
   @NotBlank
   private String publicKey;
 
-  @ApiModelProperty(value = "Initial vector")
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  @NotBlank
-  private String initialVector;
-
-  @ApiModelProperty(value = "Salt")
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  @NotBlank
-  private String salt;
-
-  @ApiModelProperty(value = "Pass length")
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  @NotBlank
-  private Integer passLength;
-
   @ApiModelProperty(value = "Digital signature's owner id")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long ownerId;
