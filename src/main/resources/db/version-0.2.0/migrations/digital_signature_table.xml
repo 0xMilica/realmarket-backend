@@ -18,6 +18,7 @@
             initial_vector varchar(255),
             salt varchar(255),
             pass_length int,
+            creation_date timestamp NOT NULL,
             auth_id bigint
             constraint digital_signature_fk_on_auth
             references auth

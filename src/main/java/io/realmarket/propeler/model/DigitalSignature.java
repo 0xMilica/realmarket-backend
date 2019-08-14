@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @NoArgsConstructor
 @Data
@@ -30,11 +31,16 @@ public class DigitalSignature {
   private String salt;
   private Integer passLength;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @Builder.Default
+  @Column(name = "creation_date")
+  private Instant creationDate = Instant.now();
+
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "authId", foreignKey = @ForeignKey(name = "digital_signature_fk_on_auth"))
   private Auth auth;
 
   public DigitalSignature(DigitalSignaturePrivateDto digitalSignaturePrivateDto) {
+    this.creationDate = Instant.now();
     this.encryptedPrivateKey = digitalSignaturePrivateDto.getEncryptedPrivateKey();
     this.publicKey = digitalSignaturePrivateDto.getPublicKey();
     this.initialVector = digitalSignaturePrivateDto.getInitialVector();
