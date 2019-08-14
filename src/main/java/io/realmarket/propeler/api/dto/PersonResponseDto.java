@@ -10,11 +10,11 @@ import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.Size;
 
-@ApiModel(value = "PersonDto", description = "Person profile information")
+@ApiModel(value = "PersonResponseDto", description = "Person profile information")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonDto {
+public class PersonResponseDto {
 
   @ApiModelProperty(value = "Person's identifier")
   private Long id;
@@ -30,6 +30,9 @@ public class PersonDto {
 
   @ApiModelProperty(value = "For corporate person, name of company this person represents")
   private String companyName;
+
+  @ApiModelProperty(value = "For corporate person, identification number of company this person represents")
+  private String companyIdentificationNumber;
 
   @ApiModelProperty(value = "Person's country of residence")
   private String countryOfResidence;
@@ -65,11 +68,12 @@ public class PersonDto {
   @Size(max = 250, message = "Short biography cannot be longer than 250 characters.")
   private String shortBiography;
 
-  public PersonDto(Person person) {
+  public PersonResponseDto(Person person) {
     this.id = person.getId();
     this.lastName = person.getLastName();
     this.firstName = person.getFirstName();
     this.companyName = person.getCompanyName();
+    this.companyIdentificationNumber = person.getCompanyIdentificationNumber();
     this.address = person.getAddress();
     this.city = person.getCity();
     if (!StringUtils.isEmpty(person.getCountryForTaxation())) {

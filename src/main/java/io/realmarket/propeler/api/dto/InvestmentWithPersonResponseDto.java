@@ -34,9 +34,9 @@ public class InvestmentWithPersonResponseDto {
   @ApiModelProperty(value = "Investment state")
   private String investmentState;
 
-  private PersonDto person;
+  private PersonResponseDto person;
 
-  public InvestmentWithPersonResponseDto(Investment investment, PersonDto person) {
+  public InvestmentWithPersonResponseDto(Investment investment, PersonResponseDto person) {
     this.id = investment.getId();
     this.investedAmount = investment.getInvestedAmount();
     this.equity =

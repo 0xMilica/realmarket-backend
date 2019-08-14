@@ -304,7 +304,7 @@ public class InvestmentServiceImpl implements InvestmentService {
   @Override
   public List<InvestmentWithPersonResponseDto> findAllByCampaignWithInvestors(Campaign campaign) {
     return findAllByCampaign(campaign).stream()
-        .map(i -> new InvestmentWithPersonResponseDto(i, new PersonDto(i.getPerson())))
+        .map(i -> new InvestmentWithPersonResponseDto(i, new PersonResponseDto(i.getPerson())))
         .collect(Collectors.toList());
   }
 

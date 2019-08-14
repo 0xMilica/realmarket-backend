@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f5e69565-cd5f-4c11-a575-a224f3867967",
+		"_postman_id": "49779c09-03e4-4f8e-85e7-de49cf78b403",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -274,7 +274,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"address\": \"string\",\r\n  \"bankAccount\": \"string3232\"\r\n}"
+							"raw": "{\r\n  \"address\": \"string\",\r\n  \"bankAccount\": \"string3232\",\r\n  \"companyIdentificationNumber\": \"123412341234\"\r\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/companies/{{company_id}}",
@@ -4130,7 +4130,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"radovan.turovic@realmarket.io\",\n\t\"firstName\": \"Несрећко\",\n\t\"lastName\": \"Шошкић\",\n\t\"countryOfResidence\": \"RS\",\n\t\"countryForTaxation\": \"RS\",\n\t\"city\": \"Доње Бријање\",\n\t\"address\": \"Доње Бријање 7\",\n\t\"phoneNumber\": \"+381606060606\",\n\t\"profilePictureUrl\": \"https://static.juznasrbija.info/files/donje_brijanje-6a063e2cdb5d.jpg\",\n\t\"investedAmount\": \"16206\",\n\t\"twitterUrl\": \"https://twitter.com/twichtwichtwich\",\n\t\"linkedinUrl\": \"https://linkedin.com/linklinklinkininin\",\n\t\"facebookUrl\": \"https://facebook.com/facefacefacekacekacekace\",\n\t\"customProfileUrl\": \"https://myspace.com/kojosovocudokoristikojosovocudokoristikojosovocudokoristi\",\n\t\"shortBiography\": \"Dodjos iz lalinskog sreza.\",\n\t\"nationalIdentificationNumber\":\"1234567890123\"\n}"
+							"raw": "{\n\t\"email\": \"radovan.turovic@realmarket.io\",\n\t\"firstName\": \"Несрећко\",\n\t\"lastName\": \"Шошкић\",\n\t\"countryOfResidence\": \"RS\",\n\t\"countryForTaxation\": \"RS\",\n\t\"city\": \"Доње Бријање\",\n\t\"address\": \"Доње Бријање 7\",\n\t\"phoneNumber\": \"+381606060606\",\n\t\"profilePictureUrl\": \"https://static.juznasrbija.info/files/donje_brijanje-6a063e2cdb5d.jpg\",\n\t\"investedAmount\": \"16206\",\n\t\"twitterUrl\": \"https://twitter.com/twichtwichtwich\",\n\t\"linkedinUrl\": \"https://linkedin.com/linklinklinkininin\",\n\t\"facebookUrl\": \"https://facebook.com/facefacefacekacekacekace\",\n\t\"customProfileUrl\": \"https://myspace.com/kojosovocudokoristikojosovocudokoristikojosovocudokoristi\",\n\t\"shortBiography\": \"Dodjos iz lalinskog sreza.\",\n\t\"nationalIdentificationNumber\":\"1234567890123\",\n\t\"companyIdentificationNumber\":\"123412341234\"\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/investments/offPlatform/{{campaign_investable_urlFriendlyName}}",

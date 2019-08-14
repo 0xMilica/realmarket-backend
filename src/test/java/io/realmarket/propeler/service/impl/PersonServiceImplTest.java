@@ -1,8 +1,8 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.FileDto;
-import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.api.dto.PersonPatchDto;
+import io.realmarket.propeler.api.dto.PersonResponseDto;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.repository.PersonRepository;
 import io.realmarket.propeler.service.CloudObjectStorageService;
@@ -70,8 +70,8 @@ public class PersonServiceImplTest {
         .when(modelMapperBlankString)
         .map(personPatchDto, testPerson);
 
-    PersonDto personDto = personServiceImpl.patchPerson(TEST_AUTH_ID, personPatchDto);
-    assertEquals(PersonUtils.TEST_PERSON_LAST_NAME, personDto.getLastName());
+    PersonResponseDto personResponseDto = personServiceImpl.patchPerson(TEST_AUTH_ID, personPatchDto);
+    assertEquals(PersonUtils.TEST_PERSON_LAST_NAME, personResponseDto.getLastName());
   }
 
   @Test

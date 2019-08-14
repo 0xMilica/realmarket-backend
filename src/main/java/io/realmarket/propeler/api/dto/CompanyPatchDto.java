@@ -26,6 +26,9 @@ public class CompanyPatchDto {
   @ApiModelProperty(value = "Company's tax identifier")
   private String taxIdentifier;
 
+  @ApiModelProperty(value = "Company's identification number")
+  private String companyIdentificationNumber;
+
   @ApiModelProperty(value = "Company's bank account")
   private String bankAccount;
 
@@ -60,6 +63,7 @@ public class CompanyPatchDto {
     return Company.builder()
         .name(this.getName())
         .taxIdentifier(this.getTaxIdentifier())
+        .companyIdentificationNumber(this.companyIdentificationNumber)
         .bankAccount(this.getBankAccount())
         .county(this.getCounty())
         .city(this.getCity())
@@ -95,6 +99,7 @@ public class CompanyPatchDto {
   public boolean shouldAdminBeCalled() {
     if (this.name != null) return true;
     if (this.taxIdentifier != null) return true;
+    if (this.companyIdentificationNumber != null) return true;
     if (this.bankAccount != null) return true;
     if (this.county != null) return true;
     if (this.city != null) return true;

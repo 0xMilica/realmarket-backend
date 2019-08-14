@@ -26,11 +26,11 @@ public class OffPlatformInvestmentRequestDto {
   @ApiModelProperty(value = "Person's last name")
   private String lastName;
 
-  @ApiModelProperty(value = "For corporate person, name of company this person represents")
+  @ApiModelProperty(value = "For corporate investor, name of company this person represents")
   private String companyName;
 
-  @ApiModelProperty(value = "Person's national identification number")
-  private String nationalIdentificationNumber;
+  @ApiModelProperty(value = "For corporate investor, company identification number")
+  private String companyIdentificationNumber;
 
   @ApiModelProperty(value = "Person's country of residence")
   private String countryOfResidence;

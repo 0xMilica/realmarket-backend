@@ -1,8 +1,8 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.FileDto;
-import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.api.dto.PersonPatchDto;
+import io.realmarket.propeler.api.dto.PersonResponseDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.repository.PersonRepository;
@@ -63,15 +63,15 @@ public class PersonServiceImpl implements PersonService {
     return personRepository.findByAuth(auth);
   }
 
-  public PersonDto getPerson(Long id) {
-    return new PersonDto(findByIdOrThrowException(id));
+  public PersonResponseDto getPerson(Long id) {
+    return new PersonResponseDto(findByIdOrThrowException(id));
   }
 
   @Transactional
-  public PersonDto patchPerson(Long id, PersonPatchDto personPatchDto) {
+  public PersonResponseDto patchPerson(Long id, PersonPatchDto personPatchDto) {
     Person person = findByIdOrThrowException(id);
     modelMapperBlankString.map(personPatchDto, person);
-    return new PersonDto(personRepository.save(person));
+    return new PersonResponseDto(personRepository.save(person));
   }
 
   @Override

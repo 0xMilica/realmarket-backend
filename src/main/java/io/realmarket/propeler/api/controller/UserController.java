@@ -113,7 +113,7 @@ public interface UserController {
     @ApiResponse(code = 200, message = "Returned user profile."),
     @ApiResponse(code = 400, message = "Invalid request."),
   })
-  ResponseEntity<PersonDto> getPerson(Long userId);
+  ResponseEntity<PersonResponseDto> getPerson(Long userId);
 
   @ApiOperation(
       value = "Change email",
@@ -142,7 +142,7 @@ public interface UserController {
     @ApiResponse(code = 200, message = "Return person profile."),
     @ApiResponse(code = 400, message = "Invalid request."),
   })
-  ResponseEntity<PersonDto> patchPerson(Long userId, PersonPatchDto personPatchDto);
+  ResponseEntity<PersonResponseDto> patchPerson(Long userId, PersonPatchDto personPatchDto);
 
   @ApiOperation(
       value = "Upload profile picture",

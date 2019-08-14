@@ -72,7 +72,7 @@ public class UserControllerImpl implements UserController {
   }
 
   @GetMapping(value = "/{userId}")
-  public ResponseEntity<PersonDto> getPerson(@PathVariable Long userId) {
+  public ResponseEntity<PersonResponseDto> getPerson(@PathVariable Long userId) {
     return ResponseEntity.ok(personService.getPerson(userId));
   }
 
@@ -85,7 +85,7 @@ public class UserControllerImpl implements UserController {
 
   @Override
   @PatchMapping(value = "/{userId}")
-  public ResponseEntity<PersonDto> patchPerson(
+  public ResponseEntity<PersonResponseDto> patchPerson(
       @PathVariable Long userId, @RequestBody PersonPatchDto personPatchDto) {
     return ResponseEntity.ok(personService.patchPerson(userId, personPatchDto));
   }

@@ -32,7 +32,7 @@ public interface CompanyController {
     @ApiResponse(code = 200, message = "Company successfully retrieved."),
     @ApiResponse(code = 404, message = "Company does not exists.")
   })
-  ResponseEntity getCompany(Long companyId);
+  ResponseEntity<CompanyDto> getCompany(Long companyId);
 
   @ApiOperation(
       value = "Get info about my company",

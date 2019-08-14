@@ -1,8 +1,8 @@
 package io.realmarket.propeler.service;
 
 import io.realmarket.propeler.api.dto.FileDto;
-import io.realmarket.propeler.api.dto.PersonDto;
 import io.realmarket.propeler.api.dto.PersonPatchDto;
+import io.realmarket.propeler.api.dto.PersonResponseDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Person;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,9 +14,9 @@ public interface PersonService {
 
   List<Person> findByEmail(String email);
 
-  PersonDto getPerson(Long userId);
+  PersonResponseDto getPerson(Long userId);
 
-  PersonDto patchPerson(Long userId, PersonPatchDto personPatchDto);
+  PersonResponseDto patchPerson(Long userId, PersonPatchDto personPatchDto);
 
   void uploadProfilePicture(Long personId, MultipartFile picture);
 

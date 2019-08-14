@@ -52,6 +52,10 @@ public class UserKYCResponseDto {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long companyId;
 
+  @ApiModelProperty(value = "User's company identification number")
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private String companyIdentificationNumber;
+
   @ApiModelProperty(value = "Auditor's identifier")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long auditorId;
@@ -80,12 +84,15 @@ public class UserKYCResponseDto {
       this.companyId = null;
       if (user.getUserRole().getName().equals(UserRoleName.ROLE_CORPORATE_INVESTOR)) {
         this.companyName = person.getCompanyName();
+        this.companyIdentificationNumber = person.getCompanyIdentificationNumber();
       } else {
         this.companyName = null;
+        this.companyIdentificationNumber = null;
       }
     } else {
       this.companyName = company.getName();
       this.companyId = company.getId();
+      this.companyIdentificationNumber = company.getCompanyIdentificationNumber();
     }
     this.requestState = userKYC.getRequestState().getName().toString();
     this.rejectionReason = userKYC.getRejectionReason();
