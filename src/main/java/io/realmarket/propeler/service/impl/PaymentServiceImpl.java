@@ -9,9 +9,13 @@ import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.BankTransferPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
+import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.InvestmentStateService;
 import io.realmarket.propeler.service.PaymentDocumentService;
 import io.realmarket.propeler.service.PaymentService;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.BlockchainMethod;
+import io.realmarket.propeler.service.blockchain.dto.investment.payment.PaymentDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +37,20 @@ public class PaymentServiceImpl implements PaymentService {
   private final InvestmentStateService investmentStateService;
   private final InvestmentRepository investmentRepository;
   private final BankTransferPaymentRepository bankTransferPaymentRepository;
+  private final BlockchainCommunicationService blockchainCommunicationService;
 
   @Autowired
   public PaymentServiceImpl(
       PaymentDocumentService paymentDocumentService,
       InvestmentStateService investmentStateService,
       InvestmentRepository investmentRepository,
-      BankTransferPaymentRepository bankTransferPaymentRepository) {
+      BankTransferPaymentRepository bankTransferPaymentRepository,
+      BlockchainCommunicationService blockchainCommunicationService) {
     this.paymentDocumentService = paymentDocumentService;
     this.investmentStateService = investmentStateService;
     this.investmentRepository = investmentRepository;
     this.bankTransferPaymentRepository = bankTransferPaymentRepository;
+    this.blockchainCommunicationService = blockchainCommunicationService;
   }
 
   @Override
@@ -81,7 +88,16 @@ public class PaymentServiceImpl implements PaymentService {
     investment.setPaymentDate(bankTransferPayment.getPaymentDate());
     investmentRepository.save(investment);
 
-    return bankTransferPaymentRepository.save(bankTransferPayment);
+    bankTransferPayment = bankTransferPaymentRepository.save(bankTransferPayment);
+
+    blockchainCommunicationService.invoke(
+        BlockchainMethod.PAYMENT_CONFIRMED,
+        new PaymentDto(
+            bankTransferPayment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
+        AuthenticationUtil.getClientIp());
+
+    return bankTransferPayment;
   }
 
   private void throwIfNotAllowedFilter(String filter) {

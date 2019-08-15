@@ -8,8 +8,10 @@ import io.realmarket.propeler.repository.BankTransferPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.service.InvestmentStateService;
 import io.realmarket.propeler.service.PaymentDocumentService;
+import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.util.InvestmentUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Collections;
 import java.util.Optional;
 
+import static io.realmarket.propeler.util.AuthUtils.mockRequestAndContext;
 import static io.realmarket.propeler.util.PaymentUtils.*;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,8 +39,14 @@ public class PaymentServiceImplTest {
   @Mock private InvestmentStateService investmentStateService;
   @Mock private InvestmentRepository investmentRepository;
   @Mock private BankTransferPaymentRepository bankTransferPaymentRepository;
+  @Mock private BlockchainCommunicationService blockchainCommunicationService;
 
   @InjectMocks PaymentServiceImpl paymentService;
+
+  @Before
+  public void createAuthContext() {
+    mockRequestAndContext();
+  }
 
   @Test
   public void GetPayments_Should_ReturnPayments() {

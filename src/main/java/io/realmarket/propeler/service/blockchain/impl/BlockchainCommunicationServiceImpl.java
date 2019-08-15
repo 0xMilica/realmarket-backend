@@ -26,7 +26,7 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
   private static final String RESPONSE_MESSAGE = "message";
 
   @Value("${blockchain.active}")
-  private Boolean active;
+  private boolean active;
 
   @Value("${blockchain.chaincode_name}")
   private String chaincodeName;
@@ -118,7 +118,7 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     if (response == null) {
       log.error("Failed to invoke chaincode. Response object is null.");
       throw new BlockchainException("Response is null.");
-    } else if (!(Boolean) response.get("success")) {
+    } else if (Boolean.FALSE.equals(response.get("success"))) {
       log.error("Failed to invoke chaincode. Error: {}", response.get(RESPONSE_MESSAGE));
       throw new BlockchainException((String) response.get(RESPONSE_MESSAGE));
     }

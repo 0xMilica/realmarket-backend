@@ -17,6 +17,7 @@ public class BlockchainMethod {
   public static final String SUBMIT_SHAREHOLDERS = "CompanyShareholderSubmission";
   public static final String INVESTMENT_INTENT = "CampaignInvestmentIntent";
   public static final String INVESTMENT_STATE_CHANGE = "CampaignInvestmentStateChange";
+  public static final String PAYMENT_CONFIRMED = "CampaignInvestmentPaymentConfirmed";
 
   private BlockchainMethod() {}
 }
