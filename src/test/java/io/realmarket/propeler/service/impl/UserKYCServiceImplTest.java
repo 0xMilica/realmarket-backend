@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.UserKYCResponseWithFilesDto;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.UserKYC;
+import io.realmarket.propeler.model.enums.NotificationType;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.UserKYCRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -24,6 +25,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Optional;
 
 import static io.realmarket.propeler.util.AuditUtils.TEST_PENDING_REQUEST_STATE;
+import static io.realmarket.propeler.util.AuthUtils.TEST_AUTH;
 import static io.realmarket.propeler.util.AuthUtils.TEST_REGISTRATION_DTO;
 import static io.realmarket.propeler.util.KYCUtils.*;
 import static io.realmarket.propeler.util.PersonUtils.TEST_COUNTRY;
@@ -45,6 +47,7 @@ public class UserKYCServiceImplTest {
   @Mock private EmailService emailService;
   @Mock private UserKYCDocumentService userKYCDocumentService;
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
+  @Mock private NotificationService notificationService;
 
   @InjectMocks private UserKYCServiceImpl userKYCService;
 
@@ -139,6 +142,9 @@ public class UserKYCServiceImplTest {
         .thenReturn(TEST_APPROVED_REQUEST_STATE);
     when(userKYCRepository.save(any())).thenReturn(TEST_USER_KYC_APPROVED);
     doNothing().when(emailService).sendMailToUser(any());
+    doNothing()
+        .when(notificationService)
+        .sendMessage(TEST_AUTH, NotificationType.KYC_APPROVAL, null);
 
     UserKYC userKYC = userKYCService.approveUserKYC(TEST_USER_KYC_ID);
 
@@ -164,6 +170,9 @@ public class UserKYCServiceImplTest {
         .thenReturn(TEST_DECLINED_REQUEST_STATE);
     when(userKYCRepository.save(any())).thenReturn(TEST_USER_KYC_DECLINED);
     doNothing().when(emailService).sendMailToUser(any());
+    doNothing()
+        .when(notificationService)
+        .sendMessage(TEST_AUTH, NotificationType.KYC_REJECTION, null);
 
     UserKYC userKYC = userKYCService.rejectUserKYC(TEST_USER_KYC_ID, TEST_REJECTION_REASON);
 

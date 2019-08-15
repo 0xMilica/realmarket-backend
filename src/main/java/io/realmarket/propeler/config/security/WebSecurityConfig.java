@@ -68,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/swagger**", "/webjars/**", "/swagger-resources/**", "/v2/api-docs")
         .antMatchers("/csrf")
         .antMatchers("/")
+        .antMatchers("/ws/**")
         .antMatchers("/error")
         .antMatchers(HttpMethod.HEAD, "/users/**")
         .antMatchers(HttpMethod.PATCH, "/auth/reset_password")

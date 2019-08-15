@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.*;
+import io.realmarket.propeler.model.enums.NotificationType;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.UserKYCRepository;
@@ -44,6 +45,7 @@ public class UserKYCServiceImpl implements UserKYCService {
   private final UserRoleService userRoleService;
   private final UserKYCRepository userKYCRepository;
   private final BlockchainCommunicationService blockchainCommunicationService;
+  private final NotificationService notificationService;
 
   @Value(value = "${app.time.zone}")
   private String timeZone;
@@ -56,7 +58,8 @@ public class UserKYCServiceImpl implements UserKYCService {
       UserKYCDocumentService userKYCDocumentService,
       UserRoleService userRoleService,
       UserKYCRepository userKYCRepository,
-      BlockchainCommunicationService blockchainCommunicationService) {
+      BlockchainCommunicationService blockchainCommunicationService,
+      NotificationService notificationService) {
     this.personService = personService;
     this.requestStateService = requestStateService;
     this.companyService = companyService;
@@ -65,6 +68,7 @@ public class UserKYCServiceImpl implements UserKYCService {
     this.userRoleService = userRoleService;
     this.userKYCRepository = userKYCRepository;
     this.blockchainCommunicationService = blockchainCommunicationService;
+    this.notificationService = notificationService;
   }
 
   @Override
@@ -168,6 +172,8 @@ public class UserKYCServiceImpl implements UserKYCService {
     userKYC.setRequestState(requestStateService.getRequestState(RequestStateName.APPROVED));
     userKYC = userKYCRepository.save(userKYC);
     sendKYCApprovalEmail(userKYC);
+    Auth recipient = userKYC.getUser();
+    notificationService.sendMessage(recipient, NotificationType.KYC_APPROVAL, null);
 
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_KYC_STATE_CHANGE,
@@ -224,6 +230,8 @@ public class UserKYCServiceImpl implements UserKYCService {
     userKYC.setRejectionReason(rejectionReason);
     userKYC = userKYCRepository.save(userKYC);
     sendKYCRejectionEmail(userKYC);
+    Auth recipient = userKYC.getUser();
+    notificationService.sendMessage(recipient, NotificationType.KYC_REJECTION, rejectionReason);
 
     blockchainCommunicationService.invoke(
         BlockchainMethod.USER_KYC_STATE_CHANGE,

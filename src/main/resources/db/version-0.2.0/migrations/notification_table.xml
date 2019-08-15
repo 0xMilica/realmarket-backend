@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="avujanovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence notification_seq;
+            create table if not exists notification
+            (
+            id bigint not null
+            constraint notification_pkey
+            primary key,
+            seen boolean,
+            date timestamp,
+            content varchar(10000),
+            title varchar(250),
+            sender_id bigint
+            constraint notification_fk_on_sender
+            references auth,
+            recipient_id bigint
+            constraint notification_fk_on_recipient
+            references auth
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

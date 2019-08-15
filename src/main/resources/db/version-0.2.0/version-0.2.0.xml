@@ -10,6 +10,7 @@
     <include file="migrations/request_state_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/investment_state_table.xml" relativeToChangelogFile="true"/>
 
+	<include file="migrations/notification_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/company_category_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/company_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/company_edit_table.xml" relativeToChangelogFile="true"/>

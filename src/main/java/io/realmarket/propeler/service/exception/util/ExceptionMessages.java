@@ -178,4 +178,10 @@ public interface ExceptionMessages {
 
   // Digital signature does not exist.
   String DIGITAL_SIGNATURE_DOES_NOT_EXIST = "SIG_001";
+
+  // Notification with provided id does not exist.
+  String NOTIFICATION_DOES_NOT_EXIST = "NOT_001";
+
+  // User is not recipient of notification
+  String USER_IS_NOT_RECIPIENT_OF_NOTIFICATION = "NOT_002";
 }
