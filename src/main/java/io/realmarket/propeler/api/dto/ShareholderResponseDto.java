@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ShareholderDto {
+public class ShareholderResponseDto {
 
   @ApiModelProperty(value = "Shareholder id")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -54,6 +54,12 @@ public class ShareholderDto {
   @ApiModelProperty(value = "Custom url")
   private String customProfileUrl;
 
+  @ApiModelProperty(value = "Is this shareholder corporate")
+  private boolean isCompany;
+
+  @ApiModelProperty(value = "Corporate shareholder company identification number")
+  private String companyIdentificationNumber;
+
   @ApiModelProperty(value = "Order in shareholder list")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Integer orderNumber;
@@ -62,7 +68,7 @@ public class ShareholderDto {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long companyId;
 
-  public ShareholderDto(Shareholder shareholder) {
+  public ShareholderResponseDto(Shareholder shareholder) {
     this.id = shareholder.getId();
     this.isAnonymous = shareholder.getIsAnonymous();
     this.name = shareholder.getName();
@@ -76,6 +82,8 @@ public class ShareholderDto {
     this.customProfileUrl = shareholder.getCustomProfileUrl();
     this.orderNumber = shareholder.getOrderNumber();
     this.companyId = shareholder.getCompany().getId();
+    this.companyIdentificationNumber = shareholder.getCompanyIdentificationNumber();
+    this.isCompany = shareholder.isCompany();
   }
 
   public Shareholder createShareholder(Company company) {
@@ -92,6 +100,8 @@ public class ShareholderDto {
         .name(name)
         .photoUrl(photoUrl)
         .orderNumber(orderNumber)
+        .isCompany(isCompany)
+        .companyIdentificationNumber(companyIdentificationNumber)
         .build();
   }
 }

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "49779c09-03e4-4f8e-85e7-de49cf78b403",
+		"_postman_id": "e1b240f7-1b53-4470-af5a-723438401b8d",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -170,6 +170,387 @@
 										"companies",
 										"documents",
 										"types"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "shareholders",
+					"item": [
+						{
+							"name": "pictures",
+							"item": [
+								{
+									"name": "/companies/mine/shareholders/{{shareholder_id}}/picture",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"type": "text",
+												"value": "{{token}}"
+											},
+											{
+												"key": "",
+												"type": "text",
+												"value": "",
+												"disabled": true
+											},
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json",
+												"disabled": true
+											}
+										],
+										"url": {
+											"raw": "{{server_ip}}/api/companies/mine/shareholders/{{shareholder_id}}/picture",
+											"host": [
+												"{{server_ip}}"
+											],
+											"path": [
+												"api",
+												"companies",
+												"mine",
+												"shareholders",
+												"{{shareholder_id}}",
+												"picture"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/companies/mine/shareholders/{{shareholder_id}}/picture",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"type": "text",
+												"value": "{{token}}"
+											},
+											{
+												"key": "",
+												"type": "text",
+												"value": "",
+												"disabled": true
+											},
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json",
+												"disabled": true
+											}
+										],
+										"url": {
+											"raw": "{{server_ip}}/api/companies/mine/shareholders/{{shareholder_id}}/picture",
+											"host": [
+												"{{server_ip}}"
+											],
+											"path": [
+												"api",
+												"companies",
+												"mine",
+												"shareholders",
+												"{{shareholder_id}}",
+												"picture"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/companies/{{company_id}}/shareholders/{{shareholder_id}}/picture",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{server_ip}}/api/companies/{{company_id}}/shareholders/{{shareholder_id}}/picture",
+											"host": [
+												"{{server_ip}}"
+											],
+											"path": [
+												"api",
+												"companies",
+												"{{company_id}}",
+												"shareholders",
+												"{{shareholder_id}}",
+												"picture"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "/companies/mine/shareholders/{{shareholder_id}}/picture",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"type": "text",
+												"value": "{{token}}"
+											},
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json",
+												"disabled": true
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "picture",
+													"type": "file",
+													"src": "/C:/Users/raso/Pictures/dsqdt1-183e93e8-5cfe-496e-a78e-666051e64da2 (2).png"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{server_ip}}/api/companies/mine/shareholders/{{shareholder_id}}/picture",
+											"host": [
+												"{{server_ip}}"
+											],
+											"path": [
+												"api",
+												"companies",
+												"mine",
+												"shareholders",
+												"{{shareholder_id}}",
+												"picture"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "/companies/mine/shareholders",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/companies/mine/shareholders",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"mine",
+										"shareholders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/companies/{{company_id}}/shareholders",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/companies/{{company_id}}/shareholders",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"{{company_id}}",
+										"shareholders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/companies/mine/shareholders",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "",
+										"type": "text",
+										"value": "",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"isAnonymous\": false,\n\t\"name\": \"Митар Ћирић\",\n\t\"location\": \"Шатровци\",\n\t\"investedAmount\": 123456789,\n\t\"description\": \"Шатро фићфирић\",\n\t\"twitterUrl\": \"https://twitter.com/twichtwichtwich\",\n\t\"linkedinUrl\": \"https://linkedin.com/linklinklinkininin\",\n\t\"facebookUrl\": \"https://facebook.com/facefacefacekacekacekace\",\n\t\"customProfileUrl\": \"https://myspace.com/kojosovocudokoristikojosovocudokoristikojosovocudokoristi\",\n\t\"isCompany\": false,\n\t\"companyIdentificationNumber\": null,\n\t\"orderNumber\": 1\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/companies/mine/shareholders",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"mine",
+										"shareholders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/companies/mine/shareholders",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "",
+										"type": "text",
+										"value": "",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[1,3,5,2,4]"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/companies/mine/shareholders",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"mine",
+										"shareholders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/companies/mine/shareholders/{{shareholder_id}}",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "",
+										"type": "text",
+										"value": "",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"isAnonymous\": false,\n\t\"name\": \"Митар Ћирић\",\n\t\"location\": \"Шатровци\",\n\t\"investedAmount\": 123456789,\n\t\"description\": \"Шатро фићфирић\",\n\t\"twitterUrl\": \"https://twitter.com/twch\",\n\t\"linkedinUrl\": \"https://linkedin.com/lin\",\n\t\"facebookUrl\": \"https://facebook.com/face\",\n\t\"customProfileUrl\": \"https://myspace.com/kojosovocudokoristi\",\n\t\"isCompany\": false,\n\t\"companyIdentificationNumber\": null,\n\t\"orderNumber\": 1\n}"
+								},
+								"url": {
+									"raw": "{{server_ip}}/api/companies/mine/shareholders/{{shareholder_id}}",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"mine",
+										"shareholders",
+										"{{shareholder_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/companies/mine/shareholders/{{shareholder_id}}",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "{{token}}"
+									},
+									{
+										"key": "",
+										"type": "text",
+										"value": "",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{server_ip}}/api/companies/mine/shareholders/{{shareholder_id}}",
+									"host": [
+										"{{server_ip}}"
+									],
+									"path": [
+										"api",
+										"companies",
+										"mine",
+										"shareholders",
+										"{{shareholder_id}}"
 									]
 								}
 							},
@@ -2689,7 +3070,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"code\": \"257750\",\n  \"wildcard\": \"545\",\n  \"token\": \"QO3BFDKWQ4LYJQLGBDNNTNKEOPSEGRM7U5MQ\",\n  \"rememberMe\":true\n}"
+									"raw": "{\n  \"code\": \"938036\",\n  \"wildcard\": \"545\",\n  \"token\": \"{{rvg_2fa_validate}}\",\n  \"rememberMe\":true\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/auth/2fa",
@@ -2737,7 +3118,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"token\": \"VMJZEX4J7HIGJWUH6KB6IYK2EGCZ4XGSIDOQ\"\r\n}"
+									"raw": "{\r\n  \"token\": \"{{rvg_2fa_remember_me}}\"\r\n}"
 								},
 								"url": {
 									"raw": "{{server_ip}}/api/auth/2fa/remember_me",
@@ -2936,6 +3317,23 @@
 				},
 				{
 					"name": "/auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d6f87413-5ef9-4f26-b65a-8bbfead76a5b",
+								"exec": [
+									"pmr = pm.response.json();",
+									"if (pmr.twoFAStatus == \"VALIDATE\") {",
+									"    pm.environment.set(\"rvg_2fa_validate\", pm.response.json().token);",
+									"} else if (pmr.twoFAStatus == \"REMEMBER_ME\") {",
+									"    pm.environment.set(\"rvg_2fa_remember_me\", pm.response.json().token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"

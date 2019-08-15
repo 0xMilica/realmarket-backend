@@ -1,6 +1,7 @@
 package io.realmarket.propeler.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.Shareholder;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,15 +12,14 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@ApiModel(description = "Dto used for public shareholder data display")
+@ApiModel(description = "Dto used for transfer of shareholder data")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ShareholderPublicResponseDto {
-  @ApiModelProperty(value = "Shareholder id")
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Long id;
+public class ShareholderRequestDto {
+  @ApiModelProperty(value = "Is shareholder anonymous")
+  private Boolean isAnonymous;
 
   @ApiModelProperty(value = "Name of shareholder")
   private String name;
@@ -55,16 +55,12 @@ public class ShareholderPublicResponseDto {
   @ApiModelProperty(value = "Corporate shareholder company identification number")
   private String companyIdentificationNumber;
 
-  @ApiModelProperty(value = "Company where shareholder belongs to")
+  @ApiModelProperty(value = "Order in shareholder list")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private Long companyId;
+  private Integer orderNumber;
 
-  public ShareholderPublicResponseDto(Shareholder shareholder) {
-    this.id = shareholder.getId();
-    if (shareholder.getIsAnonymous()) {
-      this.investedAmount = shareholder.getInvestedAmount();
-      return;
-    }
+  public ShareholderRequestDto(Shareholder shareholder) {
+    this.isAnonymous = shareholder.getIsAnonymous();
     this.name = shareholder.getName();
     this.location = shareholder.getLocation();
     this.investedAmount = shareholder.getInvestedAmount();
@@ -74,8 +70,27 @@ public class ShareholderPublicResponseDto {
     this.twitterUrl = shareholder.getTwitterUrl();
     this.facebookUrl = shareholder.getFacebookUrl();
     this.customProfileUrl = shareholder.getCustomProfileUrl();
-    this.companyId = shareholder.getCompany().getId();
+    this.orderNumber = shareholder.getOrderNumber();
     this.companyIdentificationNumber = shareholder.getCompanyIdentificationNumber();
     this.isCompany = shareholder.isCompany();
+  }
+
+  public Shareholder createShareholder(Company company) {
+    return Shareholder.builder()
+        .company(company)
+        .customProfileUrl(customProfileUrl)
+        .description(description)
+        .facebookUrl(facebookUrl)
+        .linkedinUrl(linkedinUrl)
+        .twitterUrl(twitterUrl)
+        .investedAmount(investedAmount)
+        .isAnonymous(isAnonymous)
+        .location(location)
+        .name(name)
+        .photoUrl(photoUrl)
+        .orderNumber(orderNumber)
+        .isCompany(isCompany)
+        .companyIdentificationNumber(companyIdentificationNumber)
+        .build();
   }
 }

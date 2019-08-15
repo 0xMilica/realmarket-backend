@@ -31,6 +31,8 @@ public class Shareholder {
   private String facebookUrl;
   private String customProfileUrl;
   private Integer orderNumber;
+  private boolean isCompany;
+  private String companyIdentificationNumber;
 
   @JoinColumn(name = "companyId", foreignKey = @ForeignKey(name = "shareholder_fk_on_company"))
   @ManyToOne

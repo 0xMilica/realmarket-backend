@@ -15,6 +15,8 @@ public interface ShareholderRepository extends JpaRepository<Shareholder, Long> 
 
   List<Shareholder> findAllByCompanyIdOrderByOrderNumberAsc(Long companyId);
 
+  Shareholder getByIdAndCompanyId(Long id, Long companyId);
+
   Integer countByCompanyId(Long companyId);
 
   @Query("Select MAX(s.orderNumber) FROM Shareholder s WHERE s.company = ?1")

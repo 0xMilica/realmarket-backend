@@ -1,6 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.ShareholderDto;
+import io.realmarket.propeler.api.dto.ShareholderRequestDto;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.Shareholder;
 import io.realmarket.propeler.repository.ShareholderRepository;
@@ -54,7 +54,7 @@ public class ShareholderServiceImplTest {
 
     when(companyService.findMyCompany()).thenReturn(company);
 
-    shareholderService.createShareholder(createMockShareholderDto());
+    shareholderService.createShareholder(createMockShareholderRequestDto());
 
     verify(shareholderRepository, times(1)).save(any());
   }
@@ -87,7 +87,7 @@ public class ShareholderServiceImplTest {
   @Test
   public void PatchShareholder_Should_PatchChanges() {
     Shareholder shareholder = ShareholderTestUtils.createMockShareholder();
-    ShareholderDto shareholderDto = ShareholderTestUtils.mockShareholderPatchLastName();
+    ShareholderRequestDto shareholderRequestDto = ShareholderTestUtils.mockShareholderPatchLastName();
     Company company = CompanyUtils.getCompanyMocked();
 
     when(companyService.findMyCompany()).thenReturn(company);
@@ -96,16 +96,16 @@ public class ShareholderServiceImplTest {
     doAnswer(
             invocation -> {
               Object[] args = invocation.getArguments();
-              ((Shareholder) args[1]).setName(shareholderDto.getName());
+              ((Shareholder) args[1]).setName(shareholderRequestDto.getName());
               return null;
             })
         .when(modelMapperBlankString)
-        .map(shareholderDto, shareholder);
+        .map(shareholderRequestDto, shareholder);
 
-    shareholderService.patchShareholder(shareholder.getId(), shareholderDto);
+    shareholderService.patchShareholder(shareholder.getId(), shareholderRequestDto);
 
     assertEquals(TEST_SHAREHOLDER_NAME_2, shareholder.getName());
-    verify(modelMapperBlankString, times(1)).map(shareholderDto, shareholder);
+    verify(modelMapperBlankString, times(1)).map(shareholderRequestDto, shareholder);
     verify(shareholderRepository, times(1)).save(shareholder);
   }
 

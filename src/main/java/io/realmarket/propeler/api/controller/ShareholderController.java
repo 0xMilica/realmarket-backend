@@ -1,8 +1,9 @@
 package io.realmarket.propeler.api.controller;
 
 import io.realmarket.propeler.api.dto.FileDto;
-import io.realmarket.propeler.api.dto.ShareholderDto;
 import io.realmarket.propeler.api.dto.ShareholderPublicResponseDto;
+import io.realmarket.propeler.api.dto.ShareholderRequestDto;
+import io.realmarket.propeler.api.dto.ShareholderResponseDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +24,7 @@ public interface ShareholderController {
     @ApiResponse(code = 201, message = "Shareholder successfully created."),
     @ApiResponse(code = 400, message = "Invalid request."),
   })
-  ResponseEntity<ShareholderDto> createShareholder(ShareholderDto shareholderDto);
+  ResponseEntity<ShareholderResponseDto> createShareholder(ShareholderRequestDto shareholderRequestDto);
 
   @ApiOperation(
       value = "Change order of showing shareholders",
@@ -45,7 +46,7 @@ public interface ShareholderController {
     @ApiResponse(code = 201, message = "Shareholders successfully retrieved."),
     @ApiResponse(code = 400, message = "Invalid request.")
   })
-  ResponseEntity<List<ShareholderDto>> getShareholders();
+  ResponseEntity<List<ShareholderResponseDto>> getShareholders();
 
   @ApiOperation(
       value = "Get all shareholders",
@@ -67,7 +68,7 @@ public interface ShareholderController {
     @ApiResponse(code = 201, message = "Shareholder successfully created."),
     @ApiResponse(code = 400, message = "Invalid request."),
   })
-  ResponseEntity patchShareholder(Long shareholderId, ShareholderDto shareholderDto);
+  ResponseEntity patchShareholder(Long shareholderId, ShareholderRequestDto shareholderRequestDto);
 
   @ApiOperation(
       value = "Delete shareholder",

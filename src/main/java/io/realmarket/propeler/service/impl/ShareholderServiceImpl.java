@@ -2,7 +2,7 @@ package io.realmarket.propeler.service.impl;
 
 import com.google.common.base.MoreObjects;
 import io.realmarket.propeler.api.dto.FileDto;
-import io.realmarket.propeler.api.dto.ShareholderDto;
+import io.realmarket.propeler.api.dto.ShareholderRequestDto;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.Shareholder;
@@ -64,9 +64,9 @@ public class ShareholderServiceImpl implements ShareholderService {
 
   @Transactional
   @Override
-  public Shareholder createShareholder(ShareholderDto shareholderDto) {
+  public Shareholder createShareholder(ShareholderRequestDto shareholderRequestDto) {
     Company company = companyService.findMyCompany();
-    Shareholder shareholder = shareholderDto.createShareholder(company);
+    Shareholder shareholder = shareholderRequestDto.createShareholder(company);
     Integer order = MoreObjects.firstNonNull(shareholderRepository.getMaxOrder(company), 0);
     shareholder.setOrderNumber(++order);
     shareholder = shareholderRepository.save(shareholder);
@@ -112,10 +112,10 @@ public class ShareholderServiceImpl implements ShareholderService {
   }
 
   @Override
-  public Shareholder patchShareholder(Long shareholderId, ShareholderDto shareholderDto) {
+  public Shareholder patchShareholder(Long shareholderId, ShareholderRequestDto shareholderRequestDto) {
     Shareholder shareholder = findByIdOrThrowException(shareholderId);
     companyService.throwIfNotCompanyOwner();
-    modelMapperBlankString.map(shareholderDto, shareholder);
+    modelMapperBlankString.map(shareholderRequestDto, shareholder);
     shareholder = shareholderRepository.save(shareholder);
 
     blockchainCommunicationService.invoke(
@@ -163,6 +163,16 @@ public class ShareholderServiceImpl implements ShareholderService {
         break;
       default:
         throw new EntityNotFoundException(ExceptionMessages.PROFILE_PICTURE_DOES_NOT_EXIST);
+    }
+    return cloudObjectStorageService.downloadFileDto(
+        findByIdOrThrowException(shareholderId).getPhotoUrl());
+  }
+
+  @Override
+  public FileDto downloadPublicPicture(Long companyId, Long shareholderId) {
+    Shareholder shareholder = shareholderRepository.getByIdAndCompanyId(shareholderId, companyId);
+    if (shareholder.getIsAnonymous()) {
+      throw new EntityNotFoundException(ExceptionMessages.PROFILE_PICTURE_DOES_NOT_EXIST);
     }
     return cloudObjectStorageService.downloadFileDto(
         findByIdOrThrowException(shareholderId).getPhotoUrl());

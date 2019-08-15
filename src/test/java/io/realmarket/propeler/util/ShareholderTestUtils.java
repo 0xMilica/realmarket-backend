@@ -1,6 +1,7 @@
 package io.realmarket.propeler.util;
 
-import io.realmarket.propeler.api.dto.ShareholderDto;
+import io.realmarket.propeler.api.dto.ShareholderRequestDto;
+import io.realmarket.propeler.api.dto.ShareholderResponseDto;
 import io.realmarket.propeler.model.Shareholder;
 
 import java.util.Arrays;
@@ -22,15 +23,19 @@ public class ShareholderTestUtils {
         .build();
   }
 
-  public static ShareholderDto mockShareholderPatchLastName() {
-    return ShareholderDto.builder().name(TEST_SHAREHOLDER_NAME_2).build();
+  public static ShareholderRequestDto mockShareholderPatchLastName() {
+    return ShareholderRequestDto.builder().name(TEST_SHAREHOLDER_NAME_2).build();
   }
 
   public static List<Shareholder> mockShareholderList() {
     return Arrays.asList(createMockShareholder(), createMockShareholder());
   }
 
-  public static ShareholderDto createMockShareholderDto() {
-    return new ShareholderDto(createMockShareholder());
+  public static ShareholderResponseDto createMockShareholderResponseDto() {
+    return new ShareholderResponseDto(createMockShareholder());
+  }
+
+  public static ShareholderRequestDto createMockShareholderRequestDto() {
+    return new ShareholderRequestDto(createMockShareholder());
   }
 }
