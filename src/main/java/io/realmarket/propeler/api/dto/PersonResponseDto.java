@@ -31,7 +31,8 @@ public class PersonResponseDto {
   @ApiModelProperty(value = "For corporate person, name of company this person represents")
   private String companyName;
 
-  @ApiModelProperty(value = "For corporate person, identification number of company this person represents")
+  @ApiModelProperty(
+      value = "For corporate person, identification number of company this person represents")
   private String companyIdentificationNumber;
 
   @ApiModelProperty(value = "Person's country of residence")

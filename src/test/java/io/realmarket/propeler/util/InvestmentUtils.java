@@ -17,6 +17,11 @@ public class InvestmentUtils {
 
   private static final long WEEK = 604800000L;
   public static final long INVESTMENT_ID = 1L;
+
+  public static final InvestmentState mockInvestmentState(InvestmentStateName name) {
+    return InvestmentState.builder().name(name).build();
+  }
+
   public static final InvestmentState TEST_INVESTMENT_INITIAL_STATE =
       InvestmentState.builder().name(InvestmentStateName.INITIAL).build();
   public static final InvestmentState TEST_INVESTMENT_OWNER_APPROVED_STATE =
@@ -41,10 +46,19 @@ public class InvestmentUtils {
           .investedAmount(BigDecimal.valueOf(100))
           .build();
 
-  public static final Investment TEST_INVESTMENT_OWNER_APPROVED =
+  public static Investment mockOwnerApprovedInvestment() {
+    return Investment.builder()
+        .campaign(CampaignUtils.TEST_ACTIVE_CAMPAIGN)
+        .investmentState(mockInvestmentState(InvestmentStateName.OWNER_APPROVED))
+        .person(PersonUtils.TEST_PERSON)
+        .investedAmount(BigDecimal.valueOf(100))
+        .build();
+  }
+
+  public static final Investment TEST_INVESTMENT_PAID =
       Investment.builder()
           .campaign(CampaignUtils.TEST_ACTIVE_CAMPAIGN)
-          .investmentState(TEST_INVESTMENT_OWNER_APPROVED_STATE)
+          .investmentState(mockInvestmentState(InvestmentStateName.PAID))
           .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .build();
@@ -52,7 +66,7 @@ public class InvestmentUtils {
   public static final Investment TEST_INVESTMENT_PAID_NOT_REVOCABLE =
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
-          .investmentState(TEST_INVESTMENT_PAID_STATE)
+          .investmentState(mockInvestmentState(InvestmentStateName.PAID))
           .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
@@ -61,7 +75,7 @@ public class InvestmentUtils {
   public static final Investment TEST_INVESTMENT_PAID_REVOCABLE =
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
-          .investmentState(TEST_INVESTMENT_PAID_STATE)
+          .investmentState(mockInvestmentState(InvestmentStateName.PAID))
           .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(Instant.now())
@@ -70,7 +84,7 @@ public class InvestmentUtils {
   public static final Investment TEST_INVESTMENT_NOT_PAID_REVOCABLE =
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
-          .investmentState(TEST_INVESTMENT_INITIAL_STATE)
+          .investmentState(mockInvestmentState(InvestmentStateName.INITIAL))
           .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
@@ -79,7 +93,7 @@ public class InvestmentUtils {
   public static final Investment TEST_INVESTMENT_REVOKED =
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
-          .investmentState(TEST_INVESTMENT_REVOKED_STATE)
+          .investmentState(mockInvestmentState(InvestmentStateName.REVOKED))
           .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(Instant.now())
@@ -88,7 +102,7 @@ public class InvestmentUtils {
   public static final Investment TEST_INVESTMENT_AUDIT_APPROVED =
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
-          .investmentState(TEST_INVESTMENT_AUDIT_APPROVED_STATE)
+          .investmentState(mockInvestmentState(InvestmentStateName.AUDIT_APPROVED))
           .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)
@@ -97,7 +111,7 @@ public class InvestmentUtils {
   public static final Investment TEST_INVESTMENT_AUDIT_REJECTED =
       Investment.builder()
           .campaign(CampaignUtils.TEST_INVESTABLE_CAMPAIGN)
-          .investmentState(TEST_INVESTMENT_AUDIT_REJECTED_STATE)
+          .investmentState(mockInvestmentState(InvestmentStateName.AUDIT_REJECTED))
           .person(PersonUtils.TEST_PERSON)
           .investedAmount(BigDecimal.valueOf(100))
           .paymentDate(TEST_INVESTMENT_PAYMENT_DATE)

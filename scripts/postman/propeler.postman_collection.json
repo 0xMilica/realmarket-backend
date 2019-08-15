@@ -4904,6 +4904,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/payments{{investment_id}}/bankTransfer/confirm",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"documentTitle\": \"PAYMENTDOCUMENT\",\r\n  \"documentUrl\": \"KCEQ2HMXQSZ5BVKOJ7PQJW34PS6OTCBK.PNG\",\r\n  \"paymentDate\": \"2019-08-28T13:43:56.276Z\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server_ip}}/api/payments/{{investment_id}}/bankTransfer/confirm",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{investment_id}}",
+								"bankTransfer",
+								"confirm"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

@@ -1,6 +1,7 @@
 package io.realmarket.propeler.api.dto;
 
 import io.realmarket.propeler.model.Investment;
+import io.realmarket.propeler.model.Payment;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +37,7 @@ public class PaymentResponseDto {
     this.amount = investment.getInvestedAmount();
     this.creationDate = investment.getCreationDate();
     this.paymentDate = investment.getPaymentDate();
-    this.paymentState = investment.getInvestmentState().toString();
+    this.paymentState = investment.getInvestmentState().getName().toString();
     if (investment.getPerson().getCompanyName() == null) {
       this.investorName =
           investment.getPerson().getFirstName() + " " + investment.getPerson().getLastName();
@@ -44,5 +45,22 @@ public class PaymentResponseDto {
       this.investorName = investment.getPerson().getCompanyName();
     }
     this.campaignName = investment.getCampaign().getName();
+  }
+
+  public PaymentResponseDto(Payment payment) {
+    this.investmentId = payment.getInvestment().getId();
+    this.amount = payment.getAmount();
+    this.creationDate = payment.getCreationDate();
+    this.paymentDate = payment.getPaymentDate();
+    this.paymentState = payment.getInvestment().getInvestmentState().getName().toString();
+    if (payment.getInvestment().getPerson().getCompanyName() == null) {
+      this.investorName =
+          payment.getInvestment().getPerson().getFirstName()
+              + " "
+              + payment.getInvestment().getPerson().getLastName();
+    } else {
+      this.investorName = payment.getInvestment().getPerson().getCompanyName();
+    }
+    this.campaignName = payment.getInvestment().getCampaign().getName();
   }
 }

@@ -1,8 +1,13 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.model.BankTransferPayment;
 import io.realmarket.propeler.model.Investment;
+import io.realmarket.propeler.model.Payment;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
+import io.realmarket.propeler.repository.BankTransferPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
+import io.realmarket.propeler.service.InvestmentStateService;
+import io.realmarket.propeler.service.PaymentDocumentService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.util.InvestmentUtils;
 import org.junit.Test;
@@ -16,22 +21,29 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
+import java.util.Optional;
 
+import static io.realmarket.propeler.util.PaymentUtils.*;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 public class PaymentServiceImplTest {
 
+  @Mock private PaymentDocumentService paymentDocumentService;
+  @Mock private InvestmentStateService investmentStateService;
   @Mock private InvestmentRepository investmentRepository;
+  @Mock private BankTransferPaymentRepository bankTransferPaymentRepository;
 
   @InjectMocks PaymentServiceImpl paymentService;
 
   @Test
   public void GetPayments_Should_ReturnPayments() {
     Pageable pageable = Mockito.mock(Pageable.class);
-    Page<Investment> page =
-        new PageImpl<>(Collections.singletonList(InvestmentUtils.TEST_INVESTMENT_OWNER_APPROVED));
+    Investment ownerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
+    Page<Investment> page = new PageImpl<>(Collections.singletonList(ownerApprovedInvestment));
 
     when(investmentRepository.findAllPaymentInvestment(null, pageable)).thenReturn(page);
 
@@ -43,8 +55,8 @@ public class PaymentServiceImplTest {
   @Test
   public void GetPaymentsWithFilter_Should_ReturnPayments() {
     Pageable pageable = Mockito.mock(Pageable.class);
-    Page<Investment> page =
-        new PageImpl<>(Collections.singletonList(InvestmentUtils.TEST_INVESTMENT_OWNER_APPROVED));
+    Investment ownerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
+    Page<Investment> page = new PageImpl<>(Collections.singletonList(ownerApprovedInvestment));
 
     when(investmentRepository.findAllPaymentInvestment(
             InvestmentStateName.OWNER_APPROVED, pageable))
@@ -61,5 +73,32 @@ public class PaymentServiceImplTest {
     Pageable pageable = Mockito.mock(Pageable.class);
 
     paymentService.getPayments(pageable, "wrong_filter");
+  }
+
+  @Test
+  public void confirmBankTransferPayment_Should_ConfirmPayment() {
+    BankTransferPayment paidBankTransferPayment = mockPaidBankTransferPayment();
+    Investment ownerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
+
+    when(investmentRepository.getOne(TEST_ID)).thenReturn(ownerApprovedInvestment);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED))
+        .thenReturn(InvestmentUtils.TEST_INVESTMENT_OWNER_APPROVED_STATE);
+    when(bankTransferPaymentRepository.findByInvestmentId(InvestmentUtils.INVESTMENT_ID))
+        .thenReturn(Optional.of(paidBankTransferPayment));
+    when(investmentRepository.save(any())).thenReturn(InvestmentUtils.TEST_INVESTMENT_PAID);
+    when(bankTransferPaymentRepository.save(any())).thenReturn(paidBankTransferPayment);
+
+    Payment retVal =
+        paymentService.confirmBankTransferPayment(TEST_ID, TEST_PAYMENT_CONFIRMATION_DTO);
+
+    assertNotNull(retVal);
+    verify(bankTransferPaymentRepository, Mockito.times(1)).save(any(BankTransferPayment.class));
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void confirmBankTransferPayment_Should_Throw_BadRequestException() {
+    when(investmentRepository.getOne(TEST_ID)).thenReturn(InvestmentUtils.TEST_INVESTMENT_PAID);
+
+    paymentService.confirmBankTransferPayment(TEST_ID, TEST_PAYMENT_CONFIRMATION_DTO);
   }
 }

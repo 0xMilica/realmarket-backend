@@ -352,6 +352,7 @@ INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq')
 INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'BANK');
 INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'USER_KYC');
 INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'CORPORATE_INVESTOR_KYC');
+INSERT INTO public.document_type (id, name) VALUES (NEXTVAL('document_type_seq'), 'PAYMENT_PROOF');
 
 -- person
 INSERT INTO public.person (id, address, city, country_for_taxation, country_of_residence, email, first_name, last_name, phone_number, profile_picture_url) VALUES (NEXTVAL('person_seq'), 'Modene', 'Novi Sad', null, 'BB', 'marina.nenic@realmarket.io', 'Marina', 'Nenic', null, null);

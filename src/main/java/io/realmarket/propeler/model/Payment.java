@@ -39,5 +39,16 @@ public class Payment {
   @Column(name = "payment_date")
   private Instant paymentDate;
 
-  private String invoiceUrl;
+  public Payment(
+      Investment investment,
+      BigDecimal amount,
+      String currency,
+      Instant creationDate,
+      Instant paymentDate) {
+    this.investment = investment;
+    this.amount = amount;
+    this.currency = currency;
+    this.creationDate = creationDate;
+    this.paymentDate = paymentDate;
+  }
 }

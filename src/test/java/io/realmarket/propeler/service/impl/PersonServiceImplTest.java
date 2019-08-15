@@ -70,7 +70,8 @@ public class PersonServiceImplTest {
         .when(modelMapperBlankString)
         .map(personPatchDto, testPerson);
 
-    PersonResponseDto personResponseDto = personServiceImpl.patchPerson(TEST_AUTH_ID, personPatchDto);
+    PersonResponseDto personResponseDto =
+        personServiceImpl.patchPerson(TEST_AUTH_ID, personPatchDto);
     assertEquals(PersonUtils.TEST_PERSON_LAST_NAME, personResponseDto.getLastName());
   }
 
