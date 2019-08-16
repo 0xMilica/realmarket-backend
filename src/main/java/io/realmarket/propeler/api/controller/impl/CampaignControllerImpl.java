@@ -349,7 +349,7 @@ public class CampaignControllerImpl implements CampaignController {
 
   @Override
   @GetMapping(value = "/withInvestments")
-  @PreAuthorize("hasAuthority('ROLE_ENTREPRENEUR')")
+  @PreAuthorize("hasAnyAuthority('ROLE_ENTREPRENEUR', 'ROLE_ADMIN')")
   public ResponseEntity<Page<CampaignWithInvestmentsWithPersonResponseDto>>
       getCampaignsByStateWithInvestments(
           Pageable pageable, @RequestParam(value = "state", defaultValue = "active") String state) {

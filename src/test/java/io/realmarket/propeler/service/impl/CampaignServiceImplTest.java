@@ -1,10 +1,9 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.api.dto.CampaignPatchDto;
-import io.realmarket.propeler.api.dto.CampaignResponseDto;
-import io.realmarket.propeler.api.dto.FileDto;
-import io.realmarket.propeler.api.dto.TwoFADto;
+import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.model.Campaign;
+import io.realmarket.propeler.model.CampaignState;
+import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -25,10 +24,14 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Optional;
 
 import static io.realmarket.propeler.util.AuthUtils.*;
@@ -37,6 +40,7 @@ import static io.realmarket.propeler.util.CampaignUtils.*;
 import static io.realmarket.propeler.util.CompanyUtils.TEST_FEATURED_IMAGE_URL;
 import static io.realmarket.propeler.util.CompanyUtils.getCompanyMocked;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -62,6 +66,8 @@ public class CampaignServiceImplTest {
   @Mock private AuthService authService;
 
   @Mock private AuditService auditService;
+
+  @Mock private InvestmentService investmentService;
 
   @Mock private EmailService emailService;
 
@@ -631,5 +637,68 @@ public class CampaignServiceImplTest {
         .thenReturn(Optional.of(campaign));
 
     campaignServiceImpl.launchCampaign(TEST_URL_FRIENDLY_NAME);
+  }
+
+  @Test
+  public void getAllCampaignWithInvestments_Should_Return_Campaigns() {
+    AuthUtils.mockRequestAndContextEntrepreneur();
+
+    Pageable pageable = Mockito.mock(Pageable.class);
+    Company company = CompanyUtils.getCompanyMocked();
+    Campaign campaign = CampaignUtils.getCampaignMocked();
+    Page<Campaign> page = new PageImpl<>(Collections.singletonList(campaign));
+
+    when(companyService.findMyCompany()).thenReturn(company);
+    when(campaignRepository.findAllByCompanyViewable(pageable, company)).thenReturn(page);
+
+    Page<CampaignWithInvestmentsWithPersonResponseDto> retVal =
+        campaignServiceImpl.getCampaignsByStateWithInvestments(pageable, "all");
+    assertNotNull(retVal);
+  }
+
+  @Test
+  public void getCampaignByStateWithInvestments_AsEntrepreneur_Should_Return_Campaigns() {
+    AuthUtils.mockRequestAndContextEntrepreneur();
+
+    Pageable pageable = Mockito.mock(Pageable.class);
+    CampaignState state = mockCampaignState(CampaignStateName.ACTIVE);
+    Company company = CompanyUtils.getCompanyMocked();
+    Campaign campaign = CampaignUtils.getCampaignMocked();
+    Page<Campaign> page = new PageImpl<>(Collections.singletonList(campaign));
+
+    when(campaignStateService.getCampaignState(anyString())).thenReturn(state);
+    when(companyService.findMyCompany()).thenReturn(company);
+    when(campaignRepository.findAllByCampaignStateAndCompany(pageable, state, company))
+        .thenReturn(page);
+
+    Page<CampaignWithInvestmentsWithPersonResponseDto> retVal =
+        campaignServiceImpl.getCampaignsByStateWithInvestments(
+            pageable, CampaignStateName.ACTIVE.toString());
+    assertNotNull(retVal);
+  }
+
+  @Test
+  public void getCampaignByStateWithInvestments_AsAdmin_Should_Return_Campaigns() {
+    AuthUtils.mockRequestAndContextAdmin();
+
+    Pageable pageable = Mockito.mock(Pageable.class);
+    CampaignState state = mockCampaignState(CampaignStateName.ACTIVE);
+    Campaign campaign = CampaignUtils.getCampaignMocked();
+    Page<Campaign> page = new PageImpl<>(Collections.singletonList(campaign));
+
+    when(campaignStateService.getCampaignState(anyString())).thenReturn(state);
+    when(campaignRepository.findAllByCampaignState(pageable, state)).thenReturn(page);
+
+    Page<CampaignWithInvestmentsWithPersonResponseDto> retVal =
+        campaignServiceImpl.getCampaignsByStateWithInvestments(
+            pageable, CampaignStateName.ACTIVE.toString());
+    assertNotNull(retVal);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void getCampaignByStateWithInvestments_Should_Throw_BadRequestException() {
+    Pageable pageable = Mockito.mock(Pageable.class);
+
+    campaignServiceImpl.getCampaignsByStateWithInvestments(pageable, "deleted");
   }
 }

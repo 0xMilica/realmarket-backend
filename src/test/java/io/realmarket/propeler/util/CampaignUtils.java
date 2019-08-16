@@ -35,6 +35,10 @@ public class CampaignUtils {
   public static final CampaignState TEST_CAMPAIGN_AUDIT_STATE =
       CampaignState.builder().name(CampaignStateName.AUDIT).build();
 
+  public static CampaignState mockCampaignState(CampaignStateName name) {
+    return CampaignState.builder().name(name).build();
+  }
+
   public static final Campaign TEST_CAMPAIGN =
       Campaign.builder()
           .company(CompanyUtils.getCompanyMocked())

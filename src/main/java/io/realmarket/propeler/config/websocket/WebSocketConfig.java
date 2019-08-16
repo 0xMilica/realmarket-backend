@@ -12,8 +12,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-  private static final String STOMP_ENDPOINT = "/ws";
   public static final String USER_BROKER = "/user";
+  private static final String STOMP_ENDPOINT = "/ws";
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {

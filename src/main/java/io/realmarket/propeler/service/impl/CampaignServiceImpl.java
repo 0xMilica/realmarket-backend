@@ -554,15 +554,25 @@ public class CampaignServiceImpl implements CampaignService {
                       c, investmentService.findAllByCampaignWithInvestors(c)));
     } else if (!state.equalsIgnoreCase("deleted")) {
       CampaignState campaignState = campaignStateService.getCampaignState(state);
-      return campaignRepository
-          .findAllByCampaignStateAndCompany(
-              pageable,
-              campaignStateService.getCampaignState(campaignState.getName().toString()),
-              companyService.findMyCompany())
-          .map(
-              c ->
-                  new CampaignWithInvestmentsWithPersonResponseDto(
-                      c, investmentService.findAllByCampaignWithInvestors(c)));
+      if (AuthenticationUtil.hasUserAdminRole()) {
+        return campaignRepository
+            .findAllByCampaignState(
+                pageable, campaignStateService.getCampaignState(campaignState.getName().toString()))
+            .map(
+                c ->
+                    new CampaignWithInvestmentsWithPersonResponseDto(
+                        c, investmentService.findAllByCampaignWithInvestors(c)));
+      } else {
+        return campaignRepository
+            .findAllByCampaignStateAndCompany(
+                pageable,
+                campaignStateService.getCampaignState(campaignState.getName().toString()),
+                companyService.findMyCompany())
+            .map(
+                c ->
+                    new CampaignWithInvestmentsWithPersonResponseDto(
+                        c, investmentService.findAllByCampaignWithInvestors(c)));
+      }
     }
     throw new BadRequestException(INVALID_REQUEST);
   }
