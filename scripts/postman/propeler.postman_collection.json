@@ -5304,6 +5304,68 @@
 					"response": []
 				},
 				{
+					"name": "/payments/{{investment_id}}/methods",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/payments/{{investment_id}}/methods",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{investment_id}}",
+								"methods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/payments/{{investment_id}}/bankTransfer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/payments/{{investment_id}}/bankTransfer",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{investment_id}}",
+								"bankTransfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/payments{{investment_id}}/bankTransfer/confirm",
 					"request": {
 						"method": "POST",
@@ -5335,6 +5397,37 @@
 								"{{investment_id}}",
 								"bankTransfer",
 								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/payments/{{investment_id}}/card",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/payments/{{investment_id}}/card",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{investment_id}}",
+								"card"
 							]
 						}
 					},

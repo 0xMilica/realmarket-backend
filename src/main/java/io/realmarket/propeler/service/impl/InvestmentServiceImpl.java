@@ -1,6 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.Country;
 import io.realmarket.propeler.model.Investment;
@@ -18,6 +19,7 @@ import io.realmarket.propeler.service.blockchain.dto.investment.ChangeStateDto;
 import io.realmarket.propeler.service.blockchain.dto.investment.InvestmentDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.*;
@@ -45,6 +46,7 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final InvestmentStateService investmentStateService;
   private final ModelMapperBlankString modelMapperBlankString;
   private final PersonService personService;
+  private final EmailService emailService;
   private final BlockchainCommunicationService blockchainCommunicationService;
   private final CountryRepository countryRepository;
 
@@ -59,6 +61,7 @@ public class InvestmentServiceImpl implements InvestmentService {
       InvestmentStateService investmentStateService,
       ModelMapperBlankString modelMapperBlankString,
       PersonService personService,
+      EmailService emailService,
       BlockchainCommunicationService blockchainCommunicationService,
       CountryRepository countryRepository) {
     this.campaignService = campaignService;
@@ -67,6 +70,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     this.investmentStateService = investmentStateService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.personService = personService;
+    this.emailService = emailService;
     this.blockchainCommunicationService = blockchainCommunicationService;
     this.countryRepository = countryRepository;
   }
@@ -150,11 +154,27 @@ public class InvestmentServiceImpl implements InvestmentService {
         investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED));
     investment = investmentRepository.save(investment);
 
+    sendInvestmentAcceptanceEmail(investment);
+
     blockchainCommunicationService.invoke(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
+  }
+
+  private void sendInvestmentAcceptanceEmail(Investment investment) {
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put(EmailServiceImpl.FIRST_NAME, investment.getPerson().getFirstName());
+    parameters.put(EmailServiceImpl.LAST_NAME, investment.getPerson().getLastName());
+    parameters.put(EmailServiceImpl.CAMPAIGN, investment.getCampaign().getName());
+    parameters.put(EmailServiceImpl.INVESTMENT_ID, investment.getId());
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            Collections.singletonList(investment.getPerson().getEmail()),
+            EmailType.INVESTMENT_APPROVAL,
+            parameters));
   }
 
   @Transactional
@@ -169,11 +189,26 @@ public class InvestmentServiceImpl implements InvestmentService {
         investmentStateService.getInvestmentState(InvestmentStateName.OWNER_REJECTED));
     investment = investmentRepository.save(investment);
 
+    sendInvestmentRejectionEmail(investment);
+
     blockchainCommunicationService.invoke(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
+  }
+
+  private void sendInvestmentRejectionEmail(Investment investment) {
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put(EmailServiceImpl.FIRST_NAME, investment.getPerson().getFirstName());
+    parameters.put(EmailServiceImpl.LAST_NAME, investment.getPerson().getLastName());
+    parameters.put(EmailServiceImpl.CAMPAIGN, investment.getCampaign().getName());
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            Collections.singletonList(investment.getPerson().getEmail()),
+            EmailType.INVESTMENT_REJECTION,
+            parameters));
   }
 
   @Transactional

@@ -48,6 +48,7 @@ public class InvestmentUtils {
 
   public static Investment mockOwnerApprovedInvestment() {
     return Investment.builder()
+        .id(INVESTMENT_ID)
         .campaign(CampaignUtils.TEST_ACTIVE_CAMPAIGN)
         .investmentState(mockInvestmentState(InvestmentStateName.OWNER_APPROVED))
         .person(PersonUtils.TEST_PERSON)

@@ -38,12 +38,14 @@ public class EmailServiceImpl implements EmailService {
   public static final String REGISTRATION_TOKEN = "registrationToken";
   public static final String REJECTION_REASON = "rejectionReason";
   public static final String DATE = "date";
+  public static final String INVESTMENT_ID = "investmentId";
 
   private static final String CONTACT_US_EMAIL = "contactUsEmail";
   private static final String REGISTRATION_LINK = "registrationLink";
   private static final String ACTIVATION_LINK = "activationLink";
   private static final String RESET_PASSWORD_LINK = "resetPasswordLink";
   private static final String DASHBOARD_LINK = "dashboardLink";
+  private static final String PAYMENT_LINK = "paymentLink";
 
   private static final String PNG_IMAGE = "image/png";
   private static final String LOGO = "logo";
@@ -192,6 +194,18 @@ public class EmailServiceImpl implements EmailService {
         templateName = "rejectKYCTemplate";
         break;
 
+      case INVESTMENT_APPROVAL:
+        subject = "Propeler - Campaign investment acceptance";
+        data = getInvestmentApprovalData(mailContentHolder);
+        templateName = "acceptCampaignInvestmentTemplate";
+        break;
+
+      case INVESTMENT_REJECTION:
+        subject = "Propeler - Campaign investment rejection";
+        data = getRejectionData(mailContentHolder);
+        templateName = "rejectCampaignInvestmentTemplate";
+        break;
+
       default:
         data = new HashMap<>();
         break;
@@ -308,6 +322,19 @@ public class EmailServiceImpl implements EmailService {
     return data;
   }
 
+  private Map<String, Object> getInvestmentApprovalData(MailContentHolder mailContentHolder) {
+    String investmentId = Long.toString((Long) mailContentHolder.getContent().get(INVESTMENT_ID));
+    String paymentLink =
+        String.format("%s/investor/payment/%s", frontendServiceUrlPath, investmentId);
+    Map<String, Object> data = getBasicEmailData();
+    data.putAll(mailContentHolder.getContent());
+    data.putAll(getSocialMediaData());
+    data.put(CHECK_CIRCLE, CHECK_CIRCLE);
+    data.put(PAYMENT_LINK, paymentLink);
+
+    return data;
+  }
+
   private Map<String, Object> getApprovalData(MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
     data.putAll(mailContentHolder.getContent());
@@ -373,6 +400,7 @@ public class EmailServiceImpl implements EmailService {
       case KYC_APPROVAL:
       case ACCEPT_CAMPAIGN:
       case FUNDRAISING_PROPOSAL_APPROVAL:
+      case INVESTMENT_APPROVAL:
         helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), PNG_IMAGE);
         helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), PNG_IMAGE);
         helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), PNG_IMAGE);
@@ -382,6 +410,7 @@ public class EmailServiceImpl implements EmailService {
       case KYC_REJECTION:
       case REJECT_CAMPAIGN:
       case FUNDRAISING_PROPOSAL_REJECTION:
+      case INVESTMENT_REJECTION:
         helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), PNG_IMAGE);
         helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), PNG_IMAGE);
         helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), PNG_IMAGE);

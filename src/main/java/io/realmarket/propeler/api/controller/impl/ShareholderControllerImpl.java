@@ -76,7 +76,8 @@ public class ShareholderControllerImpl implements ShareholderController {
   public ResponseEntity<ShareholderResponseDto> patchShareholder(
       @PathVariable Long shareholderId, @RequestBody ShareholderRequestDto shareholderRequestDto) {
     return ResponseEntity.ok(
-        new ShareholderResponseDto(shareholderService.patchShareholder(shareholderId, shareholderRequestDto)));
+        new ShareholderResponseDto(
+            shareholderService.patchShareholder(shareholderId, shareholderRequestDto)));
   }
 
   @Override

@@ -87,7 +87,8 @@ public class ShareholderServiceImplTest {
   @Test
   public void PatchShareholder_Should_PatchChanges() {
     Shareholder shareholder = ShareholderTestUtils.createMockShareholder();
-    ShareholderRequestDto shareholderRequestDto = ShareholderTestUtils.mockShareholderPatchLastName();
+    ShareholderRequestDto shareholderRequestDto =
+        ShareholderTestUtils.mockShareholderPatchLastName();
     Company company = CompanyUtils.getCompanyMocked();
 
     when(companyService.findMyCompany()).thenReturn(company);

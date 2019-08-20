@@ -75,6 +75,13 @@ app:
 
   time.zone: Europe/Belgrade
 
+  bank:
+    account-number: 160-24524924592-44
+    mod: 97
+
+  payment:
+    card-limit: 15000
+
 cos:
   public_prefix: local_public
   file_prefix:

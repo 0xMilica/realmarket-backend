@@ -112,7 +112,8 @@ public class ShareholderServiceImpl implements ShareholderService {
   }
 
   @Override
-  public Shareholder patchShareholder(Long shareholderId, ShareholderRequestDto shareholderRequestDto) {
+  public Shareholder patchShareholder(
+      Long shareholderId, ShareholderRequestDto shareholderRequestDto) {
     Shareholder shareholder = findByIdOrThrowException(shareholderId);
     companyService.throwIfNotCompanyOwner();
     modelMapperBlankString.map(shareholderRequestDto, shareholder);

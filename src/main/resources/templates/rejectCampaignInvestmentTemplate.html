@@ -1,0 +1,193 @@
+<!--
+	HTML Email Starter Kit
+	Documentation: https://github.com/timothylong/html-email-starter-kit
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width" initial-scale="1" name="viewport">
+    <!--[if !mso]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <![endif]-->
+    <meta name="x-apple-disable-message-reformatting">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <title></title>
+    <!--[if mso]>
+    <style>
+        * {
+            font-family: "Open Sans", sans-serif !important;
+        }
+    </style>
+    <![endif]-->
+    <!--[if !mso]><!-->
+    <!-- Insert font reference, e.g. <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet"> -->
+    <!--<![endif]-->
+    <style>
+        *,
+        *:after,
+        *:before {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        tr, td {
+            text-align: center;
+        }
+
+        html,
+        body,
+        .document {
+            font-family: "Open Sans", sans-serif !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        div[style*="margin: 16px 0"] {
+            margin: 0 !important;
+        }
+
+        table,
+        td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: 0 auto;
+        }
+
+        img {
+            -ms-interpolation-mode: bicubic;
+            max-width: 100%;
+            border: 0;
+        }
+
+        *[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .x-gmail-data-detectors,
+        .x-gmail-data-detectors *,
+        .aBn {
+            border-bottom: 0 !important;
+            cursor: default !important;
+        }
+
+        @media screen and (max-width: 750px) {
+            .container {
+                width: 100%;
+                margin: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<div style="display: none; max-height: 0px; overflow: hidden;">
+    <!-- Preheader message here -->
+</div>
+<div style="display: none; max-height: 0px; overflow: hidden;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>
+<table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="document"
+       role="presentation" style="margin-top: 100px; margin-bottom: 100px">
+    <tr>
+        <td valign="top">
+            <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="container"
+                   role="presentation" width="600">
+                <tr>
+                    <td>
+                        <table align="left">
+                            <td style="padding: 26px 0 19px 20px; font-family: 'Open Sans SemiBold', sans-serif; font-size: 26px; line-height: 34px">
+                                <a href="#" target="_blank">
+                                    <img alt="Logo" style="height: 40px" th:src="|cid:${logo}|">
+                                </a>
+                            </td>
+                        </table>
+                        <table align="right">
+                            <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
+                                <a href="#" target="_blank">
+                                    <img alt="Twitter" style="width: 18px" th:src="|cid:${twitter}|">
+                                </a>
+                            </td>
+                            <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
+                                <a href="#" target="_blank">
+                                    <img alt="Facebook" style="height: 18px" th:src="|cid:${facebook}|">
+                                </a>
+                            </td>
+                            <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
+                                <a href="#" target="_blank">
+                                    <img alt="Youtube" style="width: 18px" th:src="|cid:${youtube}|">
+                                </a>
+                            </td>
+                            <td style="padding: 26px 20px 19px 20px; font-size: 26px; line-height: 34px">
+                                <a href="#" target="_blank">
+                                    <img alt="Linkedin" style="width: 18px" th:src="|cid:${linkedin}|">
+                                </a>
+                            </td>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <img alt="Rectangle-2723-2x"
+                             border="0" src="https://i.ibb.co/8cx9y03/Rectangle-2723-2x.png">
+                    </td>
+                </tr>
+            </table>
+            <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="container"
+                   role="presentation" width="600">
+                <tr>
+                    <td>
+                        <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0"
+                               role="presentation" width="100%">
+                            <tr>
+                                <td>
+                                    <h1 style=" font-size: 30px; font-weight: 600; line-height: 45px;">
+                                        <img alt="Warning" style="width: 18px" th:src="|cid:${warning}|">
+                                        "<span th:text="${campaign}"></span>" campaign investment rejection</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; text-align: left; width: 380px; margin-bottom: 200px">
+                                        Dear <b><span th:text="${firstName}"></span> <span th:text="${lastName}"></span></b>,
+                                        Your investment indication has been rejected.
+                                        For more info contact our
+                                        <a style="color: #3dc6fa; font-size: 14px; font-weight: 400; line-height: 21px; display: inline-block;"
+                                           th:href="${contactUsEmail}">support service</a>.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="display: inline-block; color: #9498B8; font-family: 'Open Sans Regular', sans-serif; font-size:12px; line-height: 1.4">
+                                    If have any questions feel free to contact
+                                    <a style="color: #3dc6fa; font-size: 12px; font-weight: 400; line-height: 21px; display: inline-block;"
+                                       th:href="${contactUsEmail}">our support</a> service at any time.
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

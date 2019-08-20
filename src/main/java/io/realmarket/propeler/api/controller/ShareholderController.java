@@ -24,7 +24,8 @@ public interface ShareholderController {
     @ApiResponse(code = 201, message = "Shareholder successfully created."),
     @ApiResponse(code = 400, message = "Invalid request."),
   })
-  ResponseEntity<ShareholderResponseDto> createShareholder(ShareholderRequestDto shareholderRequestDto);
+  ResponseEntity<ShareholderResponseDto> createShareholder(
+      ShareholderRequestDto shareholderRequestDto);
 
   @ApiOperation(
       value = "Change order of showing shareholders",

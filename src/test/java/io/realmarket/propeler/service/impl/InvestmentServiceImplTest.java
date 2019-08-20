@@ -6,13 +6,11 @@ import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
-import io.realmarket.propeler.service.CampaignService;
-import io.realmarket.propeler.service.InvestmentStateService;
-import io.realmarket.propeler.service.PaymentService;
-import io.realmarket.propeler.service.PersonService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.PersonUtils;
 import org.junit.Before;
@@ -52,6 +50,8 @@ public class InvestmentServiceImplTest {
   @Mock private PersonService personService;
 
   @Mock private ModelMapperBlankString modelMapperBlankString;
+
+  @Mock private EmailService emailService;
 
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
 
@@ -227,6 +227,7 @@ public class InvestmentServiceImplTest {
     when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED))
         .thenReturn(TEST_INVESTMENT_OWNER_APPROVED_STATE);
     when(investmentRepository.save(investment)).thenReturn(investment);
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
     investmentService.ownerApproveInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_OWNER_APPROVED_STATE, investment.getInvestmentState());
@@ -255,6 +256,7 @@ public class InvestmentServiceImplTest {
     when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_REJECTED))
         .thenReturn(TEST_INVESTMENT_OWNER_REJECTED_STATE);
     when(investmentRepository.save(investment)).thenReturn(investment);
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
 
     investmentService.ownerRejectInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_OWNER_REJECTED_STATE, investment.getInvestmentState());

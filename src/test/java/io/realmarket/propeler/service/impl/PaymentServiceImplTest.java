@@ -49,6 +49,40 @@ public class PaymentServiceImplTest {
   }
 
   @Test
+  public void GetBankTransferPayment_Should_ReturnPayment() {
+    Investment ownerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
+    BankTransferPayment bankTransferPayment = mockPaidBankTransferPayment();
+
+    when(investmentRepository.getOne(InvestmentUtils.INVESTMENT_ID))
+        .thenReturn(ownerApprovedInvestment);
+    when(bankTransferPaymentRepository.findByInvestmentId(InvestmentUtils.INVESTMENT_ID))
+        .thenReturn(Optional.of(bankTransferPayment));
+
+    BankTransferPayment retVal =
+        paymentService.getBankTransferPayment(InvestmentUtils.INVESTMENT_ID);
+
+    assertNotNull(retVal);
+  }
+
+  @Test
+  public void GetBankTransferPayment_Should_CreateAndReturnPayment() {
+    Investment ownerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
+    BankTransferPayment bankTransferPayment = mockPaidBankTransferPayment();
+
+    when(investmentRepository.getOne(InvestmentUtils.INVESTMENT_ID))
+        .thenReturn(ownerApprovedInvestment);
+    when(bankTransferPaymentRepository.findByInvestmentId(InvestmentUtils.INVESTMENT_ID))
+        .thenReturn(Optional.ofNullable(null));
+    when(bankTransferPaymentRepository.save(any())).thenReturn(bankTransferPayment);
+
+    BankTransferPayment retVal =
+        paymentService.getBankTransferPayment(InvestmentUtils.INVESTMENT_ID);
+
+    verify(bankTransferPaymentRepository, Mockito.times(1)).save(any());
+    assertNotNull(retVal);
+  }
+
+  @Test
   public void GetPayments_Should_ReturnPayments() {
     Pageable pageable = Mockito.mock(Pageable.class);
     Investment ownerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();

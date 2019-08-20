@@ -10,6 +10,57 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Api(value = "/payments")
 public interface PaymentController {
 
+  @ApiOperation(
+      value = "Get payment methods",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "investmentId",
+        value = "Investment ID",
+        required = true,
+        dataType = "Long",
+        paramType = "path"),
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Payment methods successfully retrieved"),
+    @ApiResponse(code = 404, message = "Investment not found.")
+  })
+  ResponseEntity getPaymentMethods(Long investmentId);
+
+  @ApiOperation(
+      value = "Get bank transfer payment",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "investmentId",
+        value = "Investment ID",
+        required = true,
+        dataType = "Long",
+        paramType = "path"),
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Bank transfer payment successfully retrieved"),
+    @ApiResponse(code = 404, message = "Investment not found.")
+  })
+  ResponseEntity getBankTransferPayment(Long investmentId);
+
+  @ApiOperation(value = "Get card payment", httpMethod = "GET", produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "investmentId",
+        value = "Investment ID",
+        required = true,
+        dataType = "Long",
+        paramType = "path"),
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Card payment successfully retrieved"),
+    @ApiResponse(code = 404, message = "Investment not found.")
+  })
+  ResponseEntity getCardPayment(Long investmentId);
+
   @ApiOperation(value = "Get payments", httpMethod = "GET", produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
     @ApiImplicitParam(

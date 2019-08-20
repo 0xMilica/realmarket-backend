@@ -1,6 +1,8 @@
 package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.PaymentController;
+import io.realmarket.propeler.api.dto.BankTransferPaymentResponseDto;
+import io.realmarket.propeler.api.dto.CardPaymentResponseDto;
 import io.realmarket.propeler.api.dto.PaymentConfirmationDto;
 import io.realmarket.propeler.api.dto.PaymentResponseDto;
 import io.realmarket.propeler.service.PaymentService;
@@ -21,6 +23,29 @@ public class PaymentControllerImpl implements PaymentController {
   @Autowired
   public PaymentControllerImpl(PaymentService paymentService) {
     this.paymentService = paymentService;
+  }
+
+  @Override
+  @GetMapping(value = "/{investmentId}/methods")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR')")
+  public ResponseEntity getPaymentMethods(@PathVariable Long investmentId) {
+    return ResponseEntity.ok(paymentService.getPaymentMethods(investmentId));
+  }
+
+  @Override
+  @GetMapping(value = "/{investmentId}/bankTransfer")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR')")
+  public ResponseEntity getBankTransferPayment(@PathVariable Long investmentId) {
+    return ResponseEntity.ok(
+        new BankTransferPaymentResponseDto(paymentService.getBankTransferPayment(investmentId)));
+  }
+
+  @Override
+  @GetMapping(value = "/{investmentId}/card")
+  @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR')")
+  public ResponseEntity getCardPayment(@PathVariable Long investmentId) {
+    return ResponseEntity.ok(
+        new CardPaymentResponseDto(paymentService.getCardPayment(investmentId)));
   }
 
   @Override
