@@ -14,4 +14,6 @@ public interface NotificationService {
   Page<NotificationDto> getAllNotifications(Pageable pageable, Boolean filter);
 
   void changeNotificationSeenStatus(Long id);
+
+  void deleteNotification(Long id);
 }

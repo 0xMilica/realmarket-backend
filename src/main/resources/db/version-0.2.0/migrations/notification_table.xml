@@ -22,7 +22,8 @@
             references auth,
             recipient_id bigint
             constraint notification_fk_on_recipient
-            references auth
+            references auth,
+            active boolean
             );
         </sql>
     </changeSet>

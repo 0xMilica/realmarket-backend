@@ -25,6 +25,7 @@ public class Notification {
   private Long id;
 
   private Date date;
+
   @Builder.Default private Boolean seen = false;
 
   @JoinColumn(name = "senderId", foreignKey = @ForeignKey(name = "notification_fk_on_sender"))
@@ -37,5 +38,8 @@ public class Notification {
   private Auth recipient;
 
   private String content;
+
   private String title;
+
+  @Builder.Default private Boolean active = true;
 }

@@ -43,4 +43,12 @@ public class NotificationControllerImpl implements NotificationController {
     notificationService.changeNotificationSeenStatus(id);
     return ResponseEntity.noContent().build();
   }
+
+  @DeleteMapping(value = "{id}")
+  @PreAuthorize(
+      "hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR', 'ROLE_ENTREPRENEUR','ROLE_ADMIN')")
+  public ResponseEntity<Void> deleteNotification(@PathVariable Long id) {
+    notificationService.deleteNotification(id);
+    return ResponseEntity.noContent().build();
+  }
 }

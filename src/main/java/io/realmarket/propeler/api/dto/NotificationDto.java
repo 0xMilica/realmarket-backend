@@ -1,7 +1,6 @@
 package io.realmarket.propeler.api.dto;
 
 import io.realmarket.propeler.model.Notification;
-import io.realmarket.propeler.model.Person;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -41,17 +40,6 @@ public class NotificationDto {
 
   @ApiModelProperty(value = "Notification date")
   private Date date;
-
-  public NotificationDto(Notification notification, Person sender) {
-    this.content = notification.getContent();
-    this.title = notification.getTitle();
-    this.seen = notification.getSeen();
-    this.id = notification.getId();
-    this.senderFirstName = sender.getFirstName();
-    this.senderLastName = sender.getLastName();
-    this.recipientId = notification.getRecipient().getId();
-    this.date = notification.getDate();
-  }
 
   public NotificationDto(Notification notification) {
     this.content = notification.getContent();

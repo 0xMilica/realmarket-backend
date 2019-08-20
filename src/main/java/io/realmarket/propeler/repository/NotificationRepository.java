@@ -9,10 +9,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-  Long countNotificationByRecipientAndSeen(Auth recipient, boolean seen);
+  Long countNotificationByRecipientAndSeenAndActive(Auth recipient, boolean seen, boolean active);
 
-  Page<Notification> findAllByRecipientAndSeenOrderByDateDesc(
-      Pageable pageable, Auth recipient, boolean seen);
+  Page<Notification> findAllByRecipientAndSeenAndActiveOrderByDateDesc(
+      Pageable pageable, Auth recipient, boolean seen, boolean active);
 
-  Page<Notification> findAllByRecipientOrderByDateDesc(Pageable pageable, Auth recipient);
+  Page<Notification> findAllByRecipientAndActiveOrderByDateDesc(
+      Pageable pageable, Auth recipient, boolean active);
 }

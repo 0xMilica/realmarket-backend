@@ -65,7 +65,8 @@ public class NotificationServiceImpl implements NotificationService {
   @Override
   public Long getNumberUnseenNotifications() {
     Auth recipient = AuthenticationUtil.getAuthentication().getAuth();
-    return notificationRepository.countNotificationByRecipientAndSeen(recipient, false);
+    return notificationRepository.countNotificationByRecipientAndSeenAndActive(
+        recipient, false, true);
   }
 
   @Override
@@ -73,11 +74,11 @@ public class NotificationServiceImpl implements NotificationService {
     Auth recipient = AuthenticationUtil.getAuthentication().getAuth();
     if (filter == null)
       return notificationRepository
-          .findAllByRecipientOrderByDateDesc(pageable, recipient)
+          .findAllByRecipientAndActiveOrderByDateDesc(pageable, recipient, true)
           .map(NotificationDto::new);
     else
       return notificationRepository
-          .findAllByRecipientAndSeenOrderByDateDesc(pageable, recipient, filter)
+          .findAllByRecipientAndSeenAndActiveOrderByDateDesc(pageable, recipient, filter, true)
           .map(NotificationDto::new);
   }
 
@@ -93,6 +94,21 @@ public class NotificationServiceImpl implements NotificationService {
       throw new ForbiddenOperationException(USER_IS_NOT_RECIPIENT_OF_NOTIFICATION);
     }
     notification.setSeen(!notification.getSeen());
+    notificationRepository.save(notification);
+  }
+
+  @Override
+  public void deleteNotification(Long id) {
+    Notification notification =
+        notificationRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new EntityNotFoundException(ExceptionMessages.NOTIFICATION_DOES_NOT_EXIST));
+    Auth currentUser = AuthenticationUtil.getAuthentication().getAuth();
+    if (!notification.getRecipient().getId().equals(currentUser.getId())) {
+      throw new ForbiddenOperationException(USER_IS_NOT_RECIPIENT_OF_NOTIFICATION);
+    }
+    notification.setActive(false);
     notificationRepository.save(notification);
   }
 

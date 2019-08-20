@@ -62,4 +62,15 @@ public interface NotificationController {
     @ApiResponse(code = 404, message = "Notification with provided id not found."),
   })
   ResponseEntity<Void> changeNotificationSeenStatus(Long id);
+
+  @ApiOperation(
+      value = "Delete notification",
+      httpMethod = "DELETE",
+      consumes = APPLICATION_JSON_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully delete notification."),
+    @ApiResponse(code = 404, message = "Notification with provided id not found."),
+  })
+  ResponseEntity<Void> deleteNotification(Long id);
 }
