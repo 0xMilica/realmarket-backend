@@ -24,6 +24,7 @@ public class Shareholder {
   private String name;
   private String location;
   private BigDecimal investedAmount;
+  private String currency;
   private String description;
   private String photoUrl;
   private String linkedinUrl;

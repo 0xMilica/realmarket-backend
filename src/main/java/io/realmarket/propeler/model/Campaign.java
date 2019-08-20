@@ -27,6 +27,7 @@ public class Campaign {
   private String name;
   private String urlFriendlyName;
   private Long fundingGoals;
+  private String currency;
 
   @Builder.Default private BigDecimal collectedAmount = BigDecimal.ZERO;
   private Integer timeToRaiseFunds;

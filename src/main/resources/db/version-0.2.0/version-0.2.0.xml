@@ -24,7 +24,6 @@
     <include file="migrations/campaign_topic_image_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_update_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_update_image_table.xml" relativeToChangelogFile="true"/>
-    <include file="migrations/platform_settings_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/audit_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/fundraising_proposal_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/user_kyc_table.xml" relativeToChangelogFile="true"/>

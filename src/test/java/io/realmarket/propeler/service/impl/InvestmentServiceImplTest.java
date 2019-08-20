@@ -13,6 +13,7 @@ import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.PersonUtils;
+import io.realmarket.propeler.util.PlatformSettingsUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,25 +38,18 @@ import static org.mockito.Mockito.*;
 @PrepareForTest(InvestmentServiceImpl.class)
 public class InvestmentServiceImplTest {
 
-  @InjectMocks private InvestmentServiceImpl investmentService;
-
-  @Mock private InvestmentRepository investmentRepository;
-
   @Mock private CampaignService campaignService;
-
   @Mock private InvestmentStateService investmentStateService;
-
   @Mock private PaymentService paymentService;
-
   @Mock private PersonService personService;
-
   @Mock private ModelMapperBlankString modelMapperBlankString;
-
   @Mock private EmailService emailService;
-
+  @Mock private PlatformSettingsService platformSettingsService;
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
-
+  @Mock private InvestmentRepository investmentRepository;
   @Mock private CountryRepository countryRepository;
+
+  @InjectMocks private InvestmentServiceImpl investmentService;
 
   @Before
   public void createAuthContext() {
@@ -67,6 +61,8 @@ public class InvestmentServiceImplTest {
   public void invest_Should_Create_Investment() {
     when(campaignService.getCampaignByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
         .thenReturn(TEST_INVESTABLE_CAMPAIGN);
+    when(platformSettingsService.getPlatformCurrency())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
     when(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
         .thenReturn(TEST_INVESTMENT_INITIAL_STATE);
     when(investmentRepository.save(any(Investment.class))).thenReturn(TEST_INVESTMENT_INITIAL);
@@ -120,6 +116,8 @@ public class InvestmentServiceImplTest {
     when(campaignService.getCampaignByUrlFriendlyName(TEST_URL_FRIENDLY_NAME))
         .thenReturn(TEST_INVESTABLE_CAMPAIGN);
     doNothing().when(modelMapperBlankString).map(TEST_OFFPLATFORM_INVESTMENT, testPerson);
+    when(platformSettingsService.getPlatformCurrency())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
     when(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
         .thenReturn(TEST_INVESTMENT_INITIAL_STATE);
     when(countryRepository.findByCode(TEST_COUNTRY_CODE)).thenReturn(Optional.of(TEST_COUNTRY));

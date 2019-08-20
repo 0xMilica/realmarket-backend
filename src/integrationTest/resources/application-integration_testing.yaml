@@ -63,9 +63,11 @@ app:
       attempts: 5
 
   investment:
+    minimum: 500
     weekInMillis: 604800000
 
   time.zone: Europe/Belgrade
+  currency.code: EUR
 
   bank:
     account-number: 160-24524924592-44

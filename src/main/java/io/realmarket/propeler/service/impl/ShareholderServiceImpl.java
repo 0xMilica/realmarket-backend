@@ -10,6 +10,7 @@ import io.realmarket.propeler.repository.ShareholderRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.PlatformSettingsService;
 import io.realmarket.propeler.service.ShareholderService;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
@@ -35,6 +36,7 @@ import static io.realmarket.propeler.service.exception.util.ExceptionMessages.SH
 public class ShareholderServiceImpl implements ShareholderService {
   private ShareholderRepository shareholderRepository;
   private CompanyService companyService;
+  private PlatformSettingsService platformSettingsService;
   private ModelMapperBlankString modelMapperBlankString;
   private CloudObjectStorageService cloudObjectStorageService;
   private BlockchainCommunicationService blockchainCommunicationService;
@@ -46,11 +48,13 @@ public class ShareholderServiceImpl implements ShareholderService {
   ShareholderServiceImpl(
       ShareholderRepository shareholderRepository,
       CompanyService companyService,
+      PlatformSettingsService platformSettingsService,
       ModelMapperBlankString modelMapperBlankString,
       CloudObjectStorageService cloudObjectStorageService,
       BlockchainCommunicationService blockchainCommunicationService) {
     this.shareholderRepository = shareholderRepository;
     this.companyService = companyService;
+    this.platformSettingsService = platformSettingsService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.blockchainCommunicationService = blockchainCommunicationService;
@@ -67,6 +71,7 @@ public class ShareholderServiceImpl implements ShareholderService {
   public Shareholder createShareholder(ShareholderRequestDto shareholderRequestDto) {
     Company company = companyService.findMyCompany();
     Shareholder shareholder = shareholderRequestDto.createShareholder(company);
+    shareholder.setCurrency(platformSettingsService.getPlatformCurrency().getCurrencyCode());
     Integer order = MoreObjects.firstNonNull(shareholderRepository.getMaxOrder(company), 0);
     shareholder.setOrderNumber(++order);
     shareholder = shareholderRepository.save(shareholder);

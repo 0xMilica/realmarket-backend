@@ -115,6 +115,7 @@ public class CampaignServiceImpl implements CampaignService {
     throwIfCampaignNameExists(campaignDto.getUrlFriendlyName());
 
     Campaign campaign = new Campaign(campaignDto);
+    campaign.setCurrency(platformSettingsService.getPlatformCurrency().getCurrencyCode());
     campaign.setCompany(company);
     campaign.setCampaignState(campaignStateService.getCampaignState(CampaignStateName.INITIAL));
     validateCampaign(campaign);
@@ -284,8 +285,7 @@ public class CampaignServiceImpl implements CampaignService {
     if (campaign.getMinInvestment() == null
         || campaign
                 .getMinInvestment()
-                .compareTo(
-                    platformSettingsService.getCurrentPlatformSettings().getPlatformMinInvestment())
+                .compareTo(platformSettingsService.getPlatformMinimumInvestment())
             < 0) {
       throw new BadRequestException(INVESTMENT_MUST_BE_GREATER_THAN_PLATFORM_MIN);
     }

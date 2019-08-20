@@ -15,6 +15,7 @@ public class CampaignUtils {
   public static final String TEST_ACTIVE_URL_FRIENDLY_NAME = "TEST_ACTIVE_URL_FRIENDLY_NAME";
   public static final String TEST_MARKET_IMAGE_UTL = "MARKET_IMAGE_URL";
   public static final Long TEST_FUNDING_GOALS = 100000L;
+  public static final String TEST_CURRENCY = "EUR";
   public static final BigDecimal TEST_MIN_EQUITY_OFFERED = BigDecimal.valueOf(5);
   public static final BigDecimal TEST_MAX_EQUITY_OFFERED = BigDecimal.valueOf(10);
   public static final BigDecimal TEST_MIN_INVESTMENT = BigDecimal.valueOf(600);
@@ -45,6 +46,7 @@ public class CampaignUtils {
           .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
           .name(TEST_NAME)
           .fundingGoals(TEST_FUNDING_GOALS)
+          .currency(TEST_CURRENCY)
           .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
           .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
           .minInvestment(TEST_MIN_INVESTMENT)
@@ -58,6 +60,7 @@ public class CampaignUtils {
           .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
           .name(TEST_NAME)
           .fundingGoals(TEST_FUNDING_GOALS)
+          .currency(TEST_CURRENCY)
           .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
           .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
           .minInvestment(TEST_MIN_INVESTMENT)
@@ -72,6 +75,7 @@ public class CampaignUtils {
         .company(CompanyUtils.getCompanyMocked())
         .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
         .fundingGoals(TEST_FUNDING_GOALS)
+        .currency(TEST_CURRENCY)
         .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
         .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
         .minInvestment(TEST_MIN_INVESTMENT)
@@ -86,6 +90,7 @@ public class CampaignUtils {
           .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
           .name(TEST_NAME)
           .fundingGoals(TEST_FUNDING_GOALS)
+          .currency(TEST_CURRENCY)
           .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
           .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
           .minInvestment(TEST_MIN_INVESTMENT)
@@ -99,6 +104,7 @@ public class CampaignUtils {
           .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
           .name(TEST_NAME)
           .fundingGoals(TEST_FUNDING_GOALS)
+          .currency(TEST_CURRENCY)
           .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
           .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
           .minInvestment(TEST_MIN_INVESTMENT)
@@ -111,6 +117,7 @@ public class CampaignUtils {
           .company(CompanyUtils.getCompanyMocked())
           .urlFriendlyName(TEST_ACTIVE_URL_FRIENDLY_NAME)
           .fundingGoals(0L)
+          .currency(TEST_CURRENCY)
           .campaignState(TEST_CAMPAIGN_ACTIVE_STATE)
           .build();
 
@@ -119,6 +126,7 @@ public class CampaignUtils {
         .company(CompanyUtils.getCompanyMocked())
         .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
         .fundingGoals(TEST_FUNDING_GOALS)
+        .currency(TEST_CURRENCY)
         .minEquityOffered(TEST_MIN_EQUITY_OFFERED)
         .maxEquityOffered(TEST_MAX_EQUITY_OFFERED)
         .minInvestment(TEST_MIN_INVESTMENT)
@@ -134,6 +142,7 @@ public class CampaignUtils {
           .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
           .name(TEST_NAME)
           .fundingGoals(100L)
+          .currency(TEST_CURRENCY)
           .minInvestment(BigDecimal.ONE)
           .collectedAmount(BigDecimal.TEN)
           .minEquityOffered(BigDecimal.ONE)
@@ -149,6 +158,7 @@ public class CampaignUtils {
         .urlFriendlyName(TEST_URL_FRIENDLY_NAME)
         .name(TEST_NAME)
         .fundingGoals(100L)
+        .currency(TEST_CURRENCY)
         .minInvestment(BigDecimal.ONE)
         .collectedAmount(BigDecimal.TEN)
         .minEquityOffered(BigDecimal.ONE)

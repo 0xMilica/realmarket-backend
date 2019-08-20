@@ -11,6 +11,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.InvestmentStateService;
 import io.realmarket.propeler.service.PaymentDocumentService;
 import io.realmarket.propeler.service.PaymentService;
+import io.realmarket.propeler.service.PlatformSettingsService;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.investment.payment.PaymentDto;
@@ -35,6 +36,7 @@ import static io.realmarket.propeler.service.exception.util.ExceptionMessages.IN
 public class PaymentServiceImpl implements PaymentService {
   private final PaymentDocumentService paymentDocumentService;
   private final InvestmentStateService investmentStateService;
+  private final PlatformSettingsService platformSettingsService;
   private final BlockchainCommunicationService blockchainCommunicationService;
   private final InvestmentRepository investmentRepository;
   private final BankTransferPaymentRepository bankTransferPaymentRepository;
@@ -53,12 +55,14 @@ public class PaymentServiceImpl implements PaymentService {
   public PaymentServiceImpl(
       PaymentDocumentService paymentDocumentService,
       InvestmentStateService investmentStateService,
+      PlatformSettingsService platformSettingsService,
       BlockchainCommunicationService blockchainCommunicationService,
       InvestmentRepository investmentRepository,
       BankTransferPaymentRepository bankTransferPaymentRepository,
       CardPaymentRepository cardPaymentRepository) {
     this.paymentDocumentService = paymentDocumentService;
     this.investmentStateService = investmentStateService;
+    this.platformSettingsService = platformSettingsService;
     this.blockchainCommunicationService = blockchainCommunicationService;
     this.investmentRepository = investmentRepository;
     this.bankTransferPaymentRepository = bankTransferPaymentRepository;
@@ -95,7 +99,7 @@ public class PaymentServiceImpl implements PaymentService {
         BankTransferPayment.bankTransferPaymentBuilder()
             .investment(investment)
             .amount(investment.getInvestedAmount())
-            .currency("RSD")
+            .currency(platformSettingsService.getPlatformCurrency().getCurrencyCode())
             .creationDate(Instant.now())
             .accountNumber(accountNumber)
             .routingNumber(createRoutingNumber(investment))

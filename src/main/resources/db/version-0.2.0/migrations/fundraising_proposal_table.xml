@@ -23,6 +23,7 @@
             phone_number varchar(255),
             previously_raised varchar(255),
             funding_goals varchar(255),
+            currency varchar(255),
             rejection_reason varchar(10000),
             request_state_id bigint
             constraint fundraising_proposal_fk_on_request_state

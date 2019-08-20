@@ -74,6 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.PATCH, "/auth/reset_password")
         .antMatchers(
             HttpMethod.GET,
+            "/settings/**",
             "/auth/register/validateToken",
             "/files/public/**",
             "/campaigns/public",

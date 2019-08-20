@@ -29,8 +29,6 @@ public class Payment {
   private Investment investment;
 
   private BigDecimal amount;
-
-  // TODO: Bind this field to currency entity later
   private String currency;
 
   @Builder.Default

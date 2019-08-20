@@ -15,6 +15,7 @@
             primary key,
             url_friendly_name varchar(255),
             funding_goals bigint,
+            currency varchar(255),
             collected_amount numeric(19,2),
             market_image_url varchar(255),
             max_equity_offered numeric(19,2),

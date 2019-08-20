@@ -14,6 +14,7 @@
             constraint investment_pkey
             primary key,
             invested_amount numeric(19,2),
+            currency varchar(255),
             person_id bigint
             constraint investment_fk_on_person
             references person,

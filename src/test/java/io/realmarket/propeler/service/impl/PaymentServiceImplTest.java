@@ -8,9 +8,11 @@ import io.realmarket.propeler.repository.BankTransferPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.service.InvestmentStateService;
 import io.realmarket.propeler.service.PaymentDocumentService;
+import io.realmarket.propeler.service.PlatformSettingsService;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.util.InvestmentUtils;
+import io.realmarket.propeler.util.PlatformSettingsUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,7 @@ public class PaymentServiceImplTest {
 
   @Mock private PaymentDocumentService paymentDocumentService;
   @Mock private InvestmentStateService investmentStateService;
+  @Mock private PlatformSettingsService platformSettingsService;
   @Mock private InvestmentRepository investmentRepository;
   @Mock private BankTransferPaymentRepository bankTransferPaymentRepository;
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
@@ -73,6 +76,8 @@ public class PaymentServiceImplTest {
         .thenReturn(ownerApprovedInvestment);
     when(bankTransferPaymentRepository.findByInvestmentId(InvestmentUtils.INVESTMENT_ID))
         .thenReturn(Optional.ofNullable(null));
+    when(platformSettingsService.getPlatformCurrency())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
     when(bankTransferPaymentRepository.save(any())).thenReturn(bankTransferPayment);
 
     BankTransferPayment retVal =

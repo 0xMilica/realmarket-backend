@@ -86,9 +86,6 @@ INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'AUDIT_APPROVED');
 INSERT INTO public.investment_state (id, name) VALUES (NEXTVAL('investment_state_seq'), 'AUDIT_REJECTED');
 
--- platform settings
-INSERT INTO public.platform_settings (id, platform_min_investment) VALUES (NEXTVAL('platform_settings_seq'), 500);
-
 -- request state
 INSERT INTO public.request_state (id, name) VALUES (NEXTVAL('request_state_seq'), 'PENDING');
 INSERT INTO public.request_state (id, name) VALUES (NEXTVAL('request_state_seq'), 'APPROVED');

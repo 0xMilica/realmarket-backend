@@ -22,6 +22,7 @@ public class Investment {
   private Long id;
 
   private BigDecimal investedAmount;
+  private String currency;
 
   @JoinColumn(name = "personId", foreignKey = @ForeignKey(name = "investment_fk_on_person"))
   @ManyToOne

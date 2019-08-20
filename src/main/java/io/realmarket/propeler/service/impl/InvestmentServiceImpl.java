@@ -47,6 +47,7 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final ModelMapperBlankString modelMapperBlankString;
   private final PersonService personService;
   private final EmailService emailService;
+  private final PlatformSettingsService platformSettingsService;
   private final BlockchainCommunicationService blockchainCommunicationService;
   private final CountryRepository countryRepository;
 
@@ -62,6 +63,7 @@ public class InvestmentServiceImpl implements InvestmentService {
       ModelMapperBlankString modelMapperBlankString,
       PersonService personService,
       EmailService emailService,
+      PlatformSettingsService platformSettingsService,
       BlockchainCommunicationService blockchainCommunicationService,
       CountryRepository countryRepository) {
     this.campaignService = campaignService;
@@ -71,6 +73,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     this.modelMapperBlankString = modelMapperBlankString;
     this.personService = personService;
     this.emailService = emailService;
+    this.platformSettingsService = platformSettingsService;
     this.blockchainCommunicationService = blockchainCommunicationService;
     this.countryRepository = countryRepository;
   }
@@ -87,6 +90,7 @@ public class InvestmentServiceImpl implements InvestmentService {
             .person(AuthenticationUtil.getAuthentication().getAuth().getPerson())
             .campaign(campaign)
             .investedAmount(amountOfMoney)
+            .currency(platformSettingsService.getPlatformCurrency().getCurrencyCode())
             .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
             .build();
 
@@ -128,6 +132,7 @@ public class InvestmentServiceImpl implements InvestmentService {
             .person(person)
             .campaign(campaign)
             .investedAmount(offPlatformInvestmentRequestDto.getInvestedAmount())
+            .currency(platformSettingsService.getPlatformCurrency().getCurrencyCode())
             .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
             .build();
 

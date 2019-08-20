@@ -1,14 +1,10 @@
 package io.realmarket.propeler.util;
 
-import io.realmarket.propeler.api.dto.PlatformSettingsDto;
-
 import java.math.BigDecimal;
+import java.util.Currency;
 
 public class PlatformSettingsUtils {
 
-  public static BigDecimal TEST_PLATFORM_MINIMUMIM_INVESTMENT = new BigDecimal("500");
-  public static PlatformSettingsDto TEST_PLATFORM_SETTINGS_DTO =
-      PlatformSettingsDto.builder()
-          .platformMinInvestment(TEST_PLATFORM_MINIMUMIM_INVESTMENT)
-          .build();
+  public static BigDecimal TEST_PLATFORM_MINIMUM_INVESTMENT = new BigDecimal("500");
+  public static Currency TEST_PLATFORM_CURRENCY = Currency.getInstance("EUR");
 }

@@ -4,12 +4,14 @@ import io.realmarket.propeler.model.FundraisingProposal;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.FundraisingProposalRepository;
 import io.realmarket.propeler.service.EmailService;
+import io.realmarket.propeler.service.PlatformSettingsService;
 import io.realmarket.propeler.service.RegistrationTokenService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.util.AuditUtils;
 import io.realmarket.propeler.util.AuthUtils;
+import io.realmarket.propeler.util.PlatformSettingsUtils;
 import io.realmarket.propeler.util.RegistrationTokenUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,12 +33,10 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class FundraisingProposalServiceImplTest {
 
   @Mock private RequestStateService requestStateService;
-
-  @Mock private FundraisingProposalRepository fundraisingProposalRepository;
-
   @Mock private RegistrationTokenService registrationTokenService;
-
   @Mock private EmailService emailService;
+  @Mock private PlatformSettingsService platformSettingsService;
+  @Mock private FundraisingProposalRepository fundraisingProposalRepository;
 
   @InjectMocks private FundraisingProposalServiceImpl fundraisingProposalServiceImpl;
 
@@ -47,6 +47,8 @@ public class FundraisingProposalServiceImplTest {
 
   @Test
   public void applyForFundraising_Should_Apply_For_Fundraising() {
+    when(platformSettingsService.getPlatformCurrency())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
     when(requestStateService.getRequestState(RequestStateName.PENDING))
         .thenReturn(TEST_PENDING_REQUEST_STATE);
     when(fundraisingProposalRepository.save(any(FundraisingProposal.class)))

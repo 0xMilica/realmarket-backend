@@ -1,6 +1,3 @@
--- platform settings
-INSERT INTO public.platform_settings (id, platform_min_investment) VALUES (NEXTVAL('platform_settings_seq'), 500);
-
 -- country
 INSERT INTO public.country (code, name) VALUES ('AF', 'Afghanistan');
 INSERT INTO public.country (code, name) VALUES ('AX', 'land Islands');

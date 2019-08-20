@@ -9,10 +9,7 @@ import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.FundraisingProposalRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
-import io.realmarket.propeler.service.EmailService;
-import io.realmarket.propeler.service.FundraisingProposalService;
-import io.realmarket.propeler.service.RegistrationTokenService;
-import io.realmarket.propeler.service.RequestStateService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -37,6 +34,7 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
   private final FundraisingProposalRepository fundraisingProposalRepository;
   private final RegistrationTokenService registrationTokenService;
   private final RequestStateService requestStateService;
+  private final PlatformSettingsService platformSettingsService;
   private final EmailService emailService;
 
   @Autowired
@@ -44,10 +42,12 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
       FundraisingProposalRepository fundraisingProposalRepository,
       RegistrationTokenService registrationTokenService,
       RequestStateService requestStateService,
+      PlatformSettingsService platformSettingsService,
       EmailService emailService) {
     this.fundraisingProposalRepository = fundraisingProposalRepository;
     this.registrationTokenService = registrationTokenService;
     this.requestStateService = requestStateService;
+    this.platformSettingsService = platformSettingsService;
     this.emailService = emailService;
   }
 
@@ -61,6 +61,8 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
   @Override
   public FundraisingProposal applyForFundraising(FundraisingProposalDto fundraisingProposalDto) {
     FundraisingProposal fundraisingProposal = new FundraisingProposal(fundraisingProposalDto);
+    fundraisingProposal.setCurrency(
+        platformSettingsService.getPlatformCurrency().getCurrencyCode());
     fundraisingProposal.setRequestState(
         requestStateService.getRequestState(RequestStateName.PENDING));
     return fundraisingProposalRepository.save(fundraisingProposal);

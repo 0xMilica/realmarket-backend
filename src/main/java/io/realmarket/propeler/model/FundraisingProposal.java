@@ -33,6 +33,7 @@ public class FundraisingProposal {
   private String phoneNumber;
   private String previouslyRaised;
   private String fundingGoals;
+  private String currency;
 
   @JoinColumn(
       name = "requestStateId",

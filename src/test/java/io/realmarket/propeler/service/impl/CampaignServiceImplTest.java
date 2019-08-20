@@ -47,29 +47,19 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(CampaignServiceImpl.class)
 public class CampaignServiceImplTest {
-  @Mock CampaignRepository campaignRepository;
 
-  @Mock CompanyService companyService;
-
+  @Mock private CompanyService companyService;
   @Mock private ModelMapperBlankString modelMapperBlankString;
-
   @Mock private CloudObjectStorageService cloudObjectStorageService;
-
   @Mock private CampaignTopicService campaignTopicService;
-
   @Mock private PlatformSettingsService platformSettingsService;
-
   @Mock private OTPService otpService;
-
   @Mock private CampaignStateService campaignStateService;
-
   @Mock private AuthService authService;
-
   @Mock private AuditService auditService;
-
   @Mock private InvestmentService investmentService;
-
   @Mock private EmailService emailService;
+  @Mock private CampaignRepository campaignRepository;
 
   @InjectMocks private CampaignServiceImpl campaignServiceImpl;
 
@@ -113,15 +103,15 @@ public class CampaignServiceImplTest {
               Object[] args = invocation.getArguments();
               ((Campaign) args[1]).setFundingGoals(CampaignUtils.TEST_FUNDING_GOALS);
               ((Campaign) args[1])
-                  .setMinInvestment(PlatformSettingsUtils.TEST_PLATFORM_MINIMUMIM_INVESTMENT);
+                  .setMinInvestment(PlatformSettingsUtils.TEST_PLATFORM_MINIMUM_INVESTMENT);
               return null;
             })
         .when(modelMapperBlankString)
         .map(campaignPatchDto, testCampaign);
 
     campaignPatchDto.setMinInvestment(new BigDecimal("1000"));
-    when(platformSettingsService.getCurrentPlatformSettings())
-        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_SETTINGS_DTO);
+    when(platformSettingsService.getPlatformMinimumInvestment())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_MINIMUM_INVESTMENT);
 
     CampaignResponseDto campaignResponseDto =
         campaignServiceImpl.patchCampaign(TEST_URL_FRIENDLY_NAME, campaignPatchDto);
@@ -151,10 +141,12 @@ public class CampaignServiceImplTest {
         .thenReturn(TEST_CAMPAIGN_INITIAL_STATE);
 
     TEST_CAMPAIGN_DTO.setMinInvestment(new BigDecimal("1000"));
-    when(platformSettingsService.getCurrentPlatformSettings())
-        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_SETTINGS_DTO);
-
+    when(platformSettingsService.getPlatformMinimumInvestment())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_MINIMUM_INVESTMENT);
+    when(platformSettingsService.getPlatformCurrency())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
     when(campaignRepository.save(any())).thenReturn(TEST_CAMPAIGN);
+
     CampaignResponseDto campaignResponseDto = campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
     assertEquals(CampaignUtils.TEST_NAME, campaignResponseDto.getName());
 
@@ -175,8 +167,10 @@ public class CampaignServiceImplTest {
         .thenReturn(CompanyUtils.getCompanyMocked());
 
     TEST_CAMPAIGN_DTO.setMinInvestment(new BigDecimal("400"));
-    when(platformSettingsService.getCurrentPlatformSettings())
-        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_SETTINGS_DTO);
+    when(platformSettingsService.getPlatformMinimumInvestment())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_MINIMUM_INVESTMENT);
+    when(platformSettingsService.getPlatformCurrency())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
 
     campaignServiceImpl.createCampaign(TEST_CAMPAIGN_DTO);
 
