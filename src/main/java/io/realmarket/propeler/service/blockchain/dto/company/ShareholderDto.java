@@ -11,6 +11,7 @@ public class ShareholderDto {
   private String location;
   private Double investedAmount;
   private String description;
+  private String currency;
   private boolean isCompany;
   private String companyIdentificationNumber;
 
@@ -21,6 +22,7 @@ public class ShareholderDto {
     this.location = shareholder.getLocation();
     this.investedAmount = shareholder.getInvestedAmount().doubleValue();
     this.description = shareholder.getDescription();
+    this.currency = shareholder.getCurrency();
     this.isCompany = shareholder.isCompany();
     this.companyIdentificationNumber = shareholder.getCompanyIdentificationNumber();
   }

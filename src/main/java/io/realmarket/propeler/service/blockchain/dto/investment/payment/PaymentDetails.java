@@ -17,4 +17,5 @@ public class PaymentDetails {
   private String accountNumber;
   private String routingNumber;
   private String proformaInvoiceUrl;
+  private String currency;
 }

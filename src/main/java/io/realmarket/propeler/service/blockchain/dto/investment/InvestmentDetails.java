@@ -13,6 +13,7 @@ public class InvestmentDetails {
   private String creationDate;
   private String investmentType;
   private Long adminId;
+  private String currency;
 
   public InvestmentDetails(Investment investment) {
     setCommonFields(investment);
@@ -32,5 +33,6 @@ public class InvestmentDetails {
     this.investedAmount = investment.getInvestedAmount().doubleValue();
     this.investmentState = investment.getInvestmentState().getName().toString();
     this.creationDate = investment.getCreationDate().toString();
+    this.currency = investment.getCurrency();
   }
 }

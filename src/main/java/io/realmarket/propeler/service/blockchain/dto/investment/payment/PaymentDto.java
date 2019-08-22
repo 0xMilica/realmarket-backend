@@ -22,6 +22,7 @@ public class PaymentDto extends AbstractBlockchainDto {
             .accountNumber(payment.getAccountNumber())
             .routingNumber(payment.getRoutingNumber())
             .proformaInvoiceUrl(payment.getProformaInvoiceUrl())
+            .currency(payment.getCurrency())
             .build();
   }
 }

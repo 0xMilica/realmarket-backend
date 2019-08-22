@@ -17,6 +17,7 @@ public class CampaignDetails {
   private String tagLine;
   private String activationTime;
   private Double collectedAmount;
+  private String currency;
 
   public CampaignDetails(Campaign campaign) {
     this.campaignId = campaign.getId();
@@ -39,5 +40,6 @@ public class CampaignDetails {
     this.activationTime = campaign.getActivationDate().toString();
     this.collectedAmount =
         campaign.getCollectedAmount() == null ? null : campaign.getCollectedAmount().doubleValue();
+    this.currency = campaign.getCurrency();
   }
 }
