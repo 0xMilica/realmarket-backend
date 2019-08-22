@@ -1,7 +1,9 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.AttachmentFileDto;
 import io.realmarket.propeler.api.dto.PaymentConfirmationDto;
 import io.realmarket.propeler.api.dto.PaymentResponseDto;
+import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.FileType;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
@@ -15,6 +17,7 @@ import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.investment.payment.PaymentDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,10 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
 
@@ -40,6 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
   private final PlatformSettingsService platformSettingsService;
   private final PdfService pdfService;
   private final FileService fileService;
+  private final EmailService emailService;
   private final BlockchainCommunicationService blockchainCommunicationService;
   private final InvestmentRepository investmentRepository;
   private final BankTransferPaymentRepository bankTransferPaymentRepository;
@@ -61,6 +62,7 @@ public class PaymentServiceImpl implements PaymentService {
       PlatformSettingsService platformSettingsService,
       PdfService pdfService,
       FileService fileService,
+      EmailService emailService,
       BlockchainCommunicationService blockchainCommunicationService,
       InvestmentRepository investmentRepository,
       BankTransferPaymentRepository bankTransferPaymentRepository,
@@ -70,6 +72,7 @@ public class PaymentServiceImpl implements PaymentService {
     this.platformSettingsService = platformSettingsService;
     this.pdfService = pdfService;
     this.fileService = fileService;
+    this.emailService = emailService;
     this.blockchainCommunicationService = blockchainCommunicationService;
     this.investmentRepository = investmentRepository;
     this.bankTransferPaymentRepository = bankTransferPaymentRepository;
@@ -131,9 +134,22 @@ public class PaymentServiceImpl implements PaymentService {
   }
 
   private String createProformaInvoiceUrl(Investment investment) {
+    Map<String, Object> documentsParameters = new HashMap<>();
+    byte[] file = pdfService.generatePdf(documentsParameters, FileType.PROFORMA_INVOICE);
+    String url = fileService.uploadPdfFile(file);
+    sendProformaInvoiceEmail(investment, file);
+    return url;
+  }
+
+  private void sendProformaInvoiceEmail(Investment investment, byte[] file) {
     Map<String, Object> parameters = new HashMap<>();
-    byte[] file = pdfService.generatePdf(parameters, FileType.PROFORMA_INVOICE);
-    return fileService.uploadPdfFile(file);
+
+    emailService.sendMailToUser(
+        new MailContentHolder(
+            Collections.singletonList(investment.getPerson().getEmail()),
+            EmailType.PROFORMA_INVOICE,
+            parameters,
+            new AttachmentFileDto(file, "ProformaInvoice", ".pdf")));
   }
 
   @Override

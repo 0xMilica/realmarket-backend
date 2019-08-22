@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.AttachmentFileDto;
 import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.exception.EmailSendingException;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -206,6 +210,13 @@ public class EmailServiceImpl implements EmailService {
         templateName = "rejectCampaignInvestmentTemplate";
         break;
 
+      case PROFORMA_INVOICE:
+        subject = "Propeler - Proforma invoice";
+        data = getData(mailContentHolder);
+        emailMessageDto.setAttachmentFile(mailContentHolder.getAttachmentFile());
+        templateName = "proformaInvoice";
+        break;
+
       default:
         data = new HashMap<>();
         break;
@@ -380,13 +391,23 @@ public class EmailServiceImpl implements EmailService {
 
       addInlineContent(helper, emailMessageDto.getType());
 
+      AttachmentFileDto attachmentFile = emailMessageDto.getAttachmentFile();
+      if (attachmentFile != null) {
+        File tempFile =
+            File.createTempFile(attachmentFile.getName(), attachmentFile.getExtension(), null);
+        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+          fos.write(attachmentFile.getFile());
+          helper.addAttachment(attachmentFile.getName(), tempFile);
+        }
+      }
+
       log.debug("Trying to send e-mail message: {}", emailMessageDto);
 
       javaMailSender.send(email);
 
       log.info("E-mail sent to users");
 
-    } catch (MessagingException e) {
+    } catch (MessagingException | IOException e) {
       log.error("Problem with sending email: {}", e.getCause());
       throw new EmailSendingException(ExceptionMessages.EMAIL_SENDING_EXCEPTION + e.getCause());
     }

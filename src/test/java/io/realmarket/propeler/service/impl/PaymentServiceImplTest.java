@@ -6,12 +6,10 @@ import io.realmarket.propeler.model.Payment;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.BankTransferPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
-import io.realmarket.propeler.service.FileService;
-import io.realmarket.propeler.service.InvestmentStateService;
-import io.realmarket.propeler.service.PaymentDocumentService;
-import io.realmarket.propeler.service.PlatformSettingsService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.BadRequestException;
+import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.PdfService;
 import io.realmarket.propeler.util.InvestmentUtils;
 import io.realmarket.propeler.util.PlatformSettingsUtils;
@@ -33,6 +31,7 @@ import static io.realmarket.propeler.util.AuthUtils.mockRequestAndContext;
 import static io.realmarket.propeler.util.PaymentUtils.*;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -44,6 +43,7 @@ public class PaymentServiceImplTest {
   @Mock private PlatformSettingsService platformSettingsService;
   @Mock private PdfService pdfService;
   @Mock private FileService fileService;
+  @Mock private EmailService emailService;
   @Mock private InvestmentRepository investmentRepository;
   @Mock private BankTransferPaymentRepository bankTransferPaymentRepository;
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
@@ -83,6 +83,7 @@ public class PaymentServiceImplTest {
     when(platformSettingsService.getPlatformCurrency())
         .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
     when(fileService.uploadPdfFile(any())).thenReturn(TEST_PROFORMA_INVOICE_URL);
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
     when(bankTransferPaymentRepository.save(any())).thenReturn(bankTransferPayment);
 
     BankTransferPayment retVal =
