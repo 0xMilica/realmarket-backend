@@ -67,7 +67,10 @@ app:
     weekInMillis: 604800000
 
   time.zone: Europe/Belgrade
-  currency.code: EUR
+  currency:
+    code: EUR
+    locale_language: de
+    locale_country: DE
 
   bank:
     account-number: 160-24524924592-44

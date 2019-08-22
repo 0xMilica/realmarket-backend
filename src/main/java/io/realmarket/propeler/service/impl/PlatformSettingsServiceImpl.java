@@ -1,5 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.api.dto.CurrencyResponseDto;
 import io.realmarket.propeler.model.Country;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.service.PlatformSettingsService;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -22,11 +25,26 @@ public class PlatformSettingsServiceImpl implements PlatformSettingsService {
   @Value("${app.currency.code}")
   private String currencyCode;
 
+  @Value("${app.currency.locale_language}")
+  private String currencyLocaleLanguage;
+
+  @Value("${app.currency.locale_country}")
+  private String currencyLocaleCountry;
+
   private CountryRepository countryRepository;
 
   @Autowired
   public PlatformSettingsServiceImpl(CountryRepository countryRepository) {
     this.countryRepository = countryRepository;
+  }
+
+  @Override
+  public Map<String, Object> getPlatformSettings() {
+    Map<String, Object> platformSettings = new HashMap<>();
+    platformSettings.put("countries", getCountries());
+    platformSettings.put("platformMinimumInvestment", getPlatformMinimumInvestment());
+    platformSettings.put("platformCurrency", getPlatformCurrency());
+    return platformSettings;
   }
 
   @Override
@@ -40,7 +58,8 @@ public class PlatformSettingsServiceImpl implements PlatformSettingsService {
   }
 
   @Override
-  public Currency getPlatformCurrency() {
-    return Currency.getInstance(currencyCode);
+  public CurrencyResponseDto getPlatformCurrency() {
+    return new CurrencyResponseDto(
+        Currency.getInstance(currencyCode), currencyLocaleLanguage, currencyLocaleCountry);
   }
 }

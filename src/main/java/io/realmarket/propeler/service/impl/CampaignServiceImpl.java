@@ -115,7 +115,7 @@ public class CampaignServiceImpl implements CampaignService {
     throwIfCampaignNameExists(campaignDto.getUrlFriendlyName());
 
     Campaign campaign = new Campaign(campaignDto);
-    campaign.setCurrency(platformSettingsService.getPlatformCurrency().getCurrencyCode());
+    campaign.setCurrency(platformSettingsService.getPlatformCurrency().getCode());
     campaign.setCompany(company);
     campaign.setCampaignState(campaignStateService.getCampaignState(CampaignStateName.INITIAL));
     validateCampaign(campaign);

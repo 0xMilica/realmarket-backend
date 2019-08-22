@@ -61,8 +61,7 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
   @Override
   public FundraisingProposal applyForFundraising(FundraisingProposalDto fundraisingProposalDto) {
     FundraisingProposal fundraisingProposal = new FundraisingProposal(fundraisingProposalDto);
-    fundraisingProposal.setCurrency(
-        platformSettingsService.getPlatformCurrency().getCurrencyCode());
+    fundraisingProposal.setCurrency(platformSettingsService.getPlatformCurrency().getCode());
     fundraisingProposal.setRequestState(
         requestStateService.getRequestState(RequestStateName.PENDING));
     return fundraisingProposalRepository.save(fundraisingProposal);

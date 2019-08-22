@@ -11,6 +11,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Api(value = "/settings")
 public interface PlatformSettingsController {
 
+  @ApiOperation(
+      value = "Get platform settings",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiResponses({@ApiResponse(code = 200, message = "Platform settings successfully retrieved.")})
+  ResponseEntity getPlatformSettings();
+
   @ApiOperation(value = "Get countries list", httpMethod = "GET", produces = APPLICATION_JSON_VALUE)
   @ApiResponses({@ApiResponse(code = 200, message = "Countires successfully retrieved.")})
   ResponseEntity getCountries();

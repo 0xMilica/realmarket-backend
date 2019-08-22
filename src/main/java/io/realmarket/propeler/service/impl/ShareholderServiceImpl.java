@@ -71,7 +71,7 @@ public class ShareholderServiceImpl implements ShareholderService {
   public Shareholder createShareholder(ShareholderRequestDto shareholderRequestDto) {
     Company company = companyService.findMyCompany();
     Shareholder shareholder = shareholderRequestDto.createShareholder(company);
-    shareholder.setCurrency(platformSettingsService.getPlatformCurrency().getCurrencyCode());
+    shareholder.setCurrency(platformSettingsService.getPlatformCurrency().getCode());
     Integer order = MoreObjects.firstNonNull(shareholderRepository.getMaxOrder(company), 0);
     shareholder.setOrderNumber(++order);
     shareholder = shareholderRepository.save(shareholder);

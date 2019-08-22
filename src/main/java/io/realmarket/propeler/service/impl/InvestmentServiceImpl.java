@@ -90,7 +90,7 @@ public class InvestmentServiceImpl implements InvestmentService {
             .person(AuthenticationUtil.getAuthentication().getAuth().getPerson())
             .campaign(campaign)
             .investedAmount(amountOfMoney)
-            .currency(platformSettingsService.getPlatformCurrency().getCurrencyCode())
+            .currency(platformSettingsService.getPlatformCurrency().getCode())
             .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
             .build();
 
@@ -132,7 +132,7 @@ public class InvestmentServiceImpl implements InvestmentService {
             .person(person)
             .campaign(campaign)
             .investedAmount(offPlatformInvestmentRequestDto.getInvestedAmount())
-            .currency(platformSettingsService.getPlatformCurrency().getCurrencyCode())
+            .currency(platformSettingsService.getPlatformCurrency().getCode())
             .investmentState(investmentStateService.getInvestmentState(InvestmentStateName.INITIAL))
             .build();
 

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e1b240f7-1b53-4470-af5a-723438401b8d",
+		"_postman_id": "51640b38-041e-4a2a-aeb0-ba9d0d82fda9",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -5438,6 +5438,30 @@
 		{
 			"name": "settings",
 			"item": [
+				{
+					"name": "/settings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/settings",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"settings"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "/settings/countries",
 					"request": {

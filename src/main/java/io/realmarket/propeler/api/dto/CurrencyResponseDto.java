@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Currency;
+import java.util.Locale;
 
 @ApiModel(value = "CurrencyResponseDto")
 @Data
@@ -19,9 +20,9 @@ public class CurrencyResponseDto {
   private String name;
   private String symbol;
 
-  public CurrencyResponseDto(Currency currency) {
+  public CurrencyResponseDto(Currency currency, String localeLanguage, String localeCountry) {
     code = currency.getCurrencyCode();
     name = currency.getDisplayName();
-    symbol = currency.getSymbol();
+    symbol = currency.getSymbol(new Locale(localeLanguage, localeCountry));
   }
 }

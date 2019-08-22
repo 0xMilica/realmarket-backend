@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/settings")
@@ -20,6 +21,11 @@ public class PlatformSettingsControllerImpl implements PlatformSettingsControlle
 
   public PlatformSettingsControllerImpl(PlatformSettingsService platformSettingsService) {
     this.platformSettingsService = platformSettingsService;
+  }
+
+  @GetMapping
+  public ResponseEntity<Map<String, Object>> getPlatformSettings() {
+    return ResponseEntity.ok(platformSettingsService.getPlatformSettings());
   }
 
   @GetMapping(value = "/countries")
@@ -34,7 +40,6 @@ public class PlatformSettingsControllerImpl implements PlatformSettingsControlle
 
   @GetMapping(value = "/currency")
   public ResponseEntity<CurrencyResponseDto> getCurrency() {
-    return ResponseEntity.ok(
-        new CurrencyResponseDto(platformSettingsService.getPlatformCurrency()));
+    return ResponseEntity.ok(platformSettingsService.getPlatformCurrency());
   }
 }

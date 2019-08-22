@@ -106,7 +106,7 @@ public class PaymentServiceImpl implements PaymentService {
         BankTransferPayment.bankTransferPaymentBuilder()
             .investment(investment)
             .amount(investment.getInvestedAmount())
-            .currency(platformSettingsService.getPlatformCurrency().getCurrencyCode())
+            .currency(platformSettingsService.getPlatformCurrency().getCode())
             .creationDate(Instant.now())
             .accountNumber(accountNumber)
             .routingNumber(createRoutingNumber(investment))
