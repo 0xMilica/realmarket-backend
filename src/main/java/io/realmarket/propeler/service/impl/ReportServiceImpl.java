@@ -1,8 +1,8 @@
 package io.realmarket.propeler.service.impl;
 
-import com.lowagie.text.DocumentException;
 import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.model.OTPWildcard;
+import io.realmarket.propeler.model.enums.FileType;
 import io.realmarket.propeler.service.OTPService;
 import io.realmarket.propeler.service.ReportService;
 import io.realmarket.propeler.service.util.PdfService;
@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
@@ -32,7 +31,7 @@ public class ReportServiceImpl implements ReportService {
   }
 
   @Override
-  public FileDto generateUserWildcardsPdf(final Long authId) throws DocumentException, IOException {
+  public FileDto generateUserWildcardsPdf(final Long authId) {
     Map<String, Object> data =
         Collections.singletonMap(
             WILDCARDS_OBJECT_NAME,
@@ -41,6 +40,7 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList()));
 
     return new FileDto(
-        PDF_TYPE, Base64.getEncoder().encodeToString(pdfService.generateUserWildcardsPdf(data)));
+        PDF_TYPE,
+        Base64.getEncoder().encodeToString(pdfService.generatePdf(data, FileType.WILD_CARDS)));
   }
 }

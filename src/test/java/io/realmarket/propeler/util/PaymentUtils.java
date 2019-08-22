@@ -16,6 +16,7 @@ public class PaymentUtils {
   public static final Instant TEST_PAYMENT_DATE = Instant.now();
   public static final String TEST_ACCOUNT_NUMBER = "123456789";
   public static final String TEST_ROUTING_NUMBER = "1234";
+  public static final String TEST_PROFORMA_INVOICE_URL = "TEST_PROFORMA_INVOICE_URL";
 
   public static BankTransferPayment mockPaidBankTransferPayment() {
     Investment ownerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();

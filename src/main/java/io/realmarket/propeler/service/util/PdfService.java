@@ -1,6 +1,8 @@
 package io.realmarket.propeler.service.util;
 
-import com.lowagie.text.DocumentException;
+import io.realmarket.propeler.model.enums.FileType;
+import io.realmarket.propeler.service.exception.BadRequestException;
+import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +12,6 @@ import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
@@ -27,15 +28,11 @@ public class PdfService {
     this.templateEngine = templateEngine;
   }
 
-  public byte[] generateUserWildcardsPdf(Map<String, Object> parameters)
-      throws IOException, DocumentException {
-    return generatePdf(parameters, userWildcardsTemplate);
-  }
+  public byte[] generatePdf(final Map<String, Object> parameters, FileType fileType) {
+    String template = getFileTemplate(fileType);
 
-  private byte[] generatePdf(final Map<String, Object> parameters, final String template)
-      throws IOException, DocumentException {
     final Context ctx = new Context();
-    parameters.entrySet().forEach(key -> ctx.setVariable(key.getKey(), key.getValue()));
+    ctx.setVariables(parameters);
     final String processedHtml = templateEngine.process(template, ctx);
 
     try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
@@ -46,6 +43,20 @@ public class PdfService {
       renderer.finishPDF();
 
       return byteArrayOutputStream.toByteArray();
+    } catch (Exception e) {
+      log.error("Problem with generating pdf file: {}", e.getCause());
+      throw new BadRequestException(ExceptionMessages.PDF_FILE_GENERATING_EXCEPTION);
+    }
+  }
+
+  private String getFileTemplate(FileType fileType) {
+    switch (fileType) {
+      case WILD_CARDS:
+        return userWildcardsTemplate;
+      case PROFORMA_INVOICE:
+        return "proformaInvoice";
+      default:
+        throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
     }
   }
 }

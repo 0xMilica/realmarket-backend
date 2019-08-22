@@ -6,11 +6,13 @@ import io.realmarket.propeler.model.Payment;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.BankTransferPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
+import io.realmarket.propeler.service.FileService;
 import io.realmarket.propeler.service.InvestmentStateService;
 import io.realmarket.propeler.service.PaymentDocumentService;
 import io.realmarket.propeler.service.PlatformSettingsService;
 import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.BadRequestException;
+import io.realmarket.propeler.service.util.PdfService;
 import io.realmarket.propeler.util.InvestmentUtils;
 import io.realmarket.propeler.util.PlatformSettingsUtils;
 import org.junit.Before;
@@ -40,6 +42,8 @@ public class PaymentServiceImplTest {
   @Mock private PaymentDocumentService paymentDocumentService;
   @Mock private InvestmentStateService investmentStateService;
   @Mock private PlatformSettingsService platformSettingsService;
+  @Mock private PdfService pdfService;
+  @Mock private FileService fileService;
   @Mock private InvestmentRepository investmentRepository;
   @Mock private BankTransferPaymentRepository bankTransferPaymentRepository;
   @Mock private BlockchainCommunicationService blockchainCommunicationService;
@@ -78,6 +82,7 @@ public class PaymentServiceImplTest {
         .thenReturn(Optional.ofNullable(null));
     when(platformSettingsService.getPlatformCurrency())
         .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
+    when(fileService.uploadPdfFile(any())).thenReturn(TEST_PROFORMA_INVOICE_URL);
     when(bankTransferPaymentRepository.save(any())).thenReturn(bankTransferPayment);
 
     BankTransferPayment retVal =

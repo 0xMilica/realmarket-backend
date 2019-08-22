@@ -158,6 +158,9 @@ public interface ExceptionMessages {
   // File with provided URL does not exist.
   String FILE_DOES_NOT_EXIST = "FIL_001";
 
+  // PDF file generating exception
+  String PDF_FILE_GENERATING_EXCEPTION = "FIL_002";
+
   // No SHA Algorithm.
   String NO_HASH_ALGORITHM = "SHA_001";
 

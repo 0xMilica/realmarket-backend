@@ -29,4 +29,8 @@ public class FileUtils {
 
   public static MockMultipartFile MOCK_FILE_NO_EXTENSION =
       new MockMultipartFile(TEST_FILE_NAME, "TEST_FILE_NAME", TEST_CONTENT_TYPE, TEST_FILE_BYTES);
+
+  public static byte[] mockBytesFile() {
+    return new byte[10];
+  }
 }

@@ -31,6 +31,14 @@ public interface FileService {
   String uploadFile(MultipartFile file);
 
   /**
+   * Stores file on the IBM cloud service and in the local storage.
+   *
+   * @param file file to be stored
+   * @return name of the stored file
+   */
+  String uploadPdfFile(byte[] file);
+
+  /**
    * Deletes file with the provided file name from the cloud object storage.
    *
    * @param fileName name of the file to be retrieved

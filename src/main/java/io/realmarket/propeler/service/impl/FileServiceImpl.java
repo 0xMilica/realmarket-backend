@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 @Service
@@ -52,6 +53,21 @@ public class FileServiceImpl implements FileService {
       return generatedFileName;
     } catch (IOException | ArithmeticException e) {
       log.error("Failed to store file {}", file.getOriginalFilename());
+      throw new StorageException("Failed to store file", e);
+    }
+  }
+
+  public String uploadPdfFile(byte[] file) {
+    try {
+      String generatedFileName =
+          String.format("%s.%s", RandomStringBuilder.generateBase32String(filenameLength), "pdf");
+
+      cloudObjectStorageService.upload(
+          generatedFileName, new ByteArrayInputStream(file), file.length);
+
+      return generatedFileName;
+    } catch (ArithmeticException e) {
+      log.error("Failed to store file");
       throw new StorageException("Failed to store file", e);
     }
   }
