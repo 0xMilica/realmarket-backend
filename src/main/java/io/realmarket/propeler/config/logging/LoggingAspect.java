@@ -24,7 +24,7 @@ public class LoggingAspect {
 
   @Before(
       "execution(* io.realmarket.propeler.api.controller.impl.*.*(..)) "
-          + " || execution(* io.realmarket.propeler.service.impl.*.*(..))"
+          + " || execution(* io.realmarket.propeler.service..*.*(..))"
           + " || execution(* io.realmarket.propeler.repository.*.*(..))")
   public void before(JoinPoint joinPoint) {
     MDC.put(
@@ -41,7 +41,7 @@ public class LoggingAspect {
   @AfterReturning(
       value =
           "execution(* io.realmarket.propeler.api.controller.impl.*.*(..))"
-              + " || execution(* io.realmarket.propeler.service.impl.*.*(..))"
+              + " || execution(* io.realmarket.propeler.service..*.*(..))"
               + " || execution(* io.realmarket.propeler.repository.*.*(..))",
       returning = "returnValue")
   public void afterReturning(JoinPoint joinPoint, Object returnValue) {
@@ -66,7 +66,7 @@ public class LoggingAspect {
   @AfterThrowing(
       value =
           "execution(* io.realmarket.propeler.api.controller.impl.*.*(..))"
-              + " || execution(* io.realmarket.propeler.service.impl.*.*(..))"
+              + " || execution(* io.realmarket.propeler.service..*.*(..))"
               + " || execution(* io.realmarket.propeler.repository.*.*(..))",
       throwing = "error")
   public void afterThrowing(JoinPoint joinPoint, Throwable error) {

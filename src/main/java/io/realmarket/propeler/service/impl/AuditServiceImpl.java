@@ -11,7 +11,7 @@ import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.AuditRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.campaign.ChangeStateDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
@@ -36,7 +36,7 @@ public class AuditServiceImpl implements AuditService {
   private final RequestStateService requestStateService;
   private final CampaignService campaignService;
   private final EmailService emailService;
-  private final BlockchainCommunicationService blockchainCommunicationService;
+  private final BlockchainMessageProducer blockchainMessageProducer;
 
   @Autowired
   public AuditServiceImpl(
@@ -45,13 +45,13 @@ public class AuditServiceImpl implements AuditService {
       AuthService authService,
       @Lazy CampaignService campaignService,
       EmailService emailService,
-      BlockchainCommunicationService blockchainCommunicationService) {
+      BlockchainMessageProducer blockchainMessageProducer) {
     this.auditRepository = auditRepository;
     this.requestStateService = requestStateService;
     this.authService = authService;
     this.campaignService = campaignService;
     this.emailService = emailService;
-    this.blockchainCommunicationService = blockchainCommunicationService;
+    this.blockchainMessageProducer = blockchainMessageProducer;
   }
 
   @Override
@@ -161,7 +161,7 @@ public class AuditServiceImpl implements AuditService {
   private Audit saveAndSendToBlockchain(Audit audit) {
     audit = auditRepository.save(audit);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.CAMPAIGN_STATE_CHANGE,
         new ChangeStateDto(
             audit.getCampaign(), AuthenticationUtil.getAuthentication().getAuth().getId()),

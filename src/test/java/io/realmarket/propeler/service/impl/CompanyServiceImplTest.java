@@ -4,7 +4,7 @@ import io.realmarket.propeler.api.dto.FileDto;
 import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.repository.CompanyRepository;
 import io.realmarket.propeler.service.CloudObjectStorageService;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.CompanyUtils;
 import io.realmarket.propeler.util.FileUtils;
@@ -34,7 +34,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class CompanyServiceImplTest {
 
   @Mock private CompanyRepository companyRepository;
-  @Mock private BlockchainCommunicationService blockchainCommunicationService;
+  @Mock private BlockchainMessageProducer blockchainMessageProducer;
   @Mock private CloudObjectStorageService cloudObjectStorageService;
 
   @InjectMocks private CompanyServiceImpl companyService;

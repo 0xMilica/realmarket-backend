@@ -12,7 +12,7 @@ import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.PlatformSettingsService;
 import io.realmarket.propeler.service.ShareholderService;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.company.UpdateShareholdersDto;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
@@ -39,7 +39,7 @@ public class ShareholderServiceImpl implements ShareholderService {
   private PlatformSettingsService platformSettingsService;
   private ModelMapperBlankString modelMapperBlankString;
   private CloudObjectStorageService cloudObjectStorageService;
-  private BlockchainCommunicationService blockchainCommunicationService;
+  private BlockchainMessageProducer blockchainMessageProducer;
 
   @Value(value = "${cos.file_prefix.shareholder_picture}")
   private String shareholderPicturePrefix;
@@ -51,13 +51,13 @@ public class ShareholderServiceImpl implements ShareholderService {
       PlatformSettingsService platformSettingsService,
       ModelMapperBlankString modelMapperBlankString,
       CloudObjectStorageService cloudObjectStorageService,
-      BlockchainCommunicationService blockchainCommunicationService) {
+      BlockchainMessageProducer blockchainMessageProducer) {
     this.shareholderRepository = shareholderRepository;
     this.companyService = companyService;
     this.platformSettingsService = platformSettingsService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.cloudObjectStorageService = cloudObjectStorageService;
-    this.blockchainCommunicationService = blockchainCommunicationService;
+    this.blockchainMessageProducer = blockchainMessageProducer;
   }
 
   public Shareholder findByIdOrThrowException(Long shareholderId) {
@@ -76,7 +76,7 @@ public class ShareholderServiceImpl implements ShareholderService {
     shareholder.setOrderNumber(++order);
     shareholder = shareholderRepository.save(shareholder);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
         new UpdateShareholdersDto(company, getShareholders()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
@@ -124,7 +124,7 @@ public class ShareholderServiceImpl implements ShareholderService {
     modelMapperBlankString.map(shareholderRequestDto, shareholder);
     shareholder = shareholderRepository.save(shareholder);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
         new UpdateShareholdersDto(shareholder.getCompany(), getShareholders()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
@@ -139,7 +139,7 @@ public class ShareholderServiceImpl implements ShareholderService {
     companyService.throwIfNotCompanyOwner();
     shareholderRepository.delete(shareholder);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
         new UpdateShareholdersDto(shareholder.getCompany(), getShareholders()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),

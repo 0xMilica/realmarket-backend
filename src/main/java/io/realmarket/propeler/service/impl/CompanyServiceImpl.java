@@ -11,7 +11,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.AdministratorService;
 import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.company.EditRequestDto;
 import io.realmarket.propeler.service.blockchain.dto.company.RegistrationDto;
@@ -38,7 +38,7 @@ public class CompanyServiceImpl implements CompanyService {
   private final AdministratorService administratorService;
   private final CloudObjectStorageService cloudObjectStorageService;
   private final ModelMapperBlankString modelMapperBlankString;
-  private final BlockchainCommunicationService blockchainCommunicationService;
+  private final BlockchainMessageProducer blockchainMessageProducer;
 
   @Value(value = "${cos.file_prefix.company_logo}")
   private String companyLogoPrefix;
@@ -52,12 +52,12 @@ public class CompanyServiceImpl implements CompanyService {
       AdministratorService administratorService,
       CloudObjectStorageService cloudObjectStorageService,
       ModelMapperBlankString modelMapperBlankString,
-      BlockchainCommunicationService blockchainCommunicationService) {
+      BlockchainMessageProducer blockchainMessageProducer) {
     this.companyRepository = companyRepository;
     this.administratorService = administratorService;
     this.cloudObjectStorageService = cloudObjectStorageService;
     this.modelMapperBlankString = modelMapperBlankString;
-    this.blockchainCommunicationService = blockchainCommunicationService;
+    this.blockchainMessageProducer = blockchainMessageProducer;
   }
 
   public void throwIfNoAccess(Company company) {
@@ -75,7 +75,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
     company = companyRepository.save(company);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.COMPANY_REGISTRATION,
         new RegistrationDto(company),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
@@ -91,7 +91,7 @@ public class CompanyServiceImpl implements CompanyService {
       CompanyEditRequest editRequest = companyPatchDto.buildCompanyEditRequest(company);
       administratorService.requestCompanyEdit(editRequest);
 
-      blockchainCommunicationService.invoke(
+      blockchainMessageProducer.produceMessage(
           BlockchainMethod.COMPANY_EDIT_REQUEST,
           new EditRequestDto(editRequest),
           AuthenticationUtil.getAuthentication().getAuth().getUsername(),

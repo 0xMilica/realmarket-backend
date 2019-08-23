@@ -1,32 +1,30 @@
-package io.realmarket.propeler.service.blockchain.impl;
+package io.realmarket.propeler.service.blockchain.queue.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
-import io.realmarket.propeler.service.blockchain.dto.AbstractBlockchainDto;
 import io.realmarket.propeler.service.blockchain.exception.BlockchainException;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainQueueMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.stereotype.Service;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Future;
 
-@Service
 @Slf4j
-public class BlockchainCommunicationServiceImpl implements BlockchainCommunicationService {
+@Component
+public class BlockchainMessageConsumerImpl {
+
   private static final String RESPONSE_MESSAGE = "message";
 
-  @Value("${blockchain.active}")
-  private boolean active;
+  private RestTemplate restTemplate;
 
   @Value("${blockchain.chaincode_name}")
   private String chaincodeName;
@@ -37,6 +35,9 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
   @Value("${blockchain.address}")
   private String blockchainAddress;
 
+  @Value("${blockchain.user.organization}")
+  private String organization;
+
   @Value("${blockchain.invocation.peers}")
   private String[] peersAddresses;
 
@@ -46,49 +47,20 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
   @Value("${blockchain.invocation.arguments}")
   private String arguments;
 
-  @Value("${blockchain.user.organization}")
-  private String organization;
-
-  private RestTemplate restTemplate;
-
-  public BlockchainCommunicationServiceImpl(RestTemplate restTemplate) {
+  @Autowired
+  public BlockchainMessageConsumerImpl(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
 
-  @Async
-  public Future<Map<String, Object>> invoke(
-      String methodName, AbstractBlockchainDto dto, String username, String ipAddress) {
-    if (!active) {
-      log.info("Blockchain is off.");
-      return null;
-    }
+  @Retryable(maxAttempts = Integer.MAX_VALUE, backoff = @Backoff(multiplier = 2))
+  public void processMessage(BlockchainQueueMessage message) {
+    HttpEntity<Map<String, Object>> entity = generateEntity(message);
 
     String invocationUrl =
         String.format(
             "%s/channels/%s/chaincodes/%s", blockchainAddress, channelName, chaincodeName);
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-    headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + enrollUser(username));
-
-    Map<String, Object> args = new HashMap<>();
-    args.put("peers", peersAddresses);
-    args.put(method, methodName);
-
-    try {
-      dto.setIP(ipAddress);
-      dto.setTimestamp(Instant.now().getEpochSecond());
-      log.debug("Blockchain dto: {}", dto);
-      args.put(arguments, Collections.singletonList(new ObjectMapper().writeValueAsString(dto)));
-    } catch (JsonProcessingException jpe) {
-      log.error(jpe.getMessage());
-      throw new BlockchainException("Blockchain DTO serialization error: " + jpe.getMessage());
-    }
-
-    HttpEntity<Map<String, Object>> entity = new HttpEntity<>(args, headers);
     Map<String, Object> response = restTemplate.postForObject(invocationUrl, entity, Map.class);
-
-    return new AsyncResult<>(processResponse(response));
+    processResponse(response);
   }
 
   private String enrollUser(String username) {
@@ -114,17 +86,40 @@ public class BlockchainCommunicationServiceImpl implements BlockchainCommunicati
     return (String) response.getBody().get("token");
   }
 
-  private Map<String, Object> processResponse(Map<String, Object> response) {
+  private void processResponse(Map<String, Object> response) {
     if (response == null) {
       log.error("Failed to invoke chaincode. Response object is null.");
       throw new BlockchainException("Response is null.");
+
     } else if (Boolean.FALSE.equals(response.get("success"))) {
-      log.error("Failed to invoke chaincode. Error: {}", response.get(RESPONSE_MESSAGE));
+      log.error("Failed to produceMessage chaincode. Error: {}", response.get(RESPONSE_MESSAGE));
       throw new BlockchainException((String) response.get(RESPONSE_MESSAGE));
+
+    } else {
+      log.info("Invocation response: {}", response.get(RESPONSE_MESSAGE));
+    }
+  }
+
+  private HttpEntity<Map<String, Object>> generateEntity(BlockchainQueueMessage message) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+    headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + enrollUser(message.getUsername()));
+
+    Map<String, Object> args = new HashMap<>();
+    args.put("peers", peersAddresses);
+    args.put(method, message.getMethodName());
+
+    try {
+
+      log.debug("Blockchain dto: {}", message.getDto());
+      args.put(
+          arguments,
+          Collections.singletonList(new ObjectMapper().writeValueAsString(message.getDto())));
+    } catch (JsonProcessingException jpe) {
+      log.error(jpe.getMessage());
+      throw new BlockchainException("Blockchain DTO serialization error: " + jpe.getMessage());
     }
 
-    log.debug("Invocation response: {}", response.get(RESPONSE_MESSAGE));
-
-    return response;
+    return new HttpEntity<>(args, headers);
   }
 }

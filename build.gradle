@@ -1,6 +1,7 @@
 buildscript {
     ext {
         springBootVersion = "2.0.8.RELEASE"
+        springRetryVersion = "1.2.4.RELEASE"
         swaggerVersion = '2.9.2'
         powerMockVersion = '2.0.0'
         hibernateTypesVesion = '2.4.0'
@@ -41,6 +42,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.retry:spring-retry:$springRetryVersion"
     implementation "io.springfox:springfox-swagger2:$swaggerVersion"
     implementation "io.springfox:springfox-swagger-ui:$swaggerVersion"
 

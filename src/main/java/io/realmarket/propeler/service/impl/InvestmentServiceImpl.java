@@ -13,7 +13,7 @@ import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.investment.ChangeStateDto;
 import io.realmarket.propeler.service.blockchain.dto.investment.InvestmentDto;
@@ -46,9 +46,9 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final InvestmentStateService investmentStateService;
   private final ModelMapperBlankString modelMapperBlankString;
   private final PersonService personService;
+  private final BlockchainMessageProducer blockchainMessageProducer;
   private final EmailService emailService;
   private final PlatformSettingsService platformSettingsService;
-  private final BlockchainCommunicationService blockchainCommunicationService;
   private final CountryRepository countryRepository;
 
   @Value("${app.investment.weekInMillis}")
@@ -62,9 +62,9 @@ public class InvestmentServiceImpl implements InvestmentService {
       InvestmentStateService investmentStateService,
       ModelMapperBlankString modelMapperBlankString,
       PersonService personService,
+      BlockchainMessageProducer blockchainMessageProducer,
       EmailService emailService,
       PlatformSettingsService platformSettingsService,
-      BlockchainCommunicationService blockchainCommunicationService,
       CountryRepository countryRepository) {
     this.campaignService = campaignService;
     this.investmentRepository = investmentRepository;
@@ -72,9 +72,9 @@ public class InvestmentServiceImpl implements InvestmentService {
     this.investmentStateService = investmentStateService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.personService = personService;
+    this.blockchainMessageProducer = blockchainMessageProducer;
     this.emailService = emailService;
     this.platformSettingsService = platformSettingsService;
-    this.blockchainCommunicationService = blockchainCommunicationService;
     this.countryRepository = countryRepository;
   }
 
@@ -96,7 +96,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     investment = investmentRepository.save(investment);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_INTENT,
         new InvestmentDto(investment),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
@@ -138,7 +138,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     investment = investmentRepository.save(investment);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_INTENT,
         new InvestmentDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
@@ -159,9 +159,10 @@ public class InvestmentServiceImpl implements InvestmentService {
         investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED));
     investment = investmentRepository.save(investment);
 
+
     sendInvestmentAcceptanceEmail(investment);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
@@ -196,7 +197,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     sendInvestmentRejectionEmail(investment);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
@@ -229,7 +230,7 @@ public class InvestmentServiceImpl implements InvestmentService {
         investmentStateService.getInvestmentState(InvestmentStateName.REVOKED));
     investment = investmentRepository.save(investment);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
@@ -252,7 +253,7 @@ public class InvestmentServiceImpl implements InvestmentService {
         investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_APPROVED));
     investment = investmentRepository.save(investment);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
@@ -274,7 +275,7 @@ public class InvestmentServiceImpl implements InvestmentService {
         investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_REJECTED));
     investment = investmentRepository.save(investment);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
         new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),

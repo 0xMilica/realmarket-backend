@@ -7,7 +7,7 @@ import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.BankTransferPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.PdfService;
@@ -38,6 +38,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 public class PaymentServiceImplTest {
 
+  @InjectMocks PaymentServiceImpl paymentService;
   @Mock private PaymentDocumentService paymentDocumentService;
   @Mock private InvestmentStateService investmentStateService;
   @Mock private PlatformSettingsService platformSettingsService;
@@ -46,9 +47,7 @@ public class PaymentServiceImplTest {
   @Mock private EmailService emailService;
   @Mock private InvestmentRepository investmentRepository;
   @Mock private BankTransferPaymentRepository bankTransferPaymentRepository;
-  @Mock private BlockchainCommunicationService blockchainCommunicationService;
-
-  @InjectMocks PaymentServiceImpl paymentService;
+  @Mock private BlockchainMessageProducer blockchainMessageProducer;
 
   @Before
   public void createAuthContext() {

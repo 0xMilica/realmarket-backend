@@ -7,7 +7,7 @@ import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.campaign.SubmissionForReviewDto;
 import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
@@ -55,7 +55,7 @@ public class CampaignServiceImpl implements CampaignService {
   private final EmailService emailService;
   private final AuthService authService;
   private final AuditService auditService;
-  private final BlockchainCommunicationService blockchainCommunicationService;
+  private final BlockchainMessageProducer blockchainMessageProducer;
   private final InvestmentService investmentService;
 
   @Value(value = "${cos.file_prefix.campaign_market_image}")
@@ -77,7 +77,7 @@ public class CampaignServiceImpl implements CampaignService {
       EmailService emailService,
       AuthService authService,
       AuditService auditService,
-      BlockchainCommunicationService blockchainCommunicationService,
+      BlockchainMessageProducer blockchainMessageProducer,
       @Lazy InvestmentService investmentService) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
@@ -90,7 +90,7 @@ public class CampaignServiceImpl implements CampaignService {
     this.emailService = emailService;
     this.authService = authService;
     this.auditService = auditService;
-    this.blockchainCommunicationService = blockchainCommunicationService;
+    this.blockchainMessageProducer = blockchainMessageProducer;
     this.investmentService = investmentService;
   }
 
@@ -321,7 +321,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     campaign = changeCampaignStateOrThrow(campaign, CampaignStateName.REVIEW_READY);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.CAMPAIGN_SUBMISSION_FOR_REVIEW,
         new SubmissionForReviewDto(campaign),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),

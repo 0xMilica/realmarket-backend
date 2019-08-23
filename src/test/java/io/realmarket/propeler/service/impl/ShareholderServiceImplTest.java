@@ -5,8 +5,8 @@ import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.Shareholder;
 import io.realmarket.propeler.repository.ShareholderRepository;
 import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.PlatformSettingsService;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.AuthUtils;
@@ -39,7 +39,8 @@ public class ShareholderServiceImplTest {
   @Mock private CompanyService companyService;
   @Mock private PlatformSettingsService platformSettingsService;
   @Mock private ModelMapperBlankString modelMapperBlankString;
-  @Mock private BlockchainCommunicationService blockchainCommunicationService;
+
+  @Mock private BlockchainMessageProducer blockchainMessageProducer;
 
   @InjectMocks private ShareholderServiceImpl shareholderService;
 

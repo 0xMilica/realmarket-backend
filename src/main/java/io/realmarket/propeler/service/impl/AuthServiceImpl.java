@@ -12,7 +12,7 @@ import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.user.EmailChangeDto;
 import io.realmarket.propeler.service.blockchain.dto.user.PasswordChangeDto;
@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
   private final PasswordEncoder passwordEncoder;
 
   private final RememberMeCookieService rememberMeCookieService;
-  private final BlockchainCommunicationService blockchainCommunicationService;
+  private final BlockchainMessageProducer blockchainMessageProducer;
 
   @Autowired
   public AuthServiceImpl(
@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
       AuthorizedActionService authorizedActionService,
       LoginIPAttemptsService loginAttemptsService,
       LoginUsernameAttemptsService loginUsernameAttemptsService,
-      BlockchainCommunicationService blockchainCommunicationService) {
+      BlockchainMessageProducer blockchainMessageProducer) {
     this.passwordEncoder = passwordEncoder;
     this.personService = personService;
     this.emailService = emailService;
@@ -101,7 +101,7 @@ public class AuthServiceImpl implements AuthService {
     this.authorizedActionService = authorizedActionService;
     this.loginIPAttemptsService = loginAttemptsService;
     this.loginUsernameAttemptsService = loginUsernameAttemptsService;
-    this.blockchainCommunicationService = blockchainCommunicationService;
+    this.blockchainMessageProducer = blockchainMessageProducer;
   }
 
   public static Collection<? extends GrantedAuthority> getAuthorities(UserRoleName userRole) {
@@ -252,7 +252,7 @@ public class AuthServiceImpl implements AuthService {
 
     temporaryTokenService.deleteToken(temporaryToken);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_REGISTRATION,
         new io.realmarket.propeler.service.blockchain.dto.user.RegistrationDto(auth),
         auth.getUsername(),
@@ -342,7 +342,7 @@ public class AuthServiceImpl implements AuthService {
     authorizedActionService.deleteByAuthAndType(auth, AuthorizedActionTypeName.NEW_PASSWORD);
     jwtService.deleteAllByAuthAndValueNot(auth, AuthenticationUtil.getAuthentication().getToken());
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_PASSWORD_CHANGE,
         PasswordChangeDto.builder().userId(authId).build(),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
@@ -431,7 +431,7 @@ public class AuthServiceImpl implements AuthService {
     authorizedActionService.deleteByAuthAndType(
         authorizedAction.getAuth(), authorizedAction.getType().getName());
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_EMAIL_CHANGE,
         EmailChangeDto.builder()
             .userId(currentAuth.getId())

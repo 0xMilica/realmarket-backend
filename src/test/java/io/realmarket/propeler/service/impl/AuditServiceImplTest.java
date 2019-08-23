@@ -7,7 +7,7 @@ import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.EmailService;
 import io.realmarket.propeler.service.RequestStateService;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.CampaignUtils;
@@ -36,7 +36,7 @@ public class AuditServiceImplTest {
   @Mock private CampaignService campaignService;
   @Mock private EmailService emailService;
   @Mock private AuditRepository auditRepository;
-  @Mock private BlockchainCommunicationService blockchainCommunicationService;
+  @Mock private BlockchainMessageProducer blockchainMessageProducer;
 
   @InjectMocks private AuditServiceImpl auditServiceImpl;
 

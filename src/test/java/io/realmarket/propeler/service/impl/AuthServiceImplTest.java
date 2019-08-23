@@ -12,7 +12,7 @@ import io.realmarket.propeler.model.enums.TemporaryTokenTypeName;
 import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.util.LoginIPAttemptsService;
@@ -66,7 +66,7 @@ public class AuthServiceImplTest {
   @Mock private UserRoleService userRoleService;
   @Mock private AuthStateService authStateService;
   @Mock private CountryRepository countryRepository;
-  @Mock private BlockchainCommunicationService blockchainCommunicationService;
+  @Mock private BlockchainMessageProducer blockchainMessageProducer;
 
   @InjectMocks private AuthServiceImpl authServiceImpl;
 

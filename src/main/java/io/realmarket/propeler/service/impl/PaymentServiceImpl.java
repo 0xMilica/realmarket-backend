@@ -12,9 +12,9 @@ import io.realmarket.propeler.repository.CardPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.investment.payment.PaymentDto;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -41,9 +41,9 @@ public class PaymentServiceImpl implements PaymentService {
   private final PdfService pdfService;
   private final FileService fileService;
   private final EmailService emailService;
-  private final BlockchainCommunicationService blockchainCommunicationService;
   private final InvestmentRepository investmentRepository;
   private final BankTransferPaymentRepository bankTransferPaymentRepository;
+  private final BlockchainMessageProducer blockchainMessageProducer;
   private final CardPaymentRepository cardPaymentRepository;
 
   @Value("${app.bank.account-number}")
@@ -63,9 +63,9 @@ public class PaymentServiceImpl implements PaymentService {
       PdfService pdfService,
       FileService fileService,
       EmailService emailService,
-      BlockchainCommunicationService blockchainCommunicationService,
       InvestmentRepository investmentRepository,
       BankTransferPaymentRepository bankTransferPaymentRepository,
+      BlockchainMessageProducer blockchainMessageProducer,
       CardPaymentRepository cardPaymentRepository) {
     this.paymentDocumentService = paymentDocumentService;
     this.investmentStateService = investmentStateService;
@@ -73,9 +73,9 @@ public class PaymentServiceImpl implements PaymentService {
     this.pdfService = pdfService;
     this.fileService = fileService;
     this.emailService = emailService;
-    this.blockchainCommunicationService = blockchainCommunicationService;
     this.investmentRepository = investmentRepository;
     this.bankTransferPaymentRepository = bankTransferPaymentRepository;
+    this.blockchainMessageProducer = blockchainMessageProducer;
     this.cardPaymentRepository = cardPaymentRepository;
   }
 
@@ -206,7 +206,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     bankTransferPayment = bankTransferPaymentRepository.save(bankTransferPayment);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.PAYMENT_CONFIRMED,
         new PaymentDto(
             bankTransferPayment, AuthenticationUtil.getAuthentication().getAuth().getId()),

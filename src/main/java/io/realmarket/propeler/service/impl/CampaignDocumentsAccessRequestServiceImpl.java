@@ -10,7 +10,7 @@ import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.CampaignDocumentsAccessRequestRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignDocumentAccessRequestStateChangeDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
@@ -33,7 +33,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
   private final AuthService authService;
   private final RequestStateService requestStateService;
 
-  private final BlockchainCommunicationService blockchainCommunicationService;
+  private final BlockchainMessageProducer blockchainMessageProducer;
 
   @Autowired
   public CampaignDocumentsAccessRequestServiceImpl(
@@ -42,13 +42,13 @@ public class CampaignDocumentsAccessRequestServiceImpl
       CampaignService campaignService,
       AuthService authService,
       RequestStateService requestStateService,
-      BlockchainCommunicationService blockchainCommunicationService) {
+      BlockchainMessageProducer blockchainMessageProducer) {
     this.campaignDocumentsAccessRequestRepository = campaignDocumentsAccessRequestRepository;
     this.campaignDocumentService = campaignDocumentService;
     this.campaignService = campaignService;
     this.authService = authService;
     this.requestStateService = requestStateService;
-    this.blockchainCommunicationService = blockchainCommunicationService;
+    this.blockchainMessageProducer = blockchainMessageProducer;
   }
 
   private CampaignDocumentsAccessRequest findByIdOrThrowException(Long requestId) {
@@ -89,7 +89,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
                 .requestState(requestStateService.getRequestState(RequestStateName.PENDING))
                 .build());
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.CAMPAIGN_DOCUMENT_ACCESS_REQUEST,
         new io.realmarket.propeler.service.blockchain.dto.campaign.CampaignDocumentAccessRequestDto(
             campaignDocumentsAccessRequest, auth.getId()),
@@ -172,7 +172,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
     campaignDocumentsAccessRequest =
         campaignDocumentsAccessRequestRepository.save(campaignDocumentsAccessRequest);
 
-    blockchainCommunicationService.invoke(
+    blockchainMessageProducer.produceMessage(
         BlockchainMethod.CAMPAIGN_DOCUMENT_ACCESS_REQUEST_STATE_CHANGE,
         new CampaignDocumentAccessRequestStateChangeDto(
             campaignDocumentsAccessRequest,

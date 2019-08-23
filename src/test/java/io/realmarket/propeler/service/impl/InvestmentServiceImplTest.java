@@ -6,8 +6,12 @@ import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
+import io.realmarket.propeler.service.CampaignService;
+import io.realmarket.propeler.service.InvestmentStateService;
+import io.realmarket.propeler.service.PaymentService;
+import io.realmarket.propeler.service.PersonService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.BlockchainCommunicationService;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -43,9 +47,11 @@ public class InvestmentServiceImplTest {
   @Mock private PaymentService paymentService;
   @Mock private PersonService personService;
   @Mock private ModelMapperBlankString modelMapperBlankString;
+
+  @Mock private BlockchainMessageProducer blockchainMessageProducer;
+
   @Mock private EmailService emailService;
   @Mock private PlatformSettingsService platformSettingsService;
-  @Mock private BlockchainCommunicationService blockchainCommunicationService;
   @Mock private InvestmentRepository investmentRepository;
   @Mock private CountryRepository countryRepository;
 
