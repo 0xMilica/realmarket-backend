@@ -9,10 +9,10 @@ import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.UserKYCRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.user.kyc.ChangeStateDto;
 import io.realmarket.propeler.service.blockchain.dto.user.kyc.RequestForReviewDto;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -47,7 +47,7 @@ public class UserKYCServiceImpl implements UserKYCService {
   private final BlockchainMessageProducer blockchainMessageProducer;
   private final NotificationService notificationService;
 
-  @Value(value = "${app.time.zone}")
+  @Value(value = "${app.locale.timezone}")
   private String timeZone;
 
   public UserKYCServiceImpl(

@@ -19,6 +19,7 @@ import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.PdfService;
+import io.realmarket.propeler.service.util.TemplateDataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
   private final PdfService pdfService;
   private final FileService fileService;
   private final EmailService emailService;
+  private final TemplateDataUtil templateDataUtil;
   private final InvestmentRepository investmentRepository;
   private final BankTransferPaymentRepository bankTransferPaymentRepository;
   private final BlockchainMessageProducer blockchainMessageProducer;
@@ -63,6 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
       PdfService pdfService,
       FileService fileService,
       EmailService emailService,
+      TemplateDataUtil templateDataUtil,
       InvestmentRepository investmentRepository,
       BankTransferPaymentRepository bankTransferPaymentRepository,
       BlockchainMessageProducer blockchainMessageProducer,
@@ -73,6 +76,7 @@ public class PaymentServiceImpl implements PaymentService {
     this.pdfService = pdfService;
     this.fileService = fileService;
     this.emailService = emailService;
+    this.templateDataUtil = templateDataUtil;
     this.investmentRepository = investmentRepository;
     this.bankTransferPaymentRepository = bankTransferPaymentRepository;
     this.blockchainMessageProducer = blockchainMessageProducer;
@@ -134,7 +138,8 @@ public class PaymentServiceImpl implements PaymentService {
   }
 
   private String createProformaInvoiceUrl(Investment investment) {
-    Map<String, Object> documentsParameters = new HashMap<>();
+    Map<String, Object> documentsParameters =
+        templateDataUtil.getData(investment, "Bank Transfer", true);
     byte[] file = pdfService.generatePdf(documentsParameters, FileType.PROFORMA_INVOICE);
     String url = fileService.uploadPdfFile(file);
     sendProformaInvoiceEmail(investment, file);

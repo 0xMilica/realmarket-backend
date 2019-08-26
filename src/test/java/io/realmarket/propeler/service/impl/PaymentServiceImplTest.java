@@ -1,6 +1,7 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.model.BankTransferPayment;
+import io.realmarket.propeler.model.Company;
 import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.Payment;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
@@ -11,6 +12,8 @@ import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.PdfService;
+import io.realmarket.propeler.service.util.TemplateDataUtil;
+import io.realmarket.propeler.util.CompanyUtils;
 import io.realmarket.propeler.util.InvestmentUtils;
 import io.realmarket.propeler.util.PlatformSettingsUtils;
 import org.junit.Before;
@@ -48,6 +51,7 @@ public class PaymentServiceImplTest {
   @Mock private InvestmentRepository investmentRepository;
   @Mock private BankTransferPaymentRepository bankTransferPaymentRepository;
   @Mock private BlockchainMessageProducer blockchainMessageProducer;
+  @Mock private TemplateDataUtil templateDataUtil;
 
   @Before
   public void createAuthContext() {
@@ -74,6 +78,7 @@ public class PaymentServiceImplTest {
   public void GetBankTransferPayment_Should_CreateAndReturnPayment() {
     Investment ownerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
     BankTransferPayment bankTransferPayment = mockPaidBankTransferPayment();
+    Company company = CompanyUtils.getCompanyMocked();
 
     when(investmentRepository.getOne(InvestmentUtils.INVESTMENT_ID))
         .thenReturn(ownerApprovedInvestment);

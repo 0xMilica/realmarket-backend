@@ -54,7 +54,7 @@ public class PdfService {
       case WILD_CARDS:
         return userWildcardsTemplate;
       case PROFORMA_INVOICE:
-        return "proformaInvoice";
+        return "invoiceDocumentTemplate";
       default:
         throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
     }

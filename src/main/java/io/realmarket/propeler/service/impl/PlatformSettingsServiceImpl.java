@@ -22,14 +22,14 @@ public class PlatformSettingsServiceImpl implements PlatformSettingsService {
   @Value("${app.investment.minimum}")
   private BigDecimal minimumInvestment;
 
-  @Value("${app.currency.code}")
+  @Value("${app.locale.currency.code}")
   private String currencyCode;
 
-  @Value("${app.currency.locale_language}")
-  private String currencyLocaleLanguage;
+  @Value("${app.locale.language}")
+  private String localeLanguage;
 
-  @Value("${app.currency.locale_country}")
-  private String currencyLocaleCountry;
+  @Value("${app.locale.country}")
+  private String localeCountry;
 
   private CountryRepository countryRepository;
 
@@ -60,6 +60,6 @@ public class PlatformSettingsServiceImpl implements PlatformSettingsService {
   @Override
   public CurrencyResponseDto getPlatformCurrency() {
     return new CurrencyResponseDto(
-        Currency.getInstance(currencyCode), currencyLocaleLanguage, currencyLocaleCountry);
+        Currency.getInstance(currencyCode), localeLanguage, localeCountry);
   }
 }

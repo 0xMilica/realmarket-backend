@@ -22,6 +22,7 @@ spring:
     test-connection: false
     properties:
       mail.smtp:
+        from: no-reply
         auth: true
         starttls.enable: true
   thymeleaf:
@@ -66,18 +67,23 @@ app:
     minimum: 500
     weekInMillis: 604800000
 
-  time.zone: Europe/Belgrade
-  currency:
-    code: EUR
-    locale_language: de
-    locale_country: DE
+  locale:
+    language: de
+    country: DE
+    timezone: Europe/Belgrade
+    currency:
+      code: EUR
 
   bank:
     account-number: 160-24524924592-44
     mod: 97
+    name: Srbska banka
+    IBAN: 12349876
+    SWIFT: 67894321
 
   payment:
     card-limit: 15000
+    VAT: 0.20
 
 cos:
   public_prefix: local_public
