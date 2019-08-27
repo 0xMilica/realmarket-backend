@@ -1,11 +1,15 @@
 package io.realmarket.propeler.service.blockchain.dto.user;
 
 import io.realmarket.propeler.model.Person;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import static io.realmarket.propeler.service.util.HashingHelper.hash;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class HashedPersonDetails {
   private String email;
   private String firstName;

@@ -1,6 +1,9 @@
 package io.realmarket.propeler.service.blockchain.queue.impl;
 
-import io.realmarket.propeler.service.blockchain.queue.BlockchainQueueMessage;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.realmarket.propeler.model.BlockchainMessage;
+import io.realmarket.propeler.service.BlockchainMessageService;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 @Slf4j
@@ -19,14 +23,19 @@ public class BlockchainConsumerInvoker {
   private final BlockchainMessageConsumerImpl blockchainMessageConsumer;
 
   @Resource(name = "blockchainMessageQueue")
-  private BlockingQueue<BlockchainQueueMessage> blockchainMessageQueue;
+  private BlockingQueue<BlockchainMessage> blockchainMessageQueue;
+
+  private BlockchainMessageService blockchainMessageService;
 
   @Value("${blockchain.active}")
   private boolean active;
 
   @Autowired
-  public BlockchainConsumerInvoker(BlockchainMessageConsumerImpl blockchainMessageConsumer) {
+  public BlockchainConsumerInvoker(
+      BlockchainMessageConsumerImpl blockchainMessageConsumer,
+      BlockchainMessageService blockchainMessageService) {
     this.blockchainMessageConsumer = blockchainMessageConsumer;
+    this.blockchainMessageService = blockchainMessageService;
   }
 
   @Async
@@ -36,19 +45,27 @@ public class BlockchainConsumerInvoker {
       log.info("Blockchain is off.");
 
     } else {
-      BlockchainQueueMessage message;
+      BlockchainMessage message = null;
       do {
-
         try {
           message = blockchainMessageQueue.take();
+
+          blockchainMessageConsumer.processMessage(
+              new ObjectMapper()
+                  .readValue(message.getMessageDetails(), BlockchainMessageDetails.class));
 
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
           log.error("Thread interrupted - failed to take message from queue.");
           break;
+
+        } catch (IOException e) {
+          log.error(
+              "Could not deserialize JSON from string, message removed from queue and deleted; message: {}",
+              message.getMessageDetails());
         }
 
-        blockchainMessageConsumer.processMessage(message);
+        blockchainMessageService.deleteById(message.getId());
       } while (true);
     }
   }

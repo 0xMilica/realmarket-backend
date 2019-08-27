@@ -2,9 +2,13 @@ package io.realmarket.propeler.service.blockchain.dto.investment.payment;
 
 import io.realmarket.propeler.model.BankTransferPayment;
 import io.realmarket.propeler.service.blockchain.dto.AbstractBlockchainDto;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentDto extends AbstractBlockchainDto {
   private PaymentDetails payment;
 

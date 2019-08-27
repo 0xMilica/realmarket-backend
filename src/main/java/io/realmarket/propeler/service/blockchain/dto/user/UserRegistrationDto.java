@@ -4,28 +4,30 @@ import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.service.blockchain.dto.AbstractBlockchainDto;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class RegistrationDto extends AbstractBlockchainDto {
+@NoArgsConstructor
+public class UserRegistrationDto extends AbstractBlockchainDto {
   private String role;
   private String username;
   private HashedPersonDetails person;
 
   @Builder
-  public RegistrationDto(
+  public UserRegistrationDto(
       Long userId,
       String IP,
       Long timestamp,
       String role,
       String username,
       HashedPersonDetails person) {
-    super(userId, IP, timestamp);
+    super(userId, IP, timestamp, UserRegistrationDto.class.getSimpleName());
     this.role = role;
     this.username = username;
     this.person = person;
   }
 
-  public RegistrationDto(Auth auth) {
+  public UserRegistrationDto(Auth auth) {
     this.role = auth.getUserRole().getName().toString();
     this.username = auth.getUsername();
     this.person = new HashedPersonDetails(auth.getPerson());

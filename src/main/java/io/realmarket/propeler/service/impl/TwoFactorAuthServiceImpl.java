@@ -9,7 +9,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.user.RegenerationOfRecoveryDto;
+import io.realmarket.propeler.service.blockchain.dto.user.UserRegenerationOfRecoveryDto;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.LoginIPAttemptsService;
@@ -174,7 +174,7 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_REGENERATION_OF_RECOVERY,
-        RegenerationOfRecoveryDto.builder().userId(authId).build(),
+        UserRegenerationOfRecoveryDto.builder().userId(authId).build(),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 

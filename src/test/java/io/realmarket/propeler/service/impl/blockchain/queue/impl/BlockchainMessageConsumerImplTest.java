@@ -2,7 +2,7 @@ package io.realmarket.propeler.service.impl.blockchain.queue.impl;
 
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.exception.BlockchainException;
-import io.realmarket.propeler.service.blockchain.queue.BlockchainQueueMessage;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageDetails;
 import io.realmarket.propeler.service.blockchain.queue.impl.BlockchainMessageConsumerImpl;
 import io.realmarket.propeler.service.blockchain.queue.impl.BlockchainMessageProducerImpl;
 import org.junit.Test;
@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.BlockingQueue;
@@ -27,7 +26,7 @@ public class BlockchainMessageConsumerImplTest {
 
   @Mock RestTemplate restTemplate;
 
-  @Mock BlockingQueue<BlockchainQueueMessage> blockchainMessageQueue;
+  @Mock BlockingQueue<BlockchainMessageDetails> blockchainMessageQueue;
 
   @InjectMocks BlockchainMessageConsumerImpl blockchainMessageConsumer;
 
@@ -40,7 +39,7 @@ public class BlockchainMessageConsumerImplTest {
         .thenReturn(TEST_RESPONSE_OK);
 
     blockchainMessageConsumer.processMessage(
-        new BlockchainQueueMessage(
+        new BlockchainMessageDetails(
             BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_IP));
   }
 
@@ -51,7 +50,7 @@ public class BlockchainMessageConsumerImplTest {
     when(restTemplate.postForObject(anyString(), any(), any())).thenReturn(getMapMocked(false));
 
     blockchainMessageConsumer.processMessage(
-        new BlockchainQueueMessage(
+        new BlockchainMessageDetails(
             BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_IP));
   }
 
@@ -61,7 +60,7 @@ public class BlockchainMessageConsumerImplTest {
         .thenReturn(TEST_RESPONSE_OK);
 
     blockchainMessageConsumer.processMessage(
-        new BlockchainQueueMessage(
+        new BlockchainMessageDetails(
             BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_IP));
   }
 
@@ -71,7 +70,7 @@ public class BlockchainMessageConsumerImplTest {
         .thenReturn(TEST_RESPONSE_ERROR);
 
     blockchainMessageConsumer.processMessage(
-        new BlockchainQueueMessage(
+        new BlockchainMessageDetails(
             BlockchainMethod.USER_REGISTRATION, TEST_REGISTRATION_DTO, TEST_IP));
   }
 }

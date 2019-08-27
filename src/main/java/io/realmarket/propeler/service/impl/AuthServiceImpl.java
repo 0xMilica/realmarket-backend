@@ -12,10 +12,11 @@ import io.realmarket.propeler.repository.AuthRepository;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.blockchain.dto.user.UserRegistrationDto;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.user.EmailChangeDto;
-import io.realmarket.propeler.service.blockchain.dto.user.PasswordChangeDto;
+import io.realmarket.propeler.service.blockchain.dto.user.UserEmailChangeDto;
+import io.realmarket.propeler.service.blockchain.dto.user.UserPasswordChangeDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
@@ -254,7 +255,7 @@ public class AuthServiceImpl implements AuthService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_REGISTRATION,
-        new io.realmarket.propeler.service.blockchain.dto.user.RegistrationDto(auth),
+        new UserRegistrationDto(auth),
         auth.getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -344,7 +345,7 @@ public class AuthServiceImpl implements AuthService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_PASSWORD_CHANGE,
-        PasswordChangeDto.builder().userId(authId).build(),
+        UserPasswordChangeDto.builder().userId(authId).build(),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -433,7 +434,7 @@ public class AuthServiceImpl implements AuthService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_EMAIL_CHANGE,
-        EmailChangeDto.builder()
+        UserEmailChangeDto.builder()
             .userId(currentAuth.getId())
             .newEmailHash(HashingHelper.hash(authorizedAction.getData()))
             .build(),

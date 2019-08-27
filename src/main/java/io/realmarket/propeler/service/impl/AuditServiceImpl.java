@@ -13,7 +13,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.campaign.ChangeStateDto;
+import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignChangeStateDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -163,7 +163,7 @@ public class AuditServiceImpl implements AuditService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.CAMPAIGN_STATE_CHANGE,
-        new ChangeStateDto(
+        new CampaignChangeStateDto(
             audit.getCampaign(), AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());

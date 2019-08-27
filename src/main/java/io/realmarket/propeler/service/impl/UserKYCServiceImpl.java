@@ -10,8 +10,8 @@ import io.realmarket.propeler.repository.UserKYCRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.user.kyc.ChangeStateDto;
-import io.realmarket.propeler.service.blockchain.dto.user.kyc.RequestForReviewDto;
+import io.realmarket.propeler.service.blockchain.dto.user.kyc.KYCChangeStateDto;
+import io.realmarket.propeler.service.blockchain.dto.user.kyc.KYCRequestForReviewDto;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
@@ -90,7 +90,8 @@ public class UserKYCServiceImpl implements UserKYCService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_KYC_REQUEST_FOR_REVIEW,
-        new RequestForReviewDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new KYCRequestForReviewDto(
+            userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
@@ -117,7 +118,7 @@ public class UserKYCServiceImpl implements UserKYCService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_KYC_STATE_CHANGE,
-        new ChangeStateDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new KYCChangeStateDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
@@ -177,7 +178,7 @@ public class UserKYCServiceImpl implements UserKYCService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_KYC_STATE_CHANGE,
-        new ChangeStateDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new KYCChangeStateDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
@@ -235,7 +236,7 @@ public class UserKYCServiceImpl implements UserKYCService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_KYC_STATE_CHANGE,
-        new ChangeStateDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new KYCChangeStateDto(userKYC, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 

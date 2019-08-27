@@ -14,7 +14,7 @@ import io.realmarket.propeler.service.PlatformSettingsService;
 import io.realmarket.propeler.service.ShareholderService;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.company.UpdateShareholdersDto;
+import io.realmarket.propeler.service.blockchain.dto.company.CompanyUpdateShareholdersDto;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.FileUtils;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
@@ -78,7 +78,7 @@ public class ShareholderServiceImpl implements ShareholderService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
-        new UpdateShareholdersDto(company, getShareholders()),
+        new CompanyUpdateShareholdersDto(company, getShareholders()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
@@ -126,7 +126,7 @@ public class ShareholderServiceImpl implements ShareholderService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
-        new UpdateShareholdersDto(shareholder.getCompany(), getShareholders()),
+        new CompanyUpdateShareholdersDto(shareholder.getCompany(), getShareholders()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
@@ -141,7 +141,7 @@ public class ShareholderServiceImpl implements ShareholderService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.SUBMIT_SHAREHOLDERS,
-        new UpdateShareholdersDto(shareholder.getCompany(), getShareholders()),
+        new CompanyUpdateShareholdersDto(shareholder.getCompany(), getShareholders()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }

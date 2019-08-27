@@ -1,9 +1,13 @@
 package io.realmarket.propeler.service.blockchain.dto.campaign;
 
 import io.realmarket.propeler.model.Campaign;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CampaignDetails {
   private Long campaignId;
   private Long companyId;

@@ -1,10 +1,14 @@
 package io.realmarket.propeler.service.blockchain.dto.investment.payment;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentDetails {
   private Long paymentId;
   private Long investmentId;

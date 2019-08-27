@@ -13,8 +13,8 @@ import io.realmarket.propeler.service.CloudObjectStorageService;
 import io.realmarket.propeler.service.CompanyService;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.company.EditRequestDto;
-import io.realmarket.propeler.service.blockchain.dto.company.RegistrationDto;
+import io.realmarket.propeler.service.blockchain.dto.company.CompanyEditRequestDto;
+import io.realmarket.propeler.service.blockchain.dto.company.CompanyRegistrationDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.FileUtils;
@@ -77,7 +77,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.COMPANY_REGISTRATION,
-        new RegistrationDto(company),
+        new CompanyRegistrationDto(company),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
 
@@ -93,7 +93,7 @@ public class CompanyServiceImpl implements CompanyService {
 
       blockchainMessageProducer.produceMessage(
           BlockchainMethod.COMPANY_EDIT_REQUEST,
-          new EditRequestDto(editRequest),
+          new CompanyEditRequestDto(editRequest),
           AuthenticationUtil.getAuthentication().getAuth().getUsername(),
           AuthenticationUtil.getClientIp());
 

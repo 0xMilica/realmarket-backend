@@ -10,7 +10,7 @@
     <include file="migrations/request_state_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/investment_state_table.xml" relativeToChangelogFile="true"/>
 
-	<include file="migrations/notification_table.xml" relativeToChangelogFile="true"/>
+    <include file="migrations/notification_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/company_category_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/company_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/company_edit_table.xml" relativeToChangelogFile="true"/>
@@ -33,6 +33,8 @@
     <include file="migrations/registration_token_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/campaign_documents_access_request_table.xml" relativeToChangelogFile="true"/>
     <include file="migrations/digital_signature_table.xml" relativeToChangelogFile="true"/>
+
+    <include file="migrations/blockchain_message_table.xml" relativeToChangelogFile="true"/>
 
     <include file="migrations/country_table_init.xml" relativeToChangelogFile="true"/>
     <include file="migrations/tables_init.xml" relativeToChangelogFile="true"/>

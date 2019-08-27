@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BlockchainQueueMessage {
+public class BlockchainMessageDetails {
   private String methodName;
   private AbstractBlockchainDto dto;
   private String username;

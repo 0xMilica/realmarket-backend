@@ -1,9 +1,13 @@
 package io.realmarket.propeler.service.blockchain.dto.user.kyc;
 
 import io.realmarket.propeler.model.UserKYC;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestForReviewDetails {
   private Long userKYCId;
   private String requestState;

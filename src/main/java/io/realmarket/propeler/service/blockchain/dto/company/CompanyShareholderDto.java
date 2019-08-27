@@ -1,10 +1,14 @@
 package io.realmarket.propeler.service.blockchain.dto.company;
 
 import io.realmarket.propeler.model.Shareholder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class ShareholderDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class CompanyShareholderDto {
   private Long shareholderId;
   private Boolean isAnonymous;
   private String name;
@@ -15,7 +19,7 @@ public class ShareholderDto {
   private boolean isCompany;
   private String companyIdentificationNumber;
 
-  public ShareholderDto(Shareholder shareholder) {
+  public CompanyShareholderDto(Shareholder shareholder) {
     this.shareholderId = shareholder.getId();
     this.isAnonymous = shareholder.getIsAnonymous();
     this.name = shareholder.getName();

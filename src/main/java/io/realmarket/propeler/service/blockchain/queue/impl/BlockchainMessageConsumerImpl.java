@@ -3,7 +3,7 @@ package io.realmarket.propeler.service.blockchain.queue.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.realmarket.propeler.service.blockchain.exception.BlockchainException;
-import io.realmarket.propeler.service.blockchain.queue.BlockchainQueueMessage;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,7 +53,7 @@ public class BlockchainMessageConsumerImpl {
   }
 
   @Retryable(maxAttempts = Integer.MAX_VALUE, backoff = @Backoff(multiplier = 2))
-  public void processMessage(BlockchainQueueMessage message) {
+  public void processMessage(BlockchainMessageDetails message) {
     HttpEntity<Map<String, Object>> entity = generateEntity(message);
 
     String invocationUrl =
@@ -100,7 +100,7 @@ public class BlockchainMessageConsumerImpl {
     }
   }
 
-  private HttpEntity<Map<String, Object>> generateEntity(BlockchainQueueMessage message) {
+  private HttpEntity<Map<String, Object>> generateEntity(BlockchainMessageDetails message) {
     HttpHeaders headers = new HttpHeaders();
     headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + enrollUser(message.getUsername()));

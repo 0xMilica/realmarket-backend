@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="ntodorovic" id="1">
+        <sql
+                endDelimiter=";"
+                splitStatements="true"
+                stripComments="true">
+            create sequence blockchain_message_seq;
+            create table if not exists blockchain_message
+            (
+            id bigint not null
+            constraint blockchain_message_pkey
+            primary key,
+            message_details varchar(4096) not null
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

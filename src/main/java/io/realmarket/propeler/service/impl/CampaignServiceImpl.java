@@ -9,7 +9,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.campaign.SubmissionForReviewDto;
+import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignSubmissionForReviewDto;
 import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
@@ -323,7 +323,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.CAMPAIGN_SUBMISSION_FOR_REVIEW,
-        new SubmissionForReviewDto(campaign),
+        new CampaignSubmissionForReviewDto(campaign),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }

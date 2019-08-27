@@ -15,7 +15,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
-import io.realmarket.propeler.service.blockchain.dto.investment.ChangeStateDto;
+import io.realmarket.propeler.service.blockchain.dto.investment.InvestmentChangeStateDto;
 import io.realmarket.propeler.service.blockchain.dto.investment.InvestmentDto;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
@@ -164,7 +164,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
-        new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new InvestmentChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -199,7 +199,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
-        new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new InvestmentChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -232,7 +232,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
-        new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new InvestmentChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -255,7 +255,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
-        new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new InvestmentChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -277,7 +277,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
-        new ChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new InvestmentChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
