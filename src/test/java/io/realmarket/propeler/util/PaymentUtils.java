@@ -6,6 +6,7 @@ import io.realmarket.propeler.model.Investment;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
 
 public class PaymentUtils {
 
@@ -36,6 +37,6 @@ public class PaymentUtils {
       PaymentConfirmationDto.builder()
           .documentUrl("TEST_URL")
           .documentTitle("TEST_TITLE")
-          .paymentDate("01.01.2020.")
+          .paymentDate(new Date())
           .build();
 }

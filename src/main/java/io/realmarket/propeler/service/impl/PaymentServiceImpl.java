@@ -201,8 +201,7 @@ public class PaymentServiceImpl implements PaymentService {
         paymentConfirmationDto.getDocumentUrl(),
         paymentConfirmationDto.getDocumentTitle());
 
-    // TODO: Change later to date from bank transfer
-    bankTransferPayment.setPaymentDate(Instant.now());
+    bankTransferPayment.setPaymentDate(paymentConfirmationDto.getPaymentDate().toInstant());
 
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.PAID));

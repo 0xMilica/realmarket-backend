@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @ApiModel(value = "PaymentConfirmationDto")
 @Data
 @NoArgsConstructor
@@ -15,5 +17,5 @@ public class PaymentConfirmationDto {
 
   String documentUrl;
   String documentTitle;
-  String paymentDate;
+  Date paymentDate;
 }
