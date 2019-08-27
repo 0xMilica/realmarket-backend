@@ -2,12 +2,10 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.api.dto.enums.EmailType;
-import io.realmarket.propeler.model.Campaign;
-import io.realmarket.propeler.model.Country;
-import io.realmarket.propeler.model.Investment;
-import io.realmarket.propeler.model.Person;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
+import io.realmarket.propeler.model.enums.NotificationType;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
@@ -50,6 +48,8 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final EmailService emailService;
   private final PlatformSettingsService platformSettingsService;
   private final CountryRepository countryRepository;
+  private final NotificationService notificationService;
+  private final AuthService authService;
 
   @Value("${app.investment.weekInMillis}")
   private long weekInMillis;
@@ -65,7 +65,9 @@ public class InvestmentServiceImpl implements InvestmentService {
       BlockchainMessageProducer blockchainMessageProducer,
       EmailService emailService,
       PlatformSettingsService platformSettingsService,
-      CountryRepository countryRepository) {
+      CountryRepository countryRepository,
+      NotificationService notificationService,
+      AuthService authService) {
     this.campaignService = campaignService;
     this.investmentRepository = investmentRepository;
     this.paymentService = paymentService;
@@ -76,6 +78,8 @@ public class InvestmentServiceImpl implements InvestmentService {
     this.emailService = emailService;
     this.platformSettingsService = platformSettingsService;
     this.countryRepository = countryRepository;
+    this.notificationService = notificationService;
+    this.authService = authService;
   }
 
   @Transactional
@@ -159,8 +163,10 @@ public class InvestmentServiceImpl implements InvestmentService {
         investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED));
     investment = investmentRepository.save(investment);
 
-
     sendInvestmentAcceptanceEmail(investment);
+    Auth recipient = authService.findByUserIdrThrowException(investment.getPerson().getId());
+    notificationService.sendMessage(
+        recipient, NotificationType.ACCEPT_INVESTOR, null, campaign.getName());
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
@@ -196,6 +202,9 @@ public class InvestmentServiceImpl implements InvestmentService {
     investment = investmentRepository.save(investment);
 
     sendInvestmentRejectionEmail(investment);
+    Auth recipient = authService.findByUserIdrThrowException(investment.getPerson().getId());
+    notificationService.sendMessage(
+        recipient, NotificationType.REJECT_INVESTOR, null, campaign.getName());
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
@@ -344,7 +353,8 @@ public class InvestmentServiceImpl implements InvestmentService {
 
   @Override
   public List<InvestmentWithPersonResponseDto> findAllByCampaignWithInvestors(Campaign campaign) {
-    return findAllByCampaign(campaign).stream()
+    return findAllByCampaign(campaign)
+        .stream()
         .map(i -> new InvestmentWithPersonResponseDto(i, new PersonResponseDto(i.getPerson())))
         .collect(Collectors.toList());
   }

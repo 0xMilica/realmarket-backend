@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
@@ -38,13 +39,15 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   @Override
-  public void sendMessage(Auth recipient, NotificationType type, String rejectionMessage) {
+  public void sendMessage(
+      Auth recipient, NotificationType type, String rejectionMessage, String campaignName) {
     Auth sender = AuthenticationUtil.getAuthentication().getAuth();
     String content;
-    NotificationContentDto notificationContent = generateNotificationContent(recipient, type);
+    NotificationContentDto notificationContent =
+        generateNotificationContent(recipient, type, campaignName);
 
-    if (rejectionMessage != null && !rejectionMessage.isEmpty()) {
-      content = notificationContent.getText().concat(rejectionMessage);
+    if (!StringUtils.isEmpty(rejectionMessage)) {
+      content = notificationContent.getText().concat("Reason: ").concat(rejectionMessage);
     } else {
       content = notificationContent.getText();
     }
@@ -59,7 +62,9 @@ public class NotificationServiceImpl implements NotificationService {
             .build();
     notificationRepository.save(notification);
     template.convertAndSendToUser(
-        recipient.getId().toString(), NOTIFICATIONS_BROKER, new NotificationDto(notification));
+        recipient.getId().toString(),
+        NOTIFICATIONS_BROKER,
+        new NotificationDto(notification, type));
   }
 
   @Override
@@ -113,7 +118,7 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   private NotificationContentDto generateNotificationContent(
-      Auth recipient, NotificationType type) {
+      Auth recipient, NotificationType type, String campaignName) {
     String title = "";
     String templateText =
         String.format(
@@ -122,23 +127,55 @@ public class NotificationServiceImpl implements NotificationService {
     switch (type) {
       case ACCEPT_CAMPAIGN:
         title = "Propeler - Campaign accepted";
-        templateText = templateText.concat(", your campaign has been accepted. ");
+        templateText = templateText.concat(", Your campaign has been accepted. ");
         break;
       case REJECT_CAMPAIGN:
         title = "Propeler - Campaign rejected";
-        templateText = templateText.concat(", your campaign has been rejected. ");
+        templateText = templateText.concat(", Your campaign has been rejected. ");
         break;
       case KYC_APPROVAL:
         title = "Propeler - KYC accepted";
         templateText =
             templateText.concat(
-                ", we have received your KYC application. After careful review we are glad to inform you that Your KYC application has been approved. From now on, you are able to raise funds on Propeler platform. ");
+                ", We have received your KYC application. After careful review we are glad to inform you that Your KYC application has been approved. From now on, you are able to raise funds on Propeler platform. ");
         break;
       case KYC_REJECTION:
         title = "Propeler - KYC rejection";
         templateText =
             templateText.concat(
-                ", we have received your KYC application. After careful review we are sorry to inform you that Your KYC application has been rejected. ");
+                ", We have received your KYC application. After careful review we are sorry to inform you that Your KYC application has been rejected. ");
+        break;
+      case ACCEPT_INVESTOR:
+        title = "Propeler - Campaign investment acceptance";
+        templateText =
+            templateText.concat(
+                String.format(
+                    " , Your investment indication for campaign %s has been accepted. ",
+                    campaignName));
+        break;
+      case REJECT_INVESTOR:
+        title = "Propeler - Campaign investment rejection";
+        templateText =
+            templateText.concat(
+                String.format(
+                    " , Your investment indication for campaign %s has been rejected. ",
+                    campaignName));
+        break;
+
+      case ACCEPT_DOCUMENTS:
+        title = "Propeler - Campaign documents acceptance";
+        templateText =
+            templateText.concat(
+                String.format(
+                    " , Your request for campaign %s documents has been accepted.", campaignName));
+        break;
+
+      case REJECT_DOCUMENTS:
+        title = "Propeler - Campaign documents rejection";
+        templateText =
+            templateText.concat(
+                String.format(
+                    " , Your request for campaign %s documents has been rejected.", campaignName));
         break;
       default:
         break;

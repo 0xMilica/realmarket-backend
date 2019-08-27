@@ -6,13 +6,14 @@ import io.realmarket.propeler.api.dto.CampaignResponseDto;
 import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.DocumentAccessLevelName;
+import io.realmarket.propeler.model.enums.NotificationType;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.CampaignDocumentsAccessRequestRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignDocumentAccessRequestStateChangeDto;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
   private final CampaignService campaignService;
   private final AuthService authService;
   private final RequestStateService requestStateService;
-
+  private final NotificationService notificationService;
   private final BlockchainMessageProducer blockchainMessageProducer;
 
   @Autowired
@@ -42,6 +43,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
       CampaignService campaignService,
       AuthService authService,
       RequestStateService requestStateService,
+      NotificationService notificationService,
       BlockchainMessageProducer blockchainMessageProducer) {
     this.campaignDocumentsAccessRequestRepository = campaignDocumentsAccessRequestRepository;
     this.campaignDocumentService = campaignDocumentService;
@@ -49,6 +51,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
     this.authService = authService;
     this.requestStateService = requestStateService;
     this.blockchainMessageProducer = blockchainMessageProducer;
+    this.notificationService = notificationService;
   }
 
   private CampaignDocumentsAccessRequest findByIdOrThrowException(Long requestId) {
@@ -137,7 +140,8 @@ public class CampaignDocumentsAccessRequestServiceImpl
     campaignDocumentsAccessRequestsDto.setCampaign(new CampaignResponseDto(campaign));
 
     List<CampaignDocumentsAccessRequestDto> requestList =
-        findByCampaign(campaign).stream()
+        findByCampaign(campaign)
+            .stream()
             .map(CampaignDocumentsAccessRequestDto::new)
             .collect(Collectors.toList());
     campaignDocumentsAccessRequestsDto.setRequests(requestList);
@@ -152,7 +156,11 @@ public class CampaignDocumentsAccessRequestServiceImpl
     campaignService.throwIfNoAccess(campaignDocumentsAccessRequest.getCampaign());
     campaignDocumentsAccessRequest.setRequestState(
         requestStateService.getRequestState(RequestStateName.APPROVED));
-
+    notificationService.sendMessage(
+        campaignDocumentsAccessRequest.getAuth(),
+        NotificationType.ACCEPT_DOCUMENTS,
+        null,
+        campaignDocumentsAccessRequest.getCampaign().getName());
     return saveAndSendToBlockchain(campaignDocumentsAccessRequest);
   }
 
@@ -163,7 +171,11 @@ public class CampaignDocumentsAccessRequestServiceImpl
     campaignService.throwIfNoAccess(campaignDocumentsAccessRequest.getCampaign());
     campaignDocumentsAccessRequest.setRequestState(
         requestStateService.getRequestState(RequestStateName.DECLINED));
-
+    notificationService.sendMessage(
+        campaignDocumentsAccessRequest.getAuth(),
+        NotificationType.REJECT_DOCUMENTS,
+        null,
+        campaignDocumentsAccessRequest.getCampaign().getName());
     return saveAndSendToBlockchain(campaignDocumentsAccessRequest);
   }
 

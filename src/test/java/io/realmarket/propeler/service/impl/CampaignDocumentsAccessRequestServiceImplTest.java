@@ -1,9 +1,11 @@
 package io.realmarket.propeler.service.impl;
 
+import io.realmarket.propeler.model.enums.NotificationType;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.CampaignDocumentsAccessRequestRepository;
 import io.realmarket.propeler.service.AuthService;
 import io.realmarket.propeler.service.CampaignService;
+import io.realmarket.propeler.service.NotificationService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.util.AuthUtils;
@@ -18,9 +20,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Optional;
 
+import static io.realmarket.propeler.util.AuthUtils.TEST_AUTH;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -30,6 +34,7 @@ public class CampaignDocumentsAccessRequestServiceImplTest {
   @Mock private RequestStateService requestStateService;
   @Mock private CampaignService campaignService;
   @Mock private AuthService authService;
+  @Mock private NotificationService notificationService;
   @Mock private BlockchainMessageProducer blockchainMessageProducer;
 
   @InjectMocks
@@ -68,6 +73,9 @@ public class CampaignDocumentsAccessRequestServiceImplTest {
         .thenReturn(CampaignDocumentUtils.TEST_APPROVED_REQUEST_STATE);
     when(campaignDocumentsAccessRequestRepository.save(any()))
         .thenReturn(CampaignDocumentUtils.TEST_ACCEPTED_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST);
+    doNothing()
+        .when(notificationService)
+        .sendMessage(TEST_AUTH, NotificationType.ACCEPT_DOCUMENTS, null, null);
 
     campaignDocumentsAccessRequestService.acceptCampaignDocumentsAccessRequest(
         CampaignDocumentUtils.TEST_ID);
@@ -84,7 +92,9 @@ public class CampaignDocumentsAccessRequestServiceImplTest {
         .thenReturn(CampaignDocumentUtils.TEST_DECLINED_REQUEST_STATE);
     when(campaignDocumentsAccessRequestRepository.save(any()))
         .thenReturn(CampaignDocumentUtils.TEST_ACCEPTED_CAMPAIGN_DOCUMENTS_ACCESS_REQUEST);
-
+    doNothing()
+        .when(notificationService)
+        .sendMessage(TEST_AUTH, NotificationType.REJECT_DOCUMENTS, null, null);
     campaignDocumentsAccessRequestService.acceptCampaignDocumentsAccessRequest(
         CampaignDocumentUtils.TEST_ID);
 

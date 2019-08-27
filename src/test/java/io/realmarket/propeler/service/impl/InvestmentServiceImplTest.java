@@ -3,6 +3,7 @@ package io.realmarket.propeler.service.impl;
 import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.Person;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
+import io.realmarket.propeler.model.enums.NotificationType;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
@@ -34,9 +35,12 @@ import static io.realmarket.propeler.util.AuthUtils.*;
 import static io.realmarket.propeler.util.CampaignUtils.*;
 import static io.realmarket.propeler.util.InvestmentUtils.*;
 import static io.realmarket.propeler.util.PersonUtils.TEST_PERSON;
+import static io.realmarket.propeler.util.PersonUtils.TEST_PERSON_ID;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(InvestmentServiceImpl.class)
@@ -54,6 +58,8 @@ public class InvestmentServiceImplTest {
   @Mock private PlatformSettingsService platformSettingsService;
   @Mock private InvestmentRepository investmentRepository;
   @Mock private CountryRepository countryRepository;
+  @Mock private NotificationService notificationService;
+  @Mock private AuthService authService;
 
   @InjectMocks private InvestmentServiceImpl investmentService;
 
@@ -232,6 +238,10 @@ public class InvestmentServiceImplTest {
         .thenReturn(TEST_INVESTMENT_OWNER_APPROVED_STATE);
     when(investmentRepository.save(investment)).thenReturn(investment);
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    when(authService.findByUserIdrThrowException(TEST_PERSON_ID)).thenReturn(TEST_AUTH);
+    doNothing()
+        .when(notificationService)
+        .sendMessage(TEST_AUTH, NotificationType.ACCEPT_INVESTOR, null, null);
 
     investmentService.ownerApproveInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_OWNER_APPROVED_STATE, investment.getInvestmentState());
@@ -260,8 +270,11 @@ public class InvestmentServiceImplTest {
     when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_REJECTED))
         .thenReturn(TEST_INVESTMENT_OWNER_REJECTED_STATE);
     when(investmentRepository.save(investment)).thenReturn(investment);
+    when(authService.findByUserIdrThrowException(TEST_PERSON_ID)).thenReturn(TEST_AUTH);
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
-
+    doNothing()
+        .when(notificationService)
+        .sendMessage(TEST_AUTH, NotificationType.REJECT_INVESTOR, null, null);
     investmentService.ownerRejectInvestment(INVESTMENT_ID);
     assertEquals(TEST_INVESTMENT_OWNER_REJECTED_STATE, investment.getInvestmentState());
   }

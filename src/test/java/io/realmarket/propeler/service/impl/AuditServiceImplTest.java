@@ -1,12 +1,10 @@
 package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.model.Audit;
+import io.realmarket.propeler.model.enums.NotificationType;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.repository.AuditRepository;
-import io.realmarket.propeler.service.AuthService;
-import io.realmarket.propeler.service.CampaignService;
-import io.realmarket.propeler.service.EmailService;
-import io.realmarket.propeler.service.RequestStateService;
+import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.util.AuthUtils;
@@ -22,6 +20,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Optional;
 
 import static io.realmarket.propeler.util.AuditUtils.*;
+import static io.realmarket.propeler.util.AuthUtils.TEST_AUTH;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
@@ -36,6 +35,7 @@ public class AuditServiceImplTest {
   @Mock private CampaignService campaignService;
   @Mock private EmailService emailService;
   @Mock private AuditRepository auditRepository;
+  @Mock private NotificationService notificationService;
   @Mock private BlockchainMessageProducer blockchainMessageProducer;
 
   @InjectMocks private AuditServiceImpl auditServiceImpl;
@@ -68,7 +68,9 @@ public class AuditServiceImplTest {
         .thenReturn(TEST_APPROVED_REQUEST_STATE);
     when(auditRepository.save(audit)).thenReturn(TEST_APPROVED_REQUEST_AUDIT);
     doNothing().when(emailService).sendMailToUser(any());
-
+    doNothing()
+        .when(notificationService)
+        .sendMessage(TEST_AUTH, NotificationType.ACCEPT_CAMPAIGN, null, null);
     Audit actualAudit = auditServiceImpl.acceptCampaign(1L);
 
     assertEquals(TEST_APPROVED_REQUEST_STATE, actualAudit.getRequestState());
@@ -91,7 +93,9 @@ public class AuditServiceImplTest {
         .thenReturn(TEST_DECLINED_REQUEST_STATE);
     when(auditRepository.save(audit)).thenReturn(TEST_DECLINED_REQUEST_AUDIT);
     doNothing().when(emailService).sendMailToUser(any());
-
+    doNothing()
+        .when(notificationService)
+        .sendMessage(TEST_AUTH, NotificationType.REJECT_CAMPAIGN, null, null);
     Audit actualAudit = auditServiceImpl.declineCampaign(1L, REJECTION_REASON);
 
     assertEquals(TEST_DECLINED_REQUEST_STATE, actualAudit.getRequestState());

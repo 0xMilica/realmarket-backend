@@ -6,6 +6,7 @@ import io.realmarket.propeler.model.Audit;
 import io.realmarket.propeler.model.Auth;
 import io.realmarket.propeler.model.Campaign;
 import io.realmarket.propeler.model.enums.CampaignStateName;
+import io.realmarket.propeler.model.enums.NotificationType;
 import io.realmarket.propeler.model.enums.RequestStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.AuditRepository;
@@ -37,6 +38,7 @@ public class AuditServiceImpl implements AuditService {
   private final CampaignService campaignService;
   private final EmailService emailService;
   private final BlockchainMessageProducer blockchainMessageProducer;
+  private final NotificationService notificationService;
 
   @Autowired
   public AuditServiceImpl(
@@ -45,12 +47,14 @@ public class AuditServiceImpl implements AuditService {
       AuthService authService,
       @Lazy CampaignService campaignService,
       EmailService emailService,
+      NotificationService notificationService,
       BlockchainMessageProducer blockchainMessageProducer) {
     this.auditRepository = auditRepository;
     this.requestStateService = requestStateService;
     this.authService = authService;
     this.campaignService = campaignService;
     this.emailService = emailService;
+    this.notificationService = notificationService;
     this.blockchainMessageProducer = blockchainMessageProducer;
   }
 
@@ -85,6 +89,8 @@ public class AuditServiceImpl implements AuditService {
     audit.setRequestState(requestStateService.getRequestState(RequestStateName.APPROVED));
     audit = saveAndSendToBlockchain(audit);
     sendAcceptCampaignEmail(audit);
+    Auth recipient = audit.getCampaign().getCompany().getAuth();
+    notificationService.sendMessage(recipient, NotificationType.ACCEPT_CAMPAIGN, null, null);
     return audit;
   }
 
@@ -113,6 +119,9 @@ public class AuditServiceImpl implements AuditService {
     audit.setRequestState(requestStateService.getRequestState(RequestStateName.DECLINED));
     audit = saveAndSendToBlockchain(audit);
     sendDeclineCampaignEmail(audit);
+    Auth recipient = audit.getCampaign().getCompany().getAuth();
+    notificationService.sendMessage(
+        recipient, NotificationType.REJECT_CAMPAIGN, rejectionReason, null);
     return audit;
   }
 

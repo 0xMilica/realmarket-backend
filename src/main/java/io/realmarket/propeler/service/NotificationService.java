@@ -7,7 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface NotificationService {
-  void sendMessage(Auth recipient, NotificationType type, String rejectionMessage);
+  void sendMessage(
+      Auth recipient, NotificationType type, String rejectionMessage, String campaignName);
 
   Long getNumberUnseenNotifications();
 

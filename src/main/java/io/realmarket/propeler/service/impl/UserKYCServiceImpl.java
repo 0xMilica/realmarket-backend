@@ -174,7 +174,7 @@ public class UserKYCServiceImpl implements UserKYCService {
     userKYC = userKYCRepository.save(userKYC);
     sendKYCApprovalEmail(userKYC);
     Auth recipient = userKYC.getUser();
-    notificationService.sendMessage(recipient, NotificationType.KYC_APPROVAL, null);
+    notificationService.sendMessage(recipient, NotificationType.KYC_APPROVAL, null, null);
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_KYC_STATE_CHANGE,
@@ -232,7 +232,8 @@ public class UserKYCServiceImpl implements UserKYCService {
     userKYC = userKYCRepository.save(userKYC);
     sendKYCRejectionEmail(userKYC);
     Auth recipient = userKYC.getUser();
-    notificationService.sendMessage(recipient, NotificationType.KYC_REJECTION, rejectionReason);
+    notificationService.sendMessage(
+        recipient, NotificationType.KYC_REJECTION, rejectionReason, null);
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.USER_KYC_STATE_CHANGE,

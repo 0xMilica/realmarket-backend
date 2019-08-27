@@ -144,7 +144,7 @@ public class UserKYCServiceImplTest {
     doNothing().when(emailService).sendMailToUser(any());
     doNothing()
         .when(notificationService)
-        .sendMessage(TEST_AUTH, NotificationType.KYC_APPROVAL, null);
+        .sendMessage(TEST_AUTH, NotificationType.KYC_APPROVAL, null, null);
 
     UserKYC userKYC = userKYCService.approveUserKYC(TEST_USER_KYC_ID);
 
@@ -172,7 +172,7 @@ public class UserKYCServiceImplTest {
     doNothing().when(emailService).sendMailToUser(any());
     doNothing()
         .when(notificationService)
-        .sendMessage(TEST_AUTH, NotificationType.KYC_REJECTION, null);
+        .sendMessage(TEST_AUTH, NotificationType.KYC_REJECTION, null, null);
 
     UserKYC userKYC = userKYCService.rejectUserKYC(TEST_USER_KYC_ID, TEST_REJECTION_REASON);
 
