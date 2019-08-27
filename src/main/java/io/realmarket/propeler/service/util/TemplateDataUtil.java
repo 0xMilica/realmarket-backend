@@ -124,16 +124,8 @@ public class TemplateDataUtil {
     data.put(SELLER, getData(seller));
     data.put(BUYER, getData(buyer));
     data.put(PRO_FORMA_ID, proformaInvoiceId);
-    if (investment.getCurrency() == null) {
-      data.put(CURRENCY, this.currencyCode);
-    } else {
-      data.put(
-          CURRENCY,
-          (investment.getCurrency().trim().equals(""))
-              ? this.currencyCode
-              : investment.getCurrency().trim());
-    }
-    Instant creationInstant = Instant.now();
+    data.put(CURRENCY, investment.getCurrency().trim());
+    Instant creationInstant = Instant.now(); // TODO Get intended value when implemented
     data.put(ISSUE_DATE, getDateFromInstant(creationInstant));
     data.put(DUE_DATE, getDateFromInstant(creationInstant.plusMillis(invoiceDueDuration)));
     data.put(PAYMENT_METHOD, paymentMethod);
@@ -194,11 +186,11 @@ public class TemplateDataUtil {
       default:
         break;
     }
-    data.put(
-        COUNTRY,
-        person
-            .getCountryForTaxation()
-            .getName()); // TODO Should be reconsidered which country should be placed here when invoice is legally defined
+    if (person.getCountryForTaxation() == null) {
+      data.put(COUNTRY, person.getCountryOfResidence().getName());
+    } else {
+      data.put(COUNTRY, person.getCountryForTaxation().getName());
+    }
     return data;
   }
 
