@@ -57,10 +57,11 @@ public class FileServiceImpl implements FileService {
     }
   }
 
-  public String uploadPdfFile(byte[] file) {
+  public String uploadFile(byte[] file, String extension) {
     try {
       String generatedFileName =
-          String.format("%s.%s", RandomStringBuilder.generateBase32String(filenameLength), "pdf");
+          String.format(
+              "%s.%s", RandomStringBuilder.generateBase32String(filenameLength), extension);
 
       cloudObjectStorageService.upload(
           generatedFileName, new ByteArrayInputStream(file), file.length);

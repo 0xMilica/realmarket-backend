@@ -29,6 +29,10 @@ public class TemplateDataUtil {
   public static final String LAST_NAME = "lastName";
   public static final String SELLER = "seller";
   public static final String BUYER = "buyer";
+  public static final String BUYER_NAME = "buyerName";
+  public static final String BUYER_ADDRESS = "buyerAddress";
+  public static final String BUYER_CITY = "buyerCity";
+  public static final String BUYER_COUNTRY = "buyerCountry";
   public static final String PRO_FORMA_ID = "proFormaId";
   public static final String CURRENCY = "currency";
   public static final String ISSUE_DATE = "issueDate";
@@ -155,7 +159,8 @@ public class TemplateDataUtil {
         data.put(ADDRESS, company.getAddress());
         data.put(
             POSTAL_NO,
-            DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to the model!
+            DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to
+        // the model!
         data.put(CITY, company.getCity());
         data.put(VAT_NO, company.getTaxIdentifier());
         data.put(BANK_NAME, this.bankName);
@@ -170,7 +175,8 @@ public class TemplateDataUtil {
         data.put(ADDRESS, person.getAddress());
         data.put(
             POSTAL_NO,
-            DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to the model!
+            DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to
+        // the model!
         data.put(CITY, person.getCity());
         data.put(VAT_NO, "1234123412341234"); // TODO Fill with actual data when available
         break;
@@ -180,7 +186,8 @@ public class TemplateDataUtil {
         data.put(ADDRESS, person.getAddress());
         data.put(
             POSTAL_NO,
-            DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to the model!
+            DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to
+        // the model!
         data.put(CITY, person.getCity());
         break;
       default:
@@ -197,6 +204,44 @@ public class TemplateDataUtil {
   public Map<String, Object> getData(Company company) {
     HashMap<String, Object> data = new HashMap<>();
     data.put(NAME, company.getName());
+    return data;
+  }
+
+  public Map<String, Object> getOffPlatformInvoiceData(Investment investment) {
+    Person seller = investment.getCampaign().getCompany().getAuth().getPerson();
+    Person buyer = investment.getPerson();
+    Long proformaInvoiceId = investment.getId();
+    BigDecimal quantity =
+        campaignService.convertMoneyToPercentageOfEquity(
+            investment.getCampaign().getUrlFriendlyName(), investment.getInvestedAmount());
+    BigDecimal netPrice = investment.getInvestedAmount();
+    BigDecimal vat = this.vatPercent;
+    BigDecimal total = investment.getInvestedAmount();
+    HashMap<String, Object> data = new HashMap<>();
+    data.put(SELLER, getData(seller));
+    if (buyer.getCompanyName() == null) {
+      data.put(BUYER_NAME, buyer.getFirstName() + " " + buyer.getLastName());
+    } else {
+      data.put(BUYER_NAME, buyer.getCompanyName());
+    }
+    data.put(BUYER_ADDRESS, buyer.getAddress());
+    data.put(BUYER_CITY, buyer.getCity());
+    data.put(BUYER_COUNTRY, buyer.getCountryOfResidence().getName());
+    data.put(PRO_FORMA_ID, proformaInvoiceId);
+    data.put(CURRENCY, investment.getCurrency().trim());
+    Instant creationInstant = Instant.now();
+    data.put(ISSUE_DATE, getDateFromInstant(creationInstant));
+    data.put(DUE_DATE, getDateFromInstant(creationInstant.plusMillis(invoiceDueDuration)));
+    data.put(PAYMENT_METHOD, "Bank transfer");
+
+    data.put(ITEM_QUANTITY, quantity.setScale(2, RoundingMode.HALF_UP));
+    data.put(ITEM_NET_PRICE, netPrice.setScale(2, RoundingMode.HALF_UP));
+    data.put(ITEM_VAT, vat.multiply(netPrice).setScale(2, RoundingMode.HALF_UP));
+    data.put(ITEM_TOTAL, total.add(vat.multiply(netPrice)).setScale(2, RoundingMode.HALF_UP));
+    data.put(FULL_TOTAL, total.add(vat.multiply(netPrice)).setScale(2, RoundingMode.HALF_UP));
+
+    data.put(POST_SCRIPTUM, preparePS());
+
     return data;
   }
 

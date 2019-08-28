@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "fe35d879-babc-4d98-bde5-cae64a272a5e",
+		"_postman_id": "88ba173e-a83e-4757-b944-002ec012ff13",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -5428,6 +5428,37 @@
 								"payments",
 								"{{investment_id}}",
 								"card"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/payments/{{investment_id}}/proformaInvoice",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/payments/{{investment_id}}/proformaInvoice",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{investment_id}}",
+								"proformaInvoice"
 							]
 						}
 					},

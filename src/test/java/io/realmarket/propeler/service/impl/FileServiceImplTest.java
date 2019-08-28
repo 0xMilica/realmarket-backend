@@ -39,8 +39,9 @@ public class FileServiceImplTest {
   @Test
   public void UploadPdfFile_Should_ReturnFileName() {
     byte[] file = mockBytesFile();
+    String extension = "pdf";
 
-    fileService.uploadPdfFile(file);
+    fileService.uploadFile(file, extension);
 
     verify(cloudService, times(1)).upload(anyString(), any(), anyInt());
   }

@@ -41,6 +41,14 @@ public class PaymentControllerImpl implements PaymentController {
   }
 
   @Override
+  @GetMapping(value = "/{investmentId}/proformaInvoice")
+  @PreAuthorize(
+      "hasAnyAuthority('ROLE_ADMIN', 'ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR')")
+  public ResponseEntity getProformaInvoice(@PathVariable Long investmentId) {
+    return ResponseEntity.ok(paymentService.getProformaInvoiceUrl(investmentId));
+  }
+
+  @Override
   @GetMapping(value = "/{investmentId}/card")
   @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR')")
   public ResponseEntity getCardPayment(@PathVariable Long investmentId) {

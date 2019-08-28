@@ -55,6 +55,8 @@ public class PdfService {
         return userWildcardsTemplate;
       case PROFORMA_INVOICE:
         return "invoiceDocumentTemplate";
+      case OFFPLATFORM_INVOICE:
+        return "offplatformProformaInvoiceTemplate";
       default:
         throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
     }

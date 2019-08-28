@@ -140,8 +140,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
     campaignDocumentsAccessRequestsDto.setCampaign(new CampaignResponseDto(campaign));
 
     List<CampaignDocumentsAccessRequestDto> requestList =
-        findByCampaign(campaign)
-            .stream()
+        findByCampaign(campaign).stream()
             .map(CampaignDocumentsAccessRequestDto::new)
             .collect(Collectors.toList());
     campaignDocumentsAccessRequestsDto.setRequests(requestList);

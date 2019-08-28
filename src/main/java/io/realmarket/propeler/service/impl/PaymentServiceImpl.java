@@ -95,6 +95,7 @@ public class PaymentServiceImpl implements PaymentService {
     return methods;
   }
 
+  @Transactional
   @Override
   public BankTransferPayment getBankTransferPayment(Long investmentId) {
     Investment investment = investmentRepository.getOne(investmentId);
@@ -108,7 +109,8 @@ public class PaymentServiceImpl implements PaymentService {
     return bankTransferPayment;
   }
 
-  private BankTransferPayment createBankTransferPayment(Investment investment) {
+  @Override
+  public BankTransferPayment createBankTransferPayment(Investment investment) {
     BankTransferPayment bankTransferPayment =
         BankTransferPayment.bankTransferPaymentBuilder()
             .investment(investment)
@@ -121,6 +123,14 @@ public class PaymentServiceImpl implements PaymentService {
             .build();
 
     return bankTransferPaymentRepository.save(bankTransferPayment);
+  }
+
+  @Override
+  public String getProformaInvoiceUrl(Long investmentId) {
+    investmentRepository.getOne(investmentId);
+
+    BankTransferPayment bankTransferPayment = findBankTransferPaymentForInvestment(investmentId);
+    return bankTransferPayment.getProformaInvoiceUrl();
   }
 
   private String createRoutingNumber(Investment investment) {
@@ -138,15 +148,28 @@ public class PaymentServiceImpl implements PaymentService {
   }
 
   private String createProformaInvoiceUrl(Investment investment) {
-    Map<String, Object> documentsParameters =
-        templateDataUtil.getData(investment, "Bank Transfer", true);
-    byte[] file = pdfService.generatePdf(documentsParameters, FileType.PROFORMA_INVOICE);
-    String url = fileService.uploadPdfFile(file);
-    sendProformaInvoiceEmail(investment, file);
+    Map<String, Object> documentsParameters;
+    byte[] file;
+    if (investment.getPerson().getAuth() == null) {
+      documentsParameters = templateDataUtil.getOffPlatformInvoiceData(investment);
+      file = pdfService.generatePdf(documentsParameters, FileType.OFFPLATFORM_INVOICE);
+    } else {
+      documentsParameters = templateDataUtil.getData(investment, "Bank Transfer", true);
+      file = pdfService.generatePdf(documentsParameters, FileType.PROFORMA_INVOICE);
+    }
+    String url = fileService.uploadFile(file, "pdf");
+
+    if (investment.getPerson().getEmail() != null) {
+      sendProformaInvoiceEmail(investment, file);
+    }
     return url;
   }
 
   private void sendProformaInvoiceEmail(Investment investment, byte[] file) {
+    if (investment.getPerson().getEmail() == null) {
+      return;
+    }
+
     Map<String, Object> parameters = new HashMap<>();
 
     emailService.sendMailToUser(

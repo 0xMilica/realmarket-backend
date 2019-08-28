@@ -46,6 +46,24 @@ public interface PaymentController {
   })
   ResponseEntity getBankTransferPayment(Long investmentId);
 
+  @ApiOperation(
+      value = "Get proforma invoice for bank transfer payment",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "investmentId",
+        value = "Investment ID",
+        required = true,
+        dataType = "Long",
+        paramType = "path"),
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Proforma invoice successfully retrieved"),
+    @ApiResponse(code = 404, message = "Investment not found.")
+  })
+  ResponseEntity getProformaInvoice(Long investmentId);
+
   @ApiOperation(value = "Get card payment", httpMethod = "GET", produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
     @ApiImplicitParam(

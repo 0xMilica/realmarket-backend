@@ -7,12 +7,8 @@ import io.realmarket.propeler.model.enums.NotificationType;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
-import io.realmarket.propeler.service.CampaignService;
-import io.realmarket.propeler.service.InvestmentStateService;
-import io.realmarket.propeler.service.PaymentService;
-import io.realmarket.propeler.service.PersonService;
-import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -35,7 +31,6 @@ import static io.realmarket.propeler.util.AuthUtils.*;
 import static io.realmarket.propeler.util.CampaignUtils.*;
 import static io.realmarket.propeler.util.InvestmentUtils.*;
 import static io.realmarket.propeler.util.PersonUtils.TEST_PERSON;
-import static io.realmarket.propeler.util.PersonUtils.TEST_PERSON_ID;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -141,12 +136,6 @@ public class InvestmentServiceImplTest {
     assertEquals(InvestmentStateName.INITIAL, investment.getInvestmentState().getName());
   }
 
-  @Test(expected = ForbiddenOperationException.class)
-  public void offPlatformInvest_Should_Throw_Exception_When_Not_Admin() {
-    investmentService.offPlatformInvest(
-        TEST_OFFPLATFORM_INVESTMENT_AMOUNT_GREATER_THAN_MAXIMUM, TEST_URL_FRIENDLY_NAME);
-  }
-
   @Test(expected = BadRequestException.class)
   public void offPlatformInvest_Should_Throw_Exception_When_Campaign_Not_Active() {
     mockRequestAndContextAdmin();
@@ -238,7 +227,6 @@ public class InvestmentServiceImplTest {
         .thenReturn(TEST_INVESTMENT_OWNER_APPROVED_STATE);
     when(investmentRepository.save(investment)).thenReturn(investment);
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
-    when(authService.findByUserIdrThrowException(TEST_PERSON_ID)).thenReturn(TEST_AUTH);
     doNothing()
         .when(notificationService)
         .sendMessage(TEST_AUTH, NotificationType.ACCEPT_INVESTOR, null, null);
@@ -270,7 +258,6 @@ public class InvestmentServiceImplTest {
     when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_REJECTED))
         .thenReturn(TEST_INVESTMENT_OWNER_REJECTED_STATE);
     when(investmentRepository.save(investment)).thenReturn(investment);
-    when(authService.findByUserIdrThrowException(TEST_PERSON_ID)).thenReturn(TEST_AUTH);
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
     doNothing()
         .when(notificationService)
@@ -319,13 +306,6 @@ public class InvestmentServiceImplTest {
     investmentService.auditorApproveInvestment(INVESTMENT_ID);
   }
 
-  @Test(expected = ForbiddenOperationException.class)
-  public void auditApproveInvestment_Should_Throw_Exception_When_Not_Admin() {
-    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(TEST_INVESTMENT_PAID_NOT_REVOCABLE);
-
-    investmentService.auditorApproveInvestment(INVESTMENT_ID);
-  }
-
   @Test(expected = BadRequestException.class)
   public void auditApproveInvestment_Should_Throw_Exception_When_Not_Paid() {
     mockRequestAndContextAdmin();
@@ -361,17 +341,6 @@ public class InvestmentServiceImplTest {
     Investment investment = TEST_INVESTMENT_PAID_REVOCABLE.toBuilder().build();
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
-
-    investmentService.auditorRejectInvestment(INVESTMENT_ID);
-  }
-
-  @Test(expected = ForbiddenOperationException.class)
-  public void auditRejectInvestment_Should_Throw_Exception_When_Not_Admin() {
-
-    when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(TEST_INVESTMENT_PAID_NOT_REVOCABLE);
-    doThrow(ForbiddenOperationException.class)
-        .when(campaignService)
-        .throwIfNotOwner(TEST_INVESTABLE_CAMPAIGN);
 
     investmentService.auditorRejectInvestment(INVESTMENT_ID);
   }

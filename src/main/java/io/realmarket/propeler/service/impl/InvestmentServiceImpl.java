@@ -6,15 +6,14 @@ import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.CampaignStateName;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.model.enums.NotificationType;
-import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.CountryRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
-import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.investment.InvestmentChangeStateDto;
 import io.realmarket.propeler.service.blockchain.dto.investment.InvestmentDto;
+import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -114,7 +113,6 @@ public class InvestmentServiceImpl implements InvestmentService {
   public Investment offPlatformInvest(
       OffPlatformInvestmentRequestDto offPlatformInvestmentRequestDto,
       String campaignUrlFriendlyName) {
-    throwIfNotAdmin();
     Campaign campaign = campaignService.getCampaignByUrlFriendlyName(campaignUrlFriendlyName);
     campaignService.throwIfNotActive(campaign);
     throwIfAmountNotValid(campaign, offPlatformInvestmentRequestDto.getInvestedAmount());
@@ -141,6 +139,7 @@ public class InvestmentServiceImpl implements InvestmentService {
             .build();
 
     investment = investmentRepository.save(investment);
+    paymentService.createBankTransferPayment(investment);
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_INTENT,
@@ -163,14 +162,17 @@ public class InvestmentServiceImpl implements InvestmentService {
         investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED));
     investment = investmentRepository.save(investment);
 
-    sendInvestmentAcceptanceEmail(investment);
-    Auth recipient = authService.findByUserIdrThrowException(investment.getPerson().getId());
-    notificationService.sendMessage(
-        recipient, NotificationType.ACCEPT_INVESTOR, null, campaign.getName());
+    Auth recipient = investment.getPerson().getAuth();
+    if (investment.getPerson().getEmail() != null && recipient != null) {
+      sendInvestmentAcceptanceEmail(investment);
+      notificationService.sendMessage(
+          recipient, NotificationType.ACCEPT_INVESTOR, null, campaign.getName());
+    }
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
-        new InvestmentChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new InvestmentChangeStateDto(
+            investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -201,14 +203,17 @@ public class InvestmentServiceImpl implements InvestmentService {
         investmentStateService.getInvestmentState(InvestmentStateName.OWNER_REJECTED));
     investment = investmentRepository.save(investment);
 
-    sendInvestmentRejectionEmail(investment);
-    Auth recipient = authService.findByUserIdrThrowException(investment.getPerson().getId());
-    notificationService.sendMessage(
-        recipient, NotificationType.REJECT_INVESTOR, null, campaign.getName());
+    Auth recipient = investment.getPerson().getAuth();
+    if (investment.getPerson().getEmail() != null && recipient != null) {
+      sendInvestmentRejectionEmail(investment);
+      notificationService.sendMessage(
+          recipient, NotificationType.REJECT_INVESTOR, null, campaign.getName());
+    }
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
-        new InvestmentChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new InvestmentChangeStateDto(
+            investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -241,7 +246,8 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
-        new InvestmentChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new InvestmentChangeStateDto(
+            investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -249,7 +255,6 @@ public class InvestmentServiceImpl implements InvestmentService {
   @Transactional
   @Override
   public void auditorApproveInvestment(Long investmentId) {
-    throwIfNotAdmin();
     Investment investment = investmentRepository.getOne(investmentId);
     throwIfRevocable(investment);
 
@@ -264,7 +269,8 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
-        new InvestmentChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new InvestmentChangeStateDto(
+            investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -272,7 +278,6 @@ public class InvestmentServiceImpl implements InvestmentService {
   @Transactional
   @Override
   public void auditorRejectInvestment(Long investmentId) {
-    throwIfNotAdmin();
     Investment investment = investmentRepository.getOne(investmentId);
     throwIfRevocable(investment);
 
@@ -286,7 +291,8 @@ public class InvestmentServiceImpl implements InvestmentService {
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_STATE_CHANGE,
-        new InvestmentChangeStateDto(investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        new InvestmentChangeStateDto(
+            investment, AuthenticationUtil.getAuthentication().getAuth().getId()),
         AuthenticationUtil.getAuthentication().getAuth().getUsername(),
         AuthenticationUtil.getClientIp());
   }
@@ -353,8 +359,7 @@ public class InvestmentServiceImpl implements InvestmentService {
 
   @Override
   public List<InvestmentWithPersonResponseDto> findAllByCampaignWithInvestors(Campaign campaign) {
-    return findAllByCampaign(campaign)
-        .stream()
+    return findAllByCampaign(campaign).stream()
         .map(i -> new InvestmentWithPersonResponseDto(i, new PersonResponseDto(i.getPerson())))
         .collect(Collectors.toList());
   }
@@ -409,20 +414,6 @@ public class InvestmentServiceImpl implements InvestmentService {
     if (!isCampaignInvestor(investment)) {
       throw new ForbiddenOperationException(NOT_CAMPAIGN_INVESTOR);
     }
-  }
-
-  private void throwIfNotAdmin() {
-    if (!isAdmin()) {
-      throw new ForbiddenOperationException(FORBIDDEN_OPERATION_EXCEPTION);
-    }
-  }
-
-  private boolean isAdmin() {
-    return (AuthenticationUtil.getAuthentication()
-        .getAuth()
-        .getUserRole()
-        .getName()
-        .equals(UserRoleName.ROLE_ADMIN));
   }
 
   private void throwIfNotRevocable(Investment investment) {

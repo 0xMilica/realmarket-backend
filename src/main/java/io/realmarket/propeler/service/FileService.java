@@ -36,7 +36,7 @@ public interface FileService {
    * @param file file to be stored
    * @return name of the stored file
    */
-  String uploadPdfFile(byte[] file);
+  String uploadFile(byte[] file, String extension);
 
   /**
    * Deletes file with the provided file name from the cloud object storage.

@@ -34,6 +34,7 @@ import static io.realmarket.propeler.util.AuthUtils.mockRequestAndContext;
 import static io.realmarket.propeler.util.PaymentUtils.*;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -86,7 +87,7 @@ public class PaymentServiceImplTest {
         .thenReturn(Optional.ofNullable(null));
     when(platformSettingsService.getPlatformCurrency())
         .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
-    when(fileService.uploadPdfFile(any())).thenReturn(TEST_PROFORMA_INVOICE_URL);
+    when(fileService.uploadFile(any(), anyString())).thenReturn(TEST_PROFORMA_INVOICE_URL);
     doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
     when(bankTransferPaymentRepository.save(any())).thenReturn(bankTransferPayment);
 
