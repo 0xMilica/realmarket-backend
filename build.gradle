@@ -55,6 +55,9 @@ dependencies {
 
     implementation "com.ibm.cos:ibm-cos-java-sdk:$ibmCosVersion"
     implementation "org.modelmapper:modelmapper:$modelMapperVersion"
+    implementation "org.json:json:20180813"
+    implementation "org.apache.commons:commons-lang3:3.6"
+    implementation "com.paypal.sdk:checkout-sdk:+"
 
     runtimeOnly "org.postgresql:postgresql"
     runtimeOnly "com.h2database:h2"

@@ -32,9 +32,13 @@ public interface InvestmentService {
 
   Page<PortfolioCampaignResponseDto> getPortfolio(Pageable pageable, String filter);
 
+  Investment findByIdOrThrowException(Long investmentId);
+
   List<Investment> findAllByCampaign(Campaign campaign);
 
   List<InvestmentWithPersonResponseDto> findAllByCampaignWithInvestors(Campaign campaign);
 
   List<Investment> findAllByCampaignAndPerson(Campaign campaign, Person person);
+
+  Investment save(Investment investment);
 }

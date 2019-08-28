@@ -47,6 +47,30 @@ public interface PaymentController {
   ResponseEntity getBankTransferPayment(Long investmentId);
 
   @ApiOperation(
+      value = "Verify and capture PayPal payment",
+      httpMethod = "POST",
+      produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "payPalOrderId",
+        value = "PayPal Order ID",
+        required = true,
+        dataType = "String",
+        paramType = "path"),
+    @ApiImplicitParam(
+        name = "investmentId",
+        value = "Investment ID",
+        required = true,
+        dataType = "Long",
+        paramType = "path")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "PayPal payment successfully retrieved"),
+    @ApiResponse(code = 404, message = "Investment not found.")
+  })
+  ResponseEntity confirmPayPalPayment(String payPalOrderId, Long investmentId);
+
+  @ApiOperation(
       value = "Get proforma invoice for bank transfer payment",
       httpMethod = "GET",
       produces = APPLICATION_JSON_VALUE)
@@ -63,21 +87,6 @@ public interface PaymentController {
     @ApiResponse(code = 404, message = "Investment not found.")
   })
   ResponseEntity getProformaInvoice(Long investmentId);
-
-  @ApiOperation(value = "Get card payment", httpMethod = "GET", produces = APPLICATION_JSON_VALUE)
-  @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "investmentId",
-        value = "Investment ID",
-        required = true,
-        dataType = "Long",
-        paramType = "path"),
-  })
-  @ApiResponses({
-    @ApiResponse(code = 200, message = "Card payment successfully retrieved"),
-    @ApiResponse(code = 404, message = "Investment not found.")
-  })
-  ResponseEntity getCardPayment(Long investmentId);
 
   @ApiOperation(value = "Get payments", httpMethod = "GET", produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({

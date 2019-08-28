@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "88ba173e-a83e-4757-b944-002ec012ff13",
+		"_postman_id": "6e363f6f-f683-43fa-9925-50725e9e23e2",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -5384,7 +5384,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"documentTitle\": \"PAYMENTDOCUMENT\",\r\n  \"documentUrl\": \"KCEQ2HMXQSZ5BVKOJ7PQJW34PS6OTCBK.PNG\",\r\n  \"paymentDate\": \"2019-08-28\"\r\n}"
+							"raw": "{\r\n  \"documentTitle\": \"PAYMENTDOCUMENT\",\r\n  \"documentUrl\": \"KCEQ2HMXQSZ5BVKOJ7PQJW34PS6OTCBK.PNG\",\r\n  \"paymentDate\": \"2019-08-28T13:43:56.276Z\"\r\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/payments/{{investment_id}}/bankTransfer/confirm",
@@ -5403,23 +5403,28 @@
 					"response": []
 				},
 				{
-					"name": "/payments/{{investment_id}}/card",
+					"name": "/payments/{{investment_id}}/payPal/{{paypal_order_id}}",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
 							{
 								"key": "Authorization",
 								"value": "{{token}}",
 								"type": "text"
-							},
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
-							"raw": "{{server_ip}}/api/payments/{{investment_id}}/card",
+							"raw": "{{server_ip}}/api/payments/{{investment_id}}/payPal/{{paypal_order_id}}",
 							"host": [
 								"{{server_ip}}"
 							],
@@ -5427,7 +5432,7 @@
 								"api",
 								"payments",
 								"{{investment_id}}",
-								"card"
+								"payPal",
 							]
 						}
 					},
@@ -5459,6 +5464,7 @@
 								"payments",
 								"{{investment_id}}",
 								"proformaInvoice"
+								"{{paypal_order_id}}"
 							]
 						}
 					},
@@ -5469,30 +5475,6 @@
 		{
 			"name": "settings",
 			"item": [
-				{
-					"name": "/settings",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "*/*, application/json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{server_ip}}/api/settings",
-							"host": [
-								"{{server_ip}}"
-							],
-							"path": [
-								"api",
-								"settings"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "/settings/countries",
 					"request": {

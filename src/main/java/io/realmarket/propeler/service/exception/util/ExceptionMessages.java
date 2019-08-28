@@ -134,6 +134,18 @@ public interface ExceptionMessages {
   // Payment not processed for this investment.
   String PAYMENT_NOT_PROCESSED = "PAY_001";
 
+  // PayPal payment already exists for this investment.
+  String PAYMENT_ALREADY_EXISTS = "PAY_002";
+
+  // PayPal amount not equal to investment amount.
+  String AMOUNTS_NOT_EQUAL = "PAY_003";
+
+  // PayPal order with provided id does not exist.
+  String PAY_PAL_ORDER_DOES_NOT_EXIST = "PAY_004";
+
+  // PayPal order already captured.
+  String PAY_PAL_ORDER_ALREADY_CAPTURED = "PAY_005";
+
   // Invalid request.
   String INVALID_REQUEST = "REQ_001";
 

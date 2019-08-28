@@ -1,20 +1,22 @@
 package io.realmarket.propeler.service.impl;
 
-import io.realmarket.propeler.model.BankTransferPayment;
-import io.realmarket.propeler.model.Company;
-import io.realmarket.propeler.model.Investment;
-import io.realmarket.propeler.model.Payment;
+import com.paypal.orders.Order;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.BankTransferPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
+import io.realmarket.propeler.repository.PayPalPaymentRepository;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
+import io.realmarket.propeler.service.exception.AmountsNotEqualException;
 import io.realmarket.propeler.service.exception.BadRequestException;
+import io.realmarket.propeler.service.payment.PayPalClient;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.PdfService;
 import io.realmarket.propeler.service.util.TemplateDataUtil;
 import io.realmarket.propeler.util.CompanyUtils;
 import io.realmarket.propeler.util.InvestmentUtils;
+import io.realmarket.propeler.util.PaymentUtils;
 import io.realmarket.propeler.util.PlatformSettingsUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,12 +33,13 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static io.realmarket.propeler.util.AuthUtils.mockRequestAndContext;
+import static io.realmarket.propeler.util.InvestmentUtils.TEST_INVESTMENT_PAID;
 import static io.realmarket.propeler.util.PaymentUtils.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -45,6 +48,9 @@ public class PaymentServiceImplTest {
   @InjectMocks PaymentServiceImpl paymentService;
   @Mock private PaymentDocumentService paymentDocumentService;
   @Mock private InvestmentStateService investmentStateService;
+  @Mock private InvestmentService investmentService;
+  @Mock private PayPalPaymentRepository payPalPaymentRepository;
+  @Mock private PayPalClient payPalClient;
   @Mock private PlatformSettingsService platformSettingsService;
   @Mock private PdfService pdfService;
   @Mock private FileService fileService;
@@ -144,7 +150,7 @@ public class PaymentServiceImplTest {
         .thenReturn(InvestmentUtils.TEST_INVESTMENT_OWNER_APPROVED_STATE);
     when(bankTransferPaymentRepository.findByInvestmentId(InvestmentUtils.INVESTMENT_ID))
         .thenReturn(Optional.of(paidBankTransferPayment));
-    when(investmentRepository.save(any())).thenReturn(InvestmentUtils.TEST_INVESTMENT_PAID);
+    when(investmentRepository.save(any())).thenReturn(TEST_INVESTMENT_PAID);
     when(bankTransferPaymentRepository.save(any())).thenReturn(paidBankTransferPayment);
 
     Payment retVal =
@@ -154,9 +160,58 @@ public class PaymentServiceImplTest {
     verify(bankTransferPaymentRepository, Mockito.times(1)).save(any(BankTransferPayment.class));
   }
 
+  @Test
+  public void confirmPayPalPayment_Should_ConfirmPayment() {
+    Investment mockOwnerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
+    Order testOrder = PaymentUtils.getTestOrder();
+
+    when(investmentService.findByIdOrThrowException(TEST_ID))
+        .thenReturn(mockOwnerApprovedInvestment);
+
+    when(payPalClient.getOrder(TEST_PAYPAL_ORDER_ID)).thenReturn(testOrder);
+    when(investmentStateService.getInvestmentState(InvestmentStateName.PAID))
+        .thenReturn(InvestmentUtils.TEST_INVESTMENT_PAID_STATE);
+    when(investmentService.save(any())).thenReturn(mockOwnerApprovedInvestment);
+    when(platformSettingsService.getPlatformCurrency())
+        .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
+    when(payPalPaymentRepository.save(any())).thenReturn(TEST_PAYPAL_PAYMENT);
+
+    PayPalPayment actualPayPalPayment =
+        paymentService.confirmPayPalPayment(TEST_PAYPAL_ORDER_ID, TEST_ID);
+    assertEquals(actualPayPalPayment.getPayPalOrderId(), (TEST_PAYPAL_ORDER_ID));
+    assertEquals(actualPayPalPayment.getInvestment().getId(), mockOwnerApprovedInvestment.getId());
+    verify(payPalClient, times(1)).getOrder(TEST_PAYPAL_ORDER_ID);
+    verify(payPalClient, times(1)).captureRequest(TEST_PAYPAL_ORDER_ID);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void confirmPayPalPayment_Should_Throw_Exception_When_Payment_Exists() {
+
+    when(investmentService.findByIdOrThrowException(TEST_ID)).thenReturn(TEST_INVESTMENT_PAID);
+
+    when(payPalPaymentRepository.findByInvestmentId(TEST_ID)).thenThrow(BadRequestException.class);
+
+    paymentService.confirmPayPalPayment(TEST_PAYPAL_ORDER_ID, TEST_ID);
+  }
+
+  @Test(expected = AmountsNotEqualException.class)
+  public void confirmPayPalPayment_Should_Throw_AmountsNotEqualException() {
+    Investment mockOwnerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
+    Order testOrder = PaymentUtils.getTestOrderWithWrongAmount();
+
+    when(investmentService.findByIdOrThrowException(TEST_ID))
+        .thenReturn(mockOwnerApprovedInvestment);
+
+    when(payPalClient.getOrder(TEST_PAYPAL_ORDER_ID)).thenReturn(testOrder);
+
+    paymentService.confirmPayPalPayment(TEST_PAYPAL_ORDER_ID, TEST_ID);
+
+    verify(payPalClient, times(1)).getOrder(TEST_PAYPAL_ORDER_ID);
+  }
+
   @Test(expected = BadRequestException.class)
   public void confirmBankTransferPayment_Should_Throw_BadRequestException() {
-    when(investmentRepository.getOne(TEST_ID)).thenReturn(InvestmentUtils.TEST_INVESTMENT_PAID);
+    when(investmentRepository.getOne(TEST_ID)).thenReturn(TEST_INVESTMENT_PAID);
 
     paymentService.confirmBankTransferPayment(TEST_ID, TEST_PAYMENT_CONFIRMATION_DTO);
   }

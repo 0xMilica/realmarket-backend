@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Instant;
@@ -39,7 +40,6 @@ public class InvestmentServiceImpl implements InvestmentService {
 
   private final CampaignService campaignService;
   private final InvestmentRepository investmentRepository;
-  private final PaymentService paymentService;
   private final InvestmentStateService investmentStateService;
   private final ModelMapperBlankString modelMapperBlankString;
   private final PersonService personService;
@@ -48,7 +48,6 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final PlatformSettingsService platformSettingsService;
   private final CountryRepository countryRepository;
   private final NotificationService notificationService;
-  private final AuthService authService;
 
   @Value("${app.investment.weekInMillis}")
   private long weekInMillis;
@@ -57,7 +56,6 @@ public class InvestmentServiceImpl implements InvestmentService {
   public InvestmentServiceImpl(
       CampaignService campaignService,
       InvestmentRepository investmentRepository,
-      PaymentService paymentService,
       InvestmentStateService investmentStateService,
       ModelMapperBlankString modelMapperBlankString,
       PersonService personService,
@@ -65,11 +63,9 @@ public class InvestmentServiceImpl implements InvestmentService {
       EmailService emailService,
       PlatformSettingsService platformSettingsService,
       CountryRepository countryRepository,
-      NotificationService notificationService,
-      AuthService authService) {
+      NotificationService notificationService) {
     this.campaignService = campaignService;
     this.investmentRepository = investmentRepository;
-    this.paymentService = paymentService;
     this.investmentStateService = investmentStateService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.personService = personService;
@@ -78,7 +74,6 @@ public class InvestmentServiceImpl implements InvestmentService {
     this.platformSettingsService = platformSettingsService;
     this.countryRepository = countryRepository;
     this.notificationService = notificationService;
-    this.authService = authService;
   }
 
   @Transactional
@@ -139,7 +134,7 @@ public class InvestmentServiceImpl implements InvestmentService {
             .build();
 
     investment = investmentRepository.save(investment);
-    paymentService.createBankTransferPayment(investment);
+    // paymentService.createBankTransferPayment(investment);
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_INTENT,
@@ -238,8 +233,6 @@ public class InvestmentServiceImpl implements InvestmentService {
     throwIfNoAccess(investment);
     throwIfNotRevocable(investment);
 
-    paymentService.withdrawFunds(investment.getPerson(), investment.getInvestedAmount());
-
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.REVOKED));
     investment = investmentRepository.save(investment);
@@ -280,10 +273,6 @@ public class InvestmentServiceImpl implements InvestmentService {
   public void auditorRejectInvestment(Long investmentId) {
     Investment investment = investmentRepository.getOne(investmentId);
     throwIfRevocable(investment);
-
-    BigDecimal amountOfMoney = investment.getInvestedAmount();
-
-    paymentService.withdrawFunds(investment.getPerson(), amountOfMoney);
 
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_REJECTED));
@@ -348,8 +337,18 @@ public class InvestmentServiceImpl implements InvestmentService {
   }
 
   @Override
+  public Investment findByIdOrThrowException(Long investmentId) {
+    return investmentRepository.findById(investmentId).orElseThrow(EntityNotFoundException::new);
+  }
+
+  @Override
   public List<Investment> findAllByCampaignAndPerson(Campaign campaign, Person person) {
     return investmentRepository.findAllByCampaignAndPerson(campaign, person);
+  }
+
+  @Override
+  public Investment save(Investment investment) {
+    return investmentRepository.save(investment);
   }
 
   @Override

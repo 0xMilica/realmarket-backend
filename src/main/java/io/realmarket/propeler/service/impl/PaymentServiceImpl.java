@@ -1,22 +1,28 @@
 package io.realmarket.propeler.service.impl;
 
+import com.paypal.orders.Order;
 import io.realmarket.propeler.api.dto.AttachmentFileDto;
 import io.realmarket.propeler.api.dto.PaymentConfirmationDto;
 import io.realmarket.propeler.api.dto.PaymentResponseDto;
 import io.realmarket.propeler.api.dto.enums.EmailType;
-import io.realmarket.propeler.model.*;
+import io.realmarket.propeler.model.BankTransferPayment;
+import io.realmarket.propeler.model.Investment;
+import io.realmarket.propeler.model.PayPalPayment;
+import io.realmarket.propeler.model.Payment;
 import io.realmarket.propeler.model.enums.FileType;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.BankTransferPaymentRepository;
-import io.realmarket.propeler.repository.CardPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
+import io.realmarket.propeler.repository.PayPalPaymentRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
 import io.realmarket.propeler.service.blockchain.dto.investment.payment.PaymentDto;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
+import io.realmarket.propeler.service.exception.AmountsNotEqualException;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.payment.PayPalClient;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.PdfService;
 import io.realmarket.propeler.service.util.TemplateDataUtil;
@@ -37,6 +43,7 @@ import static io.realmarket.propeler.service.exception.util.ExceptionMessages.IN
 @Service
 public class PaymentServiceImpl implements PaymentService {
   private final PaymentDocumentService paymentDocumentService;
+  private final InvestmentService investmentService;
   private final InvestmentStateService investmentStateService;
   private final PlatformSettingsService platformSettingsService;
   private final PdfService pdfService;
@@ -45,8 +52,9 @@ public class PaymentServiceImpl implements PaymentService {
   private final TemplateDataUtil templateDataUtil;
   private final InvestmentRepository investmentRepository;
   private final BankTransferPaymentRepository bankTransferPaymentRepository;
+  private final PayPalPaymentRepository payPalPaymentRepository;
+  private final PayPalClient payPalClient;
   private final BlockchainMessageProducer blockchainMessageProducer;
-  private final CardPaymentRepository cardPaymentRepository;
 
   @Value("${app.bank.account-number}")
   private String accountNumber;
@@ -60,6 +68,7 @@ public class PaymentServiceImpl implements PaymentService {
   @Autowired
   public PaymentServiceImpl(
       PaymentDocumentService paymentDocumentService,
+      InvestmentService investmentService,
       InvestmentStateService investmentStateService,
       PlatformSettingsService platformSettingsService,
       PdfService pdfService,
@@ -68,9 +77,11 @@ public class PaymentServiceImpl implements PaymentService {
       TemplateDataUtil templateDataUtil,
       InvestmentRepository investmentRepository,
       BankTransferPaymentRepository bankTransferPaymentRepository,
-      BlockchainMessageProducer blockchainMessageProducer,
-      CardPaymentRepository cardPaymentRepository) {
+      PayPalPaymentRepository payPalPaymentRepository,
+      PayPalClient payPalClient,
+      BlockchainMessageProducer blockchainMessageProducer) {
     this.paymentDocumentService = paymentDocumentService;
+    this.investmentService = investmentService;
     this.investmentStateService = investmentStateService;
     this.platformSettingsService = platformSettingsService;
     this.pdfService = pdfService;
@@ -79,8 +90,9 @@ public class PaymentServiceImpl implements PaymentService {
     this.templateDataUtil = templateDataUtil;
     this.investmentRepository = investmentRepository;
     this.bankTransferPaymentRepository = bankTransferPaymentRepository;
+    this.payPalPaymentRepository = payPalPaymentRepository;
+    this.payPalClient = payPalClient;
     this.blockchainMessageProducer = blockchainMessageProducer;
-    this.cardPaymentRepository = cardPaymentRepository;
   }
 
   @Override
@@ -90,7 +102,7 @@ public class PaymentServiceImpl implements PaymentService {
     List<String> methods = new ArrayList<>();
     methods.add("Bank transfer");
     if (investment.getInvestedAmount().compareTo(cardPaymentLimit) < 1) {
-      methods.add("Card");
+      methods.add("PayPal");
     }
     return methods;
   }
@@ -100,13 +112,9 @@ public class PaymentServiceImpl implements PaymentService {
   public BankTransferPayment getBankTransferPayment(Long investmentId) {
     Investment investment = investmentRepository.getOne(investmentId);
 
-    BankTransferPayment bankTransferPayment =
-        findBankTransferPaymentForInvestmentOrReturnNull(investmentId);
-    if (bankTransferPayment == null) {
-      return createBankTransferPayment(investment);
-    }
-
-    return bankTransferPayment;
+    Optional<BankTransferPayment> bankTransferPayment =
+        findBankTransferPaymentForInvestment(investmentId);
+    return bankTransferPayment.orElseGet(() -> createBankTransferPayment(investment));
   }
 
   @Override
@@ -129,7 +137,8 @@ public class PaymentServiceImpl implements PaymentService {
   public String getProformaInvoiceUrl(Long investmentId) {
     investmentRepository.getOne(investmentId);
 
-    BankTransferPayment bankTransferPayment = findBankTransferPaymentForInvestment(investmentId);
+    BankTransferPayment bankTransferPayment =
+        findBankTransferPaymentForInvestmentOrThrow(investmentId);
     return bankTransferPayment.getProformaInvoiceUrl();
   }
 
@@ -181,23 +190,6 @@ public class PaymentServiceImpl implements PaymentService {
   }
 
   @Override
-  public CardPayment getCardPayment(Long investmentId) {
-    Investment investment = investmentRepository.getOne(investmentId);
-
-    CardPayment cardPayment = findCardPaymentForInvestmentOrReturnNull(investmentId);
-    if (cardPayment == null) {
-      return createCardPayment(investment);
-    }
-
-    return cardPayment;
-  }
-
-  // TODO: This method need to be implemented
-  private CardPayment createCardPayment(Investment investment) {
-    return null;
-  }
-
-  @Override
   public Page<PaymentResponseDto> getPayments(Pageable pageable, String filter) {
     throwIfNotAllowedFilter(filter);
     InvestmentStateName state =
@@ -217,7 +209,8 @@ public class PaymentServiceImpl implements PaymentService {
       throw new BadRequestException(INVALID_REQUEST);
     }
 
-    BankTransferPayment bankTransferPayment = findBankTransferPaymentForInvestment(investmentId);
+    BankTransferPayment bankTransferPayment =
+        findBankTransferPaymentForInvestmentOrThrow(investmentId);
 
     paymentDocumentService.submitDocument(
         bankTransferPayment,
@@ -229,7 +222,7 @@ public class PaymentServiceImpl implements PaymentService {
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.PAID));
     investment.setPaymentDate(bankTransferPayment.getPaymentDate());
-    investmentRepository.save(investment);
+    investmentService.save(investment);
 
     bankTransferPayment = bankTransferPaymentRepository.save(bankTransferPayment);
 
@@ -254,28 +247,61 @@ public class PaymentServiceImpl implements PaymentService {
     }
   }
 
-  @Override
-  public void reserveFunds(Person person, BigDecimal amountOfMoney) {}
-
-  @Override
-  public boolean proceedToPayment(Person person, BigDecimal amountOfMoney) {
-    return true;
-  }
-
-  @Override
-  public void withdrawFunds(Person person, BigDecimal amountOfMoney) {}
-
-  private BankTransferPayment findBankTransferPaymentForInvestment(Long investmentId) {
+  private BankTransferPayment findBankTransferPaymentForInvestmentOrThrow(Long investmentId) {
     return bankTransferPaymentRepository
         .findByInvestmentId(investmentId)
         .orElseThrow(EntityNotFoundException::new);
   }
 
-  private BankTransferPayment findBankTransferPaymentForInvestmentOrReturnNull(Long investmentId) {
-    return bankTransferPaymentRepository.findByInvestmentId(investmentId).orElse(null);
+  @Transactional
+  @Override
+  public PayPalPayment confirmPayPalPayment(String orderId, Long investmentId) {
+    Investment investment = investmentService.findByIdOrThrowException(investmentId);
+    throwIfInvestmentAlreadyPaid(investment);
+
+    Order order = payPalClient.getOrder(orderId);
+    BigDecimal payPalAmount =
+        new BigDecimal(order.purchaseUnits().get(0).amountWithBreakdown().value());
+
+    throwIfAmountsNotEqual(payPalAmount, investment.getInvestedAmount());
+
+    payPalClient.captureRequest(orderId);
+
+    investment.setInvestmentState(
+        investmentStateService.getInvestmentState(InvestmentStateName.PAID));
+    investment.setPaymentDate(Instant.now());
+    investmentService.save(investment);
+
+    return createPayPalPayment(investment, payPalAmount, orderId, order.createTime());
   }
 
-  private CardPayment findCardPaymentForInvestmentOrReturnNull(Long investmentId) {
-    return cardPaymentRepository.findByInvestmentId(investmentId).orElse(null);
+  private void throwIfInvestmentAlreadyPaid(Investment investment) {
+    if (investment.getInvestmentState().getName().equals(InvestmentStateName.PAID)) {
+      throw new BadRequestException(ExceptionMessages.PAYMENT_ALREADY_EXISTS);
+    }
+  }
+
+  private void throwIfAmountsNotEqual(BigDecimal payPalAmount, BigDecimal investmentAmount) {
+    if (investmentAmount.compareTo(payPalAmount) != 0)
+      throw new AmountsNotEqualException(ExceptionMessages.AMOUNTS_NOT_EQUAL);
+  }
+
+  private PayPalPayment createPayPalPayment(
+      Investment investment, BigDecimal payPalAmount, String orderId, String createTime) {
+    PayPalPayment payPalPayment =
+        PayPalPayment.payPalPaymentBuilder()
+            .investment(investment)
+            .currency(platformSettingsService.getPlatformCurrency().getCode())
+            .amount(payPalAmount)
+            .payPalOrderId(orderId)
+            .creationDate(Instant.now())
+            .paymentDate(Instant.parse(createTime))
+            .build();
+
+    return payPalPaymentRepository.save(payPalPayment);
+  }
+
+  private Optional<BankTransferPayment> findBankTransferPaymentForInvestment(Long investmentId) {
+    return bankTransferPaymentRepository.findByInvestmentId(investmentId);
   }
 }

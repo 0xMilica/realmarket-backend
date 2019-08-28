@@ -2,7 +2,7 @@ package io.realmarket.propeler.api.controller.impl;
 
 import io.realmarket.propeler.api.controller.PaymentController;
 import io.realmarket.propeler.api.dto.BankTransferPaymentResponseDto;
-import io.realmarket.propeler.api.dto.CardPaymentResponseDto;
+import io.realmarket.propeler.api.dto.PayPalPaymentResponseDto;
 import io.realmarket.propeler.api.dto.PaymentConfirmationDto;
 import io.realmarket.propeler.api.dto.PaymentResponseDto;
 import io.realmarket.propeler.service.PaymentService;
@@ -49,11 +49,13 @@ public class PaymentControllerImpl implements PaymentController {
   }
 
   @Override
-  @GetMapping(value = "/{investmentId}/card")
+  @PostMapping(value = "/{investmentId}/payPal/{payPalOrderId}")
   @PreAuthorize("hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR')")
-  public ResponseEntity getCardPayment(@PathVariable Long investmentId) {
+  public ResponseEntity confirmPayPalPayment(
+      @PathVariable String payPalOrderId, @PathVariable Long investmentId) {
     return ResponseEntity.ok(
-        new CardPaymentResponseDto(paymentService.getCardPayment(investmentId)));
+        new PayPalPaymentResponseDto(
+            paymentService.confirmPayPalPayment(payPalOrderId, investmentId)));
   }
 
   @Override

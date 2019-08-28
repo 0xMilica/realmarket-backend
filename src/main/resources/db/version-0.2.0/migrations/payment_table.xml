@@ -23,7 +23,7 @@
             account_number varchar(255),
             routing_number varchar(255),
             proforma_invoice_url varchar(255),
-            session_token varchar(255),
+            pay_pal_order_id varchar(255),
             entity_name varchar(255)
             );
         </sql>

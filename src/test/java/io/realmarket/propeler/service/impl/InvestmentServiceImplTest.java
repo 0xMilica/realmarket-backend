@@ -43,7 +43,6 @@ public class InvestmentServiceImplTest {
 
   @Mock private CampaignService campaignService;
   @Mock private InvestmentStateService investmentStateService;
-  @Mock private PaymentService paymentService;
   @Mock private PersonService personService;
   @Mock private ModelMapperBlankString modelMapperBlankString;
 
@@ -182,12 +181,10 @@ public class InvestmentServiceImplTest {
 
   @Test
   public void revokeInvestment_Should_Revoke_Investment() {
-    Person person = PersonUtils.TEST_PERSON;
     Investment actualInvestment = TEST_INVESTMENT_PAID_REVOCABLE.toBuilder().build();
-    actualInvestment.setPerson(person);
+    actualInvestment.setPerson(PersonUtils.TEST_PERSON);
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(actualInvestment);
-    doNothing().when(paymentService).withdrawFunds(person, actualInvestment.getInvestedAmount());
     when(investmentStateService.getInvestmentState(InvestmentStateName.REVOKED))
         .thenReturn(TEST_INVESTMENT_REVOKED_STATE);
     when(investmentRepository.save(actualInvestment)).thenReturn(actualInvestment);
@@ -324,9 +321,6 @@ public class InvestmentServiceImplTest {
     Investment investment = TEST_INVESTMENT_PAID_NOT_REVOCABLE.toBuilder().build();
 
     when(investmentRepository.getOne(INVESTMENT_ID)).thenReturn(investment);
-    doNothing()
-        .when(paymentService)
-        .withdrawFunds(PersonUtils.TEST_PERSON, investment.getInvestedAmount());
     when(investmentStateService.getInvestmentState(InvestmentStateName.AUDIT_REJECTED))
         .thenReturn(TEST_INVESTMENT_AUDIT_REJECTED_STATE);
     when(investmentRepository.save(investment)).thenReturn(investment);
