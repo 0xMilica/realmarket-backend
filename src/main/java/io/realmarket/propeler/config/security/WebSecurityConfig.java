@@ -80,9 +80,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/campaigns/public",
             "/campaigns/{campaignName}/convertMoney",
             "/campaigns/{campaignName}/convertPercentage",
+            "/campaigns/{campaignName}/market_image",
+            "/campaigns/{campaignName}/team/{teamMemberId}/picture",
+            "/campaigns/{campaignName}/updates",
             "/*/documents/types",
             "/companies/{company_id:[0-9]+}/shareholders",
-            "/companies/{company_id:[0-9]+}/shareholders/{shareholderId}/picture")
+            "/companies/{company_id:[0-9]+}/shareholders/{shareholderId}/picture",
+            "/companies/{companyId}/logo",
+            "/companies/{companyId}/featured_image")
         .antMatchers(
             HttpMethod.POST,
             "/auth",
