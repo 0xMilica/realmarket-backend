@@ -22,5 +22,6 @@ public class BlockchainMessage {
       allocationSize = 1)
   private Long id;
 
+  @Column(length = 4096)
   private String messageDetails;
 }
