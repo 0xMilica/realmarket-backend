@@ -314,7 +314,16 @@ public class PaymentServiceImpl implements PaymentService {
     investment.setPaymentDate(Instant.now());
     investmentService.save(investment);
 
-    return createPayPalPayment(investment, payPalAmount, orderId, order.createTime());
+    PayPalPayment payPalPayment =
+        createPayPalPayment(investment, payPalAmount, orderId, order.createTime());
+
+    blockchainMessageProducer.produceMessage(
+        BlockchainMethod.PAYMENT_CONFIRMED,
+        new PaymentDto(payPalPayment, AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
+        AuthenticationUtil.getClientIp());
+
+    return payPalPayment;
   }
 
   private void throwIfInvestmentAlreadyPaid(Investment investment) {

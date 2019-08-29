@@ -53,6 +53,8 @@ public class PaymentUtils {
           .currency(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY.getCode())
           .amount(BigDecimal.valueOf(100L))
           .payPalOrderId(TEST_PAYPAL_ORDER_ID)
+          .creationDate(Instant.now())
+          .paymentDate(Instant.now())
           .build();
 
   public static Order getTestOrder() {

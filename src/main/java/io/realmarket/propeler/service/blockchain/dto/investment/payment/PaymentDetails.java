@@ -17,6 +17,7 @@ public class PaymentDetails {
   private String paymentDate;
   private Long adminId;
   private String paymentType;
+  private String orderId;
   private String sessionToken;
   private String accountNumber;
   private String routingNumber;

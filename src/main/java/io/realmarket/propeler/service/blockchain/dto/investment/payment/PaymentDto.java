@@ -1,6 +1,7 @@
 package io.realmarket.propeler.service.blockchain.dto.investment.payment;
 
 import io.realmarket.propeler.model.BankTransferPayment;
+import io.realmarket.propeler.model.PayPalPayment;
 import io.realmarket.propeler.service.blockchain.dto.AbstractBlockchainDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,21 @@ public class PaymentDto extends AbstractBlockchainDto {
             .accountNumber(payment.getAccountNumber())
             .routingNumber(payment.getRoutingNumber())
             .proformaInvoiceUrl(payment.getProformaInvoiceUrl())
+            .currency(payment.getCurrency())
+            .build();
+  }
+
+  public PaymentDto(PayPalPayment payment, Long userId) {
+    this.userId = userId;
+    this.payment =
+        PaymentDetails.builder()
+            .paymentId(payment.getId())
+            .investmentId(payment.getInvestment().getId())
+            .amount(payment.getAmount().doubleValue())
+            .creationDate(payment.getCreationDate().toString())
+            .paymentDate(payment.getPaymentDate().toString())
+            .paymentType("PayPalPayment")
+            .orderId(payment.getPayPalOrderId())
             .currency(payment.getCurrency())
             .build();
   }
