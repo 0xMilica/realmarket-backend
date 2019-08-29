@@ -1,7 +1,10 @@
 package io.realmarket.propeler.service.impl;
 
 import com.paypal.orders.Order;
-import io.realmarket.propeler.model.*;
+import io.realmarket.propeler.model.BankTransferPayment;
+import io.realmarket.propeler.model.Investment;
+import io.realmarket.propeler.model.PayPalPayment;
+import io.realmarket.propeler.model.Payment;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.BankTransferPaymentRepository;
 import io.realmarket.propeler.repository.InvestmentRepository;
@@ -14,7 +17,6 @@ import io.realmarket.propeler.service.payment.PayPalClient;
 import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.PdfService;
 import io.realmarket.propeler.service.util.TemplateDataUtil;
-import io.realmarket.propeler.util.CompanyUtils;
 import io.realmarket.propeler.util.InvestmentUtils;
 import io.realmarket.propeler.util.PaymentUtils;
 import io.realmarket.propeler.util.PlatformSettingsUtils;
@@ -28,6 +30,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -63,6 +66,7 @@ public class PaymentServiceImplTest {
   @Before
   public void createAuthContext() {
     mockRequestAndContext();
+    ReflectionTestUtils.setField(paymentService, "timeZone", "Europe/Belgrade");
   }
 
   @Test
@@ -85,7 +89,6 @@ public class PaymentServiceImplTest {
   public void GetBankTransferPayment_Should_CreateAndReturnPayment() {
     Investment ownerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
     BankTransferPayment bankTransferPayment = mockPaidBankTransferPayment();
-    Company company = CompanyUtils.getCompanyMocked();
 
     when(investmentRepository.getOne(InvestmentUtils.INVESTMENT_ID))
         .thenReturn(ownerApprovedInvestment);
@@ -150,7 +153,9 @@ public class PaymentServiceImplTest {
         .thenReturn(InvestmentUtils.TEST_INVESTMENT_OWNER_APPROVED_STATE);
     when(bankTransferPaymentRepository.findByInvestmentId(InvestmentUtils.INVESTMENT_ID))
         .thenReturn(Optional.of(paidBankTransferPayment));
-    when(investmentRepository.save(any())).thenReturn(TEST_INVESTMENT_PAID);
+    when(fileService.uploadFile(any(), anyString())).thenReturn(InvestmentUtils.TEST_INVOICE_URL);
+    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    when(investmentRepository.save(any())).thenReturn(InvestmentUtils.TEST_INVESTMENT_PAID);
     when(bankTransferPaymentRepository.save(any())).thenReturn(paidBankTransferPayment);
 
     Payment retVal =
@@ -214,5 +219,16 @@ public class PaymentServiceImplTest {
     when(investmentRepository.getOne(TEST_ID)).thenReturn(TEST_INVESTMENT_PAID);
 
     paymentService.confirmBankTransferPayment(TEST_ID, TEST_PAYMENT_CONFIRMATION_DTO);
+  }
+
+  @Test()
+  public void getInvoice_Should_ReturnInvoice() {
+    Investment paidInvestment = InvestmentUtils.mockPaidInvestment();
+
+    when(investmentRepository.getOne(TEST_ID)).thenReturn(paidInvestment);
+
+    String retVal = paymentService.getInvoice(InvestmentUtils.INVESTMENT_ID);
+
+    assertNotNull(retVal);
   }
 }

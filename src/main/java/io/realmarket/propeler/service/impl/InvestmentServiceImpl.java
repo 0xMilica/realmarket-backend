@@ -43,6 +43,7 @@ public class InvestmentServiceImpl implements InvestmentService {
   private final InvestmentStateService investmentStateService;
   private final ModelMapperBlankString modelMapperBlankString;
   private final PersonService personService;
+  private final PaymentService paymentService;
   private final BlockchainMessageProducer blockchainMessageProducer;
   private final EmailService emailService;
   private final PlatformSettingsService platformSettingsService;
@@ -59,6 +60,7 @@ public class InvestmentServiceImpl implements InvestmentService {
       InvestmentStateService investmentStateService,
       ModelMapperBlankString modelMapperBlankString,
       PersonService personService,
+      PaymentService paymentService,
       BlockchainMessageProducer blockchainMessageProducer,
       EmailService emailService,
       PlatformSettingsService platformSettingsService,
@@ -69,6 +71,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     this.investmentStateService = investmentStateService;
     this.modelMapperBlankString = modelMapperBlankString;
     this.personService = personService;
+    this.paymentService = paymentService;
     this.blockchainMessageProducer = blockchainMessageProducer;
     this.emailService = emailService;
     this.platformSettingsService = platformSettingsService;
@@ -134,7 +137,7 @@ public class InvestmentServiceImpl implements InvestmentService {
             .build();
 
     investment = investmentRepository.save(investment);
-    // paymentService.createBankTransferPayment(investment);
+    paymentService.createBankTransferPayment(investment);
 
     blockchainMessageProducer.produceMessage(
         BlockchainMethod.INVESTMENT_INTENT,

@@ -49,7 +49,6 @@ public class EmailServiceImplTest {
     verify(javaMailSender, Mockito.times(1)).send(mockedEmail);
     assertEquals(TEST_ACTIVATION_SUBJECT, mockedEmailMessageDto.getSubject());
     assertEquals(TEST_EMAIL_TEXT, mockedEmailMessageDto.getText());
-    assertEquals(4, mockedResetEmailData.size());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -89,7 +88,6 @@ public class EmailServiceImplTest {
     verify(javaMailSender, Mockito.times(1)).send(mockedEmail);
     assertEquals(TEST_RESET_SUBJECT, mockedEmailMessageDto.getSubject());
     assertEquals(TEST_EMAIL_TEXT, mockedEmailMessageDto.getText());
-    assertEquals(3, mockedResetEmailData.size());
   }
 
   @Test(expected = IllegalArgumentException.class)

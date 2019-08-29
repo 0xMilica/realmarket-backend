@@ -17,6 +17,11 @@ public class InvestmentUtils {
 
   private static final long WEEK = 604800000L;
   public static final long INVESTMENT_ID = 1L;
+  public static final BigDecimal TEST_INVESTED_AMOUNT = BigDecimal.valueOf(100);
+  public static final String TEST_CURRENCY = "EUR";
+  public static final Instant TEST_CREATION_DATE = Instant.now();
+  public static final Instant TEST_PAYMENT_DATE = Instant.now();
+  public static final String TEST_INVOICE_URL = "TEST_INVOICE_URL";
 
   public static final InvestmentState mockInvestmentState(InvestmentStateName name) {
     return InvestmentState.builder().name(name).build();
@@ -52,7 +57,23 @@ public class InvestmentUtils {
         .campaign(CampaignUtils.TEST_ACTIVE_CAMPAIGN)
         .investmentState(mockInvestmentState(InvestmentStateName.OWNER_APPROVED))
         .person(PersonUtils.TEST_PERSON)
-        .investedAmount(BigDecimal.valueOf(100))
+        .investedAmount(TEST_INVESTED_AMOUNT)
+        .currency(TEST_CURRENCY)
+        .creationDate(TEST_CREATION_DATE)
+        .build();
+  }
+
+  public static Investment mockPaidInvestment() {
+    return Investment.builder()
+        .id(INVESTMENT_ID)
+        .campaign(CampaignUtils.TEST_ACTIVE_CAMPAIGN)
+        .investmentState(mockInvestmentState(InvestmentStateName.PAID))
+        .person(PersonUtils.TEST_PERSON)
+        .investedAmount(TEST_INVESTED_AMOUNT)
+        .currency(TEST_CURRENCY)
+        .creationDate(TEST_CREATION_DATE)
+        .paymentDate(TEST_PAYMENT_DATE)
+        .invoiceUrl(TEST_INVOICE_URL)
         .build();
   }
 

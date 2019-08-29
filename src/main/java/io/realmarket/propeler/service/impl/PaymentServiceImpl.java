@@ -5,10 +5,7 @@ import io.realmarket.propeler.api.dto.AttachmentFileDto;
 import io.realmarket.propeler.api.dto.PaymentConfirmationDto;
 import io.realmarket.propeler.api.dto.PaymentResponseDto;
 import io.realmarket.propeler.api.dto.enums.EmailType;
-import io.realmarket.propeler.model.BankTransferPayment;
-import io.realmarket.propeler.model.Investment;
-import io.realmarket.propeler.model.PayPalPayment;
-import io.realmarket.propeler.model.Payment;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.FileType;
 import io.realmarket.propeler.model.enums.InvestmentStateName;
 import io.realmarket.propeler.repository.BankTransferPaymentRepository;
@@ -28,6 +25,7 @@ import io.realmarket.propeler.service.util.PdfService;
 import io.realmarket.propeler.service.util.TemplateDataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,6 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
@@ -65,10 +65,13 @@ public class PaymentServiceImpl implements PaymentService {
   @Value("${app.payment.card-limit}")
   private BigDecimal cardPaymentLimit;
 
+  @Value(value = "${app.locale.timezone}")
+  private String timeZone;
+
   @Autowired
   public PaymentServiceImpl(
       PaymentDocumentService paymentDocumentService,
-      InvestmentService investmentService,
+      @Lazy InvestmentService investmentService,
       InvestmentStateService investmentStateService,
       PlatformSettingsService platformSettingsService,
       PdfService pdfService,
@@ -160,33 +163,38 @@ public class PaymentServiceImpl implements PaymentService {
     Map<String, Object> documentsParameters;
     byte[] file;
     if (investment.getPerson().getAuth() == null) {
-      documentsParameters = templateDataUtil.getOffPlatformInvoiceData(investment);
-      file = pdfService.generatePdf(documentsParameters, FileType.OFFPLATFORM_INVOICE);
+      documentsParameters = templateDataUtil.getOffPlatformInvoiceData(investment, true);
+      file = pdfService.generatePdf(documentsParameters, FileType.OFFPLATFORM_PROFORMA_INVOICE);
     } else {
       documentsParameters = templateDataUtil.getData(investment, "Bank Transfer", true);
       file = pdfService.generatePdf(documentsParameters, FileType.PROFORMA_INVOICE);
     }
     String url = fileService.uploadFile(file, "pdf");
 
-    if (investment.getPerson().getEmail() != null) {
-      sendProformaInvoiceEmail(investment, file);
-    }
+    sendProformaInvoiceEmail(investment, file);
     return url;
   }
 
   private void sendProformaInvoiceEmail(Investment investment, byte[] file) {
-    if (investment.getPerson().getEmail() == null) {
-      return;
+    if (investment.getPerson().getEmail() != null) {
+      Map<String, Object> parameters = new HashMap<>();
+      parameters.put(EmailServiceImpl.CAMPAIGN, investment.getCampaign().getName());
+      parameters.put(EmailServiceImpl.FIRST_NAME, investment.getPerson().getFirstName());
+      parameters.put(EmailServiceImpl.LAST_NAME, investment.getPerson().getLastName());
+      parameters.put(EmailServiceImpl.INVESTMENT, investment);
+      LocalDateTime creationDate =
+          LocalDateTime.ofInstant(investment.getCreationDate(), ZoneId.of(timeZone));
+      parameters.put(
+          EmailServiceImpl.PROFORMA_INVOICE_NUMBER,
+          investment.getCurrency() + "/" + creationDate.getYear() + "-" + investment.getId());
+
+      emailService.sendMailToUser(
+          new MailContentHolder(
+              Collections.singletonList(investment.getPerson().getEmail()),
+              EmailType.PROFORMA_INVOICE,
+              parameters,
+              new AttachmentFileDto(file, "ProformaInvoice", ".pdf")));
     }
-
-    Map<String, Object> parameters = new HashMap<>();
-
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(investment.getPerson().getEmail()),
-            EmailType.PROFORMA_INVOICE,
-            parameters,
-            new AttachmentFileDto(file, "ProformaInvoice", ".pdf")));
   }
 
   @Override
@@ -222,7 +230,8 @@ public class PaymentServiceImpl implements PaymentService {
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.PAID));
     investment.setPaymentDate(bankTransferPayment.getPaymentDate());
-    investmentService.save(investment);
+    investment.setInvoiceUrl(createInvoice(investment, "Bank transfer"));
+    investmentRepository.save(investment);
 
     bankTransferPayment = bankTransferPaymentRepository.save(bankTransferPayment);
 
@@ -236,21 +245,54 @@ public class PaymentServiceImpl implements PaymentService {
     return bankTransferPayment;
   }
 
-  private void throwIfNotAllowedFilter(String filter) {
-    if (filter == null) {
-      return;
+  private String createInvoice(Investment investment, String paymentType) {
+    Map<String, Object> documentsParameters;
+    byte[] file;
+    if (investment.getPerson().getAuth() == null) {
+      documentsParameters = templateDataUtil.getOffPlatformInvoiceData(investment, false);
+      file = pdfService.generatePdf(documentsParameters, FileType.OFFPLATFORM_INVOICE);
+    } else {
+      documentsParameters = templateDataUtil.getData(investment, paymentType, false);
+      file = pdfService.generatePdf(documentsParameters, FileType.INVOICE);
     }
-    if (!(filter.equalsIgnoreCase("owner_approved")
-        || filter.equalsIgnoreCase("paid")
-        || filter.equalsIgnoreCase("expired"))) {
-      throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
+    String url = fileService.uploadFile(file, "pdf");
+
+    sendInvoiceEmail(investment, file);
+    return url;
+  }
+
+  private void sendInvoiceEmail(Investment investment, byte[] file) {
+    if (investment.getPerson().getEmail() != null) {
+      Map<String, Object> parameters = new HashMap<>();
+      parameters.put(EmailServiceImpl.CAMPAIGN, investment.getCampaign().getName());
+      parameters.put(EmailServiceImpl.FIRST_NAME, investment.getPerson().getFirstName());
+      parameters.put(EmailServiceImpl.LAST_NAME, investment.getPerson().getLastName());
+      parameters.put(EmailServiceImpl.INVESTMENT, investment);
+      LocalDateTime paymentDate =
+          LocalDateTime.ofInstant(investment.getPaymentDate(), ZoneId.of(timeZone));
+      parameters.put(
+          EmailServiceImpl.INVOICE_NUMBER,
+          investment.getCurrency() + "/" + paymentDate.getYear() + "-" + investment.getId());
+
+      emailService.sendMailToUser(
+          new MailContentHolder(
+              Collections.singletonList(investment.getPerson().getEmail()),
+              EmailType.INVOICE,
+              parameters,
+              new AttachmentFileDto(file, "Invoice", ".pdf")));
     }
   }
 
-  private BankTransferPayment findBankTransferPaymentForInvestmentOrThrow(Long investmentId) {
-    return bankTransferPaymentRepository
-        .findByInvestmentId(investmentId)
-        .orElseThrow(EntityNotFoundException::new);
+  @Override
+  public String getInvoice(Long investmentId) {
+    Investment investment = investmentRepository.getOne(investmentId);
+
+    throwIfNoAccess(investment);
+    if (!investment.getInvestmentState().getName().equals(InvestmentStateName.PAID)) {
+      throw new BadRequestException(INVALID_REQUEST);
+    }
+
+    return investment.getInvoiceUrl();
   }
 
   @Transactional
@@ -301,7 +343,32 @@ public class PaymentServiceImpl implements PaymentService {
     return payPalPaymentRepository.save(payPalPayment);
   }
 
+  private void throwIfNotAllowedFilter(String filter) {
+    if (filter == null) {
+      return;
+    }
+    if (!(filter.equalsIgnoreCase(InvestmentStateName.OWNER_APPROVED.toString())
+        || filter.equalsIgnoreCase(InvestmentStateName.PAID.toString())
+        || filter.equalsIgnoreCase(InvestmentStateName.EXPIRED.toString()))) {
+      throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
+    }
+  }
+
+  private void throwIfNoAccess(Investment investment) {
+    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
+    if (AuthenticationUtil.hasUserAdminRole()
+        && !investment.getPerson().getId().equals(auth.getPerson().getId())) {
+      throw new BadRequestException(INVALID_REQUEST);
+    }
+  }
+
   private Optional<BankTransferPayment> findBankTransferPaymentForInvestment(Long investmentId) {
     return bankTransferPaymentRepository.findByInvestmentId(investmentId);
+  }
+
+  private BankTransferPayment findBankTransferPaymentForInvestmentOrThrow(Long investmentId) {
+    return bankTransferPaymentRepository
+        .findByInvestmentId(investmentId)
+        .orElseThrow(EntityNotFoundException::new);
   }
 }

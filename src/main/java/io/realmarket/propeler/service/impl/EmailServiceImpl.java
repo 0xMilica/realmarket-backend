@@ -43,6 +43,9 @@ public class EmailServiceImpl implements EmailService {
   public static final String REJECTION_REASON = "rejectionReason";
   public static final String DATE = "date";
   public static final String INVESTMENT_ID = "investmentId";
+  public static final String INVESTMENT = "investment";
+  public static final String INVOICE_NUMBER = "invoiceNumber";
+  public static final String PROFORMA_INVOICE_NUMBER = "proformaInvoiceNumber";
 
   private static final String CONTACT_US_EMAIL = "contactUsEmail";
   private static final String REGISTRATION_LINK = "registrationLink";
@@ -182,7 +185,7 @@ public class EmailServiceImpl implements EmailService {
 
       case KYC_UNDER_REVIEW:
         subject = "Propeler - KYC regulation compliance";
-        data = getKYCUnderReviewData(mailContentHolder);
+        data = getData(mailContentHolder);
         templateName = "underReviewKYCTemplate";
         break;
 
@@ -211,10 +214,19 @@ public class EmailServiceImpl implements EmailService {
         break;
 
       case PROFORMA_INVOICE:
-        subject = "Propeler - Proforma invoice";
+        subject =
+            "Propeler - Proforma invoice "
+                + mailContentHolder.getContent().get(PROFORMA_INVOICE_NUMBER);
         data = getData(mailContentHolder);
         emailMessageDto.setAttachmentFile(mailContentHolder.getAttachmentFile());
-        templateName = "proformaInvoice";
+        templateName = "proformaInvoiceMailTemplate";
+        break;
+
+      case INVOICE:
+        subject = "Propeler - Invoice " + mailContentHolder.getContent().get(INVOICE_NUMBER);
+        data = getData(mailContentHolder);
+        emailMessageDto.setAttachmentFile(mailContentHolder.getAttachmentFile());
+        templateName = "invoiceMailTemplate";
         break;
 
       default:
@@ -232,11 +244,6 @@ public class EmailServiceImpl implements EmailService {
   private Map<String, Object> getBasicEmailData() {
     Map<String, Object> data = new HashMap<>();
     data.put(LOGO, LOGO);
-    return data;
-  }
-
-  private Map<String, Object> getSocialMediaData() {
-    Map<String, Object> data = new HashMap<>();
     data.put(TWITTER, TWITTER);
     data.put(FACEBOOK, FACEBOOK);
     data.put(YOUTUBE, YOUTUBE);
@@ -308,7 +315,6 @@ public class EmailServiceImpl implements EmailService {
   private Map<String, Object> getCampaignAcceptData(MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
     data.putAll(mailContentHolder.getContent());
-    data.putAll(getSocialMediaData());
     data.put(CHECK_CIRCLE, CHECK_CIRCLE);
     data.put(DASHBOARD_LINK, frontendServiceUrlPath);
 
@@ -326,7 +332,6 @@ public class EmailServiceImpl implements EmailService {
         String.format("%s/auth/register/%s", frontendServiceUrlPath, registrationToken);
     Map<String, Object> data = getBasicEmailData();
     data.putAll(mailContentHolder.getContent());
-    data.putAll(getSocialMediaData());
     data.put(CHECK_CIRCLE, CHECK_CIRCLE);
     data.put(REGISTRATION_LINK, registrationLink);
 
@@ -339,7 +344,6 @@ public class EmailServiceImpl implements EmailService {
         String.format("%s/investor/payment/%s", frontendServiceUrlPath, investmentId);
     Map<String, Object> data = getBasicEmailData();
     data.putAll(mailContentHolder.getContent());
-    data.putAll(getSocialMediaData());
     data.put(CHECK_CIRCLE, CHECK_CIRCLE);
     data.put(PAYMENT_LINK, paymentLink);
 
@@ -349,7 +353,6 @@ public class EmailServiceImpl implements EmailService {
   private Map<String, Object> getApprovalData(MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
     data.putAll(mailContentHolder.getContent());
-    data.putAll(getSocialMediaData());
     data.put(CHECK_CIRCLE, CHECK_CIRCLE);
 
     return data;
@@ -358,16 +361,7 @@ public class EmailServiceImpl implements EmailService {
   private Map<String, Object> getRejectionData(MailContentHolder mailContentHolder) {
     Map<String, Object> data = getBasicEmailData();
     data.putAll(mailContentHolder.getContent());
-    data.putAll(getSocialMediaData());
     data.put(WARNING, WARNING);
-
-    return data;
-  }
-
-  private Map<String, Object> getKYCUnderReviewData(MailContentHolder mailContentHolder) {
-    Map<String, Object> data = getBasicEmailData();
-    data.putAll(mailContentHolder.getContent());
-    data.putAll(getSocialMediaData());
 
     return data;
   }
@@ -439,6 +433,8 @@ public class EmailServiceImpl implements EmailService {
         helper.addInline(WARNING, new ClassPathResource(WARNING_PATH), PNG_IMAGE);
         break;
       case KYC_UNDER_REVIEW:
+      case PROFORMA_INVOICE:
+      case INVOICE:
         helper.addInline(TWITTER, new ClassPathResource(TWITTER_PATH), PNG_IMAGE);
         helper.addInline(FACEBOOK, new ClassPathResource(FACEBOOK_PATH), PNG_IMAGE);
         helper.addInline(YOUTUBE, new ClassPathResource(YOUTUBE_PATH), PNG_IMAGE);

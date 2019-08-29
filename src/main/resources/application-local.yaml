@@ -34,7 +34,6 @@ spring:
   thymeleaf:
     mode: LEGACYHTML5
     cache: false
-    view-names: userWildcardsPdf
   liquibase:
     contexts: local
 
@@ -113,10 +112,6 @@ cos:
 google:
   recaptcha:
     secret: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
-
-reports:
-  template-names:
-    user-wildcards-pdf: userWildcardsPdf
 
 blockchain:
   active: true

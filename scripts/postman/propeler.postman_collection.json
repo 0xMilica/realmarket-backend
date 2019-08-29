@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6e363f6f-f683-43fa-9925-50725e9e23e2",
+		"_postman_id": "d2e4c1e3-e0d9-49c4-9103-76910aaacd39",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -5384,7 +5384,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"documentTitle\": \"PAYMENTDOCUMENT\",\r\n  \"documentUrl\": \"KCEQ2HMXQSZ5BVKOJ7PQJW34PS6OTCBK.PNG\",\r\n  \"paymentDate\": \"2019-08-28T13:43:56.276Z\"\r\n}"
+							"raw": "{\r\n  \"documentTitle\": \"PAYMENTDOCUMENT\",\r\n  \"documentUrl\": \"KCEQ2HMXQSZ5BVKOJ7PQJW34PS6OTCBK.PNG\",\r\n  \"paymentDate\": \"2019-08-28\"\r\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/payments/{{investment_id}}/bankTransfer/confirm",
@@ -5433,6 +5433,7 @@
 								"payments",
 								"{{investment_id}}",
 								"payPal",
+								"{{paypal_order_id}}"
 							]
 						}
 					},
@@ -5464,7 +5465,37 @@
 								"payments",
 								"{{investment_id}}",
 								"proformaInvoice"
-								"{{paypal_order_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/payments/{{investment_id}}/invoice",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/payments/{{investment_id}}/invoice",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{investment_id}}",
+								"invoice"
 							]
 						}
 					},
@@ -5475,6 +5506,30 @@
 		{
 			"name": "settings",
 			"item": [
+				{
+					"name": "/settings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*, application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/settings",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"settings"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "/settings/countries",
 					"request": {

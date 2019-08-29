@@ -32,6 +32,8 @@ public class PaymentResponseDto {
 
   private String campaignName;
 
+  private String invoiceUrl;
+
   public PaymentResponseDto(Investment investment) {
     this.investmentId = investment.getId();
     this.amount = investment.getInvestedAmount();
@@ -45,6 +47,7 @@ public class PaymentResponseDto {
       this.investorName = investment.getPerson().getCompanyName();
     }
     this.campaignName = investment.getCampaign().getName();
+    this.invoiceUrl = investment.getInvoiceUrl();
   }
 
   public PaymentResponseDto(Payment payment) {
@@ -62,5 +65,6 @@ public class PaymentResponseDto {
       this.investorName = payment.getInvestment().getPerson().getCompanyName();
     }
     this.campaignName = payment.getInvestment().getCampaign().getName();
+    this.invoiceUrl = payment.getInvestment().getInvoiceUrl();
   }
 }

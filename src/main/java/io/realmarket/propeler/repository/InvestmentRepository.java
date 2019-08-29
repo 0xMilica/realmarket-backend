@@ -31,7 +31,7 @@ public interface InvestmentRepository extends JpaRepository<Investment, Long> {
       @Param("person") Person person, @Param("state") CampaignStateName state, Pageable pageable);
 
   @Query(
-      "SELECT i FROM Investment i LEFT JOIN InvestmentState ist ON i.investmentState.id = ist.id WHERE (:state = null AND ist.name IN ('OWNER_APPROVED', 'PAID', 'EXPIRED')) OR ist.name = :state")
+      "SELECT DISTINCT i FROM Investment i JOIN Payment p ON p.investment.id = i.id LEFT JOIN InvestmentState ist ON i.investmentState.id = ist.id WHERE (:state = null AND ist.name IN ('OWNER_APPROVED', 'PAID', 'EXPIRED')) OR ist.name = :state")
   Page<Investment> findAllPaymentInvestment(
       @Param("state") InvestmentStateName state, Pageable pageable);
 }

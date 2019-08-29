@@ -45,9 +45,8 @@ public class InvestmentServiceImplTest {
   @Mock private InvestmentStateService investmentStateService;
   @Mock private PersonService personService;
   @Mock private ModelMapperBlankString modelMapperBlankString;
-
+  @Mock private PaymentService paymentService;
   @Mock private BlockchainMessageProducer blockchainMessageProducer;
-
   @Mock private EmailService emailService;
   @Mock private PlatformSettingsService platformSettingsService;
   @Mock private InvestmentRepository investmentRepository;

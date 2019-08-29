@@ -3,9 +3,9 @@ package io.realmarket.propeler.service;
 import io.realmarket.propeler.api.dto.PaymentConfirmationDto;
 import io.realmarket.propeler.api.dto.PaymentResponseDto;
 import io.realmarket.propeler.model.BankTransferPayment;
+import io.realmarket.propeler.model.Investment;
 import io.realmarket.propeler.model.PayPalPayment;
 import io.realmarket.propeler.model.Payment;
-import io.realmarket.propeler.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -27,4 +27,6 @@ public interface PaymentService {
       Long investmentId, PaymentConfirmationDto paymentConfirmationDto);
 
   PayPalPayment confirmPayPalPayment(String payPalOrderId, Long investmentId);
+
+  String getInvoice(Long investmentId);
 }

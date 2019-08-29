@@ -173,12 +173,12 @@
            style='width:100%;border-collapse:collapse;border:none'>
         <tr>
             <td width="50%" valign="top" style='width:225.4pt;padding:0in 5.4pt 0in 5.4pt'>
-                <h2><span lang="EN-US">Pro-Forma Invoice</span>
+                <h2><span lang="EN-US" th:if="${isProforma}">Pro-Forma</span><span lang="EN-US"
+                                                                                   th:if="${isProforma == false}">Invoice</span>
                 </h2>
             </td>
             <td width="50%" valign="top" style='width:225.4pt;padding:0in 5.4pt 0in 5.4pt'>
-                <h2 align="right" style='text-align:right'><span lang="EN-US"><span
-                        th:text="${currency}"></span> / <span th:text="${proFormaId}"></span></span></h2>
+                <h2 align="right" style='text-align:right'><span lang="EN-US"><span th:text="${proFormaId}"></span></span></h2>
             </td>
         </tr>
     </table>

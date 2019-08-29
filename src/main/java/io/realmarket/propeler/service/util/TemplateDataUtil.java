@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -117,7 +118,14 @@ public class TemplateDataUtil {
       Investment investment, String paymentMethod, boolean isProforma) {
     Person seller = investment.getCampaign().getCompany().getAuth().getPerson();
     Person buyer = investment.getPerson();
-    Long proformaInvoiceId = investment.getId();
+    LocalDateTime date;
+    if (isProforma) {
+      date = LocalDateTime.ofInstant(investment.getCreationDate(), ZoneId.of(localeTimezone));
+    } else {
+      date = LocalDateTime.ofInstant(investment.getPaymentDate(), ZoneId.of(localeTimezone));
+    }
+    String proformaInvoiceId =
+        investment.getCurrency() + "/" + date.getYear() + "-" + investment.getId();
     BigDecimal quantity =
         campaignService.convertMoneyToPercentageOfEquity(
             investment.getCampaign().getUrlFriendlyName(), investment.getInvestedAmount());
@@ -207,10 +215,17 @@ public class TemplateDataUtil {
     return data;
   }
 
-  public Map<String, Object> getOffPlatformInvoiceData(Investment investment) {
+  public Map<String, Object> getOffPlatformInvoiceData(Investment investment, boolean isProforma) {
     Person seller = investment.getCampaign().getCompany().getAuth().getPerson();
+    LocalDateTime date;
     Person buyer = investment.getPerson();
-    Long proformaInvoiceId = investment.getId();
+    if (isProforma) {
+      date = LocalDateTime.ofInstant(investment.getCreationDate(), ZoneId.of(localeTimezone));
+    } else {
+      date = LocalDateTime.ofInstant(investment.getPaymentDate(), ZoneId.of(localeTimezone));
+    }
+    String proformaInvoiceId =
+        investment.getCurrency() + "/" + date.getYear() + "-" + investment.getId();
     BigDecimal quantity =
         campaignService.convertMoneyToPercentageOfEquity(
             investment.getCampaign().getUrlFriendlyName(), investment.getInvestedAmount());
@@ -241,6 +256,8 @@ public class TemplateDataUtil {
     data.put(FULL_TOTAL, total.add(vat.multiply(netPrice)).setScale(2, RoundingMode.HALF_UP));
 
     data.put(POST_SCRIPTUM, preparePS());
+
+    data.put(IS_PROFORMA, isProforma);
 
     return data;
   }

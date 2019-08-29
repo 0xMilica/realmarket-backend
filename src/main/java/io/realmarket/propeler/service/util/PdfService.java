@@ -5,7 +5,6 @@ import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -19,9 +18,6 @@ import java.util.Map;
 public class PdfService {
 
   private final TemplateEngine templateEngine;
-
-  @Value("${reports.template-names.user-wildcards-pdf}")
-  private String userWildcardsTemplate;
 
   @Autowired
   public PdfService(TemplateEngine templateEngine) {
@@ -52,11 +48,13 @@ public class PdfService {
   private String getFileTemplate(FileType fileType) {
     switch (fileType) {
       case WILD_CARDS:
-        return userWildcardsTemplate;
+        return "userWildcardsPdf";
       case PROFORMA_INVOICE:
+      case INVOICE:
         return "invoiceDocumentTemplate";
+      case OFFPLATFORM_PROFORMA_INVOICE:
       case OFFPLATFORM_INVOICE:
-        return "offplatformProformaInvoiceTemplate";
+        return "offplatformInvoiceTemplate";
       default:
         throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
     }
