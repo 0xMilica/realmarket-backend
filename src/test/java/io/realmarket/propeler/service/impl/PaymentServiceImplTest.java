@@ -11,7 +11,6 @@ import io.realmarket.propeler.repository.InvestmentRepository;
 import io.realmarket.propeler.repository.PayPalPaymentRepository;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
-import io.realmarket.propeler.service.exception.AmountsNotEqualException;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.payment.PayPalClient;
 import io.realmarket.propeler.service.util.MailContentHolder;
@@ -199,20 +198,21 @@ public class PaymentServiceImplTest {
     paymentService.confirmPayPalPayment(TEST_PAYPAL_ORDER_ID, TEST_ID);
   }
 
-  @Test(expected = AmountsNotEqualException.class)
-  public void confirmPayPalPayment_Should_Throw_AmountsNotEqualException() {
-    Investment mockOwnerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
-    Order testOrder = PaymentUtils.getTestOrderWithWrongAmount();
-
-    when(investmentService.findByIdOrThrowException(TEST_ID))
-        .thenReturn(mockOwnerApprovedInvestment);
-
-    when(payPalClient.getOrder(TEST_PAYPAL_ORDER_ID)).thenReturn(testOrder);
-
-    paymentService.confirmPayPalPayment(TEST_PAYPAL_ORDER_ID, TEST_ID);
-
-    verify(payPalClient, times(1)).getOrder(TEST_PAYPAL_ORDER_ID);
-  }
+  // revisit when we're sure about PayPal fees
+  //  @Test(expected = AmountsNotEqualException.class)
+  //  public void confirmPayPalPayment_Should_Throw_AmountsNotEqualException() {
+  //    Investment mockOwnerApprovedInvestment = InvestmentUtils.mockOwnerApprovedInvestment();
+  //    Order testOrder = PaymentUtils.getTestOrderWithWrongAmount();
+  //
+  //    when(investmentService.findByIdOrThrowException(TEST_ID))
+  //        .thenReturn(mockOwnerApprovedInvestment);
+  //
+  //    when(payPalClient.getOrder(TEST_PAYPAL_ORDER_ID)).thenReturn(testOrder);
+  //
+  //    paymentService.confirmPayPalPayment(TEST_PAYPAL_ORDER_ID, TEST_ID);
+  //
+  //    verify(payPalClient, times(1)).getOrder(TEST_PAYPAL_ORDER_ID);
+  //  }
 
   @Test(expected = BadRequestException.class)
   public void confirmBankTransferPayment_Should_Throw_BadRequestException() {

@@ -305,7 +305,8 @@ public class PaymentServiceImpl implements PaymentService {
     BigDecimal payPalAmount =
         new BigDecimal(order.purchaseUnits().get(0).amountWithBreakdown().value());
 
-    throwIfAmountsNotEqual(payPalAmount, investment.getInvestedAmount());
+    // revisit when we're sure about PayPal fees
+    //    throwIfAmountsNotEqual(payPalAmount, investment.getInvestedAmount());
 
     payPalClient.captureRequest(orderId);
 
