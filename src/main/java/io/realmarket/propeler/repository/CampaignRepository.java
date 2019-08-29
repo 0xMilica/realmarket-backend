@@ -37,7 +37,10 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
           "SELECT COUNT(c) FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = 'ACTIVE' OR s.name = 'POST_CAMPAIGN'")
   Page<Campaign> findAllPublic(Pageable pageable);
 
-  Page<Campaign> findAllByCampaignState(Pageable pageable, CampaignState state);
+  @Query(
+      value =
+          "SELECT c FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE :state is null or s = :state")
+  Page<Campaign> findAllByCampaignState(Pageable pageable, @Param("state") CampaignState state);
 
   Page<Campaign> findAllByCampaignStateAndCompany(
       Pageable pageable, CampaignState state, Company company);

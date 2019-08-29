@@ -230,7 +230,7 @@ public class CampaignControllerImpl implements CampaignController {
   @GetMapping
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public ResponseEntity<Page<CampaignResponseDto>> getCampaignsByState(
-      Pageable pageable, @RequestParam(value = "state", defaultValue = "active") String state) {
+      Pageable pageable, @RequestParam(value = "state", required = false) String state) {
     return ResponseEntity.ok(campaignService.getCampaignsByState(pageable, state));
   }
 

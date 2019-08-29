@@ -421,8 +421,6 @@ public interface CampaignController {
         value = "State of campaign to be returned",
         allowableValues =
             "initial, review_ready, audit, active, launch_ready, post_campaign, deleted",
-        defaultValue = "active",
-        required = true,
         dataType = "String",
         paramType = "query")
   })
