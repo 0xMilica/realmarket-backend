@@ -252,7 +252,8 @@ public class InvestmentServiceImpl implements InvestmentService {
   @Override
   public void auditorApproveInvestment(Long investmentId) {
     Investment investment = investmentRepository.getOne(investmentId);
-    throwIfRevocable(investment);
+    // TODO revisit when we're sure about payment retention
+    //    throwIfRevocable(investment);
 
     Campaign campaign = investment.getCampaign();
 
