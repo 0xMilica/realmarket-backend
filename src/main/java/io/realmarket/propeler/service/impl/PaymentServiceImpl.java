@@ -315,6 +315,10 @@ public class PaymentServiceImpl implements PaymentService {
     investment.setPaymentDate(Instant.now());
     investmentService.save(investment);
 
+    // TODO remove two calls beneath after demo
+    investmentRepository.flush();
+    investmentService.auditorApproveInvestment(investmentId);
+
     PayPalPayment payPalPayment =
         createPayPalPayment(investment, payPalAmount, orderId, order.createTime());
 
