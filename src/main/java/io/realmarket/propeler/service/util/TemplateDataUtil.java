@@ -12,6 +12,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -61,6 +62,7 @@ public class TemplateDataUtil {
   public static final String LONG_NAME_DESCRIPTION = "longNameDesc";
   public static final String TERMS_OF_USE = "Terms Of Use";
   public static final String NOTES_AND_DISCLAIMERS = "Notes & Disclaimers";
+  public static final String BANK_TRANSFER_PAYMENT_TYPE = "Bank transfer";
 
   private static final String DUMMY_TEXT =
       "In publishing and graphic design, lorem ipsum is a placeholder text commonly used to "
@@ -129,9 +131,12 @@ public class TemplateDataUtil {
     BigDecimal quantity =
         campaignService.convertMoneyToPercentageOfEquity(
             investment.getCampaign().getUrlFriendlyName(), investment.getInvestedAmount());
-    BigDecimal netPrice = investment.getInvestedAmount();
     BigDecimal vat = this.vatPercent;
     BigDecimal total = investment.getInvestedAmount();
+    BigDecimal netPrice =
+        total
+            .multiply(BigDecimal.ONE)
+            .divide(BigDecimal.ONE.add(this.vatPercent), MathContext.DECIMAL128);
     HashMap<String, Object> data = new HashMap<>();
     data.put(SELLER, getData(seller));
     data.put(BUYER, getData(buyer));
@@ -145,8 +150,8 @@ public class TemplateDataUtil {
     data.put(ITEM_QUANTITY, quantity.setScale(2, RoundingMode.HALF_UP));
     data.put(ITEM_NET_PRICE, netPrice.setScale(2, RoundingMode.HALF_UP));
     data.put(ITEM_VAT, vat.multiply(netPrice).setScale(2, RoundingMode.HALF_UP));
-    data.put(ITEM_TOTAL, total.add(vat.multiply(netPrice)).setScale(2, RoundingMode.HALF_UP));
-    data.put(FULL_TOTAL, total.add(vat.multiply(netPrice)).setScale(2, RoundingMode.HALF_UP));
+    data.put(ITEM_TOTAL, total.setScale(2, RoundingMode.HALF_UP));
+    data.put(FULL_TOTAL, total.setScale(2, RoundingMode.HALF_UP));
 
     data.put(POST_SCRIPTUM, preparePS());
 
@@ -229,9 +234,12 @@ public class TemplateDataUtil {
     BigDecimal quantity =
         campaignService.convertMoneyToPercentageOfEquity(
             investment.getCampaign().getUrlFriendlyName(), investment.getInvestedAmount());
-    BigDecimal netPrice = investment.getInvestedAmount();
     BigDecimal vat = this.vatPercent;
     BigDecimal total = investment.getInvestedAmount();
+    BigDecimal netPrice =
+        total
+            .multiply(BigDecimal.ONE)
+            .divide(BigDecimal.ONE.add(this.vatPercent), MathContext.DECIMAL128);
     HashMap<String, Object> data = new HashMap<>();
     data.put(SELLER, getData(seller));
     if (buyer.getCompanyName() == null) {
@@ -247,13 +255,13 @@ public class TemplateDataUtil {
     Instant creationInstant = Instant.now();
     data.put(ISSUE_DATE, getDateFromInstant(creationInstant));
     data.put(DUE_DATE, getDateFromInstant(creationInstant.plusMillis(invoiceDueDuration)));
-    data.put(PAYMENT_METHOD, "Bank transfer");
+    data.put(PAYMENT_METHOD, BANK_TRANSFER_PAYMENT_TYPE);
 
     data.put(ITEM_QUANTITY, quantity.setScale(2, RoundingMode.HALF_UP));
     data.put(ITEM_NET_PRICE, netPrice.setScale(2, RoundingMode.HALF_UP));
     data.put(ITEM_VAT, vat.multiply(netPrice).setScale(2, RoundingMode.HALF_UP));
-    data.put(ITEM_TOTAL, total.add(vat.multiply(netPrice)).setScale(2, RoundingMode.HALF_UP));
-    data.put(FULL_TOTAL, total.add(vat.multiply(netPrice)).setScale(2, RoundingMode.HALF_UP));
+    data.put(ITEM_TOTAL, total.setScale(2, RoundingMode.HALF_UP));
+    data.put(FULL_TOTAL, total.setScale(2, RoundingMode.HALF_UP));
 
     data.put(POST_SCRIPTUM, preparePS());
 

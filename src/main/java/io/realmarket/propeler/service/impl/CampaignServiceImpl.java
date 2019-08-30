@@ -365,7 +365,8 @@ public class CampaignServiceImpl implements CampaignService {
       return campaignRepository.findAuditCampaigns(auth, pageable).map(CampaignResponseDto::new);
     }
     return campaignRepository
-        .findAllByCampaignState(pageable, (state == null) ? null : campaignStateService.getCampaignState(state))
+        .findAllByCampaignState(
+            pageable, (state == null) ? null : campaignStateService.getCampaignState(state))
         .map(CampaignResponseDto::new);
   }
 

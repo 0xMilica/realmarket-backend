@@ -29,7 +29,7 @@ spring:
     mode: LEGACYHTML5
     cache: false
 
-frontend.service.url: http://localhost:3000/propeler
+frontend.service.url: http://localhost:3000
 hmac.secret: s3cr3t
 access-token.expiration-time: 3600000
 registration-token.expiration-time: 604800000
@@ -82,7 +82,7 @@ app:
 
   payment:
     card-limit: 15000
-    VAT: 0.20
+    VAT: 0.2
 
 cos:
   public_prefix: local_public
