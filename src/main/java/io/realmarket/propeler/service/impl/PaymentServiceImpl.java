@@ -39,6 +39,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
+import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVESTMENT_NOT_PAID;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -288,8 +289,9 @@ public class PaymentServiceImpl implements PaymentService {
     Investment investment = investmentRepository.getOne(investmentId);
 
     throwIfNoAccess(investment);
-    if (!investment.getInvestmentState().getName().equals(InvestmentStateName.PAID)) {
-      throw new BadRequestException(INVALID_REQUEST);
+    if (!investment.getInvestmentState().getName().equals(InvestmentStateName.PAID)
+        && !investment.getInvestmentState().getName().equals(InvestmentStateName.AUDIT_APPROVED)) {
+      throw new BadRequestException(INVESTMENT_NOT_PAID);
     }
 
     return investment.getInvoiceUrl();
@@ -370,7 +372,7 @@ public class PaymentServiceImpl implements PaymentService {
 
   private void throwIfNoAccess(Investment investment) {
     Auth auth = AuthenticationUtil.getAuthentication().getAuth();
-    if (AuthenticationUtil.hasUserAdminRole()
+    if (!AuthenticationUtil.hasUserAdminRole()
         && !investment.getPerson().getId().equals(auth.getPerson().getId())) {
       throw new BadRequestException(INVALID_REQUEST);
     }

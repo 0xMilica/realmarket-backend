@@ -146,6 +146,9 @@ public interface ExceptionMessages {
   // PayPal order already captured.
   String PAY_PAL_ORDER_ALREADY_CAPTURED = "PAY_005";
 
+  // Investment not paid.
+  String INVESTMENT_NOT_PAID = "PAY_006";
+
   // Invalid request.
   String INVALID_REQUEST = "REQ_001";
 
