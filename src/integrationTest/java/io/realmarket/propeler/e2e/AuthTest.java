@@ -3,13 +3,11 @@ package io.realmarket.propeler.e2e;
 import io.realmarket.propeler.api.controller.impl.AuthControllerImpl;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.e2e.util.LoginUtil;
-import io.realmarket.propeler.service.AuthService;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -21,8 +19,6 @@ import static org.hamcrest.Matchers.equalTo;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("integration_testing")
 public class AuthTest {
-
-  @Mock private AuthService authService;
 
   @InjectMocks private AuthControllerImpl authController;
 

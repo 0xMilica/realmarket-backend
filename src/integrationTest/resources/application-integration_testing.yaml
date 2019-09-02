@@ -105,6 +105,10 @@ google:
   recaptcha:
     secret: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
 
+payPal:
+  client-id: ARPDjavo9_Oj8ZEZABvlfV28LRH5veb-3WdLaD7ypL7XoK7tKCnYTIv_MRiUigymEJSiNdI-EA_du7Ud
+  client-secret: EPFpWXTWi6myPKsfabHi8cNlvUKK75Xmh4aoDBfMUwvWezm5Zn42U8yio40vdwha11-ujFgx0SDAUb-k
+
 blockchain:
   active: true
   user:
