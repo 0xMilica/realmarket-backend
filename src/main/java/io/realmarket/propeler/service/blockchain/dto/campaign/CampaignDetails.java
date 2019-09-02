@@ -41,7 +41,8 @@ public class CampaignDetails {
         campaign.getMinInvestment() == null ? null : campaign.getMinInvestment().doubleValue();
     this.state = campaign.getCampaignState().getName().toString();
     this.tagLine = campaign.getTagLine();
-    this.activationTime = campaign.getActivationDate().toString();
+    this.activationTime =
+        campaign.getActivationDate() == null ? null : campaign.getActivationDate().toString();
     this.collectedAmount =
         campaign.getCollectedAmount() == null ? null : campaign.getCollectedAmount().doubleValue();
     this.currency = campaign.getCurrency();
