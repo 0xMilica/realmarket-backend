@@ -16,8 +16,8 @@ import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsExcepti
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.FileUtils;
-import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
+import io.realmarket.propeler.service.util.email.Parameters;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,8 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.AbstractMap;
-import java.util.Collections;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -381,16 +380,11 @@ public class CampaignServiceImpl implements CampaignService {
             .map(auth -> auth.getPerson().getEmail())
             .collect(Collectors.toList());
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            emails,
-            EmailType.NEW_CAMPAIGN_OPPORTUNITY,
-            Collections.unmodifiableMap(
-                Stream.of(
-                        new AbstractMap.SimpleEntry<>(EmailServiceImpl.CAMPAIGN, campaignEmailDto))
-                    .collect(
-                        Collectors.toMap(
-                            AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)))));
+    emailService.sendEmailToUser(
+        EmailType.NEW_CAMPAIGN_OPPORTUNITY,
+        emails,
+        Stream.of(new SimpleEntry<>(Parameters.CAMPAIGN, campaignEmailDto))
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
   }
 
   @Override
@@ -405,17 +399,11 @@ public class CampaignServiceImpl implements CampaignService {
             .map(auth -> auth.getPerson().getEmail())
             .collect(Collectors.toList());
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            emails,
-            EmailType.NEW_CAMPAIGN_OPPORTUNITIES,
-            Collections.unmodifiableMap(
-                Stream.of(
-                        new AbstractMap.SimpleEntry<>(
-                            EmailServiceImpl.CAMPAIGNS, campaignEmailList))
-                    .collect(
-                        Collectors.toMap(
-                            AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)))));
+    emailService.sendEmailToUser(
+        EmailType.NEW_CAMPAIGN_OPPORTUNITIES,
+        emails,
+        Stream.of(new SimpleEntry<>(Parameters.CAMPAIGNS, campaignEmailList))
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
   }
 
   @Transactional

@@ -12,7 +12,6 @@ import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsExcep
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.*;
 import org.junit.Before;
@@ -418,7 +417,7 @@ public class CampaignServiceImplTest {
     Campaign testCampaign = getCampaignMocked();
     when(campaignTopicService.getCampaignTopic(testCampaign.getUrlFriendlyName(), "OVERVIEW"))
         .thenReturn(TEST_CAMPAIGN_TOPIC_DTO);
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
 
     campaignServiceImpl.sendNewCampaignOpportunityEmail(testCampaign);
   }

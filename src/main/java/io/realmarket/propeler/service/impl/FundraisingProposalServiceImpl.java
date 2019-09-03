@@ -12,7 +12,7 @@ import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.service.util.MailContentHolder;
+import io.realmarket.propeler.service.util.email.Parameters;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,9 +20,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.FORBIDDEN_OPERATION_EXCEPTION;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
@@ -136,26 +137,26 @@ public class FundraisingProposalServiceImpl implements FundraisingProposalServic
 
   private void sendApprovalEmail(
       FundraisingProposal fundraisingProposal, RegistrationToken registrationToken) {
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.FIRST_NAME, fundraisingProposal.getFirstName());
-    parameters.put(EmailServiceImpl.LAST_NAME, fundraisingProposal.getLastName());
-    parameters.put(EmailServiceImpl.REGISTRATION_TOKEN, registrationToken.getValue());
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(fundraisingProposal.getEmail()),
-            EmailType.FUNDRAISING_PROPOSAL_APPROVAL,
-            parameters));
+
+    emailService.sendEmailToUser(
+        EmailType.FUNDRAISING_PROPOSAL_APPROVAL,
+        Collections.singletonList(fundraisingProposal.getEmail()),
+        Stream.of(
+                new SimpleEntry<>(Parameters.FIRST_NAME, fundraisingProposal.getFirstName()),
+                new SimpleEntry<>(Parameters.LAST_NAME, fundraisingProposal.getLastName()),
+                new SimpleEntry<>(Parameters.REGISTRATION_TOKEN, registrationToken.getValue()))
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
   }
 
   private void sendRejectionEmail(FundraisingProposal fundraisingProposal) {
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.FIRST_NAME, fundraisingProposal.getFirstName());
-    parameters.put(EmailServiceImpl.LAST_NAME, fundraisingProposal.getLastName());
-    parameters.put(EmailServiceImpl.REJECTION_REASON, fundraisingProposal.getRejectionReason());
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(fundraisingProposal.getEmail()),
-            EmailType.FUNDRAISING_PROPOSAL_REJECTION,
-            parameters));
+    emailService.sendEmailToUser(
+        EmailType.FUNDRAISING_PROPOSAL_REJECTION,
+        Collections.singletonList(fundraisingProposal.getEmail()),
+        Stream.of(
+                new SimpleEntry<>(Parameters.FIRST_NAME, fundraisingProposal.getFirstName()),
+                new SimpleEntry<>(Parameters.LAST_NAME, fundraisingProposal.getLastName()),
+                new SimpleEntry<>(
+                    Parameters.REJECTION_REASON, fundraisingProposal.getRejectionReason()))
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
   }
 }

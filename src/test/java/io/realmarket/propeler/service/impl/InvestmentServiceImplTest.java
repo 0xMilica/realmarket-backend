@@ -11,7 +11,6 @@ import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.PersonUtils;
 import io.realmarket.propeler.util.PlatformSettingsUtils;
@@ -222,7 +221,7 @@ public class InvestmentServiceImplTest {
     when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_APPROVED))
         .thenReturn(TEST_INVESTMENT_OWNER_APPROVED_STATE);
     when(investmentRepository.save(investment)).thenReturn(investment);
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any());
     doNothing()
         .when(notificationService)
         .sendMessage(TEST_AUTH, NotificationType.ACCEPT_INVESTOR, null, null);
@@ -254,7 +253,7 @@ public class InvestmentServiceImplTest {
     when(investmentStateService.getInvestmentState(InvestmentStateName.OWNER_REJECTED))
         .thenReturn(TEST_INVESTMENT_OWNER_REJECTED_STATE);
     when(investmentRepository.save(investment)).thenReturn(investment);
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
     doNothing()
         .when(notificationService)
         .sendMessage(TEST_AUTH, NotificationType.REJECT_INVESTOR, null, null);

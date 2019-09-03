@@ -1,4 +1,4 @@
-package io.realmarket.propeler.service.util;
+package io.realmarket.propeler.service.util.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,12 +8,12 @@ import org.thymeleaf.context.Context;
 import java.util.Map;
 
 @Service
-public class MailContentBuilder {
+public class EmailContentBuilder {
 
   private TemplateEngine templateEngine;
 
   @Autowired
-  public MailContentBuilder(TemplateEngine templateEngine) {
+  public EmailContentBuilder(TemplateEngine templateEngine) {
     this.templateEngine = templateEngine;
   }
 

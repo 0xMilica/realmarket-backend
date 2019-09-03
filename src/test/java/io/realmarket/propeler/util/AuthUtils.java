@@ -7,7 +7,6 @@ import io.realmarket.propeler.model.enums.AuthStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.security.UserAuthentication;
 import io.realmarket.propeler.service.impl.EmailServiceImpl;
-import io.realmarket.propeler.service.util.MailContentHolder;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -33,16 +32,7 @@ public class AuthUtils {
   public static final String TEST_TEMPORARY_TOKEN_VALUE = "TEST_TEMPORARY_TOKEN_VALUE";
   public static final Long TEST_AUTH_ID = 10L;
   public static final Long TEST_AUTH_ADMIN_ID = TEST_AUTH_ID + 3;
-  public static final MailContentHolder TEST_EMAIL_DTO =
-      new MailContentHolder(
-          Arrays.asList(TEST_EMAIL),
-          EmailType.REGISTER,
-          new HashMap<String, Object>() {
-            {
-              put(EmailServiceImpl.USERNAME, TEST_USERNAME);
-              put(EmailServiceImpl.ACTIVATION_TOKEN, TEST_TEMPORARY_TOKEN_VALUE);
-            }
-          });
+
   public static final ChangePasswordDto TEST_CHANGE_PASSWORD_DTO =
       ChangePasswordDto.builder().oldPassword(TEST_PASSWORD).newPassword(TEST_PASSWORD_NEW).build();
   public static final PasswordDto TEST_PASSWORD_DTO = new PasswordDto(TEST_PASSWORD);

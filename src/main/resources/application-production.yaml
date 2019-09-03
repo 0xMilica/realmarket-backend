@@ -1,5 +1,9 @@
 spring:
-  profiles.active: production
+  profiles:
+    active: production
+    include:
+      - email
+      - resources
   liquibase:
     contexts: production
 

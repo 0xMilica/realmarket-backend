@@ -3,7 +3,12 @@ server:
     context-path: /api
 
 spring:
-  profiles.active: local
+  profiles:
+    active: local
+    include:
+      - email
+      - resource
+
   servlet:
     multipart:
       max-file-size: 10MB
@@ -42,8 +47,7 @@ hmac.secret: s3cr3t
 access-token.expiration-time: 3600000
 registration-token.expiration-time: 604800000
 app:
-  email:
-    contact_us: support@realmarket.io
+  platformName: RealMarket
   scheduler-pool-size: 5
   cleanse:
     tokens.timeloop: 86400000 #24h
@@ -114,7 +118,7 @@ google:
     secret: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
 
 blockchain:
-  active: true
+  active: false
   user:
     organization: Org1
   address: http://localhost:5000

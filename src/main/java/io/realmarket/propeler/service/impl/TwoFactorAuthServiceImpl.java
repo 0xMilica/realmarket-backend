@@ -14,7 +14,6 @@ import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.LoginIPAttemptsService;
 import io.realmarket.propeler.service.util.LoginUsernameAttemptsService;
-import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.RememberMeCookieHelper;
 import io.realmarket.propeler.service.util.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -186,8 +186,9 @@ public class TwoFactorAuthServiceImpl implements TwoFactorAuthService {
     if (!otpService.validateTOTPSecretChange(auth, verifySecretChangeDto.getCode())) {
       throw new BadCredentialsException(ExceptionMessages.INVALID_TOTP_CODE_PROVIDED);
     }
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Arrays.asList(auth.getPerson().getEmail()), EmailType.SECRET_CHANGE, null));
+    emailService.sendEmailToUser(
+        EmailType.SECRET_CHANGE,
+        Collections.singletonList(auth.getPerson().getEmail()),
+        new HashMap<>());
   }
 }

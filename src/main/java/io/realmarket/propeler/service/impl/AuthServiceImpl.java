@@ -21,7 +21,11 @@ import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
-import io.realmarket.propeler.service.util.*;
+import io.realmarket.propeler.service.util.HashingHelper;
+import io.realmarket.propeler.service.util.LoginIPAttemptsService;
+import io.realmarket.propeler.service.util.LoginUsernameAttemptsService;
+import io.realmarket.propeler.service.util.RememberMeCookieHelper;
+import io.realmarket.propeler.service.util.email.Parameters;
 import liquibase.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,16 +211,13 @@ public class AuthServiceImpl implements AuthService {
     TemporaryToken temporaryToken =
         temporaryTokenService.createToken(auth, TemporaryTokenTypeName.REGISTRATION_TOKEN);
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(registrationDto.getEmail()),
-            EmailType.REGISTER,
-            Collections.unmodifiableMap(
-                Stream.of(
-                        new SimpleEntry<>(EmailServiceImpl.USERNAME, registrationDto.getUsername()),
-                        new SimpleEntry<>(
-                            EmailServiceImpl.ACTIVATION_TOKEN, temporaryToken.getValue()))
-                    .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)))));
+    emailService.sendEmailToUser(
+        EmailType.REGISTER,
+        Collections.singletonList(registrationDto.getEmail()),
+        Stream.of(
+                new SimpleEntry<>(Parameters.USERNAME, registrationDto.getUsername()),
+                new SimpleEntry<>(Parameters.ACTIVATION_TOKEN, temporaryToken.getValue()))
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
 
     log.info("User with username '{}' saved successfully.", registrationDto.getUsername());
   }
@@ -269,11 +270,11 @@ public class AuthServiceImpl implements AuthService {
     List<String> usernameList =
         personList.stream().map(p -> p.getAuth().getUsername()).collect(Collectors.toList());
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(emailDto.getEmail()),
-            EmailType.RECOVER_USERNAME,
-            Collections.singletonMap(EmailServiceImpl.USERNAME_LIST, usernameList)));
+    emailService.sendEmailToUser(
+        EmailType.RECOVER_USERNAME,
+        Collections.singletonList(emailDto.getEmail()),
+        Stream.of(new SimpleEntry<>(Parameters.USERNAME_LIST, usernameList))
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
   }
 
   public void initializeResetPassword(UsernameDto usernameDto) {
@@ -282,11 +283,11 @@ public class AuthServiceImpl implements AuthService {
     TemporaryToken temporaryToken =
         temporaryTokenService.createToken(auth, TemporaryTokenTypeName.RESET_PASSWORD_TOKEN);
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(auth.getPerson().getEmail()),
-            EmailType.RESET_PASSWORD,
-            Collections.singletonMap(EmailServiceImpl.RESET_TOKEN, temporaryToken.getValue())));
+    emailService.sendEmailToUser(
+        EmailType.RESET_PASSWORD,
+        Collections.singletonList(auth.getPerson().getEmail()),
+        Stream.of(new SimpleEntry<>(Parameters.RESET_TOKEN, temporaryToken.getValue()))
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
   }
 
   @Transactional
@@ -411,11 +412,11 @@ public class AuthServiceImpl implements AuthService {
 
     log.info("Token for change email {}", token.getValue());
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(newEmail),
-            EmailType.CHANGE_EMAIL,
-            Collections.singletonMap(EmailServiceImpl.EMAIL_CHANGE_TOKEN, token.getValue())));
+    emailService.sendEmailToUser(
+        EmailType.CHANGE_EMAIL,
+        Collections.singletonList(newEmail),
+        Stream.of(new SimpleEntry<>(Parameters.EMAIL_CHANGE_TOKEN, token.getValue()))
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
   }
 
   @Transactional
@@ -508,11 +509,11 @@ public class AuthServiceImpl implements AuthService {
       if (loginUsernameAttemptsService.isBlocked(auth.getUsername())) {
         auth.setBlocked(true);
         authRepository.save(auth);
-        emailService.sendMailToUser(
-            new MailContentHolder(
-                Collections.singletonList(auth.getPerson().getEmail()),
-                EmailType.ACCOUNT_BLOCKED,
-                Collections.singletonMap(EmailServiceImpl.USERNAME, auth.getUsername())));
+        emailService.sendEmailToUser(
+            EmailType.ACCOUNT_BLOCKED,
+            Collections.singletonList(auth.getPerson().getEmail()),
+            Stream.of(new SimpleEntry<>(Parameters.USERNAME, auth.getUsername()))
+                .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
       }
     }
   }

@@ -17,7 +17,7 @@ import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignChangeStat
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.service.util.MailContentHolder;
+import io.realmarket.propeler.service.util.email.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -97,16 +97,15 @@ public class AuditServiceImpl implements AuditService {
   @Override
   public void sendAcceptCampaignEmail(Audit audit) {
     Auth campaignOwner = audit.getCampaign().getCompany().getAuth();
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.FIRST_NAME, campaignOwner.getPerson().getFirstName());
-    parameters.put(EmailServiceImpl.LAST_NAME, campaignOwner.getPerson().getLastName());
-    parameters.put(EmailServiceImpl.CAMPAIGN, audit.getCampaign().getName());
+    Map<String, Object> content = new HashMap<>();
+    content.put(Parameters.FIRST_NAME, campaignOwner.getPerson().getFirstName());
+    content.put(Parameters.LAST_NAME, campaignOwner.getPerson().getLastName());
+    content.put(Parameters.CAMPAIGN, audit.getCampaign().getName());
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(campaignOwner.getPerson().getEmail()),
-            EmailType.ACCEPT_CAMPAIGN,
-            parameters));
+    emailService.sendEmailToUser(
+        EmailType.ACCEPT_CAMPAIGN,
+        Collections.singletonList(campaignOwner.getPerson().getEmail()),
+        content);
   }
 
   @Override
@@ -128,17 +127,16 @@ public class AuditServiceImpl implements AuditService {
   @Override
   public void sendDeclineCampaignEmail(Audit audit) {
     Auth campaignOwner = audit.getCampaign().getCompany().getAuth();
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.FIRST_NAME, campaignOwner.getPerson().getFirstName());
-    parameters.put(EmailServiceImpl.LAST_NAME, campaignOwner.getPerson().getLastName());
-    parameters.put(EmailServiceImpl.CAMPAIGN, audit.getCampaign().getName());
-    parameters.put(EmailServiceImpl.REJECTION_REASON, audit.getRejectionReason());
+    Map<String, Object> content = new HashMap<>();
+    content.put(Parameters.FIRST_NAME, campaignOwner.getPerson().getFirstName());
+    content.put(Parameters.LAST_NAME, campaignOwner.getPerson().getLastName());
+    content.put(Parameters.CAMPAIGN, audit.getCampaign().getName());
+    content.put(Parameters.REJECTION_REASON, audit.getRejectionReason());
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(campaignOwner.getPerson().getEmail()),
-            EmailType.REJECT_CAMPAIGN,
-            parameters));
+    emailService.sendEmailToUser(
+        EmailType.REJECT_CAMPAIGN,
+        Collections.singletonList(campaignOwner.getPerson().getEmail()),
+        content);
   }
 
   @Override

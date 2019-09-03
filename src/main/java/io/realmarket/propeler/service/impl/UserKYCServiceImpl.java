@@ -15,7 +15,7 @@ import io.realmarket.propeler.service.blockchain.dto.user.kyc.KYCRequestForRevie
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.service.util.MailContentHolder;
+import io.realmarket.propeler.service.util.email.Parameters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -126,15 +126,14 @@ public class UserKYCServiceImpl implements UserKYCService {
   }
 
   private void sendKYCUnderReviewMail(UserKYC userKYC) {
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.FIRST_NAME, userKYC.getUser().getPerson().getFirstName());
-    parameters.put(EmailServiceImpl.LAST_NAME, userKYC.getUser().getPerson().getLastName());
+    Map<String, Object> content = new HashMap<>();
+    content.put(Parameters.FIRST_NAME, userKYC.getUser().getPerson().getFirstName());
+    content.put(Parameters.LAST_NAME, userKYC.getUser().getPerson().getLastName());
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(userKYC.getUser().getPerson().getEmail()),
-            EmailType.KYC_UNDER_REVIEW,
-            parameters));
+    emailService.sendEmailToUser(
+        EmailType.KYC_UNDER_REVIEW,
+        Collections.singletonList(userKYC.getUser().getPerson().getEmail()),
+        content);
   }
 
   @Override
@@ -207,19 +206,18 @@ public class UserKYCServiceImpl implements UserKYCService {
   }
 
   private void sendKYCApprovalEmail(UserKYC userKYC) {
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.FIRST_NAME, userKYC.getUser().getPerson().getFirstName());
-    parameters.put(EmailServiceImpl.LAST_NAME, userKYC.getUser().getPerson().getLastName());
+    Map<String, Object> content = new HashMap<>();
+    content.put(Parameters.FIRST_NAME, userKYC.getUser().getPerson().getFirstName());
+    content.put(Parameters.LAST_NAME, userKYC.getUser().getPerson().getLastName());
 
     LocalDateTime uploadDate =
         LocalDateTime.ofInstant(userKYC.getUploadDate(), ZoneId.of(timeZone));
-    parameters.put(EmailServiceImpl.DATE, uploadDate);
+    content.put(Parameters.DATE, uploadDate);
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(userKYC.getUser().getPerson().getEmail()),
-            EmailType.KYC_APPROVAL,
-            parameters));
+    emailService.sendEmailToUser(
+        EmailType.KYC_APPROVAL,
+        Collections.singletonList(userKYC.getUser().getPerson().getEmail()),
+        content);
   }
 
   @Override
@@ -245,20 +243,19 @@ public class UserKYCServiceImpl implements UserKYCService {
   }
 
   private void sendKYCRejectionEmail(UserKYC userKYC) {
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.FIRST_NAME, userKYC.getUser().getPerson().getFirstName());
-    parameters.put(EmailServiceImpl.LAST_NAME, userKYC.getUser().getPerson().getLastName());
-    parameters.put(EmailServiceImpl.REJECTION_REASON, userKYC.getRejectionReason());
+    Map<String, Object> content = new HashMap<>();
+    content.put(Parameters.FIRST_NAME, userKYC.getUser().getPerson().getFirstName());
+    content.put(Parameters.LAST_NAME, userKYC.getUser().getPerson().getLastName());
+    content.put(Parameters.REJECTION_REASON, userKYC.getRejectionReason());
 
     LocalDateTime uploadDate =
         LocalDateTime.ofInstant(userKYC.getUploadDate(), ZoneId.of(timeZone));
-    parameters.put(EmailServiceImpl.DATE, uploadDate);
+    content.put(Parameters.DATE, uploadDate);
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(userKYC.getUser().getPerson().getEmail()),
-            EmailType.KYC_REJECTION,
-            parameters));
+    emailService.sendEmailToUser(
+        EmailType.KYC_REJECTION,
+        Collections.singletonList(userKYC.getUser().getPerson().getEmail()),
+        content);
   }
 
   private void throwIfNotPending(UserKYC userKYC) {

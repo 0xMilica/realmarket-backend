@@ -1,7 +1,6 @@
 package io.realmarket.propeler.service.impl;
 
 import com.paypal.orders.Order;
-import io.realmarket.propeler.api.dto.AttachmentFileDto;
 import io.realmarket.propeler.api.dto.PaymentConfirmationDto;
 import io.realmarket.propeler.api.dto.PaymentResponseDto;
 import io.realmarket.propeler.api.dto.enums.EmailType;
@@ -20,9 +19,10 @@ import io.realmarket.propeler.service.exception.AmountsNotEqualException;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.payment.PayPalClient;
-import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.PdfService;
 import io.realmarket.propeler.service.util.TemplateDataUtil;
+import io.realmarket.propeler.service.util.email.Parameters;
+import io.realmarket.propeler.service.util.email.message.EmailAttachment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -178,23 +178,22 @@ public class PaymentServiceImpl implements PaymentService {
 
   private void sendProformaInvoiceEmail(Investment investment, byte[] file) {
     if (investment.getPerson().getEmail() != null) {
-      Map<String, Object> parameters = new HashMap<>();
-      parameters.put(EmailServiceImpl.CAMPAIGN, investment.getCampaign().getName());
-      parameters.put(EmailServiceImpl.FIRST_NAME, investment.getPerson().getFirstName());
-      parameters.put(EmailServiceImpl.LAST_NAME, investment.getPerson().getLastName());
-      parameters.put(EmailServiceImpl.INVESTMENT, investment);
+      Map<String, Object> content = new HashMap<>();
+      content.put(Parameters.CAMPAIGN, investment.getCampaign().getName());
+      content.put(Parameters.FIRST_NAME, investment.getPerson().getFirstName());
+      content.put(Parameters.LAST_NAME, investment.getPerson().getLastName());
+      content.put(Parameters.INVESTMENT, investment);
       LocalDateTime creationDate =
           LocalDateTime.ofInstant(investment.getCreationDate(), ZoneId.of(timeZone));
-      parameters.put(
-          EmailServiceImpl.PROFORMA_INVOICE_NUMBER,
+      content.put(
+          Parameters.PROFORMA_INVOICE_NUMBER,
           investment.getCurrency() + "/" + creationDate.getYear() + "-" + investment.getId());
 
-      emailService.sendMailToUser(
-          new MailContentHolder(
-              Collections.singletonList(investment.getPerson().getEmail()),
-              EmailType.PROFORMA_INVOICE,
-              parameters,
-              new AttachmentFileDto(file, "ProformaInvoice", ".pdf")));
+      emailService.sendEmailToUser(
+          EmailType.PROFORMA_INVOICE,
+          Collections.singletonList(investment.getPerson().getEmail()),
+          content,
+          new EmailAttachment(file, "ProformaInvoice", ".pdf"));
     }
   }
 
@@ -264,23 +263,22 @@ public class PaymentServiceImpl implements PaymentService {
 
   private void sendInvoiceEmail(Investment investment, byte[] file) {
     if (investment.getPerson().getEmail() != null) {
-      Map<String, Object> parameters = new HashMap<>();
-      parameters.put(EmailServiceImpl.CAMPAIGN, investment.getCampaign().getName());
-      parameters.put(EmailServiceImpl.FIRST_NAME, investment.getPerson().getFirstName());
-      parameters.put(EmailServiceImpl.LAST_NAME, investment.getPerson().getLastName());
-      parameters.put(EmailServiceImpl.INVESTMENT, investment);
+      Map<String, Object> content = new HashMap<>();
+      content.put(Parameters.CAMPAIGN, investment.getCampaign().getName());
+      content.put(Parameters.FIRST_NAME, investment.getPerson().getFirstName());
+      content.put(Parameters.LAST_NAME, investment.getPerson().getLastName());
+      content.put(Parameters.INVESTMENT, investment);
       LocalDateTime paymentDate =
           LocalDateTime.ofInstant(investment.getPaymentDate(), ZoneId.of(timeZone));
-      parameters.put(
-          EmailServiceImpl.INVOICE_NUMBER,
+      content.put(
+          Parameters.INVOICE_NUMBER,
           investment.getCurrency() + "/" + paymentDate.getYear() + "-" + investment.getId());
 
-      emailService.sendMailToUser(
-          new MailContentHolder(
-              Collections.singletonList(investment.getPerson().getEmail()),
-              EmailType.INVOICE,
-              parameters,
-              new AttachmentFileDto(file, "Invoice", ".pdf")));
+      emailService.sendEmailToUser(
+          EmailType.INVOICE,
+          Collections.singletonList(investment.getPerson().getEmail()),
+          content,
+          new EmailAttachment(file, "Invoice", ".pdf"));
     }
   }
 

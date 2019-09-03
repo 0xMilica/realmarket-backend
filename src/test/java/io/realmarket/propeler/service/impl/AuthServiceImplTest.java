@@ -17,7 +17,6 @@ import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.UsernameAlreadyExistsException;
 import io.realmarket.propeler.service.util.LoginIPAttemptsService;
 import io.realmarket.propeler.service.util.LoginUsernameAttemptsService;
-import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.OTPUtils;
 import io.realmarket.propeler.util.RegistrationTokenUtils;
@@ -89,7 +88,7 @@ public class AuthServiceImplTest {
     when(authRepository.save(any(Auth.class))).thenReturn(TEST_AUTH);
     when(temporaryTokenService.createToken(TEST_AUTH, TemporaryTokenTypeName.REGISTRATION_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
 
     authServiceImpl.registerEntrepreneur(TEST_ENTREPRENEUR_REGISTRATION_DTO);
 
@@ -111,7 +110,7 @@ public class AuthServiceImplTest {
         .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY));
     when(countryRepository.findByCode(TEST_COUNTRY_CODE2))
         .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY2));
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
 
     authServiceImpl.register(TEST_REGISTRATION_DTO, TEST_ROLE_INDIVIDUAL_INVESTOR);
 
@@ -137,7 +136,7 @@ public class AuthServiceImplTest {
         .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY));
     when(countryRepository.findByCode(TEST_COUNTRY_CODE2))
         .thenReturn(Optional.of(AuthUtils.TEST_COUNTRY2));
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
 
     authServiceImpl.register(
         TEST_CORPORATE_INVESTOR_REGISTRATION_DTO, TEST_ROLE_CORPORATE_INVESTOR);
@@ -294,12 +293,12 @@ public class AuthServiceImplTest {
   @Test
   public void RecoverUsername_Should_SendEmailWithUsernameList() {
     when(personService.findByEmail(TEST_EMAIL)).thenReturn(TEST_PERSON_LIST);
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
 
     authServiceImpl.recoverUsername(new EmailDto(TEST_EMAIL));
 
     verify(personService, Mockito.times(1)).findByEmail(TEST_EMAIL);
-    verify(emailService, times(1)).sendMailToUser(any(MailContentHolder.class));
+    verify(emailService, times(1)).sendEmailToUser(any(), any(), any());
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -314,7 +313,7 @@ public class AuthServiceImplTest {
     when(authRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(TEST_AUTH));
     when(temporaryTokenService.createToken(TEST_AUTH, TemporaryTokenTypeName.RESET_PASSWORD_TOKEN))
         .thenReturn(TEST_TEMPORARY_TOKEN);
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
 
     authServiceImpl.initializeResetPassword(TEST_USERNAME_DTO);
 
@@ -454,7 +453,7 @@ public class AuthServiceImplTest {
     verify(authRepository, times(1)).findById(auth.getId());
     verify(temporaryTokenService, times(1))
         .createToken(auth, TemporaryTokenTypeName.EMAIL_CHANGE_TOKEN);
-    verify(emailService, times(1)).sendMailToUser(any());
+    verify(emailService, times(1)).sendEmailToUser(any(), any(), any());
   }
 
   @Test

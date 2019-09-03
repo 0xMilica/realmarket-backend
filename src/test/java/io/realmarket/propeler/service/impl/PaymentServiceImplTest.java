@@ -13,7 +13,6 @@ import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.payment.PayPalClient;
-import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.PdfService;
 import io.realmarket.propeler.service.util.TemplateDataUtil;
 import io.realmarket.propeler.util.InvestmentUtils;
@@ -96,7 +95,7 @@ public class PaymentServiceImplTest {
     when(platformSettingsService.getPlatformCurrency())
         .thenReturn(PlatformSettingsUtils.TEST_PLATFORM_CURRENCY);
     when(fileService.uploadFile(any(), anyString())).thenReturn(TEST_PROFORMA_INVOICE_URL);
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
     when(bankTransferPaymentRepository.save(any())).thenReturn(bankTransferPayment);
 
     BankTransferPayment retVal =
@@ -153,7 +152,7 @@ public class PaymentServiceImplTest {
     when(bankTransferPaymentRepository.findByInvestmentId(InvestmentUtils.INVESTMENT_ID))
         .thenReturn(Optional.of(paidBankTransferPayment));
     when(fileService.uploadFile(any(), anyString())).thenReturn(InvestmentUtils.TEST_INVOICE_URL);
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
     when(investmentRepository.save(any())).thenReturn(InvestmentUtils.TEST_INVESTMENT_PAID);
     when(bankTransferPaymentRepository.save(any())).thenReturn(paidBankTransferPayment);
 

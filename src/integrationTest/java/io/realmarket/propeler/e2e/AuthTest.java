@@ -20,6 +20,8 @@ import static org.hamcrest.Matchers.equalTo;
 @ActiveProfiles("integration_testing")
 public class AuthTest {
 
+  private static final String TEST_EMAIL = "test.user01@realmarket.io";
+
   @InjectMocks private AuthControllerImpl authController;
 
   @Before
@@ -46,7 +48,7 @@ public class AuthTest {
     EntrepreneurRegistrationDto entrepreneurRegistrationDto =
         EntrepreneurRegistrationDto.entrepreneurRegistrationDtoBuilder()
             .registrationToken("tokenValue")
-            .email("test@mail.com")
+            .email(TEST_EMAIL)
             .username("testEntrepreneur")
             .password("testPassword")
             .firstName("testFirstName")
@@ -72,7 +74,7 @@ public class AuthTest {
   public void registerIndividualInvestor() {
     RegistrationDto registrationDto =
         RegistrationDto.builder()
-            .email("test@mail.com")
+            .email(TEST_EMAIL)
             .username("testIndividualInvestor")
             .password("testPassword")
             .firstName("testFirstName")
@@ -98,7 +100,7 @@ public class AuthTest {
   public void registerCorporateInvestor() {
     CorporateInvestorRegistrationDto corporateInvestorRegistrationDto =
         CorporateInvestorRegistrationDto.corporateInvestorRegistrationDtoBuilder()
-            .email("test@mail.com")
+            .email(TEST_EMAIL)
             .username("testCorporateInvestor")
             .password("testPassword")
             .firstName("testFirstName")
@@ -126,7 +128,7 @@ public class AuthTest {
   public void register_failed_usernameExist() {
     RegistrationDto registrationDto =
         RegistrationDto.builder()
-            .email("test@mail.com")
+            .email(TEST_EMAIL)
             .username("entrepreneur")
             .password("testPassword")
             .firstName("testFirstName")
@@ -152,7 +154,7 @@ public class AuthTest {
   public void register_failed_invalidCountryCode() {
     RegistrationDto registrationDto =
         RegistrationDto.builder()
-            .email("test@mail.com")
+            .email(TEST_EMAIL)
             .username("test123")
             .password("testPassword")
             .firstName("testFirstName")
@@ -300,7 +302,7 @@ public class AuthTest {
 
   @Test
   public void recoverUsername() {
-    EmailDto emailDto = EmailDto.builder().email("test.recover.username@mailinator.com").build();
+    EmailDto emailDto = EmailDto.builder().email("test.user01@realmarket.io").build();
 
     given()
         .contentType("application/json")

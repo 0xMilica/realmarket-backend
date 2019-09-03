@@ -67,7 +67,7 @@ public class AuditServiceImplTest {
     when(requestStateService.getRequestState(RequestStateName.APPROVED))
         .thenReturn(TEST_APPROVED_REQUEST_STATE);
     when(auditRepository.save(audit)).thenReturn(TEST_APPROVED_REQUEST_AUDIT);
-    doNothing().when(emailService).sendMailToUser(any());
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
     doNothing()
         .when(notificationService)
         .sendMessage(TEST_AUTH, NotificationType.ACCEPT_CAMPAIGN, null, null);
@@ -92,7 +92,7 @@ public class AuditServiceImplTest {
     when(requestStateService.getRequestState(RequestStateName.DECLINED))
         .thenReturn(TEST_DECLINED_REQUEST_STATE);
     when(auditRepository.save(audit)).thenReturn(TEST_DECLINED_REQUEST_AUDIT);
-    doNothing().when(emailService).sendMailToUser(any());
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
     doNothing()
         .when(notificationService)
         .sendMessage(TEST_AUTH, NotificationType.REJECT_CAMPAIGN, null, null);

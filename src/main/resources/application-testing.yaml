@@ -1,5 +1,10 @@
 spring:
-  profiles.active: testing
+  profiles:
+    active: testing
+    include:
+      - email
+      - resources
+
   liquibase:
     contexts: testing
 

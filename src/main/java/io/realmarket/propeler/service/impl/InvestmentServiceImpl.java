@@ -16,8 +16,8 @@ import io.realmarket.propeler.service.blockchain.dto.investment.InvestmentDto;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
+import io.realmarket.propeler.service.util.email.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -176,17 +176,16 @@ public class InvestmentServiceImpl implements InvestmentService {
   }
 
   private void sendInvestmentAcceptanceEmail(Investment investment) {
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.FIRST_NAME, investment.getPerson().getFirstName());
-    parameters.put(EmailServiceImpl.LAST_NAME, investment.getPerson().getLastName());
-    parameters.put(EmailServiceImpl.CAMPAIGN, investment.getCampaign().getName());
-    parameters.put(EmailServiceImpl.INVESTMENT_ID, investment.getId());
+    Map<String, Object> content = new HashMap<>();
+    content.put(Parameters.FIRST_NAME, investment.getPerson().getFirstName());
+    content.put(Parameters.LAST_NAME, investment.getPerson().getLastName());
+    content.put(Parameters.CAMPAIGN, investment.getCampaign().getName());
+    content.put(Parameters.INVESTMENT_ID, investment.getId());
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(investment.getPerson().getEmail()),
-            EmailType.INVESTMENT_APPROVAL,
-            parameters));
+    emailService.sendEmailToUser(
+        EmailType.INVESTMENT_APPROVAL,
+        Collections.singletonList(investment.getPerson().getEmail()),
+        content);
   }
 
   @Transactional
@@ -217,16 +216,15 @@ public class InvestmentServiceImpl implements InvestmentService {
   }
 
   private void sendInvestmentRejectionEmail(Investment investment) {
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put(EmailServiceImpl.FIRST_NAME, investment.getPerson().getFirstName());
-    parameters.put(EmailServiceImpl.LAST_NAME, investment.getPerson().getLastName());
-    parameters.put(EmailServiceImpl.CAMPAIGN, investment.getCampaign().getName());
+    Map<String, Object> content = new HashMap<>();
+    content.put(Parameters.FIRST_NAME, investment.getPerson().getFirstName());
+    content.put(Parameters.LAST_NAME, investment.getPerson().getLastName());
+    content.put(Parameters.CAMPAIGN, investment.getCampaign().getName());
 
-    emailService.sendMailToUser(
-        new MailContentHolder(
-            Collections.singletonList(investment.getPerson().getEmail()),
-            EmailType.INVESTMENT_REJECTION,
-            parameters));
+    emailService.sendEmailToUser(
+        EmailType.INVESTMENT_REJECTION,
+        Collections.singletonList(investment.getPerson().getEmail()),
+        content);
   }
 
   @Transactional

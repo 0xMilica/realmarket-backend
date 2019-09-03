@@ -1,0 +1,32 @@
+email:
+  contact_us: support@realmarket.io
+
+  template:
+    user:
+      register: activateAccountMailTemplate
+      reset_password: resetPasswordMailTemplate
+      recover_username: recoverUsernameMailTemplate
+      change_email: requestEmailChangeTemplate
+      secret_change: secretChangeMailTemplate
+      account_blocked: accountBlockedEmailTemplate
+
+    campaign:
+      new_opportunity: newCampaignEmailTemplate
+      new_opportunities: newCampaignOpportunitiesEmailTemplate
+
+      fundraising_proposal_approval: acceptFundraisingProposalTemplate
+      fundraising_proposal_rejection: rejectFundraisingProposalTemplate
+
+      approval: acceptCampaignTemplate
+      rejection: rejectCampaignTemplate
+
+    kyc:
+      under_review: underReviewKYCTemplate
+      approval: acceptKYCTemplate
+      rejection: rejectKYCTemplate
+
+    investment:
+      approval: acceptCampaignInvestmentTemplate
+      rejection: rejectCampaignInvestmentTemplate
+      proforma_invoice: proformaInvoiceMailTemplate
+      invoice: invoiceMailTemplate

@@ -8,7 +8,6 @@ import io.realmarket.propeler.service.PlatformSettingsService;
 import io.realmarket.propeler.service.RegistrationTokenService;
 import io.realmarket.propeler.service.RequestStateService;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
-import io.realmarket.propeler.service.util.MailContentHolder;
 import io.realmarket.propeler.util.AuditUtils;
 import io.realmarket.propeler.util.AuthUtils;
 import io.realmarket.propeler.util.PlatformSettingsUtils;
@@ -66,7 +65,7 @@ public class FundraisingProposalServiceImplTest {
         .thenReturn(TEST_PENDING_FUNDRAISING_PROPOSAL.toBuilder().build());
     when(requestStateService.getRequestState(RequestStateName.APPROVED))
         .thenReturn(AuditUtils.TEST_APPROVED_REQUEST_STATE);
-    doNothing().when(emailService).sendMailToUser(any(MailContentHolder.class));
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any());
     when(fundraisingProposalRepository.save(any(FundraisingProposal.class)))
         .thenReturn(TEST_APPROVED_FUNDRAISING_PROPOSAL);
     when(registrationTokenService.createToken(TEST_APPROVED_FUNDRAISING_PROPOSAL))

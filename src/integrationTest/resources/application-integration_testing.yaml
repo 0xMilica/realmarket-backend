@@ -3,7 +3,11 @@ server:
     context-path: /api
 
 spring:
-  profiles.active: integration_testing
+  profiles:
+    active: integration_testing
+    include:
+      - email
+      - resource
   servlet:
     multipart:
       max-file-size: 10MB
@@ -34,6 +38,7 @@ hmac.secret: s3cr3t
 access-token.expiration-time: 3600000
 registration-token.expiration-time: 604800000
 app:
+  platformName: RealMarket
   email:
     contact_us: support@realmarket.io
   scheduler-pool-size: 5
@@ -121,7 +126,6 @@ blockchain:
     arguments: args
   chaincode_name: mycc
   channel_name: mychannel
-
 
 logging:
   level:

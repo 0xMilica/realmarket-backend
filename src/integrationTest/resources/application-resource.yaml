@@ -1,0 +1,13 @@
+resource:
+  base_path:
+    images: /static/images
+
+  relative_path:
+    images:
+      logo: /logo.png
+      check_circle: /check_circle.png
+      warning: /warning.png
+      twitter: /twitter.png
+      facebook: /facebook.png
+      youtube: /youtube.png
+      linkedin: /linkedin.png

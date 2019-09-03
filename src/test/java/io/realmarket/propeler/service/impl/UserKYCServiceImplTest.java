@@ -90,7 +90,7 @@ public class UserKYCServiceImplTest {
     when(requestStateService.getRequestState(RequestStateName.PENDING))
         .thenReturn(TEST_PENDING_REQUEST_STATE);
     when(userKYCRepository.save(any(UserKYC.class))).thenReturn(TEST_USER_KYC_ASSIGNED);
-    doNothing().when(emailService).sendMailToUser(any());
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
 
     UserKYC actualUserKYC = userKYCService.assignUserKYC(TEST_USER_KYC_ASSIGNMENT_DTO);
 
@@ -141,7 +141,7 @@ public class UserKYCServiceImplTest {
     when(requestStateService.getRequestState(RequestStateName.APPROVED))
         .thenReturn(TEST_APPROVED_REQUEST_STATE);
     when(userKYCRepository.save(any())).thenReturn(TEST_USER_KYC_APPROVED);
-    doNothing().when(emailService).sendMailToUser(any());
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
     doNothing()
         .when(notificationService)
         .sendMessage(TEST_AUTH, NotificationType.KYC_APPROVAL, null, null);
@@ -169,7 +169,7 @@ public class UserKYCServiceImplTest {
     when(requestStateService.getRequestState(RequestStateName.DECLINED))
         .thenReturn(TEST_DECLINED_REQUEST_STATE);
     when(userKYCRepository.save(any())).thenReturn(TEST_USER_KYC_DECLINED);
-    doNothing().when(emailService).sendMailToUser(any());
+    doNothing().when(emailService).sendEmailToUser(any(), any(), any(), any());
     doNothing()
         .when(notificationService)
         .sendMessage(TEST_AUTH, NotificationType.KYC_REJECTION, null, null);
