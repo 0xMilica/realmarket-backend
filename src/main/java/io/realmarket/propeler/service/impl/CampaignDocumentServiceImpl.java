@@ -207,12 +207,12 @@ public class CampaignDocumentServiceImpl implements CampaignDocumentService {
   }
 
   private boolean hasReadAccess(CampaignDocument campaignDocument, boolean hasDocumentsAccess) {
-    if (campaignService.isOwner(campaignDocument.getCampaign())) {
+    Auth auth = AuthenticationUtil.getAuthOrReturnNull();
+    DocumentAccessLevel accessLevel = campaignDocument.getAccessLevel();
+    UserRoleName userRoleName = (auth == null) ? null : auth.getUserRole().getName();
+    if (auth != null && campaignService.isOwner(campaignDocument.getCampaign())) {
       return true;
     }
-    UserRoleName userRoleName =
-        AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
-    DocumentAccessLevel accessLevel = campaignDocument.getAccessLevel();
     return DocumentAccessLevel.hasReadAccess(accessLevel, userRoleName, hasDocumentsAccess);
   }
 }

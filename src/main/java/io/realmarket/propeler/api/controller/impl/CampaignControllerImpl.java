@@ -3,6 +3,7 @@ package io.realmarket.propeler.api.controller.impl;
 import io.realmarket.propeler.api.controller.CampaignController;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.*;
+import io.realmarket.propeler.service.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,7 @@ public class CampaignControllerImpl implements CampaignController {
   private final CampaignUpdateService campaignUpdateService;
   private final CampaignUpdateImageService campaignUpdateImageService;
   private final InvestmentService investmentService;
+  private final AuthUtil authUtil;
 
   @Autowired
   public CampaignControllerImpl(
@@ -38,7 +40,8 @@ public class CampaignControllerImpl implements CampaignController {
       CampaignTeamMemberService campaignTeamMemberService,
       CampaignUpdateService campaignUpdateService,
       CampaignUpdateImageService campaignUpdateImageService,
-      InvestmentService investmentService) {
+      InvestmentService investmentService,
+      AuthUtil authUtil) {
     this.campaignService = campaignService;
     this.campaignDocumentService = campaignDocumentService;
     this.campaignDocumentsAccessRequestService = campaignDocumentsAccessRequestService;
@@ -46,6 +49,7 @@ public class CampaignControllerImpl implements CampaignController {
     this.campaignUpdateService = campaignUpdateService;
     this.campaignUpdateImageService = campaignUpdateImageService;
     this.investmentService = investmentService;
+    this.authUtil = authUtil;
   }
 
   @RequestMapping(value = "/{campaignName}", method = RequestMethod.HEAD)
@@ -139,6 +143,7 @@ public class CampaignControllerImpl implements CampaignController {
   @GetMapping(value = "/{campaignName}/documents")
   public ResponseEntity<List<CampaignDocumentResponseDto>> getCampaignDocuments(
       @PathVariable String campaignName) {
+    authUtil.setAuthentication();
     return ResponseEntity.ok(campaignDocumentService.getCampaignDocuments(campaignName));
   }
 

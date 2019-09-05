@@ -196,7 +196,7 @@ public class CampaignDocumentsAccessRequestServiceImpl
 
   @Override
   public boolean hasCampaignDocumentsAccessRequest(Campaign campaign) {
-    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
-    return findByCampaignAndAuthAndApproved(campaign, auth) != null;
+    Auth auth = AuthenticationUtil.getAuthOrReturnNull();
+    return (auth != null) && findByCampaignAndAuthAndApproved(campaign, auth) != null;
   }
 }

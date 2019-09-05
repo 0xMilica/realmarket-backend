@@ -397,21 +397,6 @@ public class CampaignServiceImplTest {
         testCampaign.getUrlFriendlyName(), new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null));
   }
 
-  @Test(expected = ForbiddenOperationException.class)
-  public void DeleteCampaign_Should_Throw_ForbiddenException() {
-    Campaign testCampaign = getCampaignMocked();
-    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(testCampaign.getUrlFriendlyName()))
-        .thenReturn(Optional.of(testCampaign));
-    mockSecurityContext(TEST_USER_AUTH2);
-    when(otpService.validate(
-            AuthenticationUtil.getAuthentication().getAuth(),
-            new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null)))
-        .thenReturn(true);
-
-    campaignServiceImpl.delete(
-        testCampaign.getUrlFriendlyName(), new TwoFADto(OTPUtils.TEST_TOTP_CODE_1, null));
-  }
-
   @Test
   public void sendNewCampaignOpportunityEmail_Should_SendEmail() {
     Campaign testCampaign = getCampaignMocked();
@@ -620,16 +605,6 @@ public class CampaignServiceImplTest {
     Campaign actualCampaign = campaignServiceImpl.launchCampaign(TEST_URL_FRIENDLY_NAME);
 
     assertEquals(TEST_CAMPAIGN_ACTIVE_STATE, actualCampaign.getCampaignState());
-  }
-
-  @Test(expected = ForbiddenOperationException.class)
-  public void launchCampaign_Should_Throw_Forbidden_Operation() {
-    Campaign campaign = TEST_READY_FOR_LAUNCH_CAMPAIGN.toBuilder().build();
-
-    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
-        .thenReturn(Optional.of(campaign));
-
-    campaignServiceImpl.launchCampaign(TEST_URL_FRIENDLY_NAME);
   }
 
   @Test

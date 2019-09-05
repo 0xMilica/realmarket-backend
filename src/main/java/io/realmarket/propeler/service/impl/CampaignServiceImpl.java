@@ -184,7 +184,6 @@ public class CampaignServiceImpl implements CampaignService {
     if (!(otpService.validate(AuthenticationUtil.getAuthentication().getAuth(), twoFADto))) {
       throw new AccessDeniedException(INVALID_TOTP_CODE_PROVIDED);
     }
-    throwIfNoAccess(campaign);
     campaign.setCampaignState(campaignStateService.getCampaignState(CampaignStateName.DELETED));
     campaignRepository.save(campaign);
   }
@@ -216,20 +215,27 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   public void throwIfNoAccess(Campaign campaign) {
-    Auth auth = AuthenticationUtil.getAuthentication().getAuth();
-    switch (auth.getUserRole().getName()) {
-      case ROLE_ADMIN:
-        break;
-      case ROLE_ENTREPRENEUR:
-        if (isOwner(campaign)) {
+    Auth auth = AuthenticationUtil.getAuthOrReturnNull();
+    if (auth == null) {
+      if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)
+          && !campaign.getCampaignState().getName().equals(CampaignStateName.POST_CAMPAIGN)) {
+        throw new EntityNotFoundException();
+      }
+    } else {
+      switch (auth.getUserRole().getName()) {
+        case ROLE_ADMIN:
           break;
-        }
-      default:
-        if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)
-            && !campaign.getCampaignState().getName().equals(CampaignStateName.POST_CAMPAIGN)) {
-          throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_CAMPAIGN);
-        }
-        break;
+        case ROLE_ENTREPRENEUR:
+          if (isOwner(campaign)) {
+            break;
+          }
+        default:
+          if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)
+              && !campaign.getCampaignState().getName().equals(CampaignStateName.POST_CAMPAIGN)) {
+            throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_CAMPAIGN);
+          }
+          break;
+      }
     }
   }
 
@@ -331,7 +337,6 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional
   public Campaign launchCampaign(String campaignName) {
     Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
-    throwIfNoAccess(campaign);
     campaign = changeCampaignStateOrThrow(campaign, CampaignStateName.ACTIVE);
     sendNewCampaignOpportunityEmail(campaign);
     return campaign;

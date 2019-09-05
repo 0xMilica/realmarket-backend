@@ -31,23 +31,6 @@ public class DocumentAccessLevel {
   @Enumerated(EnumType.STRING)
   private DocumentAccessLevelName name;
 
-  public static boolean hasReadAccess(DocumentAccessLevel accessLevel, UserRoleName userRoleName) {
-    switch (accessLevel.getName()) {
-      case PUBLIC:
-        return true;
-      case ON_DEMAND:
-        if (UserRoleName.getInvestorRoleNames().contains(userRoleName)) return true;
-        // Access INVESTOR means that ROLE_INDIVIDUAL_INVESTOR and ROLE_CORPORATE_INVESTOR as well
-        // as
-        // ROLE_ADMIN
-        // can access this document. because of this break is omitted.
-      case PRIVATE:
-        if (userRoleName.equals(UserRoleName.ROLE_ADMIN)) return true;
-      default:
-        return false;
-    }
-  }
-
   public static boolean hasReadAccess(
       DocumentAccessLevel accessLevel, UserRoleName userRoleName, boolean hasDocumentsAccess) {
     switch (accessLevel.getName()) {
@@ -57,12 +40,8 @@ public class DocumentAccessLevel {
         if (UserRoleName.getInvestorRoleNames().contains(userRoleName)) {
           return hasDocumentsAccess;
         }
-        // Access INVESTOR means that ROLE_INDIVIDUAL_INVESTOR and ROLE_CORPORATE_INVESTOR as well
-        // as
-        // ROLE_ADMIN
-        // can access this document. because of this break is omitted.
       case PRIVATE:
-        if (userRoleName.equals(UserRoleName.ROLE_ADMIN)) return true;
+        if (UserRoleName.ROLE_ADMIN.equals(userRoleName)) return true;
       default:
         return false;
     }

@@ -2,10 +2,7 @@ package io.realmarket.propeler.service.impl;
 
 import io.realmarket.propeler.api.dto.CompanyDocumentDto;
 import io.realmarket.propeler.api.dto.CompanyDocumentResponseDto;
-import io.realmarket.propeler.model.Company;
-import io.realmarket.propeler.model.CompanyDocument;
-import io.realmarket.propeler.model.DocumentAccessLevel;
-import io.realmarket.propeler.model.DocumentType;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.repository.CompanyDocumentRepository;
 import io.realmarket.propeler.repository.DocumentAccessLevelRepository;
@@ -138,13 +135,13 @@ public class CompanyDocumentServiceImpl implements CompanyDocumentService {
   }
 
   public boolean hasReadAccess(CompanyDocument companyDocument) {
-    if (companyService.isOwner(companyDocument.getCompany())) {
+    Auth auth = AuthenticationUtil.getAuthOrReturnNull();
+    DocumentAccessLevel accessLevel = companyDocument.getAccessLevel();
+    UserRoleName userRoleName = (auth == null) ? null : auth.getUserRole().getName();
+    if (auth != null && companyService.isOwner(companyDocument.getCompany())) {
       return true;
     }
-    UserRoleName userRoleName =
-        AuthenticationUtil.getAuthentication().getAuth().getUserRole().getName();
-    DocumentAccessLevel accessLevel = companyDocument.getAccessLevel();
-    return DocumentAccessLevel.hasReadAccess(accessLevel, userRoleName);
+    return DocumentAccessLevel.hasReadAccess(accessLevel, userRoleName, true);
   }
 
   private CompanyDocument convertDocumentDtoToDocument(

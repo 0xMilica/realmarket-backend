@@ -4,6 +4,7 @@ import io.realmarket.propeler.api.controller.CompanyController;
 import io.realmarket.propeler.api.dto.*;
 import io.realmarket.propeler.service.CompanyDocumentService;
 import io.realmarket.propeler.service.CompanyService;
+import io.realmarket.propeler.service.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,16 @@ public class CompanyControllerImpl implements CompanyController {
 
   private final CompanyService companyService;
   private final CompanyDocumentService companyDocumentService;
+  private final AuthUtil authUtil;
 
   @Autowired
   public CompanyControllerImpl(
-      CompanyService companyService, CompanyDocumentService companyDocumentService) {
+      CompanyService companyService,
+      CompanyDocumentService companyDocumentService,
+      AuthUtil authUtil) {
     this.companyService = companyService;
     this.companyDocumentService = companyDocumentService;
+    this.authUtil = authUtil;
   }
 
   @PostMapping
@@ -120,6 +125,7 @@ public class CompanyControllerImpl implements CompanyController {
   @GetMapping(value = "/{companyId}/documents")
   public ResponseEntity<List<CompanyDocumentResponseDto>> getCompanyDocuments(
       @PathVariable Long companyId) {
+    authUtil.setAuthentication();
     return ResponseEntity.ok(companyDocumentService.getCompanyDocuments(companyId));
   }
 }
