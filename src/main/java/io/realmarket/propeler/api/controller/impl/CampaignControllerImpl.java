@@ -351,13 +351,4 @@ public class CampaignControllerImpl implements CampaignController {
   public ResponseEntity<CampaignResponseDto> launchCampaign(@PathVariable String campaignName) {
     return ResponseEntity.ok(new CampaignResponseDto(campaignService.launchCampaign(campaignName)));
   }
-
-  @Override
-  @GetMapping(value = "/withInvestments")
-  @PreAuthorize("hasAnyAuthority('ROLE_ENTREPRENEUR', 'ROLE_ADMIN')")
-  public ResponseEntity<Page<CampaignWithInvestmentsWithPersonResponseDto>>
-      getCampaignsByStateWithInvestments(
-          Pageable pageable, @RequestParam(value = "state", defaultValue = "active") String state) {
-    return ResponseEntity.ok(campaignService.getCampaignsByStateWithInvestments(pageable, state));
-  }
 }

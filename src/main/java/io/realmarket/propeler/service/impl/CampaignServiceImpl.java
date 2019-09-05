@@ -15,6 +15,7 @@ import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
+import io.realmarket.propeler.service.util.AuthUtil;
 import io.realmarket.propeler.service.util.FileUtils;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.service.util.email.Parameters;
@@ -56,6 +57,7 @@ public class CampaignServiceImpl implements CampaignService {
   private final AuditService auditService;
   private final BlockchainMessageProducer blockchainMessageProducer;
   private final InvestmentService investmentService;
+  private final AuthUtil authUtil;
 
   @Value(value = "${cos.file_prefix.campaign_market_image}")
   private String companyFeaturedImage;
@@ -77,7 +79,8 @@ public class CampaignServiceImpl implements CampaignService {
       AuthService authService,
       AuditService auditService,
       BlockchainMessageProducer blockchainMessageProducer,
-      @Lazy InvestmentService investmentService) {
+      @Lazy InvestmentService investmentService,
+      @Lazy AuthUtil authUtil) {
     this.campaignRepository = campaignRepository;
     this.companyService = companyService;
     this.campaignTopicService = campaignTopicService;
@@ -91,6 +94,7 @@ public class CampaignServiceImpl implements CampaignService {
     this.auditService = auditService;
     this.blockchainMessageProducer = blockchainMessageProducer;
     this.investmentService = investmentService;
+    this.authUtil = authUtil;
   }
 
   public Campaign findByUrlFriendlyNameOrThrowException(String urlFriendlyName) {
@@ -215,6 +219,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   public void throwIfNoAccess(Campaign campaign) {
+    authUtil.setAuthentication();
     Auth auth = AuthenticationUtil.getAuthOrReturnNull();
     if (auth == null) {
       if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)

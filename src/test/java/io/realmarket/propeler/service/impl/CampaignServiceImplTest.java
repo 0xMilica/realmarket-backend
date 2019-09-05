@@ -12,6 +12,7 @@ import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsExcep
 import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.exception.CampaignNameAlreadyExistsException;
 import io.realmarket.propeler.service.exception.ForbiddenOperationException;
+import io.realmarket.propeler.service.util.AuthUtil;
 import io.realmarket.propeler.service.util.ModelMapperBlankString;
 import io.realmarket.propeler.util.*;
 import org.junit.Before;
@@ -59,6 +60,7 @@ public class CampaignServiceImplTest {
   @Mock private InvestmentService investmentService;
   @Mock private EmailService emailService;
   @Mock private CampaignRepository campaignRepository;
+  @Mock private AuthUtil authUtil;
 
   @InjectMocks private CampaignServiceImpl campaignServiceImpl;
 
