@@ -3,7 +3,6 @@ package io.realmarket.propeler.service.util.email.message.custom.user;
 import io.realmarket.propeler.service.exception.util.ExceptionMessages;
 import io.realmarket.propeler.service.util.email.message.AbstractEmailMessage;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
