@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
 
+import static io.realmarket.propeler.PropelerServiceApplication.PLATFORM_NAME;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.USER_IS_NOT_RECIPIENT_OF_NOTIFICATION;
 
 @Slf4j
@@ -126,27 +127,27 @@ public class NotificationServiceImpl implements NotificationService {
             recipient.getPerson().getFirstName(), recipient.getPerson().getLastName());
     switch (type) {
       case ACCEPT_CAMPAIGN:
-        title = "Propeler - Campaign accepted";
+        title = PLATFORM_NAME + " - Campaign accepted";
         templateText = templateText.concat(", Your campaign has been accepted. ");
         break;
       case REJECT_CAMPAIGN:
-        title = "Propeler - Campaign rejected";
+        title = PLATFORM_NAME + " - Campaign rejected";
         templateText = templateText.concat(", Your campaign has been rejected. ");
         break;
       case KYC_APPROVAL:
-        title = "Propeler - KYC accepted";
+        title = PLATFORM_NAME + " - KYC accepted";
         templateText =
             templateText.concat(
-                ", We have received your KYC application. After careful review we are glad to inform you that Your KYC application has been approved. From now on, you are able to raise funds on Propeler platform. ");
+                ", We have received your KYC application. After careful review we are glad to inform you that Your KYC application has been approved. From now on, you are able to raise funds on RealMarket platform. ");
         break;
       case KYC_REJECTION:
-        title = "Propeler - KYC rejection";
+        title = PLATFORM_NAME + " - KYC rejection";
         templateText =
             templateText.concat(
                 ", We have received your KYC application. After careful review we are sorry to inform you that Your KYC application has been rejected. ");
         break;
       case ACCEPT_INVESTOR:
-        title = "Propeler - Campaign investment acceptance";
+        title = PLATFORM_NAME + " - Campaign investment acceptance";
         templateText =
             templateText.concat(
                 String.format(
@@ -154,7 +155,7 @@ public class NotificationServiceImpl implements NotificationService {
                     campaignName));
         break;
       case REJECT_INVESTOR:
-        title = "Propeler - Campaign investment rejection";
+        title = PLATFORM_NAME + " - Campaign investment rejection";
         templateText =
             templateText.concat(
                 String.format(
@@ -163,7 +164,7 @@ public class NotificationServiceImpl implements NotificationService {
         break;
 
       case ACCEPT_DOCUMENTS:
-        title = "Propeler - Campaign documents acceptance";
+        title = PLATFORM_NAME + " - Campaign documents acceptance";
         templateText =
             templateText.concat(
                 String.format(
@@ -171,7 +172,7 @@ public class NotificationServiceImpl implements NotificationService {
         break;
 
       case REJECT_DOCUMENTS:
-        title = "Propeler - Campaign documents rejection";
+        title = PLATFORM_NAME + " - Campaign documents rejection";
         templateText =
             templateText.concat(
                 String.format(

@@ -1,6 +1,5 @@
 package io.realmarket.propeler.api.swagger;
 
-import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
@@ -12,13 +11,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
 
+import static io.realmarket.propeler.PropelerServiceApplication.PLATFORM_NAME;
+
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
 
   @Bean
   public Docket api() {
-    TypeResolver typeResolver = new TypeResolver();
     return new Docket(DocumentationType.SWAGGER_2)
         .useDefaultResponseMessages(false)
         .select()
@@ -31,8 +31,10 @@ public class SwaggerConfig {
 
   private ApiInfo getApiInfo() {
     return new ApiInfo(
-        "propeler-backend REST API",
-        "propeler-backend REST API provides backend logic for the Propeler project.",
+        PLATFORM_NAME + "-backend REST API",
+        String.format(
+            "%s-backend REST API provides backend logic for the %s project.",
+            PLATFORM_NAME, PLATFORM_NAME),
         "0.1.0-SNAPSHOT",
         "",
         null,

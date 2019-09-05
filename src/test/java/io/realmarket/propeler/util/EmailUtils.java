@@ -14,8 +14,8 @@ public class EmailUtils {
   public static final String TEST_ACTIVATION_TOKEN = "TEST_ACTIVATION_TOKEN";
   public static final String TEST_RESET_TOKEN = "TEST_RESET_TOKEN";
   public static final String TEST_EMAIL_TEXT = "TEST_EMAIL_TEXT";
-  public static final String TEST_ACTIVATION_SUBJECT = "Propeler - Welcome";
-  public static final String TEST_RESET_SUBJECT = "Propeler - Reset Password";
+  public static final String TEST_ACTIVATION_SUBJECT = "RealMarket - Welcome";
+  public static final String TEST_RESET_SUBJECT = "RealMarket - Reset Password";
   public static final String TEST_TEMPLATE_NAME = "TEST_TEMPLATE_NAME";
   public static final String TEST_FRONTEND_URL = "TEST_FRONTEND_URL";
   public static final Map<String, Object> TEST_EMAIL_DATA =

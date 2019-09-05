@@ -1,9 +1,8 @@
 package io.realmarket.propeler.service.util.email;
 
+import static io.realmarket.propeler.PropelerServiceApplication.PLATFORM_NAME;
+
 public class Values {
-
-  private static final String PLATFORM_NAME = "RealMarket";
-
   public static final String CONTACT_US = PLATFORM_NAME + " team would like to hear from you!";
   public static final String REGISTER_SUBJECT = PLATFORM_NAME + " - Welcome";
   public static final String RESET_PASSWORD_SUBJECT = PLATFORM_NAME + " - Reset Password";

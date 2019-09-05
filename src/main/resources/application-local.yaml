@@ -2,6 +2,8 @@ server:
   servlet:
     context-path: /api
 
+platform.name: RealMarket
+
 spring:
   profiles:
     active: local
