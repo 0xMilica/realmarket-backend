@@ -9,7 +9,7 @@ spring:
     active: development
     include:
       - email
-      - resources
+      - resource
   servlet:
     multipart:
       max-file-size: 10MB
