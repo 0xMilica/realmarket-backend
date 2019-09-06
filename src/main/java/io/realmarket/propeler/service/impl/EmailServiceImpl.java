@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -77,6 +78,7 @@ public class EmailServiceImpl implements EmailService {
     this.emailMessageFactory = emailMessageFactory;
   }
 
+  @Async
   public void sendEmailToUser(
       EmailType emailType, List<String> addressList, Map<String, Object> contentMap) {
 
@@ -86,6 +88,7 @@ public class EmailServiceImpl implements EmailService {
     sendMessage(emailType, emailMessage);
   }
 
+  @Async
   public void sendEmailToUser(
       EmailType emailType,
       List<String> addressList,
