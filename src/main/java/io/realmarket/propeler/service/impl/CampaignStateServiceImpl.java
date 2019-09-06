@@ -77,8 +77,9 @@ public class CampaignStateServiceImpl implements CampaignStateService {
     campaignStateTransitFlow.put(
         CampaignStateName.LAUNCH_READY, Collections.singletonList(CampaignStateName.ACTIVE));
     campaignStateTransitFlow.put(
-        CampaignStateName.ACTIVE, Collections.singletonList(CampaignStateName.POST_CAMPAIGN));
-    campaignStateTransitFlow.put(CampaignStateName.POST_CAMPAIGN, Collections.emptyList());
+        CampaignStateName.ACTIVE, Arrays.asList(CampaignStateName.SUCCESSFUL, CampaignStateName.UNSUCCESSFUL));
+    campaignStateTransitFlow.put(CampaignStateName.SUCCESSFUL, Collections.emptyList());
+    campaignStateTransitFlow.put(CampaignStateName.UNSUCCESSFUL, Collections.emptyList());
     return campaignStateTransitFlow;
   }
 
@@ -95,7 +96,9 @@ public class CampaignStateServiceImpl implements CampaignStateService {
         CampaignStateName.LAUNCH_READY, Collections.singletonList(UserRoleName.ROLE_ADMIN));
     rolesPerCampaignState.put(
         CampaignStateName.ACTIVE, Collections.singletonList(UserRoleName.ROLE_ADMIN));
-    rolesPerCampaignState.put(CampaignStateName.POST_CAMPAIGN, Collections.emptyList());
+    rolesPerCampaignState.put(CampaignStateName.SUCCESSFUL, Collections.emptyList());
+    rolesPerCampaignState.put(CampaignStateName.UNSUCCESSFUL, Collections.emptyList());
+
     return rolesPerCampaignState;
   }
 }

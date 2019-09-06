@@ -773,4 +773,58 @@ public interface CampaignController {
     @ApiResponse(code = 404, message = "Campaign not found")
   })
   ResponseEntity launchCampaign(String campaignName);
+
+  @ApiOperation(value = "Close campaign", httpMethod = "PATCH", produces = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+          @ApiImplicitParam(
+                  name = "campaignName",
+                  dataType = "String",
+                  value = "Campaign's url friendly name",
+                  paramType = "path",
+                  required = true),
+          @ApiImplicitParam(
+                  name = "CampaignClosingReasonDto",
+                  value = "Dto that contains information about closing campaign.",
+                  required = true,
+                  dataType = "CampaignClosingReasonDto",
+                  paramType = "body")
+  })
+  @ApiResponses({
+          @ApiResponse(code = 200, message = "Campaign successfully closed"),
+          @ApiResponse(code = 404, message = "Campaign not found")
+  })
+  ResponseEntity<CampaignResponseDto> closeCampaign(String campaignName, CampaignClosingReasonDto campaignClosingReasonDto);
+
+  @ApiOperation(
+      value = "Get campaigns by state along with investments",
+      httpMethod = "GET",
+      produces = APPLICATION_JSON_VALUE,
+      consumes = APPLICATION_JSON_VALUE)
+  @ApiImplicitParams({
+    @ApiImplicitParam(
+        name = "page",
+        value = "Number of page to be returned",
+        defaultValue = "20",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "size",
+        value = "Page size (number of items to be returned)",
+        defaultValue = "0",
+        dataType = "Integer",
+        paramType = "query"),
+    @ApiImplicitParam(
+        name = "state",
+        value = "State of campaign to be returned",
+        allowableValues = "initial, review_ready, audit, active, launch_ready, successful, unsuccessful",
+        required = true,
+        dataType = "String",
+        paramType = "query")
+  })
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "Successfully retrieved campaigns."),
+    @ApiResponse(code = 404, message = "Campaign state not found.")
+  })
+  ResponseEntity<Page<CampaignWithInvestmentsWithPersonResponseDto>>
+      getCampaignsByStateWithInvestments(Pageable pageable, String state);
 }

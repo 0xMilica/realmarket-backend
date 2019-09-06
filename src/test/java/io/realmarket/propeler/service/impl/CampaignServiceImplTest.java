@@ -610,6 +610,65 @@ public class CampaignServiceImplTest {
   }
 
   @Test
+  public void closeCampaign_Should_Close_Successful_Campaign(){
+    Campaign campaign = TEST_ACTIVE_CAMPAIGN.toBuilder().build();
+
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_ACTIVE_URL_FRIENDLY_NAME))
+            .thenReturn(Optional.of(campaign));
+    doNothing().when(campaignStateService).changeStateOrThrow(campaign, CampaignStateName.SUCCESSFUL);
+    when(campaignRepository.save(any(Campaign.class)))
+            .thenReturn(TEST_SUCCESSFUL_CAMPAIGN.toBuilder().build());
+
+    Campaign actualCampaign = campaignServiceImpl.closeCampaign(TEST_ACTIVE_URL_FRIENDLY_NAME, TEST_CAMPAIGN_CLOSING_REASON_SUCCESSFUL_DTO);
+
+    assertEquals(TEST_CAMPAIGN_SUCCESSFUL_STATE, actualCampaign.getCampaignState());
+  }
+
+  @Test
+  public void closeCampaign_Should_Close_Unsuccessful_Campaign(){
+    Campaign campaign = TEST_ACTIVE_CAMPAIGN.toBuilder().build();
+
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_ACTIVE_URL_FRIENDLY_NAME))
+            .thenReturn(Optional.of(campaign));
+    doNothing().when(campaignStateService).changeStateOrThrow(campaign, CampaignStateName.UNSUCCESSFUL);
+    when(campaignRepository.save(any(Campaign.class)))
+            .thenReturn(TEST_UNSUCCESSFUL_CAMPAIGN.toBuilder().build());
+
+    Campaign actualCampaign = campaignServiceImpl.closeCampaign(TEST_ACTIVE_URL_FRIENDLY_NAME, TEST_CAMPAIGN_CLOSING_REASON_UNSUCCESSFUL_DTO);
+
+    assertEquals(TEST_CAMPAIGN_UNSUCCESSFUL_STATE, actualCampaign.getCampaignState());
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void closeCampaign_Should_Throw_Entity_Not_Found_Exception(){
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_ACTIVE_URL_FRIENDLY_NAME))
+            .thenThrow(EntityNotFoundException.class);
+
+    campaignServiceImpl.closeCampaign(TEST_ACTIVE_URL_FRIENDLY_NAME, TEST_CAMPAIGN_CLOSING_REASON_SUCCESSFUL_DTO);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void closeCampaign_Should_Throw_If_Not_Active(){
+    Campaign campaign = TEST_READY_FOR_LAUNCH_CAMPAIGN.toBuilder().build();
+
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_URL_FRIENDLY_NAME))
+            .thenReturn(Optional.of(campaign));
+
+    campaignServiceImpl.closeCampaign(TEST_URL_FRIENDLY_NAME, TEST_CAMPAIGN_CLOSING_REASON_SUCCESSFUL_DTO);
+  }
+
+  @Test(expected = ForbiddenOperationException.class)
+  public void closeCampaign_Should_Throw_If_Wrong_Campaign_State(){
+    Campaign campaign = TEST_ACTIVE_CAMPAIGN.toBuilder().build();
+
+    when(campaignRepository.findByUrlFriendlyNameAndDeletedFalse(TEST_ACTIVE_URL_FRIENDLY_NAME))
+            .thenReturn(Optional.of(campaign));
+    doThrow(ForbiddenOperationException.class).when(campaignStateService).changeStateOrThrow(campaign, CampaignStateName.SUCCESSFUL);
+
+    campaignServiceImpl.closeCampaign(TEST_ACTIVE_URL_FRIENDLY_NAME, TEST_CAMPAIGN_CLOSING_REASON_SUCCESSFUL_DTO);
+  }
+
+  @Test
   public void getAllCampaignWithInvestments_Should_Return_Campaigns() {
     AuthUtils.mockRequestAndContextEntrepreneur();
 

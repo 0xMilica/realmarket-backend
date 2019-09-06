@@ -1,5 +1,6 @@
 package io.realmarket.propeler.util;
 
+import io.realmarket.propeler.api.dto.CampaignClosingReasonDto;
 import io.realmarket.propeler.api.dto.CampaignDto;
 import io.realmarket.propeler.api.dto.CampaignPatchDto;
 import io.realmarket.propeler.model.Campaign;
@@ -19,6 +20,7 @@ public class CampaignUtils {
   public static final BigDecimal TEST_MIN_EQUITY_OFFERED = BigDecimal.valueOf(5);
   public static final BigDecimal TEST_MAX_EQUITY_OFFERED = BigDecimal.valueOf(10);
   public static final BigDecimal TEST_MIN_INVESTMENT = BigDecimal.valueOf(600);
+  public static final String TEST_CLOSING_REASON = "TEST_CLOSING_REASON";
   public static final CampaignState TEST_CAMPAIGN_INITIAL_STATE =
       CampaignState.builder().name(CampaignStateName.INITIAL).build();
   public static final CampaignState TEST_REVIEW_READY_CAMPAIGN_STATE =
@@ -29,6 +31,10 @@ public class CampaignUtils {
       CampaignState.builder().name(CampaignStateName.LAUNCH_READY).build();
   public static final CampaignState TEST_CAMPAIGN_ACTIVE_STATE =
       CampaignState.builder().name(CampaignStateName.ACTIVE).build();
+  public static final CampaignState TEST_CAMPAIGN_SUCCESSFUL_STATE =
+          CampaignState.builder().name(CampaignStateName.SUCCESSFUL).build();
+  public static final CampaignState TEST_CAMPAIGN_UNSUCCESSFUL_STATE =
+          CampaignState.builder().name(CampaignStateName.UNSUCCESSFUL).build();
   public static final String TEST_NAME = "TEST_NAME";
   public static final CampaignState TEST_CAMPAIGN_DELETED_STATE =
       CampaignState.builder().name(CampaignStateName.DELETED).build();
@@ -121,6 +127,24 @@ public class CampaignUtils {
           .campaignState(TEST_CAMPAIGN_ACTIVE_STATE)
           .build();
 
+  public static final Campaign TEST_SUCCESSFUL_CAMPAIGN =
+          Campaign.builder()
+                  .company(CompanyUtils.getCompanyMocked())
+                  .urlFriendlyName(TEST_ACTIVE_URL_FRIENDLY_NAME)
+                  .fundingGoals(0L)
+                  .currency(TEST_CURRENCY)
+                  .campaignState(TEST_CAMPAIGN_SUCCESSFUL_STATE)
+                  .build();
+
+  public static final Campaign TEST_UNSUCCESSFUL_CAMPAIGN =
+          Campaign.builder()
+                  .company(CompanyUtils.getCompanyMocked())
+                  .urlFriendlyName(TEST_ACTIVE_URL_FRIENDLY_NAME)
+                  .fundingGoals(0L)
+                  .currency(TEST_CURRENCY)
+                  .campaignState(TEST_CAMPAIGN_UNSUCCESSFUL_STATE)
+                  .build();
+
   public static Campaign getActiveCampaignMocked() {
     return Campaign.builder()
         .company(CompanyUtils.getCompanyMocked())
@@ -167,6 +191,12 @@ public class CampaignUtils {
         .tagLine(TEST_TAG_LINE)
         .build();
   }
+
+  public static final CampaignClosingReasonDto TEST_CAMPAIGN_CLOSING_REASON_SUCCESSFUL_DTO =
+          new CampaignClosingReasonDto(TEST_CLOSING_REASON, true);
+
+  public static final CampaignClosingReasonDto TEST_CAMPAIGN_CLOSING_REASON_UNSUCCESSFUL_DTO =
+          new CampaignClosingReasonDto(TEST_CLOSING_REASON, false);
 
   public static CampaignPatchDto TEST_CAMPAIGN_PATCH_DTO_FUNDING_GOALS() {
     return CampaignPatchDto.builder().fundingGoals(TEST_FUNDING_GOALS).build();

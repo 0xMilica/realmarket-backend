@@ -37,6 +37,12 @@ public class CampaignDto {
   @UrlFriendly
   private String urlFriendlyName;
 
+  @ApiModelProperty(value = "Reason for closing campaign")
+  @NotNull(message = "Please provide a reason for campaign closing")
+  @Size(max = 250, message = "Closing campaign reason cannot be longer than 250 characters")
+  private String closingReason;
+
+
   @ApiModelProperty(value = "Campaign funding goals")
   @NotNull(message = "Please provide funding goals")
   private Long fundingGoals;
@@ -83,6 +89,7 @@ public class CampaignDto {
     this.companyId = campaign.getCompany().getId();
     this.name = campaign.getName();
     this.urlFriendlyName = campaign.getUrlFriendlyName();
+    this.closingReason = campaign.getClosingReason();
     this.fundingGoals = campaign.getFundingGoals();
     this.collectedAmount = campaign.getCollectedAmount();
     this.timeToRaiseFunds = campaign.getTimeToRaiseFunds();

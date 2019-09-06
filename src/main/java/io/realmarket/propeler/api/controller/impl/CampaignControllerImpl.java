@@ -351,4 +351,24 @@ public class CampaignControllerImpl implements CampaignController {
   public ResponseEntity<CampaignResponseDto> launchCampaign(@PathVariable String campaignName) {
     return ResponseEntity.ok(new CampaignResponseDto(campaignService.launchCampaign(campaignName)));
   }
+
+  @Override
+  @PatchMapping(value = "/{campaignName}/close")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  public ResponseEntity<CampaignResponseDto> closeCampaign(
+      @PathVariable String campaignName,
+      @Valid @RequestBody CampaignClosingReasonDto campaignClosingReasonDto) {
+    return ResponseEntity.ok(
+        new CampaignResponseDto(
+            campaignService.closeCampaign(campaignName, campaignClosingReasonDto)));
+  }
+
+  @Override
+  @GetMapping(value = "/withInvestments")
+  @PreAuthorize("hasAnyAuthority('ROLE_ENTREPRENEUR', 'ROLE_ADMIN')")
+  public ResponseEntity<Page<CampaignWithInvestmentsWithPersonResponseDto>>
+      getCampaignsByStateWithInvestments(
+          Pageable pageable, @RequestParam(value = "state", defaultValue = "active") String state) {
+    return ResponseEntity.ok(campaignService.getCampaignsByStateWithInvestments(pageable, state));
+  }
 }

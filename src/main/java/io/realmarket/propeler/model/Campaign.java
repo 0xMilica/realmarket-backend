@@ -28,6 +28,7 @@ public class Campaign {
   private String urlFriendlyName;
   private Long fundingGoals;
   private String currency;
+  private String closingReason;
 
   @Builder.Default private BigDecimal collectedAmount = BigDecimal.ZERO;
   private Integer timeToRaiseFunds;
@@ -64,6 +65,7 @@ public class Campaign {
     this.minEquityOffered = campaignDto.getMinEquityOffered();
     this.maxEquityOffered = campaignDto.getMaxEquityOffered();
     this.urlFriendlyName = campaignDto.getUrlFriendlyName();
+    this.closingReason = campaignDto.getClosingReason();
     this.minInvestment = campaignDto.getMinInvestment();
     this.tagLine = campaignDto.getTagLine();
     this.creationDate = Instant.now();

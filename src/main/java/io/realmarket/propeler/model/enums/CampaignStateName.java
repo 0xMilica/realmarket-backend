@@ -6,7 +6,8 @@ public enum CampaignStateName {
   AUDIT("AUDIT"),
   LAUNCH_READY("LAUNCH_READY"),
   ACTIVE("ACTIVE"),
-  POST_CAMPAIGN("POST_CAMPAIGN"),
+  SUCCESSFUL("SUCCESSFUL"),
+  UNSUCCESSFUL("UNSUCCESSFUL"),
   DELETED("DELETED");
 
   private final String text;

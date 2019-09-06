@@ -54,6 +54,8 @@ public interface CampaignService {
 
   Campaign launchCampaign(String campaignName);
 
+  Campaign closeCampaign(String campaignName, CampaignClosingReasonDto campaignClosingReasonDto);
+
   Campaign changeCampaignStateOrThrow(Campaign campaign, CampaignStateName followingCampaignState);
 
   List<Campaign> findByCompany(Company company);

@@ -27,14 +27,14 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
   Optional<Campaign> findByCompanyAndActiveTrue(@Param("company") final Company company);
 
   @Query(
-      "select c, s from Campaign c join fetch c.campaignState s where c.company = :company and s.name <> 'DELETED' and s.name <> 'POST_CAMPAIGN'")
+      "select c, s from Campaign c join fetch c.campaignState s where c.company = :company and s.name <> 'DELETED' and s.name <> 'SUCCESSFUL' and s.name <> 'UNSUCCESSFUL'")
   Optional<Campaign> findExistingByCompany(@Param("company") final Company company);
 
   @Query(
       value =
-          "SELECT c FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = 'ACTIVE' OR s.name = 'POST_CAMPAIGN'",
+          "SELECT c FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = 'ACTIVE' OR s.name = 'SUCCESSFUL'",
       countQuery =
-          "SELECT COUNT(c) FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = 'ACTIVE' OR s.name = 'POST_CAMPAIGN'")
+          "SELECT COUNT(c) FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = 'ACTIVE' OR s.name = 'SUCCESSFUL'")
   Page<Campaign> findAllPublic(Pageable pageable);
 
   @Query(

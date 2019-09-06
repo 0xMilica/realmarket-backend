@@ -42,6 +42,10 @@ public class CampaignResponseDto {
   @ApiModelProperty(value = "Url friendly version of campaign name")
   private String urlFriendlyName;
 
+  @ApiModelProperty(value = "Campaign closing reason")
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private String closingReason;
+
   @ApiModelProperty(value = "Campaign funding goals")
   private Long fundingGoals;
 
@@ -99,6 +103,7 @@ public class CampaignResponseDto {
     this.companyId = campaign.getCompany().getId();
     this.name = campaign.getName();
     this.urlFriendlyName = campaign.getUrlFriendlyName();
+    this.closingReason = campaign.getClosingReason();
     this.fundingGoals = campaign.getFundingGoals();
     this.collectedAmount = campaign.getCollectedAmount();
     this.fundedPercentage =
@@ -136,6 +141,7 @@ public class CampaignResponseDto {
     this.companyId = campaign.getCompany().getId();
     this.name = campaign.getName();
     this.urlFriendlyName = campaign.getUrlFriendlyName();
+    this.closingReason = campaign.getClosingReason();
     this.fundingGoals = campaign.getFundingGoals();
     this.timeToRaiseFunds = campaign.getTimeToRaiseFunds();
     this.minEquityOffered = campaign.getMinEquityOffered();

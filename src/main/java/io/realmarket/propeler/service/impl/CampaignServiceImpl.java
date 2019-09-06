@@ -223,7 +223,8 @@ public class CampaignServiceImpl implements CampaignService {
     Auth auth = AuthenticationUtil.getAuthOrReturnNull();
     if (auth == null) {
       if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)
-          && !campaign.getCampaignState().getName().equals(CampaignStateName.POST_CAMPAIGN)) {
+              && !campaign.getCampaignState().getName().equals(CampaignStateName.SUCCESSFUL)
+              && !campaign.getCampaignState().getName().equals(CampaignStateName.UNSUCCESSFUL)) {
         throw new EntityNotFoundException();
       }
     } else {
@@ -236,7 +237,8 @@ public class CampaignServiceImpl implements CampaignService {
           }
         default:
           if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)
-              && !campaign.getCampaignState().getName().equals(CampaignStateName.POST_CAMPAIGN)) {
+                  && !campaign.getCampaignState().getName().equals(CampaignStateName.SUCCESSFUL)
+                  && !campaign.getCampaignState().getName().equals(CampaignStateName.UNSUCCESSFUL)) {
             throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_CAMPAIGN);
           }
           break;
@@ -344,6 +346,22 @@ public class CampaignServiceImpl implements CampaignService {
     Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
     campaign = changeCampaignStateOrThrow(campaign, CampaignStateName.ACTIVE);
     sendNewCampaignOpportunityEmail(campaign);
+    return campaign;
+  }
+
+  @Override
+  @Transactional
+  public Campaign closeCampaign(String campaignName, CampaignClosingReasonDto campaignClosingReasonDto) {
+    Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
+    throwIfNotActive(campaign);
+    campaign.setClosingReason(campaignClosingReasonDto.getClosingReason());
+
+    if (campaignClosingReasonDto.isSuccessful()) {
+      campaign = changeCampaignStateOrThrow(campaign, CampaignStateName.SUCCESSFUL);
+    }else{
+      campaign = changeCampaignStateOrThrow(campaign, CampaignStateName.UNSUCCESSFUL);
+    }
+
     return campaign;
   }
 
