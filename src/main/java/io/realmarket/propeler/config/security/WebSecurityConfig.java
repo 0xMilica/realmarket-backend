@@ -78,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/auth/register/validateToken",
             "/files/public/**",
             "/campaigns/public",
-            "/campaigns/{campaignName:^((?!^mine$|^updates$).)*$}",
+            "/campaigns/{campaignName:^((?!^mine$|^updates$|^withInvestments$).)*$}",
             "/campaigns/{campaignName}/convertMoney",
             "/campaigns/{campaignName}/convertPercentage",
             "/campaigns/{campaignName}/market_image",

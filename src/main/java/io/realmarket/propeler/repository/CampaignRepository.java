@@ -42,6 +42,10 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
           "SELECT c FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE :state is null or s = :state")
   Page<Campaign> findAllByCampaignState(Pageable pageable, @Param("state") CampaignState state);
 
+  @Query(
+          value = "SELECT c FROM Campaign c LEFT JOIN CampaignState s ON c.campaignState.id = s.id WHERE s.name = 'SUCCESSFUL' OR s.name = 'UNSUCCESSFUL'")
+  Page<Campaign> findAllCompletedCampaigns(Pageable pageable);
+
   Page<Campaign> findAllByCampaignStateAndCompany(
       Pageable pageable, CampaignState state, Company company);
 

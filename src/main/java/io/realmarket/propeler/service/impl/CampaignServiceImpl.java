@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -569,7 +571,18 @@ public class CampaignServiceImpl implements CampaignService {
               c ->
                   new CampaignWithInvestmentsWithPersonResponseDto(
                       c, investmentService.findAllByCampaignWithInvestors(c)));
-    } else if (!state.equalsIgnoreCase("deleted")) {
+    }
+    else if (state.equalsIgnoreCase("completed")) {
+      if (AuthenticationUtil.hasUserAdminRole()) {
+        return campaignRepository
+                .findAllCompletedCampaigns(pageable)
+                .map(
+                        c ->
+                                new CampaignWithInvestmentsWithPersonResponseDto(
+                                        (c), investmentService.findAllByCampaignWithInvestors(c)));
+      }
+    }
+    else if (!state.equalsIgnoreCase("deleted")) {
       CampaignState campaignState = campaignStateService.getCampaignState(state);
       if (AuthenticationUtil.hasUserAdminRole()) {
         return campaignRepository
