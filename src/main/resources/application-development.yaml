@@ -93,12 +93,12 @@ app:
   login:
     ip:
       ban:
-        attempts: 5
+        attempts: 50
         time-banned: 5
     username:
       ban:
-        attempts: 3
-        time-banned: 3
+        attempts: 40
+        time-banned: 5
 
   registration-captcha:
     ban:

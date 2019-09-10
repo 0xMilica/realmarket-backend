@@ -64,12 +64,12 @@ app:
   login:
     ip:
       ban:
-        attempts: 5
-        time-banned: 5
+        attempts: 100
+        time-banned: 10
     username:
       ban:
-        attempts: 3
-        time-banned: 3
+        attempts: 90
+        time-banned: 10
 
   registration-captcha:
     ban:
