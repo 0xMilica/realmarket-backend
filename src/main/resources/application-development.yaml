@@ -28,8 +28,9 @@ spring:
         auth: true
         starttls.enable: true
   thymeleaf:
-    mode: LEGACYHTML5
+    mode: HTML
     cache: false
+    encoding: UTF-8
   liquibase:
     contexts: development
 

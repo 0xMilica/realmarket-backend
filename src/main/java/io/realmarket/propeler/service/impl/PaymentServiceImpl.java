@@ -40,6 +40,7 @@ import java.util.*;
 
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVESTMENT_NOT_PAID;
+import static io.realmarket.propeler.service.util.TemplateDataUtil.BANK_TRANSFER_PAYMENT_TYPE;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -104,7 +105,7 @@ public class PaymentServiceImpl implements PaymentService {
     Investment investment = investmentRepository.getOne(investmentId);
 
     List<String> methods = new ArrayList<>();
-    methods.add("Bank transfer");
+    methods.add(BANK_TRANSFER_PAYMENT_TYPE);
     if (investment.getInvestedAmount().compareTo(cardPaymentLimit) < 1) {
       methods.add("PayPal");
     }
@@ -161,15 +162,9 @@ public class PaymentServiceImpl implements PaymentService {
   }
 
   private String createProformaInvoiceUrl(Investment investment) {
-    Map<String, Object> documentsParameters;
-    byte[] file;
-    if (investment.getPerson().getAuth() == null) {
-      documentsParameters = templateDataUtil.getOffPlatformInvoiceData(investment, true);
-      file = pdfService.generatePdf(documentsParameters, FileType.OFFPLATFORM_PROFORMA_INVOICE);
-    } else {
-      documentsParameters = templateDataUtil.getData(investment, "Bank Transfer", true);
-      file = pdfService.generatePdf(documentsParameters, FileType.PROFORMA_INVOICE);
-    }
+    Map<String, Object> documentsParameters = templateDataUtil.getProformaInvoiceData(investment);
+    byte[] file = pdfService.generatePdf(documentsParameters, FileType.PROFORMA_INVOICE);
+
     String url = fileService.uploadFile(file, "pdf");
 
     sendProformaInvoiceEmail(investment, file);
@@ -230,7 +225,7 @@ public class PaymentServiceImpl implements PaymentService {
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.PAID));
     investment.setPaymentDate(bankTransferPayment.getPaymentDate());
-    investment.setInvoiceUrl(createInvoice(investment, "Bank transfer"));
+    investment.setInvoiceUrl(createInvoice(investment, BANK_TRANSFER_PAYMENT_TYPE));
     investmentRepository.save(investment);
 
     bankTransferPayment = bankTransferPaymentRepository.save(bankTransferPayment);
@@ -246,15 +241,9 @@ public class PaymentServiceImpl implements PaymentService {
   }
 
   private String createInvoice(Investment investment, String paymentType) {
-    Map<String, Object> documentsParameters;
-    byte[] file;
-    if (investment.getPerson().getAuth() == null) {
-      documentsParameters = templateDataUtil.getOffPlatformInvoiceData(investment, false);
-      file = pdfService.generatePdf(documentsParameters, FileType.OFFPLATFORM_INVOICE);
-    } else {
-      documentsParameters = templateDataUtil.getData(investment, paymentType, false);
-      file = pdfService.generatePdf(documentsParameters, FileType.INVOICE);
-    }
+    Map<String, Object> documentsParameters = templateDataUtil.getInvoiceData(investment, paymentType);
+    byte[] file = pdfService.generatePdf(documentsParameters, FileType.INVOICE);
+
     String url = fileService.uploadFile(file, "pdf");
 
     sendInvoiceEmail(investment, file);

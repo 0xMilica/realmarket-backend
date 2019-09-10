@@ -29,6 +29,7 @@ public class PdfService {
 
     final Context ctx = new Context();
     ctx.setVariables(parameters);
+
     final String processedHtml = templateEngine.process(template, ctx);
 
     try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
@@ -40,7 +41,7 @@ public class PdfService {
 
       return byteArrayOutputStream.toByteArray();
     } catch (Exception e) {
-      log.error("Problem with generating pdf file: {}", e.getCause());
+      log.error("Problem with generating pdf file: " + e.getCause());
       throw new BadRequestException(ExceptionMessages.PDF_FILE_GENERATING_EXCEPTION);
     }
   }
@@ -51,10 +52,11 @@ public class PdfService {
         return "userWildcardsPdf";
       case PROFORMA_INVOICE:
       case INVOICE:
-        return "invoiceDocumentTemplate";
       case OFFPLATFORM_PROFORMA_INVOICE:
       case OFFPLATFORM_INVOICE:
-        return "offplatformInvoiceTemplate";
+        return "invoiceDocumentTemplate";
+      case CONTRACT:
+        return "contracts/contractDocumentTemplate.html";
       default:
         throw new BadRequestException(ExceptionMessages.INVALID_REQUEST);
     }

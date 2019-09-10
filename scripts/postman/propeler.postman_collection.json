@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "03fa0d88-7423-4045-ba4a-70131107ea23",
+		"_postman_id": "e4230922-907e-4075-b767-7d66c60a1dbc",
 		"name": "propeler",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -5993,7 +5993,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"radovan.turovic@realmarket.io\",\n\t\"firstName\": \"Несрећко\",\n\t\"lastName\": \"Шошкић\",\n\t\"countryOfResidence\": \"RS\",\n\t\"countryForTaxation\": \"RS\",\n\t\"city\": \"Доње Бријање\",\n\t\"address\": \"Доње Бријање 7\",\n\t\"phoneNumber\": \"+381606060606\",\n\t\"profilePictureUrl\": \"https://static.juznasrbija.info/files/donje_brijanje-6a063e2cdb5d.jpg\",\n\t\"investedAmount\": \"16206\",\n\t\"twitterUrl\": \"https://twitter.com/twichtwichtwich\",\n\t\"linkedinUrl\": \"https://linkedin.com/linklinklinkininin\",\n\t\"facebookUrl\": \"https://facebook.com/facefacefacekacekacekace\",\n\t\"customProfileUrl\": \"https://myspace.com/kojosovocudokoristikojosovocudokoristikojosovocudokoristi\",\n\t\"shortBiography\": \"Dodjos iz lalinskog sreza.\",\n\t\"nationalIdentificationNumber\":\"1234567890123\",\n\t\"companyIdentificationNumber\":\"123412341234\"\n}"
+							"raw": "{\n\t\"email\": \"radovan.turovic@realmarket.io\",\n\t\"firstName\": \"Несрећко\",\n\t\"lastName\": \"Шошкић\",\n\t\"countryOfResidence\": \"RS\",\n\t\"countryForTaxation\": \"RS\",\n\t\"city\": \"Доње Бријање\",\n\t\"address\": \"Доње Бријање 7\",\n\t\"phoneNumber\": \"+381606060606\",\n\t\"profilePictureUrl\": \"https://static.juznasrbija.info/files/donje_brijanje-6a063e2cdb5d.jpg\",\n\t\"investedAmount\": \"16206\",\n\t\"twitterUrl\": \"https://twitter.com/twichtwichtwich\",\n\t\"linkedinUrl\": \"https://linkedin.com/linklinklinkininin\",\n\t\"facebookUrl\": \"https://facebook.com/facefacefacekacekacekace\",\n\t\"customProfileUrl\": \"https://myspace.com/kojosovocudokoristikojosovocudokoristikojosovocudokoristi\",\n\t\"shortBiography\": \"Dodjos iz lalinskog sreza.\",\n\t\"nationalIdentificationNumber\":\"1234567890123\",\n\t\"companyIdentificationNumber\":\"123412341234\",\n\t\"companyName\":\"BeatitudiNEMam\"\n}"
 						},
 						"url": {
 							"raw": "{{server_ip}}/api/investments/offPlatform/{{campaign_investable_urlFriendlyName}}",
@@ -7065,6 +7065,41 @@
 								"api",
 								"settings",
 								"minimumInvestment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "contracts",
+			"item": [
+				{
+					"name": "/contracts/dummy",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server_ip}}/api/contracts/dummy",
+							"host": [
+								"{{server_ip}}"
+							],
+							"path": [
+								"api",
+								"contracts",
+								"dummy"
 							]
 						}
 					},

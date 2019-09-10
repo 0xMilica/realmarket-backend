@@ -1,9 +1,7 @@
 package io.realmarket.propeler.service.util;
 
-import io.realmarket.propeler.model.Auth;
-import io.realmarket.propeler.model.Company;
-import io.realmarket.propeler.model.Investment;
-import io.realmarket.propeler.model.Person;
+import io.realmarket.propeler.api.dto.ContractRequestDto;
+import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.service.CampaignService;
 import io.realmarket.propeler.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +29,7 @@ public class TemplateDataUtil {
   public static final String LAST_NAME = "lastName";
   public static final String SELLER = "seller";
   public static final String BUYER = "buyer";
-  public static final String BUYER_NAME = "buyerName";
-  public static final String BUYER_ADDRESS = "buyerAddress";
-  public static final String BUYER_CITY = "buyerCity";
-  public static final String BUYER_COUNTRY = "buyerCountry";
-  public static final String PRO_FORMA_ID = "proFormaId";
+  public static final String INVOICE_ID = "invoiceId";
   public static final String CURRENCY = "currency";
   public static final String ISSUE_DATE = "issueDate";
   public static final String DUE_DATE = "dueDate";
@@ -56,6 +50,7 @@ public class TemplateDataUtil {
   public static final String IBAN = "IBAN";
   public static final String SWIFT_CODE = "SWIFTCode";
   public static final String COMPANY = "company";
+  public static final String COMPANY_NAME = "companyName";
   public static final String IS_COMPANY = "isCompany";
   public static final String COUNTRY = "country";
   public static final String SHORT_NAME_DESCRIPTION = "shortNameDesc";
@@ -116,46 +111,56 @@ public class TemplateDataUtil {
             .withZone(ZoneId.of(localeTimezone));
   }
 
-  public Map<String, Object> getData(
-      Investment investment, String paymentMethod, boolean isProforma) {
-    Person seller = investment.getCampaign().getCompany().getAuth().getPerson();
-    Person buyer = investment.getPerson();
-    LocalDateTime date;
-    if (isProforma) {
-      date = LocalDateTime.ofInstant(investment.getCreationDate(), ZoneId.of(localeTimezone));
-    } else {
-      date = LocalDateTime.ofInstant(investment.getPaymentDate(), ZoneId.of(localeTimezone));
-    }
-    String proformaInvoiceId =
-        investment.getCurrency() + "/" + date.getYear() + "-" + investment.getId();
-    BigDecimal quantity =
-        campaignService.convertMoneyToPercentageOfEquity(
-            investment.getCampaign().getUrlFriendlyName(), investment.getInvestedAmount());
-    BigDecimal vat = this.vatPercent;
-    BigDecimal total = investment.getInvestedAmount();
-    BigDecimal netPrice =
-        total
-            .multiply(BigDecimal.ONE)
-            .divide(BigDecimal.ONE.add(this.vatPercent), MathContext.DECIMAL128);
-    HashMap<String, Object> data = new HashMap<>();
-    data.put(SELLER, getData(seller));
-    data.put(BUYER, getData(buyer));
-    data.put(PRO_FORMA_ID, proformaInvoiceId);
-    data.put(CURRENCY, investment.getCurrency().trim());
-    Instant creationInstant = Instant.now(); // TODO Get intended value when implemented
-    data.put(ISSUE_DATE, getDateFromInstant(creationInstant));
-    data.put(DUE_DATE, getDateFromInstant(creationInstant.plusMillis(invoiceDueDuration)));
-    data.put(PAYMENT_METHOD, paymentMethod);
+  public Map<String, Object> getInvoiceData(Investment investment, String paymentMethod) {
+    Map<String, Object> data = getGeneralInvoiceData(investment, paymentMethod);
 
-    data.put(ITEM_QUANTITY, quantity.setScale(2, RoundingMode.HALF_UP));
-    data.put(ITEM_NET_PRICE, netPrice.setScale(2, RoundingMode.HALF_UP));
-    data.put(ITEM_VAT, vat.multiply(netPrice).setScale(2, RoundingMode.HALF_UP));
-    data.put(ITEM_TOTAL, total.setScale(2, RoundingMode.HALF_UP));
-    data.put(FULL_TOTAL, total.setScale(2, RoundingMode.HALF_UP));
+    data.put(INVOICE_ID, generateInvoiceId(investment, investment.getPaymentDate()));
+
+    return data;
+  }
+
+  public Map<String, Object> getProformaInvoiceData(Investment investment) {
+    Map<String, Object> data = getGeneralInvoiceData(investment, BANK_TRANSFER_PAYMENT_TYPE);
+
+    data.put(IS_PROFORMA, true);
+    data.put(INVOICE_ID, generateInvoiceId(investment, investment.getCreationDate()));
+
+    return data;
+  }
+
+  public Map<String, Object> getContractData(ContractRequestDto contractRequestDto) {
+    HashMap<String, Object> data = new HashMap<>();
+
+    // TODO upon adding a first contract type, update this method. Also, for each type of contract,
+    // new method should be written
+    Person entrepreneur =
+        Person.builder()
+            .firstName("Dummy")
+            .lastName("Dummic")
+            .companyName("Dummylax")
+            .address("DumDum Avenue 32")
+            .countryOfResidence(Country.builder().name("Dummystan").code("DMB").build())
+            .city("Dummity")
+            .build();
+    Map<String, Object> entrepreneurData = getData(entrepreneur);
+    data.put("entrepreneur", entrepreneurData);
+
+    Person platform =
+        Person.builder()
+            .companyName("Realmarket")
+            .address("Modena 1")
+            .city("Novi Sad")
+            .countryOfResidence(Country.builder().name("Serbia").code("SRB").build())
+            .build();
+    Map<String, Object> platformData = getData(platform);
+    platformData.put(VAT_NO, "1234123412341234");
+    platformData.put(BANK_NAME, this.bankName);
+    platformData.put(BANK_ACCOUNT_NO, this.accountNumber);
+    platformData.put(IBAN, this.ibanCode);
+    platformData.put(SWIFT_CODE, this.swift);
+    data.put("platform", platformData);
 
     data.put(POST_SCRIPTUM, preparePS());
-
-    data.put(IS_PROFORMA, isProforma);
 
     return data;
   }
@@ -165,46 +170,70 @@ public class TemplateDataUtil {
     data.put(FIRST_NAME, person.getFirstName());
     data.put(LAST_NAME, person.getLastName());
     Auth auth = person.getAuth();
-    switch (auth.getUserRole().getName()) {
-      case ROLE_ENTREPRENEUR:
-        Company company = companyService.findByAuthOrThrowException(auth);
-        data.put(NAME, company.getName());
-        data.put(ADDRESS, company.getAddress());
-        data.put(
-            POSTAL_NO,
-            DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to
-        // the model!
-        data.put(CITY, company.getCity());
-        data.put(VAT_NO, company.getTaxIdentifier());
-        data.put(BANK_NAME, this.bankName);
-        data.put(BANK_ACCOUNT_NO, this.accountNumber);
-        data.put(IBAN, this.ibanCode);
-        data.put(SWIFT_CODE, this.swift);
-        data.put(COMPANY, getData(company));
-        break;
-      case ROLE_CORPORATE_INVESTOR:
-        data.put(NAME, person.getCompanyName());
-        data.put(IS_COMPANY, true);
-        data.put(ADDRESS, person.getAddress());
-        data.put(
-            POSTAL_NO,
-            DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to
-        // the model!
-        data.put(CITY, person.getCity());
-        data.put(VAT_NO, "1234123412341234"); // TODO Fill with actual data when available
-        break;
-      case ROLE_INDIVIDUAL_INVESTOR:
+    if (auth == null) {
+      if (person.getCompanyName() == null) {
         data.put(NAME, person.getFirstName() + " " + person.getLastName());
+      } else {
+        data.put(NAME, person.getCompanyName());
+        data.put(COMPANY_NAME, person.getCompanyName());
+      }
+      data.put(ADDRESS, person.getAddress());
+      data.put(
+          POSTAL_NO,
+          DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to the
+      // model!
+      if (person.getCompanyIdentificationNumber() == null) {
         data.put(IS_COMPANY, false);
-        data.put(ADDRESS, person.getAddress());
-        data.put(
-            POSTAL_NO,
-            DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to
-        // the model!
-        data.put(CITY, person.getCity());
-        break;
-      default:
-        break;
+      } else {
+        data.put(IS_COMPANY, true);
+        data.put(COMPANY_NAME, person.getCompanyName());
+        data.put(VAT_NO, "1234123412341234"); // TODO Fill with actual data when available
+      }
+      data.put(CITY, person.getCity());
+    } else {
+      switch (auth.getUserRole().getName()) {
+        case ROLE_ENTREPRENEUR:
+          Company company = companyService.findByAuthOrThrowException(auth);
+          data.put(NAME, company.getName());
+          data.put(ADDRESS, company.getAddress());
+          data.put(
+              POSTAL_NO,
+              DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to
+          // the model!
+          data.put(CITY, company.getCity());
+          data.put(VAT_NO, company.getTaxIdentifier());
+          data.put(BANK_NAME, this.bankName);
+          data.put(BANK_ACCOUNT_NO, this.accountNumber);
+          data.put(IBAN, this.ibanCode);
+          data.put(SWIFT_CODE, this.swift);
+          data.put(COMPANY, getData(company));
+          data.put(COMPANY_NAME, company.getName());
+          break;
+        case ROLE_CORPORATE_INVESTOR:
+          data.put(NAME, person.getCompanyName());
+          data.put(COMPANY_NAME, person.getCompanyName());
+          data.put(IS_COMPANY, true);
+          data.put(ADDRESS, person.getAddress());
+          data.put(
+              POSTAL_NO,
+              DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to
+          // the model!
+          data.put(CITY, person.getCity());
+          data.put(VAT_NO, "1234123412341234"); // TODO Fill with actual data when available
+          break;
+        case ROLE_INDIVIDUAL_INVESTOR:
+          data.put(NAME, person.getFirstName() + " " + person.getLastName());
+          data.put(IS_COMPANY, false);
+          data.put(ADDRESS, person.getAddress());
+          data.put(
+              POSTAL_NO,
+              DUMMY_POSTAL_NO); // TODO Postal number hardcoded. Change to real value when added to
+          // the model!
+          data.put(CITY, person.getCity());
+          break;
+        default:
+          break;
+      }
     }
     if (person.getCountryForTaxation() == null) {
       data.put(COUNTRY, person.getCountryOfResidence().getName());
@@ -220,56 +249,6 @@ public class TemplateDataUtil {
     return data;
   }
 
-  public Map<String, Object> getOffPlatformInvoiceData(Investment investment, boolean isProforma) {
-    Person seller = investment.getCampaign().getCompany().getAuth().getPerson();
-    LocalDateTime date;
-    Person buyer = investment.getPerson();
-    if (isProforma) {
-      date = LocalDateTime.ofInstant(investment.getCreationDate(), ZoneId.of(localeTimezone));
-    } else {
-      date = LocalDateTime.ofInstant(investment.getPaymentDate(), ZoneId.of(localeTimezone));
-    }
-    String proformaInvoiceId =
-        investment.getCurrency() + "/" + date.getYear() + "-" + investment.getId();
-    BigDecimal quantity =
-        campaignService.convertMoneyToPercentageOfEquity(
-            investment.getCampaign().getUrlFriendlyName(), investment.getInvestedAmount());
-    BigDecimal vat = this.vatPercent;
-    BigDecimal total = investment.getInvestedAmount();
-    BigDecimal netPrice =
-        total
-            .multiply(BigDecimal.ONE)
-            .divide(BigDecimal.ONE.add(this.vatPercent), MathContext.DECIMAL128);
-    HashMap<String, Object> data = new HashMap<>();
-    data.put(SELLER, getData(seller));
-    if (buyer.getCompanyName() == null) {
-      data.put(BUYER_NAME, buyer.getFirstName() + " " + buyer.getLastName());
-    } else {
-      data.put(BUYER_NAME, buyer.getCompanyName());
-    }
-    data.put(BUYER_ADDRESS, buyer.getAddress());
-    data.put(BUYER_CITY, buyer.getCity());
-    data.put(BUYER_COUNTRY, buyer.getCountryOfResidence().getName());
-    data.put(PRO_FORMA_ID, proformaInvoiceId);
-    data.put(CURRENCY, investment.getCurrency().trim());
-    Instant creationInstant = Instant.now();
-    data.put(ISSUE_DATE, getDateFromInstant(creationInstant));
-    data.put(DUE_DATE, getDateFromInstant(creationInstant.plusMillis(invoiceDueDuration)));
-    data.put(PAYMENT_METHOD, BANK_TRANSFER_PAYMENT_TYPE);
-
-    data.put(ITEM_QUANTITY, quantity.setScale(2, RoundingMode.HALF_UP));
-    data.put(ITEM_NET_PRICE, netPrice.setScale(2, RoundingMode.HALF_UP));
-    data.put(ITEM_VAT, vat.multiply(netPrice).setScale(2, RoundingMode.HALF_UP));
-    data.put(ITEM_TOTAL, total.setScale(2, RoundingMode.HALF_UP));
-    data.put(FULL_TOTAL, total.setScale(2, RoundingMode.HALF_UP));
-
-    data.put(POST_SCRIPTUM, preparePS());
-
-    data.put(IS_PROFORMA, isProforma);
-
-    return data;
-  }
-
   public List<Map<String, Object>> getData(List<Pair<String, String>> ps) {
     return ps.stream()
         .map(
@@ -282,6 +261,50 @@ public class TemplateDataUtil {
         .collect(Collectors.toList());
   }
 
+  private Map<String, Object> getGeneralInvoiceData(Investment investment, String paymentMethod) {
+    Map<String, Object> data = new HashMap<>();
+
+    data.put(PAYMENT_METHOD, paymentMethod);
+
+    Person seller = investment.getCampaign().getCompany().getAuth().getPerson();
+    Person buyer = investment.getPerson();
+    data.put(SELLER, getData(seller));
+    data.put(BUYER, getData(buyer));
+
+    data.put(CURRENCY, investment.getCurrency().trim());
+    Instant creationInstant = Instant.now(); // TODO Get intended value when implemented
+    data.put(ISSUE_DATE, getDateFromInstant(creationInstant));
+    data.put(DUE_DATE, getDateFromInstant(creationInstant.plusMillis(invoiceDueDuration)));
+    data.putAll(
+        getPricingData(
+            investment.getInvestedAmount(), investment.getCampaign().getUrlFriendlyName()));
+
+    data.put(POST_SCRIPTUM, preparePS());
+
+    return data;
+  }
+
+  // It is presumed that investment's invested amount already includes VAT. Prices are calculated with that in mind.
+  private Map<String, Object> getPricingData(BigDecimal investedAmount, String campaignName) {
+    HashMap<String, Object> data = new HashMap<>();
+
+    BigDecimal vat = this.vatPercent;
+    BigDecimal quantity =
+        campaignService.convertMoneyToPercentageOfEquity(campaignName, investedAmount);
+    BigDecimal netPrice =
+        investedAmount
+            .multiply(BigDecimal.ONE)
+            .divide(BigDecimal.ONE.add(this.vatPercent), MathContext.DECIMAL128);
+
+    data.put(ITEM_QUANTITY, quantity.setScale(2, RoundingMode.HALF_UP));
+    data.put(ITEM_NET_PRICE, netPrice.setScale(2, RoundingMode.HALF_UP));
+    data.put(ITEM_VAT, vat.multiply(netPrice).setScale(2, RoundingMode.HALF_UP));
+    data.put(ITEM_TOTAL, investedAmount.setScale(2, RoundingMode.HALF_UP));
+    data.put(FULL_TOTAL, investedAmount.setScale(2, RoundingMode.HALF_UP));
+
+    return data;
+  }
+
   private List<Map<String, Object>> preparePS() {
     ArrayList<Pair<String, String>> ps = new ArrayList<>();
     ps.add(Pair.of(TERMS_OF_USE, DUMMY_TEXT));
@@ -291,5 +314,11 @@ public class TemplateDataUtil {
 
   private String getDateFromInstant(Instant i) {
     return this.formatter.format(LocalDate.from(i.atZone(ZoneId.of(this.localeTimezone))));
+  }
+
+  private String generateInvoiceId(Investment investment, Instant i) {
+    LocalDateTime date = LocalDateTime.ofInstant(i, ZoneId.of(localeTimezone));
+
+    return investment.getCurrency() + "/" + date.getYear() + "-" + investment.getId();
   }
 }

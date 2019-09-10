@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style th:replace="contracts/style/contractFonts :: contract_fonts"></style>
+    <style th:replace="contracts/style/contractStyle :: contract_style"></style>
+    <style>
+        /* Here are style definitions for layout. For style and fonts, look in files style/constractStyle.html and
+        ** style/constractFonts.html */
+        #contract-header {
+            padding-top: 1.5cm;
+            display: block;
+            position: running(header);
+        }
+
+        #contract-footer {
+            display: block;
+            position: running(footer);
+        }
+
+        #contract-content {
+            page-break-after: always;
+        }
+
+        .pagenumber:before {
+            content: counter(page);
+        }
+
+        .pagecount:before {
+            content: counter(pages);
+        }
+
+        @page {
+            size: A4;
+            margin: 1.5cm;
+            margin-bottom: 4cm;
+            padding-top: 9.2cm;
+            @top-center {
+                content: element(header);
+            }
+            @bottom-center {
+                content: element(footer);
+            }
+        @charset "UTF-8";
+        }
+    </style>
+
+</head>
+<body>
+<div id="contract-header">
+
+    <p class="MsoTitle"><span><span th:text="RealMarket"></span></span></p>
+
+    <p class="MsoSubtitle">Equity Crowdfunding Platform</p>
+
+    <br/>
+    <br/>
+
+    <table class="MsoTableGrid" border="0" cellspacing="0" cellpadding="0"
+           style='width:100%;border-collapse:collapse;border:none'>
+        <tr>
+            <td width="100%" valign="top" style='width:225.4pt;padding:0in 5.4pt 0in 5.4pt'>
+                <h2>Contract sample</h2>
+            </td>
+            <td width="0%" valign="top" style='width:225.4pt;padding:0in 5.4pt 0in 5.4pt'>
+                <h2 align="right" style='text-align:right'></h2>
+            </td>
+        </tr>
+    </table>
+
+    <hr/>
+
+    <table style="width:100%">
+        <tr>
+            <td valign="top" width="60%">
+
+                <p class="MsoNormal"><span>Entrepreneur:</span></p>
+
+                <p class="MsoNormal"><b><span th:text="${entrepreneur.firstName}"></span> <span
+                        th:text="${entrepreneur.lastName}"></span></b></p>
+
+                <p class="MsoNormal"><b><span><span th:text="${entrepreneur.companyName}"></span></span></b></p>
+
+                <p class="MsoNormal"><b><span><span th:text="${entrepreneur.address}"></span></span></b></p>
+
+                <p class="MsoNormal"><b><span><span th:text="${entrepreneur.postalNo}"></span> <span
+                        th:text="${entrepreneur.city}"></span></span></b></p>
+
+                <p class="MsoNormal"><b><span><span th:text="${entrepreneur.country}"></span></span></b></p>
+
+                <p></p>
+
+            </td>
+            <td valign="top" width="40%">
+
+                <p class="MsoNormal"><span>Platform:</span></p>
+
+                <p class="MsoNormal"><b><span><span th:text="${platform.name}"></span></span></b></p>
+
+                <p class="MsoNormal"><b><span><span th:text="${platform.address}"></span></span></b></p>
+
+                <p class="MsoNormal"><b><span><span th:text="${platform.postalNo}"></span> <span
+                        th:text="${platform.city}"></span></span></b></p>
+
+                <p class="MsoNormal"><b><span><span th:text="${platform.country}"></span></span></b></p>
+
+                <p></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <p></p>
+            </td>
+            <td valign="top">
+
+                <p class="MsoNormal"><b><span>VAT Number:</span></b><span
+                > <span th:text="${platform.VATNo}"></span></span>
+                </p>
+
+                <p class="MsoNormal"><b><span>Bank:</span></b><span> <span
+                        th:text="${platform.bankName}"></span></span>
+                </p>
+
+                <p class="MsoNormal"><b><span>Bank Account No.:</span></b><span
+                > <span th:text="${platform.bankAccountNo}"></span></span></p>
+
+                <p class="MsoNormal"><b><span>IBAN:</span></b><span> <span
+                        th:text="${platform.IBAN}"></span></span></p>
+
+                <p class="MsoNormal"><b><span>SWIFT code:</span></b><span>
+                        <span th:text="${platform.SWIFTCode}"></span></span></p>
+
+            </td>
+        </tr>
+    </table>
+
+    <hr/>
+</div>
+
+
+<div id="contract-footer">
+    <hr/>
+    <div th:if="${ps != null}">
+        <th:block th:each="onePS : ${ps}">
+            <p class="MsoNormal"><b><span><span
+                    th:text="${onePS.shortNameDesc}"></span></span></b><span
+            > <span th:text="${onePS.longNameDesc}"></span></span></p>
+        </th:block>
+    </div>
+
+    <p>Page <span class="pagenumber"></span> of <span class="pagecount"></span></p>
+</div>
+
+
+<div id="contract-content">
+    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor
+        quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+        ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+        Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget
+        tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis
+        pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu
+        vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis
+        luctus, metus</p>
+    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor
+        quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+        ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+        Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget
+        tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis
+        pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu
+        vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis
+        luctus, metus</p>
+    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor
+        quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+        ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+        Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget
+        tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis
+        pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu
+        vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis
+        luctus, metus</p>
+    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor
+        quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+        ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+        Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget
+        tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis
+        pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu
+        vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis
+        luctus, metus</p>
+    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor
+        quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+        ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+        Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget
+        tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis
+        pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu
+        vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis
+        luctus, metus</p>
+    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor
+        quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+        ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+        Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget
+        tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis
+        pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu
+        vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis
+        luctus, metus</p>
+    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor
+        quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+        ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+        Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget
+        tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis
+        pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu
+        vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis
+        luctus, metus</p>
+    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor
+        quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+        ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+        Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget
+        tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis
+        pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu
+        vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis
+        luctus, metus</p>
+    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor
+        quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+        ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra.
+        Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget
+        tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis
+        pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu
+        vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis
+        luctus, metus</p>
+</div>
+
+</body>
+</html>

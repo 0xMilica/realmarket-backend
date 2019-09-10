@@ -32,8 +32,9 @@ spring:
         auth: true
         starttls.enable: true
   thymeleaf:
-    mode: LEGACYHTML5
+    mode: HTML
     cache: false
+    encoding: UTF-8
 
 frontend.service.url: http://localhost:3000
 hmac.secret: s3cr3t
