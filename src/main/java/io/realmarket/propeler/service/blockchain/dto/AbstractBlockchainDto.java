@@ -2,10 +2,7 @@ package io.realmarket.propeler.service.blockchain.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignChangeStateDto;
-import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignDocumentAccessRequestDto;
-import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignDocumentAccessRequestStateChangeDto;
-import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignSubmissionForReviewDto;
+import io.realmarket.propeler.service.blockchain.dto.campaign.*;
 import io.realmarket.propeler.service.blockchain.dto.company.CompanyEditRequestDto;
 import io.realmarket.propeler.service.blockchain.dto.company.CompanyRegistrationDto;
 import io.realmarket.propeler.service.blockchain.dto.company.CompanyShareholderDto;
@@ -29,6 +26,7 @@ import lombok.NoArgsConstructor;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
   @JsonSubTypes.Type(value = CampaignChangeStateDto.class, name = "CampaignChangeStateDto"),
+  @JsonSubTypes.Type(value = CampaignClosingDto.class, name = "CampaignClosingDto"),
   @JsonSubTypes.Type(
       value = CampaignDocumentAccessRequestDto.class,
       name = "CampaignDocumentAccessRequestDto"),

@@ -8,6 +8,7 @@ import io.realmarket.propeler.repository.CampaignRepository;
 import io.realmarket.propeler.security.util.AuthenticationUtil;
 import io.realmarket.propeler.service.*;
 import io.realmarket.propeler.service.blockchain.BlockchainMethod;
+import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignClosingDto;
 import io.realmarket.propeler.service.blockchain.dto.campaign.CampaignSubmissionForReviewDto;
 import io.realmarket.propeler.service.blockchain.queue.BlockchainMessageProducer;
 import io.realmarket.propeler.service.exception.ActiveCampaignAlreadyExistsException;
@@ -225,8 +226,8 @@ public class CampaignServiceImpl implements CampaignService {
     Auth auth = AuthenticationUtil.getAuthOrReturnNull();
     if (auth == null) {
       if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)
-              && !campaign.getCampaignState().getName().equals(CampaignStateName.SUCCESSFUL)
-              && !campaign.getCampaignState().getName().equals(CampaignStateName.UNSUCCESSFUL)) {
+          && !campaign.getCampaignState().getName().equals(CampaignStateName.SUCCESSFUL)
+          && !campaign.getCampaignState().getName().equals(CampaignStateName.UNSUCCESSFUL)) {
         throw new EntityNotFoundException();
       }
     } else {
@@ -239,8 +240,8 @@ public class CampaignServiceImpl implements CampaignService {
           }
         default:
           if (!campaign.getCampaignState().getName().equals(CampaignStateName.ACTIVE)
-                  && !campaign.getCampaignState().getName().equals(CampaignStateName.SUCCESSFUL)
-                  && !campaign.getCampaignState().getName().equals(CampaignStateName.UNSUCCESSFUL)) {
+              && !campaign.getCampaignState().getName().equals(CampaignStateName.SUCCESSFUL)
+              && !campaign.getCampaignState().getName().equals(CampaignStateName.UNSUCCESSFUL)) {
             throw new ForbiddenOperationException(USER_IS_NOT_OWNER_OF_CAMPAIGN);
           }
           break;
@@ -353,16 +354,26 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Override
   @Transactional
-  public Campaign closeCampaign(String campaignName, CampaignClosingReasonDto campaignClosingReasonDto) {
+  public Campaign closeCampaign(
+      String campaignName, CampaignClosingReasonDto campaignClosingReasonDto) {
     Campaign campaign = getCampaignByUrlFriendlyName(campaignName);
     throwIfNotActive(campaign);
     campaign.setClosingReason(campaignClosingReasonDto.getClosingReason());
 
     if (campaignClosingReasonDto.isSuccessful()) {
       campaign = changeCampaignStateOrThrow(campaign, CampaignStateName.SUCCESSFUL);
-    }else{
+    } else {
       campaign = changeCampaignStateOrThrow(campaign, CampaignStateName.UNSUCCESSFUL);
     }
+
+    blockchainMessageProducer.produceMessage(
+        BlockchainMethod.CAMPAIGN_CLOSING,
+        new CampaignClosingDto(
+            campaign,
+            campaignClosingReasonDto,
+            AuthenticationUtil.getAuthentication().getAuth().getId()),
+        AuthenticationUtil.getAuthentication().getAuth().getUsername(),
+        AuthenticationUtil.getClientIp());
 
     return campaign;
   }
