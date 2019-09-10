@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,6 @@ import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -390,10 +388,14 @@ public class CampaignServiceImpl implements CampaignService {
 
     if (filter.equalsIgnoreCase("all")) {
       return campaignRepository.findAllPublic(pageable).map(CampaignResponseDto::new);
-    } else if (filter.equalsIgnoreCase("active") || filter.equalsIgnoreCase("post_campaign")) {
+    } else if (filter.equalsIgnoreCase("completed")) {
       return campaignRepository
-          .findAllByCampaignState(pageable, campaignStateService.getCampaignState(filter))
-          .map(CampaignResponseDto::new);
+              .findAllCompletedCampaigns(pageable)
+              .map(CampaignResponseDto::new);
+    } else if (filter.equalsIgnoreCase("active")) {
+      return campaignRepository
+              .findAllByCampaignState(pageable, campaignStateService.getCampaignState(filter))
+              .map(CampaignResponseDto::new);
     }
     throw new BadRequestException(INVALID_REQUEST);
   }
