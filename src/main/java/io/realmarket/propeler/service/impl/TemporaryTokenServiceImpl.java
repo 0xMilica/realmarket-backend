@@ -57,7 +57,8 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   public boolean validateTokenAndDeleteIt(String value, TemporaryTokenTypeName type) {
     Optional<TemporaryToken> temporaryToken =
         temporaryTokenRepository.findByValueAndExpirationTimeGreaterThanEqual(value, Instant.now());
-    if (!temporaryToken.isPresent() || temporaryToken.get().getTemporaryTokenType().equals(type)) {
+    if (!temporaryToken.isPresent()
+        || temporaryToken.get().getTemporaryTokenType().getName().equals(type)) {
       return false;
     }
     deleteToken(temporaryToken.get());
@@ -101,7 +102,7 @@ public class TemporaryTokenServiceImpl implements TemporaryTokenService {
   public TemporaryToken findByValueAndTypeOrThrowException(
       String value, TemporaryTokenTypeName type) {
     return temporaryTokenRepository
-        .findByValueAndTemporaryTokenTypeAndExpirationTimeGreaterThanEqual(
+        .findByValueAndTemporaryTokenTypeNameAndExpirationTimeGreaterThanEqual(
             value, type, Instant.now())
         .orElseThrow(() -> new InvalidTokenException(ExceptionMessages.INVALID_TOKEN_PROVIDED));
   }
