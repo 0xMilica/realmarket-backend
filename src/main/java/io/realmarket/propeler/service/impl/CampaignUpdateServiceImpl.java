@@ -69,6 +69,11 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
   }
 
   @Override
+  public Page<CampaignUpdate> findAllUpdatesByCompletedCampaigns(Pageable pageable) {
+    return campaignUpdateRepository.findAllUpdatesByCompletedCampaigns(pageable);
+  }
+
+  @Override
   public CampaignUpdateResponseDto createCampaignUpdate(
       String campaignName, CampaignUpdateDto campaignUpdateDto) {
     Campaign campaign = campaignService.findByUrlFriendlyNameOrThrowException(campaignName);
@@ -126,10 +131,13 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
       return findCampaignUpdates(pageable).map(CampaignUpdateResponseDto::new);
     } else if (filter.equalsIgnoreCase("my_campaigns")) {
       return findMyCampaignUpdates(auth, pageable).map(CampaignUpdateResponseDto::new);
-    } else if (filter.equalsIgnoreCase("active") || filter.equalsIgnoreCase("post_campaign")) {
+    } else if (filter.equalsIgnoreCase("completed")) {
+      return findAllUpdatesByCompletedCampaigns(pageable)
+          .map(CampaignUpdateResponseDto::new);
+    } else if (filter.equalsIgnoreCase("active")) {
       return findCampaignUpdatesByCampaignState(
               CampaignStateName.valueOf(filter.toUpperCase()), pageable)
-          .map(CampaignUpdateResponseDto::new);
+              .map(CampaignUpdateResponseDto::new);
     }
     throw new BadRequestException(INVALID_REQUEST);
   }

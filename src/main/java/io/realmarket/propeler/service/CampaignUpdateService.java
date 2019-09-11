@@ -22,6 +22,8 @@ public interface CampaignUpdateService {
 
   Page<CampaignUpdate> findCampaignUpdatesByCampaign(Campaign campaign, Pageable pageable);
 
+  Page<CampaignUpdate> findAllUpdatesByCompletedCampaigns(Pageable pageable);
+
   CampaignUpdateResponseDto createCampaignUpdate(
       String campaignName, CampaignUpdateDto campaignUpdateDto);
 

@@ -387,7 +387,7 @@ public interface CampaignController {
     @ApiImplicitParam(
         name = "filter",
         value = "State of campaign to be returned",
-        allowableValues = "all, active, post_campaign",
+        allowableValues = "all, active, completed(successful, unsuccessful)",
         defaultValue = "active",
         dataType = "String",
         paramType = "query")
@@ -420,7 +420,7 @@ public interface CampaignController {
         name = "state",
         value = "State of campaign to be returned",
         allowableValues =
-            "initial, review_ready, audit, active, launch_ready, post_campaign, deleted",
+            "initial, review_ready, audit, active, launch_ready, completed(successful, unsuccessful), deleted",
         dataType = "String",
         paramType = "query")
   })
@@ -578,7 +578,7 @@ public interface CampaignController {
     @ApiImplicitParam(
         name = "filter",
         value = "State of campaign",
-        allowableValues = "all, active, post_campaign",
+        allowableValues = "all, active, completed(successful, unsuccessful)",
         defaultValue = "all",
         dataType = "String",
         paramType = "query")
@@ -716,7 +716,7 @@ public interface CampaignController {
     @ApiImplicitParam(
         name = "filter",
         value = "State of campaign",
-        allowableValues = "all, my_campaigns, active, post_campaign",
+        allowableValues = "all, my_campaigns, active, completed(successful, unsuccessful)",
         defaultValue = "all",
         dataType = "String",
         paramType = "query")

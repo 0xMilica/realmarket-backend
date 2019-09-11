@@ -295,7 +295,11 @@ public class InvestmentServiceImpl implements InvestmentService {
     Page<Campaign> campaignPage;
     if (filter.equalsIgnoreCase("all")) {
       campaignPage = findInvestedCampaign(person, pageable);
-    } else if (filter.equalsIgnoreCase("active") || filter.equalsIgnoreCase("post_campaign")) {
+    }
+    else if (filter.equalsIgnoreCase("completed")) {
+      campaignPage = findAllCompletedCampaigns(person, pageable);
+    }
+    else if (filter.equalsIgnoreCase("active")) {
       campaignPage =
           findInvestedCampaignByState(
               person, CampaignStateName.valueOf(filter.toUpperCase()), pageable);
@@ -367,6 +371,10 @@ public class InvestmentServiceImpl implements InvestmentService {
 
   private Page<Campaign> findInvestedCampaign(Person person, Pageable pageable) {
     return investmentRepository.findInvestedCampaign(person, pageable);
+  }
+
+  private Page<Campaign> findAllCompletedCampaigns(Person person, Pageable pageable){
+    return investmentRepository.findAllCompletedCampaigns(person, pageable);
   }
 
   private Page<Campaign> findInvestedCampaignByState(

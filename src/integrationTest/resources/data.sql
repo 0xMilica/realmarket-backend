@@ -307,7 +307,8 @@ INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq
 INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'FINANCE_PROPOSITION');
 INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'LEAD_INVESTMENT');
 INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'ACTIVE');
-INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'POST_CAMPAIGN');
+INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'SUCCESSFUL');
+INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'UNSUCCESSFUL');
 INSERT INTO public.campaign_state (id, name) VALUES (NEXTVAL('campaign_state_seq'), 'DELETED');
 
 -- request state
