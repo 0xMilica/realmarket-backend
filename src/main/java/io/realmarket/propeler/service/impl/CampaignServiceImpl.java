@@ -389,13 +389,11 @@ public class CampaignServiceImpl implements CampaignService {
     if (filter.equalsIgnoreCase("all")) {
       return campaignRepository.findAllPublic(pageable).map(CampaignResponseDto::new);
     } else if (filter.equalsIgnoreCase("completed")) {
-      return campaignRepository
-              .findAllCompletedCampaigns(pageable)
-              .map(CampaignResponseDto::new);
+      return campaignRepository.findAllCompletedCampaigns(pageable).map(CampaignResponseDto::new);
     } else if (filter.equalsIgnoreCase("active")) {
       return campaignRepository
-              .findAllByCampaignState(pageable, campaignStateService.getCampaignState(filter))
-              .map(CampaignResponseDto::new);
+          .findAllByCampaignState(pageable, campaignStateService.getCampaignState(filter))
+          .map(CampaignResponseDto::new);
     }
     throw new BadRequestException(INVALID_REQUEST);
   }
@@ -584,18 +582,16 @@ public class CampaignServiceImpl implements CampaignService {
               c ->
                   new CampaignWithInvestmentsWithPersonResponseDto(
                       c, investmentService.findAllByCampaignWithInvestors(c)));
-    }
-    else if (state.equalsIgnoreCase("completed")) {
+    } else if (state.equalsIgnoreCase("completed")) {
       if (AuthenticationUtil.hasUserAdminRole()) {
         return campaignRepository
-                .findAllCompletedCampaigns(pageable)
-                .map(
-                        c ->
-                                new CampaignWithInvestmentsWithPersonResponseDto(
-                                        (c), investmentService.findAllByCampaignWithInvestors(c)));
+            .findAllCompletedCampaigns(pageable)
+            .map(
+                c ->
+                    new CampaignWithInvestmentsWithPersonResponseDto(
+                        (c), investmentService.findAllByCampaignWithInvestors(c)));
       }
-    }
-    else if (!state.equalsIgnoreCase("deleted")) {
+    } else if (!state.equalsIgnoreCase("deleted")) {
       CampaignState campaignState = campaignStateService.getCampaignState(state);
       if (AuthenticationUtil.hasUserAdminRole()) {
         return campaignRepository

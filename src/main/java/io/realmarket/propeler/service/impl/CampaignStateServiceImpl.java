@@ -77,7 +77,8 @@ public class CampaignStateServiceImpl implements CampaignStateService {
     campaignStateTransitFlow.put(
         CampaignStateName.LAUNCH_READY, Collections.singletonList(CampaignStateName.ACTIVE));
     campaignStateTransitFlow.put(
-        CampaignStateName.ACTIVE, Arrays.asList(CampaignStateName.SUCCESSFUL, CampaignStateName.UNSUCCESSFUL));
+        CampaignStateName.ACTIVE,
+        Arrays.asList(CampaignStateName.SUCCESSFUL, CampaignStateName.UNSUCCESSFUL));
     campaignStateTransitFlow.put(CampaignStateName.SUCCESSFUL, Collections.emptyList());
     campaignStateTransitFlow.put(CampaignStateName.UNSUCCESSFUL, Collections.emptyList());
     return campaignStateTransitFlow;

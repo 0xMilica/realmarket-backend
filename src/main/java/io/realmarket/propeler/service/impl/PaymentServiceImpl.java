@@ -242,7 +242,8 @@ public class PaymentServiceImpl implements PaymentService {
   }
 
   private String createInvoice(Investment investment, String paymentType) {
-    Map<String, Object> documentsParameters = templateDataUtil.getInvoiceData(investment, paymentType);
+    Map<String, Object> documentsParameters =
+        templateDataUtil.getInvoiceData(investment, paymentType);
     byte[] file = pdfService.generatePdf(documentsParameters, FileType.INVOICE);
 
     String url = fileService.uploadFile(file, "pdf");

@@ -17,14 +17,12 @@ import java.util.List;
 @Builder
 public class ContractResponseDto {
 
-  @ApiModelProperty("URL to the contract file")
-  private String url;
-
-  @ApiModelProperty("Base64 encoded document")
-  private String contract;
-
   @ApiModelProperty("Sides that are signing the contract")
   List<ContractSignerResponseDto> signers;
+  @ApiModelProperty("URL to the contract file")
+  private String url;
+  @ApiModelProperty("Base64 encoded document")
+  private String contract;
 
   /* TODO this @deprecated contructor should be removed when Contract model is implemented.*/
   @Deprecated

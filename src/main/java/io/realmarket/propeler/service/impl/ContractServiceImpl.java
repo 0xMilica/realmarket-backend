@@ -23,7 +23,8 @@ public class ContractServiceImpl implements ContractService {
   private final TemplateDataUtil templateDataUtil;
 
   @Autowired
-  public ContractServiceImpl(PdfService pdfService, TemplateDataUtil templateDataUtil, FileService fileService) {
+  public ContractServiceImpl(
+      PdfService pdfService, TemplateDataUtil templateDataUtil, FileService fileService) {
     this.pdfService = pdfService;
     this.templateDataUtil = templateDataUtil;
     this.fileService = fileService;
@@ -41,7 +42,9 @@ public class ContractServiceImpl implements ContractService {
   }
 
   private ContractResponseDto getDummyContract(ContractRequestDto contractRequestDto) {
-    byte[] file = pdfService.generatePdf(templateDataUtil.getContractData(contractRequestDto), FileType.CONTRACT);
+    byte[] file =
+        pdfService.generatePdf(
+            templateDataUtil.getContractData(contractRequestDto), FileType.CONTRACT);
     String url = fileService.uploadFile(file, "pdf");
     return new ContractResponseDto(url, Base64.getEncoder().encodeToString(file));
   }

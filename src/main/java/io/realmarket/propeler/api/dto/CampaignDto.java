@@ -38,10 +38,8 @@ public class CampaignDto {
   private String urlFriendlyName;
 
   @ApiModelProperty(value = "Reason for closing campaign")
-  @NotNull(message = "Please provide a reason for campaign closing")
   @Size(max = 250, message = "Closing campaign reason cannot be longer than 250 characters")
   private String closingReason;
-
 
   @ApiModelProperty(value = "Campaign funding goals")
   @NotNull(message = "Please provide funding goals")

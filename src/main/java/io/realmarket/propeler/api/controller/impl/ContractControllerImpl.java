@@ -23,7 +23,8 @@ public class ContractControllerImpl implements ContractController {
 
   @Override
   @GetMapping("/{contractType}")
-  public ResponseEntity<ContractResponseDto> getContract(@PathVariable String contractType, ContractRequestDto contractRequestDto) {
+  public ResponseEntity<ContractResponseDto> getContract(
+      @PathVariable String contractType, ContractRequestDto contractRequestDto) {
     return ResponseEntity.ok(contractService.getContract(contractType, contractRequestDto));
   }
 }

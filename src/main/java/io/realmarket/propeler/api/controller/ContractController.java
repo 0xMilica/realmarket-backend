@@ -14,23 +14,23 @@ public interface ContractController {
       consumes = APPLICATION_JSON_VALUE,
       produces = APPLICATION_JSON_VALUE)
   @ApiImplicitParams({
-      @ApiImplicitParam(
-          name = "contractRequestDto",
-          value = "Dto that contains additional information needed for contract getting/generation.",
-          required = true,
-          dataType = "ContractRequestDto",
-          paramType = "body"),
-      @ApiImplicitParam(
-          name = "contractType",
-          value = "Contract Type",
-          required = true,
-          allowableValues = "CONTRACT",
-          dataType = "String",
-          paramType = "path")
+    @ApiImplicitParam(
+        name = "contractRequestDto",
+        value = "Dto that contains additional information needed for contract getting/generation.",
+        required = true,
+        dataType = "ContractRequestDto",
+        paramType = "body"),
+    @ApiImplicitParam(
+        name = "contractType",
+        value = "Contract Type",
+        required = true,
+        allowableValues = "CONTRACT",
+        dataType = "String",
+        paramType = "path")
   })
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Contract successfully found/created."),
-      @ApiResponse(code = 400, message = "Invalid request.")
+    @ApiResponse(code = 200, message = "Contract successfully found/created."),
+    @ApiResponse(code = 400, message = "Invalid request.")
   })
   ResponseEntity getContract(String contractType, ContractRequestDto contractRequestDto);
 }

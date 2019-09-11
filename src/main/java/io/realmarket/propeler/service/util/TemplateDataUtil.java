@@ -285,7 +285,8 @@ public class TemplateDataUtil {
     return data;
   }
 
-  // It is presumed that investment's invested amount already includes VAT. Prices are calculated with that in mind.
+  // It is presumed that investment's invested amount already includes VAT. Prices are calculated
+  // with that in mind.
   private Map<String, Object> getPricingData(BigDecimal investedAmount, String campaignName) {
     HashMap<String, Object> data = new HashMap<>();
 
