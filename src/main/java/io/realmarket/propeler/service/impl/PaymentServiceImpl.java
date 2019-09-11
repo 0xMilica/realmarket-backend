@@ -41,6 +41,7 @@ import java.util.*;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
 import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVESTMENT_NOT_PAID;
 import static io.realmarket.propeler.service.util.TemplateDataUtil.BANK_TRANSFER_PAYMENT_TYPE;
+import static io.realmarket.propeler.service.util.TemplateDataUtil.PAYPAL_PAYMENT_TYPE;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -107,7 +108,7 @@ public class PaymentServiceImpl implements PaymentService {
     List<String> methods = new ArrayList<>();
     methods.add(BANK_TRANSFER_PAYMENT_TYPE);
     if (investment.getInvestedAmount().compareTo(cardPaymentLimit) < 1) {
-      methods.add("PayPal");
+      methods.add(PAYPAL_PAYMENT_TYPE);
     }
     return methods;
   }
@@ -302,6 +303,7 @@ public class PaymentServiceImpl implements PaymentService {
     investment.setInvestmentState(
         investmentStateService.getInvestmentState(InvestmentStateName.PAID));
     investment.setPaymentDate(Instant.now());
+    investment.setInvoiceUrl(createInvoice(investment, PAYPAL_PAYMENT_TYPE));
     investmentService.save(investment);
 
     // TODO remove two calls beneath after demo

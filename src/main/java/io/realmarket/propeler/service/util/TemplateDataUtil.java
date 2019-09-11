@@ -58,6 +58,7 @@ public class TemplateDataUtil {
   public static final String TERMS_OF_USE = "Terms Of Use";
   public static final String NOTES_AND_DISCLAIMERS = "Notes & Disclaimers";
   public static final String BANK_TRANSFER_PAYMENT_TYPE = "Bank transfer";
+  public static final String PAYPAL_PAYMENT_TYPE = "PayPal";
 
   private static final String DUMMY_TEXT =
       "In publishing and graphic design, lorem ipsum is a placeholder text commonly used to "
