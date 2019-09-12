@@ -83,6 +83,9 @@ public class CampaignResponseDto {
   @ApiModelProperty(value = "Campaign company logo url")
   private String companyLogoUrl;
 
+  @ApiModelProperty(value = "Campaign featured image url")
+  private String companyFeaturedImageUrl;
+
   @ApiModelProperty(value = "Campaign tag line")
   private String tagLine;
 
@@ -98,6 +101,21 @@ public class CampaignResponseDto {
   @ApiModelProperty(value = "Campaign topics status")
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private Map<String, Boolean> topicStatus;
+
+  @ApiModelProperty(value = "Campaign company website")
+  private String companyWebsite;
+
+  @ApiModelProperty(value = "Campaign company twitter url")
+  private String companyTwitterUrl;
+
+  @ApiModelProperty(value = "Campaign company facebook url")
+  private String companyFacebookUrl;
+
+  @ApiModelProperty(value = "Campaign company linkedin url")
+  private String companyLinkedinUrl;
+
+  @ApiModelProperty(value = "Campaign company custom url")
+  private String companyCustomUrl;
 
   public CampaignResponseDto(Campaign campaign) {
     this.companyId = campaign.getCompany().getId();
@@ -121,10 +139,16 @@ public class CampaignResponseDto {
     this.minInvestment = campaign.getMinInvestment();
     this.marketImageUrl = campaign.getMarketImageUrl();
     this.companyLogoUrl = campaign.getCompany().getLogoUrl();
+    this.companyFeaturedImageUrl = campaign.getCompany().getFeaturedImageUrl();
     this.tagLine = campaign.getTagLine();
     this.tag = campaign.getCompany().getCompanyCategory().getName();
     this.location = campaign.getCompany().getCity() + ", " + campaign.getCompany().getCounty();
     this.state = campaign.getCampaignState().getName().toString();
+    this.companyWebsite = campaign.getCompany().getWebsite();
+    this.companyTwitterUrl = campaign.getCompany().getTwitterUrl();
+    this.companyFacebookUrl = campaign.getCompany().getFacebookUrl();
+    this.companyLinkedinUrl = campaign.getCompany().getLinkedinUrl();
+    this.companyCustomUrl = campaign.getCompany().getCustomUrl();
 
     if (campaign.getActivationDate() != null) {
       LocalDateTime start =
@@ -149,9 +173,15 @@ public class CampaignResponseDto {
     this.minInvestment = campaign.getMinInvestment();
     this.marketImageUrl = campaign.getMarketImageUrl();
     this.companyLogoUrl = campaign.getCompany().getLogoUrl();
+    this.companyFeaturedImageUrl = campaign.getCompany().getFeaturedImageUrl();
     this.tagLine = campaign.getTagLine();
     this.tag = campaign.getCompany().getCompanyCategory().getName();
     this.location = campaign.getCompany().getCity() + ", " + campaign.getCompany().getCounty();
     this.state = campaign.getCampaignState().getName().toString();
+    this.companyWebsite = campaign.getCompany().getWebsite();
+    this.companyTwitterUrl = campaign.getCompany().getTwitterUrl();
+    this.companyFacebookUrl = campaign.getCompany().getFacebookUrl();
+    this.companyLinkedinUrl = campaign.getCompany().getLinkedinUrl();
+    this.companyCustomUrl = campaign.getCompany().getCustomUrl();
   }
 }

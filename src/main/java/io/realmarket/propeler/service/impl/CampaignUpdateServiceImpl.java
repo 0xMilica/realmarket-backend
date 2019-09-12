@@ -132,12 +132,11 @@ public class CampaignUpdateServiceImpl implements CampaignUpdateService {
     } else if (filter.equalsIgnoreCase("my_campaigns")) {
       return findMyCampaignUpdates(auth, pageable).map(CampaignUpdateResponseDto::new);
     } else if (filter.equalsIgnoreCase("completed")) {
-      return findAllUpdatesByCompletedCampaigns(pageable)
-          .map(CampaignUpdateResponseDto::new);
+      return findAllUpdatesByCompletedCampaigns(pageable).map(CampaignUpdateResponseDto::new);
     } else if (filter.equalsIgnoreCase("active")) {
       return findCampaignUpdatesByCampaignState(
               CampaignStateName.valueOf(filter.toUpperCase()), pageable)
-              .map(CampaignUpdateResponseDto::new);
+          .map(CampaignUpdateResponseDto::new);
     }
     throw new BadRequestException(INVALID_REQUEST);
   }

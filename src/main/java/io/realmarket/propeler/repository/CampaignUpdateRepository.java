@@ -27,7 +27,7 @@ public interface CampaignUpdateRepository extends JpaRepository<CampaignUpdate, 
       @Param("state") CampaignStateName campaignState, Pageable pageable);
 
   @Query(
-          "SELECT cu FROM Campaign_update cu WHERE campaign IN (SELECT c FROM Campaign c LEFT JOIN CampaignState cs ON c.campaignState.id = cs.id WHERE cs.name = 'SUCCESSFUL' OR cs.name = 'UNSUCCESSFUL') ORDER BY post_date DESC")
+      "SELECT cu FROM Campaign_update cu WHERE campaign IN (SELECT c FROM Campaign c LEFT JOIN CampaignState cs ON c.campaignState.id = cs.id WHERE cs.name = 'SUCCESSFUL' OR cs.name = 'UNSUCCESSFUL') ORDER BY post_date DESC")
   Page<CampaignUpdate> findAllUpdatesByCompletedCampaigns(Pageable pageable);
 
   Page<CampaignUpdate> findByCampaignOrderByPostDateDesc(Campaign campaign, Pageable pageable);

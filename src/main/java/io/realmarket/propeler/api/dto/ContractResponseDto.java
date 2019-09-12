@@ -19,8 +19,10 @@ public class ContractResponseDto {
 
   @ApiModelProperty("Sides that are signing the contract")
   List<ContractSignerResponseDto> signers;
+
   @ApiModelProperty("URL to the contract file")
   private String url;
+
   @ApiModelProperty("Base64 encoded document")
   private String contract;
 
