@@ -259,21 +259,21 @@ public class CampaignControllerImpl implements CampaignController {
 
   @GetMapping(value = "/{campaignName}/availableEquity")
   @PreAuthorize(
-      "hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR', 'ROLE_ENTREPRENEUR')")
+      "hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR', 'ROLE_ADMIN')")
   public ResponseEntity getAvailableEquity(@PathVariable String campaignName) {
     return ResponseEntity.ok(campaignService.getAvailableEquity(campaignName));
   }
 
   @GetMapping(value = "/{campaignName}/availableInvestment")
   @PreAuthorize(
-      "hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR', 'ROLE_ENTREPRENEUR')")
+      "hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR', 'ROLE_ADMIN')")
   public ResponseEntity getAvailableInvestment(@PathVariable String campaignName) {
     return ResponseEntity.ok(campaignService.getAvailableInvestment(campaignName));
   }
 
   @GetMapping(value = "/{campaignName}/availableInvestableAmount")
   @PreAuthorize(
-      "hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR', 'ROLE_ENTREPRENEUR')")
+      "hasAnyAuthority('ROLE_INDIVIDUAL_INVESTOR', 'ROLE_CORPORATE_INVESTOR', 'ROLE_ADMIN')")
   public ResponseEntity getAvailableInvestableAmount(@PathVariable String campaignName) {
     return ResponseEntity.ok(campaignService.getAvailableInvestableAmount(campaignName));
   }
