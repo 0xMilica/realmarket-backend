@@ -5,9 +5,17 @@ resource:
   relative_path:
     images:
       logo: /logo.png
+      illustration: /illustration.png
       check_circle: /check_circle.png
       warning: /warning.png
       twitter: /twitter.png
       facebook: /facebook.png
       youtube: /youtube.png
       linkedin: /linkedin.png
+
+  link:
+    platform: realmarket.io/
+    twitter: https://twitter.com/realmarket_io
+    facebook: https://www.facebook.com/realmarket.io/
+    youtube: https://www.youtube.com/channel/UChO6hEZu3vT1RWcU7W2ujbA
+    linkedin: https://www.linkedin.com/company/realmarket-io/

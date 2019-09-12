@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.realmarket.propeler.service.util.email.Parameters.EMAIL_CHANGE_TOKEN;
+import static io.realmarket.propeler.service.util.email.Parameters.ILLUSTRATION;
 
 @Data
 public class ChangeEmailMessage extends AbstractEmailMessage {
@@ -36,6 +37,7 @@ public class ChangeEmailMessage extends AbstractEmailMessage {
 
     Map<String, Object> data = getBasicEmailData();
     data.put(EMAIL_CHANGE_TOKEN, changeEmailLink);
+    data.put(ILLUSTRATION, ILLUSTRATION);
 
     return data;
   }

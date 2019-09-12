@@ -39,6 +39,7 @@ public class RegisterMessage extends AbstractEmailMessage {
     Map<String, Object> data = getBasicEmailData();
     data.put(USERNAME, contentMap.get(USERNAME));
     data.put(ACTIVATION_LINK, activationLink);
+    data.put(ILLUSTRATION, ILLUSTRATION);
 
     return data;
   }

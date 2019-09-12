@@ -32,9 +32,9 @@ public class CampaignUtils {
   public static final CampaignState TEST_CAMPAIGN_ACTIVE_STATE =
       CampaignState.builder().name(CampaignStateName.ACTIVE).build();
   public static final CampaignState TEST_CAMPAIGN_SUCCESSFUL_STATE =
-          CampaignState.builder().name(CampaignStateName.SUCCESSFUL).build();
+      CampaignState.builder().name(CampaignStateName.SUCCESSFUL).build();
   public static final CampaignState TEST_CAMPAIGN_UNSUCCESSFUL_STATE =
-          CampaignState.builder().name(CampaignStateName.UNSUCCESSFUL).build();
+      CampaignState.builder().name(CampaignStateName.UNSUCCESSFUL).build();
   public static final String TEST_NAME = "TEST_NAME";
   public static final CampaignState TEST_CAMPAIGN_DELETED_STATE =
       CampaignState.builder().name(CampaignStateName.DELETED).build();
@@ -128,22 +128,22 @@ public class CampaignUtils {
           .build();
 
   public static final Campaign TEST_SUCCESSFUL_CAMPAIGN =
-          Campaign.builder()
-                  .company(CompanyUtils.getCompanyMocked())
-                  .urlFriendlyName(TEST_ACTIVE_URL_FRIENDLY_NAME)
-                  .fundingGoals(0L)
-                  .currency(TEST_CURRENCY)
-                  .campaignState(TEST_CAMPAIGN_SUCCESSFUL_STATE)
-                  .build();
+      Campaign.builder()
+          .company(CompanyUtils.getCompanyMocked())
+          .urlFriendlyName(TEST_ACTIVE_URL_FRIENDLY_NAME)
+          .fundingGoals(0L)
+          .currency(TEST_CURRENCY)
+          .campaignState(TEST_CAMPAIGN_SUCCESSFUL_STATE)
+          .build();
 
   public static final Campaign TEST_UNSUCCESSFUL_CAMPAIGN =
-          Campaign.builder()
-                  .company(CompanyUtils.getCompanyMocked())
-                  .urlFriendlyName(TEST_ACTIVE_URL_FRIENDLY_NAME)
-                  .fundingGoals(0L)
-                  .currency(TEST_CURRENCY)
-                  .campaignState(TEST_CAMPAIGN_UNSUCCESSFUL_STATE)
-                  .build();
+      Campaign.builder()
+          .company(CompanyUtils.getCompanyMocked())
+          .urlFriendlyName(TEST_ACTIVE_URL_FRIENDLY_NAME)
+          .fundingGoals(0L)
+          .currency(TEST_CURRENCY)
+          .campaignState(TEST_CAMPAIGN_UNSUCCESSFUL_STATE)
+          .build();
 
   public static Campaign getActiveCampaignMocked() {
     return Campaign.builder()
@@ -193,10 +193,10 @@ public class CampaignUtils {
   }
 
   public static final CampaignClosingReasonDto TEST_CAMPAIGN_CLOSING_REASON_SUCCESSFUL_DTO =
-          new CampaignClosingReasonDto(TEST_CLOSING_REASON, true);
+      new CampaignClosingReasonDto(TEST_CLOSING_REASON, true);
 
   public static final CampaignClosingReasonDto TEST_CAMPAIGN_CLOSING_REASON_UNSUCCESSFUL_DTO =
-          new CampaignClosingReasonDto(TEST_CLOSING_REASON, false);
+      new CampaignClosingReasonDto(TEST_CLOSING_REASON, false);
 
   public static CampaignPatchDto TEST_CAMPAIGN_PATCH_DTO_FUNDING_GOALS() {
     return CampaignPatchDto.builder().fundingGoals(TEST_FUNDING_GOALS).build();

@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import static io.realmarket.propeler.util.EmailUtils.*;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -48,14 +47,16 @@ public class EmailServiceImplTest {
     when(emailMessageFactory.buildMessage(any(), any(), any())).thenReturn(REGISTER_MESSAGE);
     PowerMockito.whenNew(HashMap.class).withNoArguments().thenReturn(mockedResetEmailData);
 
-    emailService.sendEmailToUser(EmailType.REGISTER, Arrays.asList(TEST_USER_EMAIL), TEST_EMAIL_DATA);
+    emailService.sendEmailToUser(
+        EmailType.REGISTER, Arrays.asList(TEST_USER_EMAIL), TEST_EMAIL_DATA);
 
     verify(javaMailSender, Mockito.times(1)).send(mockedEmail);
   }
 
   @Test(expected = NullPointerException.class)
   public void SendMailToUser_Should_Throw_NullPointerException_WhenNoActivationToken() {
-    emailService.sendEmailToUser(EmailType.REGISTER, Arrays.asList(TEST_USER_EMAIL), new HashMap<>());
+    emailService.sendEmailToUser(
+        EmailType.REGISTER, Arrays.asList(TEST_USER_EMAIL), new HashMap<>());
   }
 
   @Test(expected = EmailSendingException.class)
@@ -72,7 +73,8 @@ public class EmailServiceImplTest {
 
     when(emailMessageFactory.buildMessage(any(), any(), any())).thenReturn(REGISTER_MESSAGE);
 
-    emailService.sendEmailToUser(EmailType.KYC_UNDER_REVIEW, Arrays.asList(TEST_USER_EMAIL), TEST_EMAIL_DATA);
+    emailService.sendEmailToUser(
+        EmailType.KYC_UNDER_REVIEW, Arrays.asList(TEST_USER_EMAIL), TEST_EMAIL_DATA);
   }
 
   @Test
@@ -80,7 +82,6 @@ public class EmailServiceImplTest {
     MimeMessage mockedEmail = Mockito.mock(MimeMessage.class);
 
     HashMap<String, Object> mockedResetEmailData = new HashMap<>();
-
 
     when(javaMailSender.createMimeMessage()).thenReturn(mockedEmail);
     doNothing().when(javaMailSender).send(mockedEmail);
@@ -90,13 +91,17 @@ public class EmailServiceImplTest {
 
     when(emailMessageFactory.buildMessage(any(), any(), any())).thenReturn(REGISTER_MESSAGE);
 
-    emailService.sendEmailToUser(EmailType.RESET_PASSWORD, Arrays.asList(TEST_USER_EMAIL), Collections.singletonMap("resetToken", TEST_RESET_TOKEN));
+    emailService.sendEmailToUser(
+        EmailType.RESET_PASSWORD,
+        Arrays.asList(TEST_USER_EMAIL),
+        Collections.singletonMap("resetToken", TEST_RESET_TOKEN));
 
     verify(javaMailSender, Mockito.times(1)).send(mockedEmail);
   }
 
   @Test(expected = NullPointerException.class)
   public void SendMailToUser_Should_Throw_NullPointerException_WhenNoResetToken() {
-    emailService.sendEmailToUser(EmailType.RESET_PASSWORD, Arrays.asList(TEST_USER_EMAIL), new HashMap<>());
+    emailService.sendEmailToUser(
+        EmailType.RESET_PASSWORD, Arrays.asList(TEST_USER_EMAIL), new HashMap<>());
   }
 }

@@ -1,0 +1,288 @@
+<!--
+	HTML Email Starter Kit
+	Documentation: https://github.com/timothylong/html-email-starter-kit
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width" initial-scale="1" name="viewport">
+    <!--[if !mso]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <![endif]-->
+    <meta name="x-apple-disable-message-reformatting">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <title></title>
+    <!--[if mso]>
+    <style>
+        * {
+            font-family: "Open Sans", sans-serif !important;
+        }
+    </style>
+    <![endif]-->
+    <!--[if !mso]><!-->
+    <!-- Insert font reference, e.g. <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet"> -->
+    <!--<![endif]-->
+    <style>
+        *,
+        *:after,
+        *:before {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        html,
+        body,
+        .document {
+            font-family: "Open Sans", sans-serif !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        div[style*="margin: 16px 0"] {
+            margin: 0 !important;
+        }
+
+        table,
+        td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: 0 auto;
+        }
+
+        img {
+            -ms-interpolation-mode: bicubic;
+            max-width: 100%;
+            border: 0;
+        }
+
+        *[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .x-gmail-data-detectors,
+        .x-gmail-data-detectors *,
+        .aBn {
+            border-bottom: 0 !important;
+            cursor: default !important;
+        }
+
+        @media screen and (max-width: 750px) {
+            .container {
+                width: 100%;
+                margin: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Preheader text. Visible in inbox preview, not in email body. -->
+<div style="display: none; max-height: 0px; overflow: hidden;">
+    <!-- Preheader message here -->
+</div>
+<table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="document"
+       role="presentation" style="margin-top: 100px; margin-bottom: 100px">
+    <tr>
+        <td valign="top">
+            <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="container"
+                   role="presentation" width="600">
+                <tr>
+                    <td>
+                        <table align="left">
+                            <td style="padding: 5px 0px 5px 20px; line-height: 34px">
+                                <a th:href="${platformLink}">
+                                    <img style="height: 70px" th:src="|cid:${logo}|">
+                                </a>
+                            </td>
+                        </table>
+                        <table align="right">
+                            <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
+                                <a th:href="${twitterLink}">
+                                    <img style="width: 18px" th:src="|cid:${twitter}|">
+                                </a>
+                            </td>
+                            <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
+                                <a th:href="${facebookLink}">
+                                    <img style="height: 18px" th:src="|cid:${facebook}|">
+                                </a>
+                            </td>
+                            <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
+                                <a th:href="${youtubeLink}">
+                                    <img style="width: 18px" th:src="|cid:${youtube}|">
+                                </a>
+                            </td>
+                            <td style="padding: 26px 20px 19px 20px; font-size: 26px; line-height: 34px">
+                                <a th:href="${linkedinLink}">
+                                    <img style="width: 18px" th:src="|cid:${linkedin}|">
+                                </a>
+                            </td>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <img alt="Rectangle-2723-2x"
+                             border="0" src="https://i.ibb.co/8cx9y03/Rectangle-2723-2x.png">
+                    </td>
+                </tr>
+            </table>
+            <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="container"
+                   role="presentation" width="600">
+                <tr>
+                    <td>
+                        <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0"
+                               role="presentation" width="100%">
+                            <tr>
+                                <td align="center" style="font-size: 30px; padding-top: 40px; padding-bottom: 20px;">
+                                    New campaign
+                                </td>
+                            </tr>
+                            <div th:with="campaign=${campaign}">
+                                <tr>
+                                    <td align="center" style="padding-bottom: 30px; font-size: 14px">
+                                        You have received an investment proposal for the <strong>
+                                        <span th:text="${campaign.name}"></span></strong>.
+                                        <br/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <table bgcolor="#F4F4F4" style="width:500px; text-align: left">
+                                            <tr>
+                                                <td style="font-size: 14px; padding: 25px 20px 20px 20px; line-height: 1.5">
+                                                    <span th:text="${campaign.overview}"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-size: 16px; font-weight: bold; padding-top: 25px; padding-left: 20px; line-height: 1.5">
+                                                    Key campaign facts
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-size: 14px; padding-left: 20px;line-height: 1.5;">
+                                                    <b>Funding goals: </b><span
+                                                        th:text="${campaign.fundingGoals}"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-size: 14px; padding-left: 20px; line-height: 1.5;">
+                                                    <b>Time to raise funds: </b><span
+                                                        th:text="${campaign.timeToRaiseFunds}"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-size: 14px; padding-left: 20px; padding-bottom: 25px; line-height: 1.5;">
+                                                    <b>Min and max equity offered: </b><span
+                                                        th:text="${campaign.minEquityOffered}"></span> -
+                                                    <span th:text="${campaign.maxEquityOffered}"></span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="padding: 42px 0 40px;">
+                                        <table align="center" aria-hidden="true" border="0"
+                                               cellpadding="0" cellspacing="0" class="container" role="presentation">
+                                            <tr>
+                                                <td bgcolor="#3DC6FA" style="border-radius: 3px;">
+                                                    <a class="btn" style="font-size: 16px;color: #ffffff; text-decoration: none; padding: 15px 22px; border-radius: 4px; border: 1px solid #3DC6FA; display: inline-block;"
+                                                       th:href="${campaign.link}">View the campaign</a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </div>
+                            <tr>
+                                <td align="center">
+                                    <table align="center" style="width:500px;">
+                                        <tr>
+                                            <td bgcolor="#FFF7E0" style="font-size: 14px; font-size: 14px; line-height: 2; padding: 20px; margin-bottom: 20px">
+                                                Please have in mind that investing in early-stage businesses involves certain risks.
+                                                Click here to read our
+                                                <a href="#" style="color: #3DC6FA">Risk Disclosure Statement</a>.
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <table align="center">
+                                        <tr>
+                                            <td style="padding: 40px; font-size: 14px; font-size: 14px; color: #9498B8;">
+                                                <a th:href="${platformLink}" style="color: #3DC6FA">www.realmarket.io</a>.
+                                                You may change your
+                                                <a href="#" style="color: #3DC6FA;">email preferences</a>
+                                                at any time.
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table style="width:500px; margin-bottom: 50px;">
+                                        <tr>
+                                            <td style="color: #9498B8; font-size:12px; line-height: 1.4; padding-bottom: 25px">
+                                                <strong>Legal note</strong>: The information appearing in
+                                                this email is approved as a financial promotion by
+                                                Funderbeam Markets Limited (authorised and regulated by the
+                                                Financial Conduct Authority under FRN 794918). Complete and
+                                                comprehensive information about an investment opportunity is
+                                                only available to the investors who have been approved by a
+                                                Funderbeam group entity. Funderbeam does not provide
+                                                investment advice or any recommendation to invest. The
+                                                investment opportunity should not be considered as an offer
+                                                to the public and is not directed at or offered to anyone
+                                                located in a jurisdiction where it is unlawful to do so.
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <table align="center" aria-hidden="true" border="0"
+                   cellpadding="0" cellspacing="0" class="container" role="presentation"
+                   style="margin-top: 20px; border-top: 1px solid #9498b8" width="600">
+                <tr>
+                    <td>
+                        <footer style="color: #9498b8; font-size: 12px; font-weight: 400; line-height: 21px; margin-top: 20px; margin-bottom: 30px">
+                            If you have any questions, please do not hesitate to contact our
+                            <a style="color: #3dc6fa; font-size: 12px; font-weight: 400; line-height: 21px; display: inline-block;"
+                               th:href="${contactUsEmail}">customer support service</a>.
+                        </footer>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
+
+</body>
+</html>

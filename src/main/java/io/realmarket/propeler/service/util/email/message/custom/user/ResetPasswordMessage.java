@@ -7,8 +7,7 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
-import static io.realmarket.propeler.service.util.email.Parameters.RESET_PASSWORD_LINK;
-import static io.realmarket.propeler.service.util.email.Parameters.RESET_TOKEN;
+import static io.realmarket.propeler.service.util.email.Parameters.*;
 
 @Data
 public class ResetPasswordMessage extends AbstractEmailMessage {
@@ -37,6 +36,7 @@ public class ResetPasswordMessage extends AbstractEmailMessage {
 
     Map<String, Object> data = getBasicEmailData();
     data.put(RESET_PASSWORD_LINK, resetPasswordLink);
+    data.put(ILLUSTRATION, ILLUSTRATION);
 
     return data;
   }

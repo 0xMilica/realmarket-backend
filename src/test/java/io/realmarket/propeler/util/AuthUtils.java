@@ -1,12 +1,10 @@
 package io.realmarket.propeler.util;
 
 import io.realmarket.propeler.api.dto.*;
-import io.realmarket.propeler.api.dto.enums.EmailType;
 import io.realmarket.propeler.model.*;
 import io.realmarket.propeler.model.enums.AuthStateName;
 import io.realmarket.propeler.model.enums.UserRoleName;
 import io.realmarket.propeler.security.UserAuthentication;
-import io.realmarket.propeler.service.impl.EmailServiceImpl;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -16,8 +14,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
-import java.util.Arrays;
-import java.util.HashMap;
 
 import static io.realmarket.propeler.service.util.RememberMeCookieHelper.COOKIE_NAME;
 import static io.realmarket.propeler.util.RememberMeCookieUtils.TEST_VALUE;

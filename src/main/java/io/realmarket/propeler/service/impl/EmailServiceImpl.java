@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import static io.realmarket.propeler.service.util.email.Parameters.*;
-import static io.realmarket.propeler.service.util.email.Values.CONTACT_US;
 
 @Service
 @Slf4j
@@ -39,6 +38,9 @@ public class EmailServiceImpl implements EmailService {
 
   @Value(value = "${resource.relative_path.images.logo}")
   private String logoPath;
+
+  @Value(value = "${resource.relative_path.images.illustration}")
+  private String illustrationPath;
 
   @Value(value = "${resource.relative_path.images.check_circle}")
   private String checkCirclePath;
@@ -61,12 +63,6 @@ public class EmailServiceImpl implements EmailService {
   private JavaMailSender javaMailSender;
   private EmailContentBuilder emailContentBuilder;
   private EmailMessageFactory emailMessageFactory;
-
-  @Value(value = "${frontend.service.url}")
-  private String frontendServiceUrlPath;
-
-  @Value(value = "${email.contact_us}")
-  private String contactUsEmail;
 
   @Autowired
   public EmailServiceImpl(
@@ -101,10 +97,6 @@ public class EmailServiceImpl implements EmailService {
   }
 
   private void sendMessage(EmailType emailType, AbstractEmailMessage emailMessage) {
-    emailMessage
-        .getContentMap()
-        .put(CONTACT_US_EMAIL, String.format("mailto:%s?subject=%s", contactUsEmail, CONTACT_US));
-
     MimeMessage email = generateMimeMessage(emailType, emailMessage);
 
     log.debug("Trying to send e-mail message: {}", emailMessage);
@@ -156,6 +148,14 @@ public class EmailServiceImpl implements EmailService {
     helper.addInline(LINKEDIN, new ClassPathResource(basePath + linkedinPath), PNG_IMAGE);
 
     switch (emailType) {
+      case REGISTER:
+      case ACCOUNT_BLOCKED:
+      case RECOVER_USERNAME:
+      case RESET_PASSWORD:
+      case CHANGE_EMAIL:
+        helper.addInline(
+            ILLUSTRATION, new ClassPathResource(basePath + illustrationPath), PNG_IMAGE);
+        break;
       case KYC_APPROVAL:
       case ACCEPT_CAMPAIGN:
       case FUNDRAISING_PROPOSAL_APPROVAL:

@@ -49,6 +49,18 @@ public abstract class AbstractEmailMessage {
     data.put(FACEBOOK, FACEBOOK);
     data.put(YOUTUBE, YOUTUBE);
     data.put(LINKEDIN, LINKEDIN);
+    data.putAll(getLinks());
+    return data;
+  }
+
+  protected Map<String, Object> getLinks() {
+    Map<String, Object> data = new HashMap<>();
+    data.put(PLATFORM_LINK, contentMap.get(PLATFORM_LINK));
+    data.put(TWITTER_LINK, contentMap.get(TWITTER_LINK));
+    data.put(FACEBOOK_LINK, contentMap.get(FACEBOOK_LINK));
+    data.put(YOUTUBE_LINK, contentMap.get(YOUTUBE_LINK));
+    data.put(LINKEDIN_LINK, contentMap.get(LINKEDIN_LINK));
+    data.put(CONTACT_US_EMAIL, contentMap.get(CONTACT_US_EMAIL));
     return data;
   }
 }

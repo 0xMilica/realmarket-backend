@@ -104,22 +104,42 @@
 <div style="display: none; max-height: 0px; overflow: hidden;">
     <!-- Preheader message here -->
 </div>
-<div style="display: none; max-height: 0px; overflow: hidden;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>
 <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="document"
-       role="presentation">
+       role="presentation" style="margin-top: 100px; margin-bottom: 100px">
     <tr>
         <td valign="top">
             <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="container"
                    role="presentation" width="600">
                 <tr>
                     <td>
-                        <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0"
-                               role="presentation" width="100%">
-                            <tr>
-                                <td>
-                                    <img alt="Logo" style="width: 50%" th:src="|cid:${logo}|">
-                                </td>
-                            </tr>
+                        <table align="left">
+                            <td style="padding: 5px 0px 5px 20px; line-height: 34px">
+                                <a th:href="${platformLink}">
+                                    <img style="height: 70px" th:src="|cid:${logo}|">
+                                </a>
+                            </td>
+                        </table>
+                        <table align="right">
+                            <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
+                                <a th:href="${twitterLink}">
+                                    <img style="width: 18px" th:src="|cid:${twitter}|">
+                                </a>
+                            </td>
+                            <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
+                                <a th:href="${facebookLink}">
+                                    <img style="height: 18px" th:src="|cid:${facebook}|">
+                                </a>
+                            </td>
+                            <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
+                                <a th:href="${youtubeLink}">
+                                    <img style="width: 18px" th:src="|cid:${youtube}|">
+                                </a>
+                            </td>
+                            <td style="padding: 26px 20px 19px 20px; font-size: 26px; line-height: 34px">
+                                <a th:href="${linkedinLink}">
+                                    <img style="width: 18px" th:src="|cid:${linkedin}|">
+                                </a>
+                            </td>
                         </table>
                     </td>
                 </tr>
@@ -132,24 +152,21 @@
                                role="presentation" width="100%">
                             <tr>
                                 <td>
-                                    <h1 style="color: #39316c; font-size: 30px; font-weight: 600; line-height: 45px;">
-                                        Password reset requested</h1>
+                                    <h1 style=" font-size: 30px; font-weight: 600; line-height: 45px;">
+                                        <img style="width: 18px" th:src="|cid:${check_circle}|">
+                                        Congratulations!</h1>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; color: #39316c; margin-bottom: 0">
-                                        Click the link below to complete verification:
+                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; text-align: left; width: 380px">
+                                        Dear <b><span th:text="${firstName}"></span> <span th:text="${lastName}"></span></b>,
                                     </p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a style="color: #3dc6fa; font-size: 14px; font-weight: 400; line-height: 21px; display: inline-block;"
-                                       th:href="${resetPasswordLink}">
-                                        <span th:text="${resetPasswordLink}"></span>
-                                    </a>
-
+                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; text-align: left; width: 380px; margin-bottom: 100px">
+                                        Your request for registration has been approved. To complete your registration please click on the following
+                                        <a style="color: #3dc6fa; font-size: 14px; font-weight: 400; line-height: 21px; display: inline-block;"
+                                           th:href="${registrationLink}">link</a>.
+                                    </p>
                                 </td>
                             </tr>
                         </table>
@@ -161,17 +178,10 @@
                    style="margin-top: 20px; border-top: 1px solid #9498b8;" width="600">
                 <tr>
                     <td>
-                        <!-- Physical address -->
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <footer style="color: #9498b8; font-size: 14px; font-weight: 400; line-height: 21px; margin-top: 20px">
-                            If this activity is not your own operation, please <a
-                                style="color: #3dc6fa; font-size: 14px; font-weight: 400; line-height: 21px; display: inline-block;"
-                                th:href="${contactUsEmail}">contact us</a> immediately.
-                            <br/>
-                            This is automated message. please do not reply.
+                        <footer style="color: #9498b8; font-size: 12px; font-weight: 400; line-height: 21px; margin-top: 20px; text-align: left">
+                            If you have any questions, please do not hesitate to contact our
+                            <a style="color: #3dc6fa; font-size: 12px; font-weight: 400; line-height: 21px; display: inline-block;"
+                               th:href="${contactUsEmail}">customer support service</a>.
                         </footer>
                     </td>
                 </tr>

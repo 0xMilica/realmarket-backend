@@ -3,30 +3,30 @@ email:
 
   template:
     user:
-      register: activateAccountMailTemplate
-      reset_password: resetPasswordMailTemplate
-      recover_username: recoverUsernameMailTemplate
-      change_email: requestEmailChangeTemplate
-      secret_change: secretChangeMailTemplate
-      account_blocked: accountBlockedEmailTemplate
+      register: emails/activateAccountTemplate
+      reset_password: emails/resetPasswordTemplate
+      recover_username: emails/recoverUsernameTemplate
+      change_email: emails/requestEmailChangeTemplate
+      secret_change: emails/secretChangeTemplate
+      account_blocked: emails/accountBlockedTemplate
 
     campaign:
-      new_opportunity: newCampaignEmailTemplate
-      new_opportunities: newCampaignOpportunitiesEmailTemplate
+      new_opportunity: emails/newCampaignOpportunityTemplate
+      new_opportunities: emails/newCampaignOpportunitiesTemplate
 
-      fundraising_proposal_approval: acceptFundraisingProposalTemplate
-      fundraising_proposal_rejection: rejectFundraisingProposalTemplate
+      fundraising_proposal_approval: emails/acceptFundraisingProposalTemplate
+      fundraising_proposal_rejection: emails/rejectFundraisingProposalTemplate
 
-      approval: acceptCampaignTemplate
-      rejection: rejectCampaignTemplate
+      approval: emails/acceptCampaignTemplate
+      rejection: emails/rejectCampaignTemplate
 
     kyc:
-      under_review: underReviewKYCTemplate
-      approval: acceptKYCTemplate
-      rejection: rejectKYCTemplate
+      under_review: emails/underReviewKYCTemplate
+      approval: emails/acceptKYCTemplate
+      rejection: emails/rejectKYCTemplate
 
     investment:
-      approval: acceptCampaignInvestmentTemplate
-      rejection: rejectCampaignInvestmentTemplate
-      proforma_invoice: proformaInvoiceMailTemplate
-      invoice: invoiceMailTemplate
+      approval: emails/acceptCampaignInvestmentTemplate
+      rejection: emails/rejectCampaignInvestmentTemplate
+      proforma_invoice: emails/proformaInvoiceTemplate
+      invoice: emails/invoiceTemplate

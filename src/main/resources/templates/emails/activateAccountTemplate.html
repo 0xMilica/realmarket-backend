@@ -37,10 +37,6 @@
             -webkit-text-size-adjust: 100%;
         }
 
-        tr, td {
-            text-align: center;
-        }
-
         html,
         body,
         .document {
@@ -104,7 +100,6 @@
 <div style="display: none; max-height: 0px; overflow: hidden;">
     <!-- Preheader message here -->
 </div>
-<div style="display: none; max-height: 0px; overflow: hidden;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>
 <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="document"
        role="presentation" style="margin-top: 100px; margin-bottom: 100px">
     <tr>
@@ -114,34 +109,39 @@
                 <tr>
                     <td>
                         <table align="left">
-                            <td style="padding: 26px 0 19px 20px; font-family: 'Open Sans SemiBold', sans-serif; font-size: 26px; line-height: 34px">
-                                <a href="#" target="_blank">
-                                    <img alt="Logo" style="height: 40px" th:src="|cid:${logo}|">
+                            <td style="padding: 5px 0px 5px 20px; line-height: 34px">
+                                <a th:href="${platformLink}">
+                                    <img style="height: 70px" th:src="|cid:${logo}|">
                                 </a>
                             </td>
                         </table>
                         <table align="right">
                             <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
-                                <a href="#" target="_blank">
-                                    <img alt="Twitter" style="width: 18px" th:src="|cid:${twitter}|">
+                                <a th:href="${twitterLink}">
+                                    <img style="width: 18px" th:src="|cid:${twitter}|">
                                 </a>
                             </td>
                             <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
-                                <a href="#" target="_blank">
-                                    <img alt="Facebook" style="height: 18px" th:src="|cid:${facebook}|">
+                                <a th:href="${facebookLink}">
+                                    <img style="height: 18px" th:src="|cid:${facebook}|">
                                 </a>
                             </td>
                             <td style="padding: 26px 0 19px 20px; font-size: 26px; line-height: 34px">
-                                <a href="#" target="_blank">
-                                    <img alt="Youtube" style="width: 18px" th:src="|cid:${youtube}|">
+                                <a th:href="${youtubeLink}">
+                                    <img style="width: 18px" th:src="|cid:${youtube}|">
                                 </a>
                             </td>
                             <td style="padding: 26px 20px 19px 20px; font-size: 26px; line-height: 34px">
-                                <a href="#" target="_blank">
-                                    <img alt="Linkedin" style="width: 18px" th:src="|cid:${linkedin}|">
+                                <a th:href="${linkedinLink}">
+                                    <img style="width: 18px" th:src="|cid:${linkedin}|">
                                 </a>
                             </td>
                         </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <img th:src="|cid:${illustration}|">
                     </td>
                 </tr>
             </table>
@@ -152,39 +152,39 @@
                         <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0"
                                role="presentation" width="100%">
                             <tr>
-                                <td>
-                                    <h1 style="color: #39316c; font-size: 30px; font-weight: 600; line-height: 45px;">
-                                        <img alt="Warning" style="width: 18px" th:src="|cid:${warning}|">
-                                        Something went wrong</h1>
+                                <td style="text-align: center">
+                                    <h1 style="font-size: 30px; font-weight: 600; line-height: 45px;">
+                                        Confirm Your Registration</h1>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr style="text-align: left">
                                 <td>
-                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; color: #39316c; text-align: left; width: 380px; margin-bottom: 20px">
-                                        Dear <b><span th:text="${firstName}"></span> <span th:text="${lastName}"></span></b>,
-                                        Your launching campaign request has been rejected.
+                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; width: 380px">
+                                        Dear <b><span th:text="${username}"></span></b>, welcome to Realmarket!
                                     </p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; text-align: left; width: 380px; margin-bottom: 30px">
-                                        <b>Reason: </b>
-                                        <br>
-                                        <span th:text="${rejectionReason}"></span>
-                                    </p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; text-align: left; width: 380px">
-                                        For more info contact our <a
-                                            style="color: #3dc6fa; font-size: 14px; font-weight: 400; line-height: 21px; display: inline-block;"
-                                            th:href="${contactUsEmail}">support service</a>.
+                                    <p style="display: inline-block; font-size: 14px; font-weight: 400; line-height: 21px; width: 550px; margin-bottom: 100px">
+                                        Please click on the link below to verify your account:
+                                        <a style="color: #3dc6fa; font-size: 14px; font-weight: 400; line-height: 21px; display: inline-block"
+                                           th:href="${activationLink}">
+                                            <span th:text="${activationLink}"></span>
+                                        </a>
                                     </p>
                                 </td>
                             </tr>
                         </table>
+                    </td>
+                </tr>
+            </table>
+            <table align="center" aria-hidden="true" border="0" cellpadding="0" cellspacing="0" class="container"
+                   role="presentation" width="600" style="margin-top: 20px; border-top: 1px solid #9498b8;">
+                <tr>
+                    <td>
+                        <footer style="color: #9498b8; font-size: 12px; font-weight: 400; line-height: 21px; margin-top: 20px; text-align: left">
+                            If you are not the person for whom this e-mail was intended, or if this e-mail has reached you by mistake, please delete it immediately and
+                            <a style="color: #3dc6fa; font-size: 12px; font-weight: 400; line-height: 21px; display: inline-block;"
+                                th:href="${contactUsEmail}">contact us</a> immediately.
+                            This is an automated message, please don't reply to it.
+                        </footer>
                     </td>
                 </tr>
             </table>
