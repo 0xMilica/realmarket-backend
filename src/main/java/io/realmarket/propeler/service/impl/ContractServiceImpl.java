@@ -5,7 +5,6 @@ import io.realmarket.propeler.api.dto.ContractResponseDto;
 import io.realmarket.propeler.model.enums.FileType;
 import io.realmarket.propeler.service.ContractService;
 import io.realmarket.propeler.service.FileService;
-import io.realmarket.propeler.service.exception.BadRequestException;
 import io.realmarket.propeler.service.util.PdfService;
 import io.realmarket.propeler.service.util.TemplateDataUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 
-import static io.realmarket.propeler.service.exception.util.ExceptionMessages.INVALID_REQUEST;
-
 @Service
 @Slf4j
 public class ContractServiceImpl implements ContractService {
-  public static final String DUMMY_TYPE = "dummy";
+  private static final String DUMMY_TYPE = "dummy";
 
   private final FileService fileService;
   private final PdfService pdfService;
@@ -40,7 +37,7 @@ public class ContractServiceImpl implements ContractService {
       case DUMMY_TYPE:
         return getDummyContract(contractRequestDto);
       default:
-        throw new BadRequestException(INVALID_REQUEST);
+        return null;
     }
   }
 
